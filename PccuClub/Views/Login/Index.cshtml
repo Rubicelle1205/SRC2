@@ -8,51 +8,73 @@
 
 }
 
-<div class="login-bg">
-    <div class="login-container">
-        <div class="login-box">
-            <h1 class="login-title">
-                <img src="~/images/icon_white.png" alt="logo">
-                <div class="subtitle">文化大學社團活動報備系統</div>
-            </h1>
-            <div class="login-box-img">
-                <img src="~/images/img_login.png" alt="">
-            </div>
-            <div class="login-box-info">
-                <form asp-action="@ActionDisptach" asp-controller="@Controller" data-ajax="false"
-                      data-ajax-method="POST" data-ajax-update="@sUpdateTargetId" data-ajax-mode="replace"
-                      data-ajax-begin="SysFormLoadingStart" data-ajax-complete="SysFormLoadingEnd">
-                    <div class="login-form">
-                        <div class="form-group">
-                            <label class="control-label">帳號</label>
-                            <div class="form-box">
+<div role="main" class="main">
+    <div class="pageHeader-deco">
+        <div class="image"></div>
+    </div>
+
+    <div class="container topPadding">
+        <div class="row justify-content-center">
+            <div class="col-xl-4 col-md-6">
+                <h1 class="text-md-6 text-5 line-height-6 font-weight-6 text-center text-primary mb-0">
+                    中國文化大學
+                </h1>
+                <h1 class="text-md-6 text-5 line-height-6 font-weight-6 text-center text-primary mb-0 opacity-6">
+                    場地租借系統
+                </h1>
+                <div class="card box-shadow-5 border-0 mt-md-5 mt-3 mb-5">
+                    <div class="card-body">
+
+
+                        <form asp-action="@ActionDisptach" asp-controller="@Controller" data-ajax="false"
+                              data-ajax-method="POST" data-ajax-update="@sUpdateTargetId" data-ajax-mode="replace"
+                              data-ajax-begin="SysFormLoadingStart" data-ajax-complete="SysFormLoadingEnd">
+
+                            <div class="row no-gutters align-items-center">
+                                <div class="">
+                                    <img alt="" src="~/images/skyLogo_ori.png" style="max-width:100%;height: auto;">
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-item">
+                                <label class="form-label mb-1 text-2">帳號</label>
                                 <input type="text" asp-for="LoginID" class="form-control" data-val="false" placeholder="請輸入帳號" />
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">密碼</label>
-                            <div class="form-box">
+                            <div class="form-item">
+                                <label class="form-label mb-1 text-2">密碼</label>
                                 <input type="password" asp-for="PassWord" size="18" class="form-control" data-val="false" placeholder="請輸入密碼" />
-                                <a href="#" role="button" class="btn-forget-psw">忘記密碼?</a>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="@Html.NameFor(m=>m.PassWord)" class="control-label">驗證碼</label>
-                            <div class="form-box">
-                                @Html.TextBoxFor(model => model.Captcha, new { @class = "form-control", @placeholder = "請輸入驗證碼" })
-                            </div>
-                        </div>
-                        <div class="form-group captcha">
-                            <div class="captcha-box">
-                                <div class="captcha">
-                                    <img class="imgChk" id="imgChkCode" src="" width="122" height="36">
+
+                            <div class="form-item">
+                                <label for="@Html.NameFor(m=>m.PassWord)" class="control-label">驗證碼</label>
+                                <div class="form-box">
+                                    @Html.TextBoxFor(model => model.Captcha, new { @class = "form-control", @placeholder = "請輸入驗證碼" })
                                 </div>
-                                <button id="reCaptcha" type="button" class="btn-regenerate-captcha">重新產生驗證碼</button>
                             </div>
-                        </div>
-                        <button type="submit" name="submitBtn" value="Login" class="btn btn-primary btn-block ">登入</button>
+                            <div class="form-group">
+                                <div class="captcha-box">
+                                    <div class="captcha">
+                                        <img class="imgChk" id="imgChkCode" src="" width="122" height="36">
+                                    </div>
+                                    <div>
+                                        <button id="reCaptcha" type="button" class="btn-regenerate-captcha">重新產生驗證碼</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" name="submitBtn" value="Login" class="submit-btn btn btn-primary">登入 Login</button>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-primary my-3 opacity-8 text-2">※ 如忘記密碼請聯繫系辦人員</p>
+                            </div>
+
+                        </form>
+
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>

@@ -1,39 +1,67 @@
 ﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文化大學社團活動報備系統</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <meta name="description" content="中國文化大學場地租借系統">
+    <meta name="keywords" content="中國文化大學,場地租借">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="google" content="notranslate">
+    <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>登入 | 中國文化大學</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src * gap://ready file:; worker-src blob:; child-src blob: gap:; style-src * &#39;unsafe-inline&#39;; script-src * &#39;unsafe-inline&#39; &#39;unsafe-eval&#39; blob:; img-src * &#39;self&#39; data: blob: cdvfile:; connect-src * &#39;unsafe-inline&#39;; font-src &#39;self&#39; data: *; frame-src *;media-src * blob:; ">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="color-scheme" content="light dark">
 
-    <script src="~/vendors/jquery/jquery-3.6.0.min.js"></script>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="https://nchucherent.pintech.com.tw/assets/img/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="https://nchucherent.pintech.com.tw/assets/img/apple-touch-icon.png">
 
-    <!-- moment plugin -->
-    <script src="~/vendors/moment/moment.min.js"></script>
-    <script src="~/vendors/moment/moment-with-locales.min.js"></script>
+    <!-- Web Fonts  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+    <link id="googleFonts" href="~/css/Login/css.css" rel="stylesheet" type="text/css">
+    <link href="~/css/Login/css2.css rel="stylesheet">
 
-    <!-- Bootstrap Material DatePicker plugin -->
-    <link rel="stylesheet" href="~/vendors/bootstrap-material-datetimepicker-gh-pages/css/material-icon.css">
-    <link rel="stylesheet"
-          href="~/vendors/bootstrap-material-datetimepicker-gh-pages/css/bootstrap-material-datetimepicker.css">
-    <script src="~/vendors/bootstrap-material-datetimepicker-gh-pages/js/bootstrap-material-datetimepicker.js"></script>
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="~/css/Login/bootstrap.css">
+    <link rel="stylesheet" href="~/css/Login/all.min.css">
+    <link rel="stylesheet" href="~/css/Login/animate.compat.css">
+    <link rel="stylesheet" href="~/css/Login/simple-line-icons.min.css">
+    <link rel="stylesheet" href="~/css/Login/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/css/Login/owl.theme.default.min.css">
+    <link rel="stylesheet" href="~/css/Login/main.css">
 
-    <script src="~/sweetalert2/sweetalert2.min.js"></script>
-    <link href="~/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
 
-    <!-- 自訂style放最後以免樣式被覆蓋 -->
-    <link rel="stylesheet" href="~/css/style.css">
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="~/css/Login/theme.css">
+    <link rel="stylesheet" href="~/css/Login/theme-elements.css">
+    <link rel="stylesheet" href="~/css/Login/theme-blog.css">
+    <link rel="stylesheet" href="~/css/Login/theme-shop.css">
+    <!-- Skin CSS -->
+    <link id="skinCSS" rel="stylesheet" href="~/css/Login/skin-corporate-7.css">
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="~/css/Login/tools.css">
+    <link rel="stylesheet" href="~/css/Login/custom.css">
+    <link rel="stylesheet" href="~/css/Login/login.css">
 
-    <script src="~/js/main.js"></script>
-    <script src="~/js/custom.js"></script>
+    <!-- Head Libs -->
+    <script src="~/js/Login/modernizr.min.js"></script>
 
-    <!-- 自訂login style放最後以免樣式被覆蓋 -->
-    <link rel="stylesheet" href="~/css/login.css">
-
-    <script src="~/js/login.js"></script>
+    <!-- Vendor -->
+    <script src="~/js/Login/jquery.min.js"></script>
+    <script src="~/js/Login/jquery.appear.min.js"></script>
+    <script src="~/js/Login/jquery.easing.min.js"></script>
+    <script src="~/js/Login/jquery.cookie.min.js"></script>
+    <script src="~/js/Login/popper.min.js"></script>
+    <script src="~/js/Login/bootstrap.min.js"></script>
+    <script src="~/js/Login/jquery.easypiechart.min.js"></script>
+    <script src="~/js/Login/lazysizes.min.js"></script>
+    <script src="~/js/Login/jquery.isotope.min.js"></script>
+    <script src="~/js/Login/jquery.vide.min.js"></script>
+    <script src="~/js/Login/vivus.min.js"></script>
+    <script src="~/js/Login/main.js"></script>
+    <script src="~/js/Login/moment.js"></script>
 </head>
 <body>
     <div id="MainContent">
@@ -45,4 +73,37 @@
     }
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>
+
+<footer id="footer" class="mt-0">
+    <p class="text-center mb-0">
+        <span class="d-lg-inline-block d-block mr-lg-4">地址：<a href="javascript:papago(&#39;402台中市南區興大路145號&#39;)">臺北市11114陽明山華岡路55號</a></span>
+        <span class="d-lg-inline-block d-inline-block mr-4">總機：<a href="tel:+8864-22854724">(02)2861-0511</a></span>
+    </p>
+    <div class="footer-copyright">
+        <div class="container pt-2 pb-3">
+            <div class="row">
+                <div class="col d-flex align-items-center justify-content-center mb-2 mt-2 mt-lg-0 mb-lg-0">
+                    <p class="text-lg-3 text-2 text-light opacity-9 text-center mb-0 px-4">
+                        中國文化大學 ©
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+<!-- Theme Base, Components and Settings -->
+<script src="~/js/Login/theme.js"></script>
+<script src="~/js/Login/exif.js"></script>
+<script src="~/js/Login/global.js"></script>
+
+<!-- Theme Custom -->
+<!--<script src="assets/js/custom.js?t=--><!--"></script>-->
+<script src="~/js/Login/custom_backend.js"></script>
+
+<!-- Theme Initialization Files -->
+<script src="~/js/Login/theme.init.js"></script>
