@@ -1,0 +1,22 @@
+﻿@using System.Text;
+@{
+    //顯示警示訊息
+    if (TempData["WEBSOL_ALERT_MESSAGE"] != null)
+    {
+        StringBuilder sb = new StringBuilder();
+        List<String> AlertMsg = TempData["WEBSOL_ALERT_MESSAGE"] as List<String>;
+        foreach (string msg in AlertMsg)
+        {
+            sb.Append(@$"<div class='AlertMsgDialog' data-alerttype='' title='' style='display:none;'><p>{msg}</p></div>");
+        }
+
+        TempData.Remove("WEBSOL_ALERT_MESSAGE");
+
+        <script type="text/javascript">
+            $(function () {
+                $('body').append("@Html.Raw(@sb.ToString())");
+                ShowAlertMsgDialog();
+            });
+        </script>
+    }
+}

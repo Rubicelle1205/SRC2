@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文化大學社團活動報備系統</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/vendors/jquery/jquery-3.6.0.min.js"></script>
+
+    <!-- moment plugin -->
+    <script src="~/vendors/moment/moment.min.js"></script>
+    <script src="~/vendors/moment/moment-with-locales.min.js"></script>
+
+    <!-- Bootstrap Material DatePicker plugin -->
+    <link rel="stylesheet" href="~/vendors/bootstrap-material-datetimepicker-gh-pages/css/material-icon.css">
+    <link rel="stylesheet"
+          href="~/vendors/bootstrap-material-datetimepicker-gh-pages/css/bootstrap-material-datetimepicker.css">
+    <script src="~/vendors/bootstrap-material-datetimepicker-gh-pages/js/bootstrap-material-datetimepicker.js"></script>
+
+    <script src="~/sweetalert2/sweetalert2.min.js"></script>
+    <link href="~/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+
+    <!-- 自訂style放最後以免樣式被覆蓋 -->
+    <link rel="stylesheet" href="~/css/style.css">
+
+    <script src="~/js/main.js"></script>
+    <script src="~/js/custom.js"></script>
+
+    <!-- 自訂login style放最後以免樣式被覆蓋 -->
+    <link rel="stylesheet" href="~/css/login.css">
+
+    <script src="~/js/login.js"></script>
+</head>
+<body>
+    <div id="MainContent">
+        @RenderBody()
+    </div>
+    @Html.Partial("_MsgPartial")
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

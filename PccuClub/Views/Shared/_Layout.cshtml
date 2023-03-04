@@ -1,0 +1,104 @@
+﻿@using PccuClub.WebAuth;
+@using WebPccuClub.Global.Extension;
+@using Microsoft.AspNetCore.Http
+
+@{
+    
+    UserInfo LoginUser = Context.Session.GetObject<UserInfo>("LoginUser");
+
+    string UnitName = string.Empty;
+    string LoginId = string.Empty;
+    string LastLoginDate = string.Empty;
+
+    if (LoginUser != null)
+    {
+        UnitName = LoginUser.UnitName;
+        LoginId = LoginUser.LoginId;
+        LastLoginDate = LoginUser.LastLoginDate.Value.ToString("yyyy/MM/dd HH:mm");
+    }
+    string baseurl = SystemMenu.GetSubUrl();
+    string homeurl = $"{baseurl}/Home";
+    string logouturl = $@"{baseurl}/Login/Logout";
+    string menuHtml = LoginUser.CreateUserMenu(baseurl);
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PccuClub</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PccuClub.styles.css" asp-append-version="true" />
+</head>
+<body>
+
+    <div class="full-bg">
+        <header>
+            <div class="wrapper">
+                <div class="header-title">
+                    <button type="button" class="mobile-menu-btn">
+                        <img src="~/images/icon_menu.png" alt="手機選單按鈕">
+                    </button>
+                    <h1 class="logo">
+                        <a href="@homeurl" title="文化大學社團活動報備系統"></a>
+                    </h1>
+                    <div class="header-function">
+                        <div class="info">
+                            <div class="items">單位：@UnitName</div>
+                            <div class="items">登入帳號：@LoginId</div>
+                            <div class="items">登入時間：@LastLoginDate</div>
+                            <a href="@logouturl" class="items logout">登出</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <nav>
+            <div class="wrapper">
+                <ul>
+                    @Html.Raw(menuHtml)
+                </ul>
+            </div>
+        </nav>
+        <!-- 手機版選單 -->
+        <div class="mobile-nav">
+            <div class="mobile-menu-backdrop">
+                <div class="mobile-menu">
+                    <button type="button" class="btn-close-menu">
+                        <img src="~/images/icon_menu_close.png" alt="關閉選單">
+                    </button>
+                    <ul class="menu-list">
+                        @Html.Raw(menuHtml)
+                    </ul>
+                    <ul class="member-info">
+                        <li>單位：@UnitName</li>
+                        <li>登入帳號：@LoginId</li>
+                        <li>登入時間：@LastLoginDate</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <main>
+            <div class="wrapper">
+                <div class="main-container">
+                    <div id="MainContent">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer>
+            @Html.Partial("_Footer")
+        </footer>
+    </div>
+
+    @Html.Partial("_MsgPartial")
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

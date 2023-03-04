@@ -1,0 +1,74 @@
+﻿@model WebPccuClub.Models.LoginViewModel;
+
+@{
+    Layout = "_LoginLayout";
+    string Controller = "Login";
+    string ActionDisptach = "AuthLogin";
+    string sUpdateTargetId = "#MainContent";
+
+}
+
+<div class="login-bg">
+    <div class="login-container">
+        <div class="login-box">
+            <h1 class="login-title">
+                <img src="~/images/icon_white.png" alt="logo">
+                <div class="subtitle">文化大學社團活動報備系統</div>
+            </h1>
+            <div class="login-box-img">
+                <img src="~/images/img_login.png" alt="">
+            </div>
+            <div class="login-box-info">
+                <form asp-action="@ActionDisptach" asp-controller="@Controller" data-ajax="false"
+                      data-ajax-method="POST" data-ajax-update="@sUpdateTargetId" data-ajax-mode="replace"
+                      data-ajax-begin="SysFormLoadingStart" data-ajax-complete="SysFormLoadingEnd">
+                    <div class="login-form">
+                        <div class="form-group">
+                            <label class="control-label">帳號</label>
+                            <div class="form-box">
+                                <input type="text" asp-for="LoginID" class="form-control" data-val="false" placeholder="請輸入帳號" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">密碼</label>
+                            <div class="form-box">
+                                <input type="password" asp-for="PassWord" size="18" class="form-control" data-val="false" placeholder="請輸入密碼" />
+                                <a href="#" role="button" class="btn-forget-psw">忘記密碼?</a>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="@Html.NameFor(m=>m.PassWord)" class="control-label">驗證碼</label>
+                            <div class="form-box">
+                                @Html.TextBoxFor(model => model.Captcha, new { @class = "form-control", @placeholder = "請輸入驗證碼" })
+                            </div>
+                        </div>
+                        <div class="form-group captcha">
+                            <div class="captcha-box">
+                                <div class="captcha">
+                                    <img class="imgChk" id="imgChkCode" src="" width="122" height="36">
+                                </div>
+                                <button id="reCaptcha" type="button" class="btn-regenerate-captcha">重新產生驗證碼</button>
+                            </div>
+                        </div>
+                        <button type="submit" name="submitBtn" value="Login" class="btn btn-primary btn-block ">登入</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_MsgPartial")
+
+<script type="text/javascript" lang="javascript">
+
+    $(function () {
+        $("#imgChkCode").attr('src', '@Url.Action("GetCaptcha","Login")')
+
+        $('#reCaptcha').click(function () {
+            var ImgUrl = '@Url.Action("GetCaptcha","Login")' + "?t=" + new Date().getTime();
+            $('#imgChkCode').attr('src', ImgUrl);
+        });
+    });
+
+</script>
