@@ -13,7 +13,5 @@ namespace WebPccuClub.Models
         /// <summary> 使用者密碼 </summary>
         public string PassWord { get; set; }
 
-        /// <summary> 驗證碼 </summary>
-        public string Captcha { get; set; }
     }
 }

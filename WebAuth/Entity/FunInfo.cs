@@ -26,6 +26,9 @@ namespace WebAuth.Entity
         /// <summary> 功能網址 </summary>
         public string Url { get; set; }
 
+        /// <summary> 網頁圖示 </summary>
+        public string IconTag { get; set; }
+
         /// <summary> 是否啟用(False:不啟用, True:啟用)  </summary>
         public bool IsEnable { get; set; }
 

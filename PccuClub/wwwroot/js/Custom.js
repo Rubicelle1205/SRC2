@@ -33,7 +33,6 @@ $(document).bind("ajaxSend", function () {
 
 // Alert Message
 function ShowAlertMsgDialog() {
-
     $AlertMsg = $('.AlertMsgDialog:first');
 
     if ($AlertMsg.length > 0 && $AlertMsg.html() != "") {

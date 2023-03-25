@@ -69,20 +69,14 @@ namespace WebPccuClub.Controllers
 #if DEBUG
                 isAuth = auth.Login(vm.LoginID, out UserInfo LoginUser);
 #else
-                if (vm.Captcha != CaptchaCode)
-                {
-                    user.ErrorCount += 1;
-                    loginEntity.Memo = "驗證碼錯誤";
-                    throw new Exception("登入失敗，驗證碼錯誤!");
-                }
                 isAuth = auth.Login(vm.LoginID, vm.PassWord, out UserInfo LoginUser);
-#endif
                 if (!isAuth)
                 {
                     user.ErrorCount += 1;
                     loginEntity.Memo = "密碼錯誤";
                     throw new Exception("登入失敗，密碼錯誤!");
                 }
+#endif
 
                 HttpContext.Session.Clear();
                 TempData.Clear();
@@ -155,36 +149,12 @@ namespace WebPccuClub.Controllers
             if (string.IsNullOrEmpty(vm.PassWord))
             { ValidMsg.Add("請輸入密碼!"); }
 
-            if (string.IsNullOrEmpty(vm.Captcha))
-            { ValidMsg.Add("請輸入驗證碼!"); }
-            else
-            {
-                if (!vm.Captcha.Equals(CaptchaCode))
-                { ValidMsg.Add("驗證碼錯誤!"); }
-            }
 #endif
 
             if (ValidMsg.Count > 0)
             { return false; }
 
             return true;
-        }
-
-        /// <summary> 取得驗證碼 </summary>
-        public IActionResult GetCaptcha()
-        {
-            try
-            {
-                string ValCode = ValidateCodeUtil.GetValidCode(4, 1);
-                CaptchaCode = ValCode;
-
-                byte[] ms = ValidateCodeUtil.GetImageByte(ValCode);
-                return File(ms, "image/png");
-            }
-            catch (Exception)
-            {
-                return File(new byte[1], "image/png");
-            }
         }
 
         /// <summary> 更新使用者登入資訊(最後登入日期、登日次數等) </summary>

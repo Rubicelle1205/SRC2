@@ -1,0 +1,33 @@
+﻿@model string
+@using PccuClub.WebAuth;
+@using WebPccuClub.Global.Extension;
+@{
+    UserInfo LoginUser = Context.Session.GetObject<UserInfo>("LoginUser");
+    string[] arr = Model.Split("|");
+    string UpFunName = LoginUser.UserRoleFun.Find(f => f.MenuNode == arr[0]) == null ? arr[0] : LoginUser.UserRoleFun.Find(f => f.MenuNode == arr[0]).MenuName;
+    string FunName = LoginUser.UserRoleFun.Find(f => f.MenuNode == arr[1]).MenuName;
+}
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">@FunName</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    
+                    @if (UpFunName == "-1")
+                    {
+                        <li class="breadcrumb-item">@FunName</li>
+                    }
+                    else
+                    {
+                        <li class="breadcrumb-item">首頁</li>
+                        <li class="breadcrumb-item active">@UpFunName</li>
+                    }
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>

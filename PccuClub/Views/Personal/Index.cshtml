@@ -1,0 +1,131 @@
+﻿@model WebPccuClub.Models.PersonalViewModel
+
+@{
+    Layout = "_BackendLayout";
+    string Controller = "Personal";
+    string ActionDisptach = "EditOldData";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form asp-action="@ActionDisptach" asp-controller="@Controller" data-ajax="false"
+                      data-ajax-method="POST" data-ajax-mode="replace"
+                      data-ajax-begin="SysFormLoadingStart" data-ajax-complete="SysFormLoadingEnd">
+
+                    @*<form method="post" id="form" enctype="multipart/form-data" action="">*@
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            @if (null != Model.EditModel)
+                            {
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.Created)</th>
+                                            <td>@Html.DisplayFor(m => m.EditModel.Created)</td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.LastModified)</th>
+                                            <td>@Html.DisplayFor(m => m.EditModel.LastModified)</td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.UserName)<span class="required">*</span></th>
+                                            <td>@Html.DisplayFor(m => m.EditModel.UserName)</td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.LoginId)<span class="required">*</span></th>
+                                            <td>@Html.DisplayFor(m => m.EditModel.LoginId)</td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">
+                                                @Html.LabelFor(m => m.EditModel.Password)
+                                                <br><span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
+                                            </th>
+                                            <td>
+                                                <div class="input-group">
+                                                    @Html.PasswordFor(m => m.EditModel.Password, new {@class="form-control", placeholder="請輸入密碼"})
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text" id="pwvisible1"><i class="fa-solid fa-eye-slash"></i></span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">
+                                                @Html.LabelFor(m => m.EditModel.ConformPassword)
+                                                <br><span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
+                                            </th>
+                                            <td>
+                                                <div class="input-group">
+                                                    @Html.PasswordFor(m => m.EditModel.ConformPassword, new {@class="form-control", placeholder="請再輸入一次密碼"})
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text" id="pwvisible2"><i class="fa-solid fa-eye-slash"></i></span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">密碼規則</th>
+                                            <td class="text-muted text-sm">
+                                                <ul class="m-0" id="passwdRules">
+                                                    <li id="isValidLength">長度需介於6 ~ 15位</li>
+                                                    @* <li id="isContainsUpperOrLowercase">至少包含一大寫或小寫英文字母</li>
+                                                <li id="isContainsNumber">至少包含一數字</li>
+                                                <li id="isPassedOverall">符合上述所有規則，且不可夾帶任何特殊符號</li>*@
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            }
+
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer d-flex justify-content-end">
+                            @*<button type="button" class="btn btn-success" onclick="SaveEditData()">儲存</button>*@
+                            <button type="submit" name="submitBtn" class="btn btn-success">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </form>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    function SaveEditData() {
+        var data = new FormData()
+        var pw = $('#@Html.IdFor(m => m.EditModel.Password)').val();
+        var cpw = $('#@Html.IdFor(m => m.EditModel.ConformPassword)').val();
+
+        data.append('@Html.NameFor(m => m.EditModel.Password)', pw);
+        data.append('@Html.NameFor(m => m.EditModel.ConformPassword)', cpw);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                //location.reload();
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+
+    }
+</script>

@@ -8,12 +8,14 @@ using System.Text;
 using WebAuth.Entity;
 using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
+using WebPccuClub.Global;
+using WebPccuClub.DataAccess;
 
 namespace WebPccuClub.Controllers
 {
     public class BaseController : Controller
     {
-        //PESTBaseDataAccess PESTDBAccess = new PESTBaseDataAccess();
+        BaseDataAccess dbAccess = new BaseDataAccess();
 
         #region 共用屬性
         private const string strConst_LoginPageUrl = @"/Login";
@@ -246,6 +248,21 @@ namespace WebPccuClub.Controllers
 
             var controller = (ControllerBase)filterContext.Controller;
             var actionName = controller.ControllerContext.ActionDescriptor.ActionName;
+            var controllerAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetCustomAttributes(typeof(LogAttribute), false);
+            var actionAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetMethod(actionName)?.GetCustomAttributes(typeof(LogAttribute), false);
+            if (LoginUser != null && (controllerAttributes?.Any() ?? false) && (actionAttributes?.Any() ?? false))
+            {
+                LogViewModel logModel = new LogViewModel()
+                {
+                    LoginID = LoginUser.LoginId,
+                    UserName = LoginUser.UserName,
+                    RoleName = string.Join(",", LoginUser.UserRole[0].RoleName),
+                    IP = filterContext.HttpContext.Connection?.RemoteIpAddress?.ToString(),
+                    FunName = controllerAttributes != null ? (controllerAttributes.FirstOrDefault() as LogAttribute)?.LogDisplayName : controller.ControllerContext.ActionDescriptor.ControllerName,
+                    ActionName = actionAttributes != null ? (actionAttributes.FirstOrDefault() as LogAttribute)?.LogDisplayName : controller.ControllerContext.ActionDescriptor.ActionName
+                };
+                dbAccess.InsertLog(logModel);
+            }
 
             base.OnActionExecuting(filterContext);
         }

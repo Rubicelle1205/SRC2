@@ -68,7 +68,7 @@ namespace WebAuth.DataAccess
             string SQL = @"--declare @LoginId nvarchar(30)
                            --set @LoginId=''
                            
-                           select SM.MenuNode, SM.MenuName, SM.MenuUpNode, F.Url, SM.IsEnable, SM.IsVisIble, SM.SortOrder
+                           select SM.MenuNode, SM.MenuName, SM.MenuUpNode, SM.IconTag, F.Url, SM.IsEnable, SM.IsVisIble, SM.SortOrder
                            from SystemRole SR
                            inner join UserRole R on R.RoleId=SR.RoleId
                            inner join SystemRoleFun RF on RF.RoleId=R.RoleId

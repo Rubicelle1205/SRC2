@@ -15,24 +15,32 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = D:\PushuData\2023\Project\Pccu\SRC2\PccuClub
 build_property._RazorSourceGeneratorDebug = 
 
-[D:/PushuData/2023/Project/Pccu/SRC2/PccuClub/Views/Home/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+[D:/PushuData/2023/Project/Pccu/SRC2/PccuClub/Views/ConsentMang/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uc2VudE1hbmdcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/PushuData/2023/Project/Pccu/SRC2/PccuClub/Views/Home/Privacy.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+[D:/PushuData/2023/Project/Pccu/SRC2/PccuClub/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/PushuData/2023/Project/Pccu/SRC2/PccuClub/Views/Login/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/PushuData/2023/Project/Pccu/SRC2/PccuClub/Views/Personal/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVyc29uYWxcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/PushuData/2023/Project/Pccu/SRC2/PccuClub/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/PushuData/2023/Project/Pccu/SRC2/PccuClub/Views/Shared/_Footer.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Gb290ZXIuY3NodG1s
+[D:/PushuData/2023/Project/Pccu/SRC2/PccuClub/Views/Shared/_BackendFooter.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9CYWNrZW5kRm9vdGVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/PushuData/2023/Project/Pccu/SRC2/PccuClub/Views/Shared/_BackendLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9CYWNrZW5kTGF5b3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/PushuData/2023/Project/Pccu/SRC2/PccuClub/Views/Shared/_LoginLayout.cshtml]
@@ -41,6 +49,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/PushuData/2023/Project/Pccu/SRC2/PccuClub/Views/Shared/_MsgPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Nc2dQYXJ0aWFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/PushuData/2023/Project/Pccu/SRC2/PccuClub/Views/Shared/_SiteMapPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TaXRlTWFwUGFydGlhbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/PushuData/2023/Project/Pccu/SRC2/PccuClub/Views/Shared/_ValidationScriptsPartial.cshtml]
@@ -54,7 +66,3 @@ build_metadata.AdditionalFiles.CssScope =
 [D:/PushuData/2023/Project/Pccu/SRC2/PccuClub/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PushuData/2023/Project/Pccu/SRC2/PccuClub/Views/Shared/_Layout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = b-f7i7mkq3t8

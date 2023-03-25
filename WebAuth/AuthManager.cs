@@ -22,9 +22,9 @@ namespace PccuClub.WebAuth
             try
             {
                 UserInfo LoginUser = new UserInfo();
-                EncryptUtil Encrypt = new EncryptUtil("WebSolSystemAuth");
+                
                 // 密碼加密
-                string EncryptPwd = Encrypt.Encrypt(Pwd);
+                string EncryptPwd = EncryptionText(Pwd);
 
                 // 查詢基本資料
                 (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectUserMain(LoginId, EncryptPwd);
@@ -120,5 +120,11 @@ namespace PccuClub.WebAuth
             return true;
         }
 
+        public string EncryptionText(string str)
+        {
+            EncryptUtil Encrypt = new EncryptUtil("WebPccuAuth");
+            
+            return Encrypt.Encrypt(str);
+        }
     }
 }
