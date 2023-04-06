@@ -2,7 +2,7 @@
 
 namespace WebPccuClub.Models
 {
-    public class LoginViewModel
+    public class BakeendLoginViewModel
     {
         /// <summary> 使用者帳號 </summary>
         [MaxLength(10, ErrorMessage = "請勿輸入超過10個字!!")]

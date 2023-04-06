@@ -11,31 +11,15 @@ using WebPccuClub.Global.Extension;
 
 namespace WebPccuClub.Controllers
 {
-    public class LoginController : Controller
+    public class BakeendLoginController : Controller
     {
         private LoginDataAccess dbAccess = new LoginDataAccess();
         public List<string> AlertMsg = new List<string>();
 
-        /// <summary> 驗證碼 </summary>
-        public string CaptchaCode
-        {
-            get
-            {
-                if (TempData["SysLoginAuthValidateCode"] != null)
-                { return TempData["SysLoginAuthValidateCode"]?.ToString(); }
-
-                return string.Empty;
-            }
-            set
-            {
-                TempData["SysLoginAuthValidateCode"] = value;
-            }
-        }
-
         /// <summary> 功能首頁 </summary>
         public IActionResult Index()
         {
-            LoginViewModel vm = new LoginViewModel();
+            BakeendLoginViewModel vm = new BakeendLoginViewModel();
 
             HttpContext.Session.Clear();
             TempData.Clear();
@@ -45,7 +29,7 @@ namespace WebPccuClub.Controllers
 
         /// <summary> 一般登入 </summary>
         //[HttpPost]
-        public IActionResult AuthLogin(LoginViewModel vm)
+        public IActionResult AuthLogin(BakeendLoginViewModel vm)
         {
             AuthManager auth = new AuthManager();
             LoginLogEntity loginEntity = GetLoginLogEntity(vm);
@@ -112,44 +96,20 @@ namespace WebPccuClub.Controllers
             HttpContext.Session.Clear();
             TempData.Clear();
 
-            LoginViewModel vm = new LoginViewModel();
+            BakeendLoginViewModel vm = new BakeendLoginViewModel();
 
             return View("Index", vm);
         }
 
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            ModelState.Clear();
-            base.OnActionExecuting(context);
-        }
-
-        public override void OnActionExecuted(ActionExecutedContext filterContext)
-        {
-            if (TempData.ContainsKey("WEBSOL_ALERT_MESSAGE") && TempData["WEBSOL_ALERT_MESSAGE"] != null)
-            {
-                List<string> TempMsg = TempData["WEBSOL_ALERT_MESSAGE"] as List<String>;
-                if (TempMsg != null)
-                { this.AlertMsg.AddRange(TempMsg); }
-            }
-
-            if (AlertMsg.Count > 0)
-            {
-                TempData["WEBSOL_ALERT_MESSAGE"] = AlertMsg;
-            }
-
-        }
 
         /// <summary> 登入檢核 - (True:通過，False:不通過) </summary>
-        private bool Valid(LoginViewModel vm, List<string> ValidMsg)
+        private bool Valid(BakeendLoginViewModel vm, List<string> ValidMsg)
         {
             if (string.IsNullOrEmpty(vm.LoginID))
             { ValidMsg.Add("請輸入帳號!"); }
 
-#if !DEBUG
             if (string.IsNullOrEmpty(vm.PassWord))
             { ValidMsg.Add("請輸入密碼!"); }
-
-#endif
 
             if (ValidMsg.Count > 0)
             { return false; }
@@ -179,7 +139,7 @@ namespace WebPccuClub.Controllers
         }
 
         /// <summary> 取得 Login Entity </summary>
-        private LoginLogEntity GetLoginLogEntity(LoginViewModel vm)
+        private LoginLogEntity GetLoginLogEntity(BakeendLoginViewModel vm)
         {
             LoginLogEntity dbEntity = new LoginLogEntity();
             dbEntity.Loginid = vm.LoginID;
@@ -192,5 +152,30 @@ namespace WebPccuClub.Controllers
             return dbEntity;
         }
 
+
+        #region
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            ModelState.Clear();
+            base.OnActionExecuting(context);
+        }
+
+        public override void OnActionExecuted(ActionExecutedContext filterContext)
+        {
+            if (TempData.ContainsKey("WEBSOL_ALERT_MESSAGE") && TempData["WEBSOL_ALERT_MESSAGE"] != null)
+            {
+                List<string> TempMsg = TempData["WEBSOL_ALERT_MESSAGE"] as List<String>;
+                if (TempMsg != null)
+                { this.AlertMsg.AddRange(TempMsg); }
+            }
+
+            if (AlertMsg.Count > 0)
+            {
+                TempData["WEBSOL_ALERT_MESSAGE"] = AlertMsg;
+            }
+        }
+
+        #endregion
     }
 }
