@@ -31,13 +31,13 @@ namespace WebPccuClub.DataAccess
             return new List<PersonalEditModel>();
         }
 
-        public DbExecuteInfo UpdatePersonalData(PersonalEditModel model, UserInfo LoginUser)
+        public DbExecuteInfo UpdatePersonalData(string EncryptPw, UserInfo LoginUser)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@Password", model.Password);
+            parameters.Add("@Password", EncryptPw);
             parameters.Add("@LastModifier", LoginUser.UserName);
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定

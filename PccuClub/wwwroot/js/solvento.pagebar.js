@@ -1,20 +1,3 @@
-/******************************************************************************
-*
-* solvento.pagebar version:1.0 
-* by Mark Siang
-* License: MIT
-* 2016 / 1 / 26
-*
-* requires:
-*
-*   - jquery.js (http://www.jquery.com) -- tested with 1.8.3
-*
-* usage:
-*	function (userArgs, idx, itemsPerPage, total, callback)
-*   
-* notes:
-*   
-******************************************************************************/
 if (typeof jQuery != 'undefined') {
     (function ($) {
         $.fn.solventoPageBar = function (userArgs, idx, itemsPerPage, total, callback) {

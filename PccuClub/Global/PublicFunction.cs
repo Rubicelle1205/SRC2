@@ -197,6 +197,96 @@ namespace WebPccuClub.Global
 
         #endregion 日期轉換
 
-        
+        #region 文字驗證
+
+        public static bool HasNumber(this string? str)
+        {
+            int c = 0;
+
+            if (!string.IsNullOrEmpty(str))
+            {
+                try
+                {
+                    char[] ch = new char[str.Length];
+                    ch = str.ToCharArray();
+                    for (int i = 0; i < ch.Length; i++)
+                    {
+                        if (58 > ch[i] && ch[i] > 47)   //48 - 57
+                            c = c + 1;
+                    }
+
+                    if (c > 0)
+                        return true;
+                    else
+                        return false;
+                }
+                catch
+                { return false; }
+            }
+            else { 
+                return false; 
+            }
+        }
+
+        public static bool HasUpperText(this string? str)
+        {
+            int c = 0;
+
+            if (!string.IsNullOrEmpty(str))
+            {
+                try
+                {
+                    char[] ch = new char[str.Length];
+                    ch = str.ToCharArray();
+                    for (int i = 0; i < ch.Length; i++)
+                    {
+                        if (91 > ch[i] && ch[i] > 64)   //65 - 90
+                            c = c + 1;
+                    }
+
+                    if (c > 0)
+                        return true;
+                    else
+                        return false;
+                }
+                catch
+                { return false; }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static bool HasLowerText(this string? str)
+        {
+            int c = 0;
+
+            if (!string.IsNullOrEmpty(str))
+            {
+                try
+                {
+                    char[] ch = new char[str.Length];
+                    ch = str.ToCharArray();
+                    for (int i = 0; i < ch.Length; i++)
+                    {
+                        if (123 > ch[i] && ch[i] > 96)   //97 - 122
+                            c = c + 1;
+                    }
+
+                    if (c > 0)
+                        return true;
+                    else
+                        return false;
+                }
+                catch
+                { return false; }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        #endregion
     }
 }

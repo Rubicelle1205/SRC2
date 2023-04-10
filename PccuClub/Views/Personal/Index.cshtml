@@ -16,7 +16,7 @@
                       data-ajax-method="POST" data-ajax-mode="replace"
                       data-ajax-begin="SysFormLoadingStart" data-ajax-complete="SysFormLoadingEnd">
 
-                    @*<form method="post" id="form" enctype="multipart/form-data" action="">*@
+                    
                     <div class="card">
                         <div class="card-body table-responsive-sm">
                             <h6 class="card-subtitle mb-2 text-muted">
@@ -45,7 +45,6 @@
                                         <tr>
                                             <th width="15%">
                                                 @Html.LabelFor(m => m.EditModel.Password)
-                                                <br><span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
                                             </th>
                                             <td>
                                                 <div class="input-group">
@@ -59,7 +58,6 @@
                                         <tr>
                                             <th width="15%">
                                                 @Html.LabelFor(m => m.EditModel.ConformPassword)
-                                                <br><span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
                                             </th>
                                             <td>
                                                 <div class="input-group">
@@ -75,9 +73,9 @@
                                             <td class="text-muted text-sm">
                                                 <ul class="m-0" id="passwdRules">
                                                     <li id="isValidLength">長度需介於6 ~ 15位</li>
-                                                    @* <li id="isContainsUpperOrLowercase">至少包含一大寫或小寫英文字母</li>
-                                                <li id="isContainsNumber">至少包含一數字</li>
-                                                <li id="isPassedOverall">符合上述所有規則，且不可夾帶任何特殊符號</li>*@
+                                                    <li id="isContainsUpperOrLowercase">至少包含一大寫或小寫英文字母</li>
+                                                    <li id="isContainsNumber">至少包含一數字</li>
+                                                    <li id="isPassedOverall">符合上述所有規則，且不可夾帶任何特殊符號</li>
                                                 </ul>
                                             </td>
                                         </tr>
@@ -88,11 +86,15 @@
                         </div>
                         <!-- /.card-body -->
                         <div class="card-footer d-flex justify-content-end">
-                            @*<button type="button" class="btn btn-success" onclick="SaveEditData()">儲存</button>*@
                             <button type="submit" name="submitBtn" class="btn btn-success">儲存</button>
                         </div>
                     </div>
                     <!-- /.card -->
+                    @Html.HiddenFor(m => m.EditModel.LoginId)
+                    @Html.HiddenFor(m => m.EditModel.Created)
+                    @Html.HiddenFor(m => m.EditModel.Created)
+                    @Html.HiddenFor(m => m.EditModel.LastModified)
+                    @Html.HiddenFor(m => m.EditModel.UserName)
                 </form>
                 <!-- /.form -->
             </div>
@@ -107,6 +109,7 @@
 <script>
 
     function SaveEditData() {
+
         var data = new FormData()
         var pw = $('#@Html.IdFor(m => m.EditModel.Password)').val();
         var cpw = $('#@Html.IdFor(m => m.EditModel.ConformPassword)').val();
@@ -120,7 +123,7 @@
             processData: false,
             contentType: false,
             success: function (result) {
-                //location.reload();
+                
             },
             error: function (response) {
                 alert(response.responseText);

@@ -50,9 +50,7 @@ namespace WebPccuClub.Controllers
                 }
 
                 bool isAuth = false;
-#if DEBUG
-                isAuth = auth.Login(vm.LoginID, out UserInfo LoginUser);
-#else
+
                 isAuth = auth.Login(vm.LoginID, vm.PassWord, out UserInfo LoginUser);
                 if (!isAuth)
                 {
@@ -60,7 +58,6 @@ namespace WebPccuClub.Controllers
                     loginEntity.Memo = "密碼錯誤";
                     throw new Exception("登入失敗，密碼錯誤!");
                 }
-#endif
 
                 HttpContext.Session.Clear();
                 TempData.Clear();

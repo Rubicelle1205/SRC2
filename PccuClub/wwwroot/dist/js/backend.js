@@ -419,10 +419,10 @@ function validatePasswd(passwdSelector, rulesSelector, min, max) {
         // isNonWhiteSpace: new RegExp('^\S*$'), // 不包含空白
         // isContainsUppercase: new RegExp('^(?=.*[A-Z]).*$'), // 至少包含一大寫英文字母
         // isContainsLowercase: new RegExp('^(?=.*[a-z]).*$'), // 至少包含一小寫英文字母
-        //isContainsUpperOrLowercase: new RegExp('^(?=.*[A-Za-z]).*$'), // 至少包含一大寫或小寫英文字母
-        //isContainsNumber: new RegExp('^(?=.*[0-9]).*$'), // 至少包含一數字
+        isContainsUpperOrLowercase: new RegExp('^(?=.*[A-Za-z]).*$'), // 至少包含一大寫或小寫英文字母
+        isContainsNumber: new RegExp('^(?=.*[0-9]).*$'), // 至少包含一數字
         // isContainsSymbol: new RegExp('^(?=.*[!#$@^%&?]).*$'), // 至少包含一特殊符號，如!#$@^%&?
-        //isPassedOverall: new RegExp('^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]{' + min + ',' + max + '}$')
+        isPassedOverall: new RegExp('^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]{' + min + ',' + max + '}$')
     }
 
     var warning = 0; // 計算錯誤數量

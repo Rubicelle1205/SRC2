@@ -37,21 +37,23 @@ namespace WebPccuClub.Controllers
             {
                 dbAccess.DbaInitialTransaction();
 
-                LoginUser.Password = auth.EncryptionText(vm.EditModel.Password);
+                string EncryptPw = auth.EncryptionText(vm.EditModel.Password);
 
-                var dbResult = dbAccess.UpdatePersonalData(vm.EditModel, LoginUser);
+                var dbResult = dbAccess.UpdatePersonalData(EncryptPw, LoginUser);
 
                 if (!dbResult.isSuccess)
-                    throw new Exception("Update/Insert Doc News failed");
+                    throw new Exception("寫入資料庫失敗");
+
                 dbAccess.DbaCommit();
             }
             catch (Exception ex)
             {
                 dbAccess.DbaRollBack();
-                return StatusCode(500, ex.Message);
+                AlertMsg.Add(string.Format("更新失敗:{0}", ex.Message.ToString()));
+                return View("Index", vm);
             }
 
-            return Ok();
+            return View("Index", vm);
         }
 
         private bool ChkData(PersonalEditModel editModel, out string msg)
@@ -71,8 +73,13 @@ namespace WebPccuClub.Controllers
 
                 if (6 > editModel.Password.Length || 15 < editModel.Password.Length)
                     msg += "密碼長度錯誤!<br/>";
-            }
 
+                if (!editModel.Password.HasNumber())
+                    msg += "密碼需包含至少一個數字!<br/>";
+
+                if (!editModel.Password.HasUpperText() && !editModel.Password.HasLowerText())
+                    msg += "至少包含一大寫或小寫英文字母!<br/>";
+            }
 
             return msg == "";
         }
