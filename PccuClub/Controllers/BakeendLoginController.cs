@@ -8,6 +8,7 @@ using WebPccuClub.Entity;
 using WebPccuClub.Global;
 using WebPccuClub.DataAccess;
 using WebPccuClub.Global.Extension;
+using Utility;
 
 namespace WebPccuClub.Controllers
 {
@@ -15,6 +16,7 @@ namespace WebPccuClub.Controllers
     {
         private LoginDataAccess dbAccess = new LoginDataAccess();
         public List<string> AlertMsg = new List<string>();
+        AuthManager auth = new AuthManager();
 
         /// <summary> 功能首頁 </summary>
         public IActionResult Index()
@@ -31,7 +33,6 @@ namespace WebPccuClub.Controllers
         //[HttpPost]
         public IActionResult AuthLogin(BakeendLoginViewModel vm)
         {
-            AuthManager auth = new AuthManager();
             LoginLogEntity loginEntity = GetLoginLogEntity(vm);
 
             List<string> ValidMsg = new List<string>();
@@ -98,6 +99,93 @@ namespace WebPccuClub.Controllers
             return View("Index", vm);
         }
 
+        /// <summary> 忘記密碼 </summary>
+        public IActionResult ForgetPwd()
+        {
+            BakeendLoginViewModel vm = new BakeendLoginViewModel();
+
+            HttpContext.Session.Clear();
+            TempData.Clear();
+
+            return View("ForgetPwd", vm);
+        }
+
+        /// <summary> 忘記密碼-帳號認證 </summary>
+        public IActionResult AuthAccount(BakeendLoginViewModel vm)
+        {
+            LoginLogEntity loginEntity = GetLoginLogEntity(vm);
+
+            try
+            {
+                if (!auth.GetUserMain(vm.LoginID, out UserInfo user))
+                {
+                    loginEntity.Memo = "帳號不存在";
+                    throw new Exception("查無此帳號!");
+                }
+
+                string newPwd = GenNewPwd();
+                string MailBody = GenMailBody(user, newPwd);
+
+                MailUtil mail = new MailUtil();
+                bool ok = mail.ExecuteSendMail(user.Email, "忘記密碼通知信", MailBody, System.Net.Mail.MailPriority.High, null);
+
+                if (ok)
+                {
+                    AlertMsg.Add(string.Format(@"{0}", "已將信件寄送至" + user.Email));
+                    SetDefaultPwd(user, newPwd);
+                }
+                else
+                    AlertMsg.Add(string.Format(@"{0}", "信件寄送失敗!"));
+
+                return View("ForgetPwd", vm);
+
+            }
+            catch (Exception ex)
+            {
+                loginEntity.Issuccess = false;
+                AlertMsg.Add(string.Format(@"{0}", ex.Message));
+                InsertLoginLog(loginEntity);
+            }
+
+            return View("ForgetPwd");
+        }
+
+        #region 重設密碼
+
+        private void SetDefaultPwd(UserInfo user, string newPwd)
+        {
+            newPwd = auth.EncryptionText(newPwd);
+            dbAccess.SetToDefaultPwd(user, newPwd);
+        }
+
+        private string GenMailBody(UserInfo user, string newPwd)
+        {
+            string str = string.Empty;
+
+            str = $@"<p>親愛的{user.UserName} 您好:</p>
+                    <p>您的新密碼為 {newPwd} </p>";
+
+            return str;
+        }
+
+        private string GenNewPwd()
+        {
+            string allowedChars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789";
+            int passwordLength = 8;//密碼長度
+            char[] chars = new char[passwordLength];
+            Random rd = new Random();
+
+            for (int i = 0; i < passwordLength; i++)
+            {
+                chars[i] = allowedChars[rd.Next(0, allowedChars.Length)];
+            }
+
+            return new string(chars);
+        }
+
+        #endregion
+
+        #region 登入相關
 
         /// <summary> 登入檢核 - (True:通過，False:不通過) </summary>
         private bool Valid(BakeendLoginViewModel vm, List<string> ValidMsg)
@@ -120,6 +208,10 @@ namespace WebPccuClub.Controllers
             DbExecuteInfo dbResult = dbAccess.UpdateEntity(user);
             return dbResult.isSuccess;
         }
+
+        #endregion
+
+        #region Write Log
 
         /// <summary> 寫入 Login Log </summary>
         private bool InsertLoginLog(LoginLogEntity thisEntity)
@@ -149,8 +241,9 @@ namespace WebPccuClub.Controllers
             return dbEntity;
         }
 
+        #endregion
 
-        #region
+        #region Action Execute
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {

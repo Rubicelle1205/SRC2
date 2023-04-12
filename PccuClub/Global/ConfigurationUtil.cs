@@ -29,5 +29,11 @@
             return false;
 #endif
         }
+
+
+        public string getMailUtility()
+        {
+            return _config.GetConnectionString("MailSetting");
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace WebPccuClub.DataAccess
 
             #region 參數設定
             // 使用者帳號
-            parameters.Add("Loginid", dbEntity.Loginid);
+            parameters.Add("Loginid", dbEntity.Loginid == null ? "" : dbEntity.Loginid);
             // 登入時間
             parameters.Add("Logintime", dbEntity.Logintime);
             // 登入IP
@@ -150,5 +150,30 @@ namespace WebPccuClub.DataAccess
             return ExecuteResult;
         }
 
+        /// <summary> 重製密碼 </summary>
+        public DbExecuteInfo SetToDefaultPwd(UserInfo dbEntity, string newPwd)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            string CommandTxt = string.Empty;
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            // 登入帳號
+            parameters.Add("Loginid", dbEntity.LoginId);
+
+            #endregion 參數設定
+
+
+            #region CommandText
+            CommandTxt = $@"UPDATE UserMain SET 
+						Password = '{newPwd}'
+					WHERE
+						Loginid = @Loginid";
+            #endregion CommandText
+
+            ExecuteResult = DbaExecuteNonQuery(CommandTxt, parameters, true, DBAccessException);
+
+            return ExecuteResult;
+        }
     }
 }
