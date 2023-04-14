@@ -33,7 +33,9 @@ namespace Utility
 
             var builder = new ConfigurationBuilder().AddJsonFile(@"appsettings.json");
             IConfiguration config = builder.Build();
-            mBaseUrl = "https://pip.moi.gov.tw/asmx/WS1.asmx?op=GetG5";
+            //mBaseUrl = "https://pip.moi.gov.tw/asmx/WS1.asmx?op=GetG5";
+            //mBaseUrl = "https://ap2.pccu.edu.tw:8888/AssociatesService/Authen/Authentication.asmx?op=CheckIDAndRole2";
+            mBaseUrl = "https://ap2.pccu.edu.tw:8888/AssociatesService/Authen/Authentication.asmx?op=CheckIDWithDetail";
             account = config.GetValue<string>("SSOAuthSetting:account");
             password = config.GetValue<string>("SSOAuthSetting:password");
             appID = config.GetValue<string>("SSOAuthSetting:appID");
@@ -93,17 +95,17 @@ namespace Utility
                       </soap:Body>
                     </soap:Envelope>";
 
-            str = @"<?xml version=""1.0"" encoding=""utf-8""?>
-<soap:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
-  <soap:Body>
-    <GetG5 xmlns=""https://pip.moi.gov.tw/"">
-      <Year>103</Year>
-      <City>新北市</City>
-      <DisputeOrigin></DisputeOrigin>
-      <DisputeCause></DisputeCause>
-    </GetG5>
-  </soap:Body>
-</soap:Envelope>";
+//            str = @"<?xml version=""1.0"" encoding=""utf-8""?>
+//<soap:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
+//  <soap:Body>
+//    <GetG5 xmlns=""https://pip.moi.gov.tw/"">
+//      <Year>103</Year>
+//      <City>新北市</City>
+//      <DisputeOrigin></DisputeOrigin>
+//      <DisputeCause></DisputeCause>
+//    </GetG5>
+//  </soap:Body>
+//</soap:Envelope>";
 
             return str;
         }
