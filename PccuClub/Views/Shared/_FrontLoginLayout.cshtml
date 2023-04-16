@@ -1,0 +1,162 @@
+﻿
+<html lang="zh-TW">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="中國文化大學社團資訊系統">
+    <meta name="keywords" content="活動報備系統,社團,活動,中國文化大學,文大,場地借用" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="google" content="notranslate" />
+    <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>登入 | 中國文化大學社團資訊系統</title>
+
+    <meta http-equiv="Content-Security-Policy" content="default-src * gap://ready file:; worker-src blob:; child-src blob: gap:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval' blob:; img-src * 'self' data: blob:; connect-src * 'unsafe-inline'; font-src 'self' data: *; frame-src *;media-src * blob:">
+
+    <meta name="color-scheme" content="light dark" />
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="~/images/front/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="~/images/front/apple-touch-icon.png">
+
+    <!-- Web Fonts  -->
+    <link id="googleFonts" href="https://fonts.googleapis.com/css?family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" type="text/css">
+
+    <!-- Vendor CSS -->
+    <link href="@Url.Content("~/vendors/front/bootstrap/css/bootstrap.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/vendors/front/fontawesome-free/css/all.min.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/vendors/front/animate/animate.compat.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/vendors/front/simple-line-icons/css/simple-line-icons.min.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/vendors/front/owl.carousel/assets/owl.carousel.min.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/vendors/front/owl.carousel/assets/owl.theme.default.min.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/vendors/front/magnific-popup/magnific-popup.min.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/vendors/front/vanilla-calendar-master/vanilla-calendar.min.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+
+    <!-- Theme CSS -->
+    <link href="@Url.Content("~/css/front/theme.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/css/front/theme-elements.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+
+    <!-- Demo CSS -->
+    <link href="@Url.Content("~/css/front/demos/demo.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+
+    <!-- Skin CSS -->
+    <link href="@Url.Content("~/css/front/skins/skin.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+
+    <!-- Theme Custom CSS -->
+    <link href="@Url.Content("~/css/front/tools.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/css/front/custom.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+
+    <link href="@Url.Content("~/css/front/custom.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+    <script src="~/js/jquery.min.js"></script>
+    <script src="@Url.Content("~/vendors/front/modernizr/modernizr.min.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
+
+</head>
+
+<body>
+    <div class="body mt-0">
+
+	<header id="header" class="" data-plugin-options="{'stickyScrollUp': true, 'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': false, 'stickyChangeLogo': true, 'stickyStartAt': 42, 'stickyHeaderContainerHeight': 70}">
+		<div class="header-body header-body-bottom-border border-top-0">
+			<div class="header-container container p-static">
+				<div class="header-row">
+					<div class="header-column">
+						<div class="header-row position-relative">
+							<div class="header-logo">
+								<a href="index.html">
+									<img src="~/images/front/logo_circle.png" class="img-fluid" alt="" />
+								</a>
+							</div>
+							<a href="index.html" class="headerTitle">中國文化大學社團資訊系統</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="headerBottom">
+				<div class="header-container container h-auto">
+					<div class="header-row">
+						<div class="header-column justify-content-end">
+							<div class="header-row">
+								<div class="header-nav header-nav-line header-nav-bottom-line header-nav-bottom-line-effect-1">
+									<div class="header-nav-main header-nav-main-text-capitalize header-nav-main-square header-nav-main-arrows header-nav-main-dropdown-no-borders header-nav-main-effect-2 header-nav-main-sub-effect-1">
+										<nav class="collapse">
+											<ul class="nav nav-pills" id="mainNav">
+												<li>
+													<a class="nav-link" href="index.html">
+														帳號管理
+													</a>
+												</li>
+												<li>
+													<a class="nav-link" href="act.html">
+														活動報備管理
+													</a>
+												</li>
+												<li>
+													<a class="nav-link" href="club_list.html">
+														社團基本資料
+													</a>
+												</li>
+
+											</ul>
+										</nav>
+									</div>
+								</div>
+								<button class="btn header-btn-collapse-nav" data-bs-toggle="collapse"
+										data-bs-target=".header-nav-main nav">
+									<i class="fas fa-bars"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+        <div role="main" class="main">
+            <div class="container-fluid p-relative py-md-5 py-4">
+                <div class="row justify-content-center">
+                    <div class="col-xxl-2">
+                        <div class="user-acinfo">
+                            <div class="greetings font-weight-6">歡迎！</div>
+                            <div class="item">身分：<span>訪客</span></div>
+                        </div>
+                        <div class="sidenav">
+                            <ul>
+                                <!-- 未登入即可查看 -->
+                                <li><a class="sideitem" href="club_list.html">社團一覽</a></li>
+                                <li><a class="sideitem" href="act.html">一周場地時間</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    @Html.Partial("_MsgPartial")
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    @await RenderSectionAsync("Scripts", required: false)
+
+    @Html.Partial("_FrontLoginFooter")
+
+</body>
+
+</html>
+
+
+
+<!-- Vendor -->
+<script src="@Url.Content("~/vendors/front/plugins/js/plugins.min.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
+<script src="@Url.Content("~/js/front/theme.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
+<script src="@Url.Content("~/js/front/views/view.contact.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
+<script src="@Url.Content("~/js/front/demos/demo.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
+<script src="@Url.Content("~/js/front/moment.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
+<script src="@Url.Content("~/vendors/front/vanilla-calendar-master/vanilla-calendar.min.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
+
+<script src="@Url.Content("~/js/front/custom.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
+<script src="@Url.Content("~/js/front/theme.init.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>

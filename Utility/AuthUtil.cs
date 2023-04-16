@@ -34,8 +34,8 @@ namespace Utility
             var builder = new ConfigurationBuilder().AddJsonFile(@"appsettings.json");
             IConfiguration config = builder.Build();
             //mBaseUrl = "https://pip.moi.gov.tw/asmx/WS1.asmx?op=GetG5";
-            //mBaseUrl = "https://ap2.pccu.edu.tw:8888/AssociatesService/Authen/Authentication.asmx?op=CheckIDAndRole2";
-            mBaseUrl = "https://ap2.pccu.edu.tw:8888/AssociatesService/Authen/Authentication.asmx?op=CheckIDWithDetail";
+            mBaseUrl = "https://ap2.pccu.edu.tw:8888/AssociatesService/Authen/Authentication.asmx?op=CheckIDAndRole2";
+            //mBaseUrl = "https://ap2.pccu.edu.tw:8888/AssociatesService/Authen/Authentication.asmx?op=CheckIDWithDetail2";
             account = config.GetValue<string>("SSOAuthSetting:account");
             password = config.GetValue<string>("SSOAuthSetting:password");
             appID = config.GetValue<string>("SSOAuthSetting:appID");

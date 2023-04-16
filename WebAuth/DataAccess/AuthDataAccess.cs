@@ -65,10 +65,7 @@ namespace WebAuth.DataAccess
         {
             DBAParameter parameter = new DBAParameter();
             parameter.Add("@LoginId", LoginId);
-            string SQL = @"--declare @LoginId nvarchar(30)
-                           --set @LoginId=''
-                           
-                           select SM.MenuNode, SM.MenuName, SM.MenuUpNode, SM.IconTag, F.Url, SM.IsEnable, SM.IsVisIble, SM.SortOrder
+            string SQL = @"select SM.MenuNode, SM.MenuName, SM.MenuUpNode, SM.IconTag, F.Url, SM.IsEnable, SM.IsVisIble, SM.SortOrder
                            from SystemRole SR
                            inner join UserRole R on R.RoleId=SR.RoleId
                            inner join SystemRoleFun RF on RF.RoleId=R.RoleId
