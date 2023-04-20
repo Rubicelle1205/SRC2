@@ -61,17 +61,21 @@ namespace WebAuth.DataAccess
             return result;
         }
 
-        public (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) SelectFunInfo(string LoginId)
+        public (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) SelectFunInfo(string LoginId, string BackOrFront)
         {
             DBAParameter parameter = new DBAParameter();
+            
             parameter.Add("@LoginId", LoginId);
+            parameter.Add("@BackOrFront", BackOrFront);
+
             string SQL = @"select SM.MenuNode, SM.MenuName, SM.MenuUpNode, SM.IconTag, F.Url, SM.IsEnable, SM.IsVisIble, SM.SortOrder
                            from SystemRole SR
                            inner join UserRole R on R.RoleId=SR.RoleId
                            inner join SystemRoleFun RF on RF.RoleId=R.RoleId
                            inner join SystemMenu SM on SM.MenuNode=RF.MenuNode
                            inner join SystemFun F on F.FunId=SM.FunId
-                           where R.LoginId=@LoginId";
+                           where R.LoginId = @LoginId 
+                           AND SM.BackOrFront = @BackOrFront ";
 
             (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) result = dbAccess.DbaExecuteQuery<FunInfo>(SQL, parameter, false, null);
 

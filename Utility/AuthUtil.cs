@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection.Metadata;
+using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
 using System.Security.Policy;
 using System.Text;
@@ -25,17 +26,11 @@ namespace Utility
         string appID = string.Empty;
         string accessToken = string.Empty;
 
-        private readonly HttpClient _httpClient;
 
-        public AuthUtil(HttpClient httpClient)
+        public AuthUtil()
         {
-            _httpClient = httpClient;
-
             var builder = new ConfigurationBuilder().AddJsonFile(@"appsettings.json");
             IConfiguration config = builder.Build();
-            //mBaseUrl = "https://pip.moi.gov.tw/asmx/WS1.asmx?op=GetG5";
-            mBaseUrl = "https://ap2.pccu.edu.tw:8888/AssociatesService/Authen/Authentication.asmx?op=CheckIDAndRole2";
-            //mBaseUrl = "https://ap2.pccu.edu.tw:8888/AssociatesService/Authen/Authentication.asmx?op=CheckIDWithDetail2";
             account = config.GetValue<string>("SSOAuthSetting:account");
             password = config.GetValue<string>("SSOAuthSetting:password");
             appID = config.GetValue<string>("SSOAuthSetting:appID");
@@ -58,17 +53,30 @@ namespace Utility
 
             try
             {
-                var req = new HttpRequestMessage
-                {
-                    Method = HttpMethod.Post,
-                    RequestUri = new Uri(mBaseUrl),
-                    Content = new StringContent(strReqBody, System.Text.Encoding.UTF8, "text/xml")
-                };
 
-                var resp = _httpClient.SendAsync(req).GetAwaiter().GetResult();
-                var content = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
-                string mRawOut = content;
+            //    ServiceReference1.AuthenticationSoapClient soap =
+            //new ServiceReference1.AuthenticationSoapClient(ServiceReference1.AuthenticationSoapClient.EndpointConfiguration.AuthenticationSoap12);
+            //    var result = await soap.CheckIDWithDetail2Async("testing", "", "Pintech", "6C5EA5C1-F6EB-4D4A-984E-4B209C62EB8B");
+            //    ServiceReference1.ResultObjectWithPersonalData2 data = result.Body.CheckIDWithDetail2Result;
+            //    SSO.getIdentitySoapClient soap2 = new SSO.getIdentitySoapClient(SSO.getIdentitySoapClient.EndpointConfiguration.getIdentitySoap12);
+            //    var result2 = await soap2.getComplexIdentityAsync("123456789", "BE94A7D8-76D9-428B-BC10-50CF17819C9F");
+
+            //    string RtnData = result2.Body.getComplexIdentityResult.JSONData;
+
+
+                //var req = new HttpRequestMessage
+                //{
+                //    Method = HttpMethod.Post,
+                //    RequestUri = new Uri(mBaseUrl),
+                //    Content = new StringContent(strReqBody, System.Text.Encoding.UTF8, "text/xml")
+                //};
+
+
+                //var resp = _httpClient.SendAsync(req).GetAwaiter().GetResult();
+                //var content = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                //string mRawOut = content;
             }
             catch (WebException webex)
             {

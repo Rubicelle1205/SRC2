@@ -5,7 +5,6 @@ using DataAccess;
 using WebPccuClub.Models;
 using PccuClub.WebAuth;
 using WebPccuClub.Entity;
-using WebPccuClub.Global;
 using WebPccuClub.DataAccess;
 using WebPccuClub.Global.Extension;
 using Utility;
@@ -31,7 +30,7 @@ namespace WebPccuClub.Controllers
 
         /// <summary> 一般登入 </summary>
         //[HttpPost]
-        public IActionResult AuthLogin(BakeendLoginViewModel vm)
+        public async Task<IActionResult> AuthLogin(BakeendLoginViewModel vm)
         {
             LoginLogEntity loginEntity = GetLoginLogEntity(vm);
 
@@ -41,6 +40,8 @@ namespace WebPccuClub.Controllers
                 AlertMsg.Add(string.Join(Environment.NewLine, ValidMsg.ToArray()));
                 return PartialView("Index", vm);
             }
+
+            
 
             try
             {
@@ -255,7 +256,7 @@ namespace WebPccuClub.Controllers
         {
             if (TempData.ContainsKey("WEBSOL_ALERT_MESSAGE") && TempData["WEBSOL_ALERT_MESSAGE"] != null)
             {
-                List<string> TempMsg = TempData["WEBSOL_ALERT_MESSAGE"] as List<String>;
+                List<string> TempMsg = TempData["WEBSOL_ALERT_MESSAGE"] as List<string>;
                 if (TempMsg != null)
                 { this.AlertMsg.AddRange(TempMsg); }
             }

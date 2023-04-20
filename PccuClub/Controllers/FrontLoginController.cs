@@ -42,11 +42,6 @@ namespace WebPccuClub.Controllers
                 return PartialView("Index", vm);
             }
 
-            AuthUtil authu = new AuthUtil(new HttpClient());
-            authu.ChkAccountData();
-
-
-
             try
             {
                 if (!auth.GetUserMain(vm.LoginID, out UserInfo user))

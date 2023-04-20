@@ -42,7 +42,7 @@ namespace PccuClub.WebAuth
                 LoginUser.UserRole = reolResult.entitys.ToList();
 
                 // 查詢角色功能
-                (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = dbAccess.SelectFunInfo(LoginId);
+                (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = dbAccess.SelectFunInfo(LoginId, "B");
                 if (!funResult.Info.isSuccess)
                 { return false; }
                 LoginUser.UserRoleFun = funResult.entitys.ToList();
@@ -86,7 +86,7 @@ namespace PccuClub.WebAuth
                 LoginUser.UserRole = reolResult.entitys.ToList();
 
                 // 查詢角色功能
-                (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = dbAccess.SelectFunInfo(LoginId);
+                (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = dbAccess.SelectFunInfo(LoginId, "B");
                 if (!funResult.Info.isSuccess)
                 { return false; }
                 LoginUser.UserRoleFun = funResult.entitys.ToList();
