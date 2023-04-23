@@ -25,4 +25,10 @@
         個人資料 = 11,
         SDGs維護 = 12,
     }
+
+    public enum DBActionChineseName
+    {
+        成功 = 0,
+        失敗 = 1,
+    }
 }

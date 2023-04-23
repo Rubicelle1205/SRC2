@@ -124,6 +124,12 @@ namespace WebPccuClub.Controllers
                     throw new Exception("查無此帳號!");
                 }
 
+                if (user.Email != vm.Mail)
+                {
+                    loginEntity.Memo = "信箱錯誤";
+                    throw new Exception("信箱錯誤!");
+                }
+
                 string newPwd = GenNewPwd();
                 string MailBody = GenMailBody(user, newPwd);
 

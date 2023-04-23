@@ -13,5 +13,6 @@ namespace WebPccuClub.Models
         /// <summary> 使用者密碼 </summary>
         public string PassWord { get; set; }
 
+        public string Mail { get; set; }
     }
 }

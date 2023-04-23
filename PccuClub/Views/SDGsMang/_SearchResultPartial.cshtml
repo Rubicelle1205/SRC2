@@ -19,8 +19,13 @@
                         <tr>
                             <td class="text-center text-sm">@item.ShortName</td>
                             <td class="text-left text-sm">@item.Desc</td>
-                            <td class="text-center text-sm">
-                                <a href="#" class="mx-1 btn btn-sm btn-outline-primary" onclick="ViewData()">查看</a>
+                            <td class="text-center text-sm" style="display: flex; justify-content: center; align-items: center;">
+                            @using (Html.BeginForm("Edit", "SDGsMang", FormMethod.Post, new { style = "float:left" }))
+                            {
+                                <button type="submit" value="@item.SDGID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
+                            }
+                            
+                                <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel(@item.SDGID);">刪除</a>
                             </td>
                         </tr>
                     }
@@ -60,8 +65,6 @@
         changePage
     );
 
-        
-
     function changePage(idx) {
         //動畫
         $('#SearchForm').find("input[name='@Html.NameFor(m => m.ConditionModel.Page)']").val(idx - 1);
@@ -70,5 +73,29 @@
 
         GoSearch();
     }
+
+    function ChkDel(Ser) {
+        $.confirm({
+            title: '確定刪除?',
+            content: '刪除後資料無法復原!',
+            buttons: {
+                確定: function () {
+                    SendAjax({
+                        url: '@Url.Action("Delete")',
+                        data: { 'Ser': Ser },
+                        success: function (result) {
+                            if (result.errorCode == 0) { $.alert("刪除成功"); }
+                            else { $.alert(result.errorMsg); }
+
+                            GoSearch();
+                        }
+                    });
+                },
+                取消: function () {
+                },
+            }
+        });
+    }
+    
 
 </script>

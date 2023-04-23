@@ -12,6 +12,10 @@ namespace WebPccuClub.Models
         public SDGsMangConditionModel ConditionModel { get; set; }
 
         public List<SDGsMangResultModel> ResultModel { get; set; }
+
+        public SDGsMangCreateModel CreateModel { get; set; }
+
+        public SDGsMangEditModel EditModel { get; set; }
     }
 
     public class SDGsMangConditionModel
@@ -43,7 +47,32 @@ namespace WebPccuClub.Models
 
     public class SDGsMangResultModel
     {
-        /// <summary> import date line Number </summary>
+        public int? SDGID { get; set; }
+
+        /// <summary>簡稱</summary>
+        [DisplayName("簡稱")]
+        public string? ShortName { get; set; }
+
+        /// <summary>描述</summary>
+        [DisplayName("描述")]
+        public string? Desc { get; set; }
+    }
+
+    public class SDGsMangCreateModel
+    {
+        public int? SDGID { get; set; }
+
+        /// <summary>簡稱</summary>
+        [DisplayName("簡稱")]
+        public string? ShortName { get; set; }
+
+        /// <summary>描述</summary>
+        [DisplayName("描述")]
+        public string? Desc { get; set; }
+    }
+
+    public class SDGsMangEditModel
+    {
         public int? SDGID { get; set; }
 
         /// <summary>簡稱</summary>

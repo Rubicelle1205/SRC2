@@ -1,0 +1,97 @@
+﻿@model WebPccuClub.Models.SDGsMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ShortName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.ShortName, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Desc)<span class="required">*</span></th>
+                                        <td>@Html.TextAreaFor(m => m.CreateModel.Desc, new {@class = "form-control"})</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </form> 
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+
+    function SaveData() {
+
+        var data = new FormData()
+        var shortName = $('#@Html.IdFor(m => m.CreateModel.ShortName)').val();
+        var Desc = $('#@Html.IdFor(m => m.CreateModel.Desc)').val();
+
+        if (shortName == "") { $.alert("簡稱不可為空白"); return; }
+        if (Desc == "") { $.alert("行政院國發會標準中文翻譯不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.CreateModel.ShortName)', shortName);
+        data.append('@Html.NameFor(m => m.CreateModel.Desc)', Desc);
+
+        SendAjax({
+            url: '@Url.Action("SaveNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                Reset();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+    function Reset() {
+        $('#@Html.IdFor(m => m.CreateModel.ShortName)').val("");
+        $('#@Html.IdFor(m => m.CreateModel.Desc)').val("");
+    }
+</script>
