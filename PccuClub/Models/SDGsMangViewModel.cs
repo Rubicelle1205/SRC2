@@ -40,7 +40,7 @@ namespace WebPccuClub.Models
         [DisplayName("簡稱")]
         public string? ShortName { get; set; }
 
-        /// <summary>描述</summary>
+        /// <summary>行政院國發會標準中文翻譯</summary>
         [DisplayName("行政院國發會標準中文翻譯")]
         public string? Desc { get; set; }
     }
@@ -53,8 +53,19 @@ namespace WebPccuClub.Models
         [DisplayName("簡稱")]
         public string? ShortName { get; set; }
 
-        /// <summary>描述</summary>
-        [DisplayName("描述")]
+        /// <summary>行政院國發會標準中文翻譯</summary>
+        [DisplayName("行政院國發會標準中文翻譯")]
+        public string? Desc { get; set; }
+    }
+
+    public class SDGsMangExcelResultModel
+    {
+        /// <summary>簡稱</summary>
+        [DisplayName("簡稱")]
+        public string? ShortName { get; set; }
+
+        /// <summary>行政院國發會標準中文翻譯</summary>
+        [DisplayName("行政院國發會標準中文翻譯")]
         public string? Desc { get; set; }
     }
 
@@ -66,8 +77,8 @@ namespace WebPccuClub.Models
         [DisplayName("簡稱")]
         public string? ShortName { get; set; }
 
-        /// <summary>描述</summary>
-        [DisplayName("描述")]
+        /// <summary>行政院國發會標準中文翻譯</summary>
+        [DisplayName("行政院國發會標準中文翻譯")]
         public string? Desc { get; set; }
     }
 
@@ -79,8 +90,8 @@ namespace WebPccuClub.Models
         [DisplayName("簡稱")]
         public string? ShortName { get; set; }
 
-        /// <summary>描述</summary>
-        [DisplayName("描述")]
+        /// <summary>行政院國發會標準中文翻譯</summary>
+        [DisplayName("行政院國發會標準中文翻譯")]
         public string? Desc { get; set; }
     }
 }

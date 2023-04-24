@@ -5,6 +5,7 @@ using PccuClub.WebAuth;
 using System.Data;
 using System.Text.Encodings.Web;
 using WebPccuClub.Global;
+using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
 
 namespace WebPccuClub.DataAccess
@@ -150,5 +151,32 @@ AND (SDGID = @SDGID) ";
             return ExecuteResult;
         }
 
+        public List<SDGsMangResultModel> GetExportResult(SDGsMangConditionModel model)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@ShortName", model?.ShortName);
+            parameters.Add("@Desc", model?.Desc);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"
+SELECT SDGID, ShortName, [Desc], Creator, Created, LastModifier, LastModified, ModifiedReason
+FROM SDGsMang
+WHERE 1 = 1
+AND (@ShortName IS NULL OR ShortName LIKE '%' + @ShortName + '%') 
+AND (@Desc IS NULL OR [Desc] LIKE '%' + @Desc + '%') ";
+
+            (DbExecuteInfo info, IEnumerable<SDGsMangResultModel> entitys) dbResult = DbaExecuteQuery<SDGsMangResultModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SDGsMangResultModel>();
+        }
     }
 }

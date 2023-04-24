@@ -1,13 +1,21 @@
 ﻿using DataAccess;
 using Microsoft.AspNetCore.Mvc;
+using NPOI.HSSF.UserModel;
 using NPOI.SS.Formula.Functions;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
+using System.Reflection;
 using System.Web.Helpers;
 using System.Web.Mvc;
+using Utility;
 using WebPccuClub.DataAccess;
 using WebPccuClub.Global;
+using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
+using FileContentResult = Microsoft.AspNetCore.Mvc.FileContentResult;
 
 namespace WebPccuClub.Controllers
 {
@@ -62,32 +70,62 @@ namespace WebPccuClub.Controllers
         [LogAttribute(LogActionChineseName.匯出)]
         public IActionResult ExportSearchResult(SDGsMangViewModel vm)
         {
-            vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel).ToList();
+            string FileName = string.Format("{0}_{1}", LogActionChineseName.SDGs維護, DateTime.Now.ToString("yyyyMMdd"));
+            vm.ResultModel = dbAccess.GetExportResult(vm.ConditionModel);
 
-            //string oMsg = string.Empty;
-            //DataSet ds = shr.TransExcel(vm.EditViewModel);
+            if (vm.ResultModel != null && vm.ResultModel.Count > 0)
+            {
+                IWorkbook workbook = new XSSFWorkbook();
+                List<int> LstWidth = new List<int> { 20, 130 };
 
-            //if (ds != null && ds.Tables[0].Rows.Count > 0)
-            //{
-            //    string FileName = "出庫單_" + vm.EditViewModel.OUTSTO_ID + "_" + DateTime.Now.ToString("yyyyMMdd");
+                ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
 
-            //    //從Model取得欄位名稱
-            //    var DisplayName = String.Empty;
+                var properties = typeof(SDGsMangExcelResultModel).GetProperties();
 
-            //    var metadata = ModelMetadataProviders.Current.GetMetadataForType(null, typeof(OutStockTransExcel));
+                //設定欄位
+                IRow headerRow = sheet.CreateRow(0);
 
-            //    for (int i = 0; i < ds.Tables[0].Columns.Count; i++)
-            //        metadata.Properties.Where(p => p.PropertyName.Equals(ds.Tables[0].Columns[i].ColumnName))
-            //            .ToList().ForEach(x => ds.Tables[0].Columns[i].ColumnName = x.DisplayName);
+                XSSFCellStyle headStyle = ExcelUtil.GetDefaultHeaderStyle(workbook);
 
-            //    return ExcelUtil.ExportExcelForMVC(ds, FileName);
-            //}
+                for (int i = 0; i <= properties.Length - 1; i++)
+                {
+                    var displayAttribute = (DisplayNameAttribute)properties[i].GetCustomAttribute(typeof(DisplayNameAttribute));
+                    var displayName = displayAttribute?.DisplayName ?? properties[i].Name;
 
-            //AlertMessage = "匯出失敗!";
+                    headerRow.CreateCell(i).SetCellValue(displayName);
+
+                    foreach (ICell cell in headerRow.Cells)
+                        cell.CellStyle = headStyle;
+
+                }
+
+                XSSFCellStyle contentStyle = ExcelUtil.GetDefaultContentStyle(workbook);
+
+                //設定資料
+                for (int i = 0; i <= vm.ResultModel.Count - 1; i++)
+                {
+                    IRow dataRow = sheet.CreateRow(i + 1);
+
+                    dataRow.CreateCell(0).SetCellValue(vm.ResultModel[i].ShortName);
+                    dataRow.CreateCell(1).SetCellValue(vm.ResultModel[i].Desc);
+
+                    foreach (ICell cell in dataRow.Cells)
+                        cell.CellStyle = contentStyle;
+                }
+
+                MemoryStream ms = new MemoryStream();
+                workbook.Write(ms, true);
+                ms.Flush();
+                ms.Position = 0;
+
+                return File(ms, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName + ".xlsx");
+            }
 
             return View("Index", vm);
-            //return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"KEY_DomesticSearchAlert_國內疫情偵蒐預警關鍵字清單_{DateTime.Now.ToString("yyyyMMddHHmmss")}.xlsx");
+
         }
+
+
 
         [Log(LogActionChineseName.新增儲存)]
         [ValidateInput(false)]
@@ -148,7 +186,6 @@ namespace WebPccuClub.Controllers
 
             return Json(vmRtn);
         }
-
 
         [Log(LogActionChineseName.刪除)]
         [ValidateInput(false)]
