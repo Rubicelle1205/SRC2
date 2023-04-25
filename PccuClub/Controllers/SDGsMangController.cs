@@ -1,21 +1,15 @@
-﻿using DataAccess;
-using Microsoft.AspNetCore.Mvc;
-using NPOI.HSSF.UserModel;
+﻿using Microsoft.AspNetCore.Mvc;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Reflection;
-using System.Web.Helpers;
 using System.Web.Mvc;
 using Utility;
 using WebPccuClub.DataAccess;
 using WebPccuClub.Global;
-using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
-using FileContentResult = Microsoft.AspNetCore.Mvc.FileContentResult;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WebPccuClub.Controllers
 {
@@ -24,6 +18,14 @@ namespace WebPccuClub.Controllers
     {
         SDGsMangDataAccess dbAccess = new SDGsMangDataAccess();
         ReturnViewModel vmRtn = new ReturnViewModel();
+
+        private readonly IHostingEnvironment hostingEnvironment;
+
+        public SDGsMangController(IHostingEnvironment _hostingEnvironment)
+        {
+            hostingEnvironment = _hostingEnvironment;
+        }
+
 
         [Log(LogActionChineseName.首頁)]
         public IActionResult Index()
@@ -293,7 +295,14 @@ namespace WebPccuClub.Controllers
 
         public IActionResult DownloadTemplate()
         {
-            return Json("");
+            string FileName = "SDGs維護_template.xlsx";
+
+            string filePath = Path.Combine(hostingEnvironment.ContentRootPath, "Template", FileName);
+
+            byte[] fileContents = System.IO.File.ReadAllBytes(filePath);
+
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName);
+
         }
 
     }
