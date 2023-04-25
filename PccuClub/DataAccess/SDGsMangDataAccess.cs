@@ -135,6 +135,11 @@ AND (SDGID = @SDGID) ";
             return ExecuteResult;
         }
 
+        /// <summary>
+        /// 刪除資料
+        /// </summary>
+        /// <param name="ser"></param>
+        /// <returns></returns>
         public DbExecuteInfo DeletetData(string ser)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
@@ -151,6 +156,44 @@ AND (SDGID = @SDGID) ";
             return ExecuteResult;
         }
 
+        /// <summary>
+        /// 匯入資料
+        /// </summary>
+        /// <param name="lstExcel"></param>
+        /// <param name="loginUser"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public DbExecuteInfo ImportData(List<SDGsMangExcelResultModel> dataList, UserInfo loginUser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommendText = $@"INSERT INTO SDGsMang
+                                               (ShortName
+                                               ,[Desc]
+                                               ,Creator
+                                               ,Created
+                                               ,LastModifier
+                                               ,LastModified
+                                               ,ModifiedReason)
+                                         VALUES
+                                               (@ShortName
+                                               ,@Desc
+                                               ,'{loginUser.LoginId}'
+                                               ,GETDATE()
+                                               ,'{loginUser.LoginId}'
+                                               ,GETDATE()
+                                               ,NULL)";
+
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+     
+            return ExecuteResult;
+        }
+
+        /// <summary>
+        /// Excel 取得資料
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public List<SDGsMangResultModel> GetExportResult(SDGsMangConditionModel model)
         {
             string CommandText = string.Empty;
@@ -178,5 +221,7 @@ AND (@Desc IS NULL OR [Desc] LIKE '%' + @Desc + '%') ";
 
             return new List<SDGsMangResultModel>();
         }
+
+        
     }
 }

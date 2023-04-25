@@ -16,6 +16,8 @@ namespace WebPccuClub.Models
         public SDGsMangCreateModel CreateModel { get; set; }
 
         public SDGsMangEditModel EditModel { get; set; }
+
+        public SDGsMangExcelResultModel ExcelModel { get; set; }
     }
 
     public class SDGsMangConditionModel

@@ -52,6 +52,14 @@ namespace WebPccuClub.Controllers
             return View(vm);
         }
 
+        [Log(LogActionChineseName.匯入)]
+        public IActionResult Upload()
+        {
+            SDGsMangViewModel vm = new SDGsMangViewModel();
+            vm.ExcelModel = new SDGsMangExcelResultModel();
+            return View(vm);
+        }
+
 
         [LogAttribute(LogActionChineseName.查詢)]
         public IActionResult GetSearchResult(SDGsMangViewModel vm)
@@ -67,7 +75,7 @@ namespace WebPccuClub.Controllers
             return PartialView("_SearchResultPartial", vm);
         }
 
-        [LogAttribute(LogActionChineseName.匯出)]
+        [LogAttribute(LogActionChineseName.匯出Excel)]
         public IActionResult ExportSearchResult(SDGsMangViewModel vm)
         {
             string FileName = string.Format("{0}_{1}", LogActionChineseName.SDGs維護, DateTime.Now.ToString("yyyyMMdd"));
@@ -125,6 +133,70 @@ namespace WebPccuClub.Controllers
 
         }
 
+        [LogAttribute(LogActionChineseName.匯入Excel)]
+        public IActionResult ImportExcel(SDGsMangViewModel vm)
+        {
+            if (vm.File != null && vm.File.Length > 0)
+            {
+                string fileExtension = Path.GetExtension(vm.File.FileName);
+
+                if (fileExtension != ".xlsx")
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "選擇檔案格式錯誤";
+                    return Json(vmRtn);
+                }
+
+                if (!vm.File.FileName.Contains(LogActionChineseName.SDGs維護.ToString()))
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "選擇檔案錯誤";
+                    return Json(vmRtn);
+                }
+
+                List<SDGsMangExcelResultModel> LstExcel = new List<SDGsMangExcelResultModel>();
+
+                using (Stream stream = vm.File.OpenReadStream())
+                {
+                    XSSFWorkbook workbook = new XSSFWorkbook(stream);
+                    ISheet sheet = workbook.GetSheetAt(0);
+
+                    for (int i = 1; i <= sheet.LastRowNum; i++)
+                    {
+                        IRow row = sheet.GetRow(i);
+
+                        if (row != null)
+                        {
+                            SDGsMangExcelResultModel excel = new SDGsMangExcelResultModel
+                            {
+                                ShortName = row.GetCell(0)?.StringCellValue.TrimStartAndEnd(),
+                                Desc = row.GetCell(1)?.StringCellValue.TrimStartAndEnd()
+                            };
+
+                            LstExcel.Add(excel);
+                        }
+                    }
+                }
+
+                if (LstExcel.Count > 0)
+                {
+                    var dbResult = dbAccess.ImportData(LstExcel, LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "上傳失敗";
+                    }
+                }
+            }
+            else
+            {
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "請選擇檔案上傳";
+            }
+
+            return Json(vmRtn);
+        }
 
 
         [Log(LogActionChineseName.新增儲存)]
@@ -217,6 +289,11 @@ namespace WebPccuClub.Controllers
             }
 
             return Json(vmRtn);
+        }
+
+        public IActionResult DownloadTemplate()
+        {
+            return Json("");
         }
 
     }

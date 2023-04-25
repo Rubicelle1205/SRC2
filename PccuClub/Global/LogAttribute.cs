@@ -24,6 +24,8 @@
         場地同意書 = 10,
         個人資料 = 11,
         SDGs維護 = 12,
+        匯入Excel = 13,
+        匯出Excel = 14,
     }
 
     public enum DBActionChineseName

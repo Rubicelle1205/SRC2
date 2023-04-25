@@ -16,7 +16,7 @@
                     <div class="card">
                         <div class="card-header">
                             <button type="button" class="btn btn-sm btn-outline-dark" onclick="ExportSearchResult()">匯出</button>
-                            <button data-link="cadre_xls_mang.html" class="ml-1 btn btn-sm btn-outline-danger" name="import_excel">匯入</button>
+                            <a href=@Url.Action("Upload") class="ml-1 btn btn-sm btn-outline-danger">匯入</a>
                             <div class="card-tools">
                                 <a href=@Url.Action("Create") class="btn btn-sm btn-success">新增</a>
                             </div>

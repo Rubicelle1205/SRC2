@@ -288,5 +288,31 @@ namespace WebPccuClub.Global
             }
         }
         #endregion
+
+        #region 字串處理
+
+        public static string TrimStartAndEnd(this string? str)
+        {
+            string Restr = "";
+
+            if (!string.IsNullOrEmpty(str))
+            {
+                try
+                {
+                    Restr = str.TrimStart().TrimEnd();
+                    return Restr;
+                }
+                catch
+                { return Restr; }
+            }
+            else
+            {
+                return Restr;
+            }
+        }
+
+        
+
+        #endregion
     }
 }

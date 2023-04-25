@@ -6,13 +6,15 @@
     string[] arr = Model.Split("|");
     string UpFunName = LoginUser.UserRoleFun.Find(f => f.MenuNode == arr[0]) == null ? arr[0] : LoginUser.UserRoleFun.Find(f => f.MenuNode == arr[0]).MenuName;
     string FunName = LoginUser.UserRoleFun.Find(f => f.MenuNode == arr[1]).MenuName;
+    string actionName = ViewContext.RouteData.Values["action"].ToString().ToUpper().Contains("UPLOAD") ? "匯入" : "";
+
 }
 
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">@FunName</h1>
+                    <h1 class="m-0">@FunName@actionName</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
