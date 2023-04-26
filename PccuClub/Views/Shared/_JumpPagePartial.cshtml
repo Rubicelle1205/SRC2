@@ -1,0 +1,18 @@
+﻿@model int
+@{
+    List<int> LstPageDefault = new List<int> { 5, 10, 25, 50, 100 };
+}
+
+<select id="JumpPergroup" class="form-control form-control-sm col-2 mx-1" style="flex: 0 0 20%; max-width: 20%;">
+    @foreach(int i in LstPageDefault)
+    {
+        if (Model == i)
+        {
+            <option selected="selected" value="@i">每頁 @i 筆</option>
+        }
+        else
+        {
+            <option value="@i">每頁 @i 筆</option>
+        }
+    }
+</select>

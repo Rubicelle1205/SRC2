@@ -47,21 +47,7 @@
                                         </span>
                                     </div>
                                     <div class="col-md-6 col-sm-12 float-right d-flex flex-wrap align-items-end justify-content-end p-0">
-                                        <label>顯示筆數</label>
-                                        <select id="JumpPergroup" class="form-control form-control-sm col-2 mx-1">
-                                            @for (int i = 1; i <= 10; i++)
-                                            {
-                                                if (@perpage == i)
-                                                {
-                                                    <option selected="selected" value="@i">@i</option>
-                                                }
-                                                else
-                                                { 
-                                                    <option value="@i">@i</option>
-                                                }
-                                            }
-                                        </select>
-
+                                        @Html.Partial("_JumpPagePartial", @perpage)
                                         <input type="reset" class="btn btn-sm btn-outline-info mx-1 mt-2" value="清除條件">
                                         <input type="button" class="btn btn-sm btn-outline-danger mx-1 mt-2" value="搜尋" onclick="GoSearch()">
                                     </div>
