@@ -12,6 +12,7 @@ namespace WebPccuClub.Controllers
     [LogAttribute(LogActionChineseName.場地同意書)]
     public class ConsentMangController : BaseController
     {
+        ReturnViewModel vmRtn = new ReturnViewModel();
         ConsentMangDataAccess dbAccess = new ConsentMangDataAccess();
 
         [Log(LogActionChineseName.首頁)]
@@ -40,9 +41,10 @@ namespace WebPccuClub.Controllers
             catch (Exception ex)
             {
                 dbAccess.DbaRollBack();
-                return StatusCode(500, ex.Message);
+                vmRtn.ErrorCode = 1;
+                vmRtn.ErrorMsg = "儲存失敗" + ex.Message;
             }
-            return Ok();
+            return Json(vmRtn);
         }
 
     }

@@ -11,55 +11,53 @@
         <!-- /.row -->
         <div class="row">
             <div class="col-12">
-                <form method="post" id="form" enctype="multipart/form-data" action="">
-                    <div class="card">
-                        <div class="card-body table-responsive-sm">
-                            <h6 class="card-subtitle mb-2 text-muted">
-                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
-                            </h6>
+                <div class="card">
+                    <div class="card-body table-responsive-sm">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                        </h6>
 
-                            @if (null != Model.EditModel)
-                            {
-                                <table class="table table-bordered">
-                                    <tbody>
-                                        <!--修改時才顯示 (start)-->
-                                        <tr>
-                                            <th width="15%">@Html.LabelFor(m => m.EditModel.Created)</th>
-                                            <td>@Html.DisplayFor(m => m.EditModel.Created)</td>
-                                        </tr>
-                                        <tr>
-                                            <th width="15%">@Html.LabelFor(m => m.EditModel.LastModified)</th>
-                                            <td>@Html.DisplayFor(m => m.EditModel.LastModified)</td>
-                                        </tr>
-                                        <tr>
-                                            <th width="15%">@Html.LabelFor(m => m.EditModel.InSchool)<span class="required">*</span></th>
-                                            <td>
-                                                @Html.TextAreaFor(m => m.EditModel.InSchool, new {@class="form-control ckeditor"})
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th width="15%">@Html.LabelFor(m => m.EditModel.OutSchool)<span class="required">*</span></th>
-                                            <td>
-                                                @Html.TextAreaFor(m => m.EditModel.OutSchool, new {@class="form-control ckeditor"})
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th width="15%">@Html.LabelFor(m => m.EditModel.InAndOutSchool)<span class="required">*</span></th>
-                                            <td>
-                                                @Html.TextAreaFor(m => m.EditModel.InAndOutSchool, new {@class="form-control ckeditor"})
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            }
-                        </div>
-                        <!-- /.card-body -->
-                        <div class="card-footer d-flex justify-content-end">
-                            <button type="button" class="btn btn-success" onclick="SaveEditData()">儲存</button>
-                        </div>
+                        @if (null != Model.EditModel)
+                        {
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <!--修改時才顯示 (start)-->
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Created)</th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.Created)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.LastModified)</th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.LastModified)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.InSchool)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextAreaFor(m => m.EditModel.InSchool, new {@class="form-control", @rows="10"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.OutSchool)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextAreaFor(m => m.EditModel.OutSchool, new {@class="form-control", @rows="10"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.InAndOutSchool)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextAreaFor(m => m.EditModel.InAndOutSchool, new {@class="form-control", @rows="10" })
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        }
                     </div>
-                    <!-- /.card -->
-                </form>
+                    <!-- /.card-body -->
+                    <div class="card-footer d-flex justify-content-end">
+                        <button type="button" class="btn btn-success" onclick="SaveEditData()">儲存</button>
+                    </div>
+                </div>
+                <!-- /.card -->
                 <!-- /.form -->
             </div>
         </div>
@@ -68,13 +66,14 @@
 </section>
 <!-- /.content -->
 
+
 <script>
 
     function SaveEditData() {
         var data = new FormData()
-        var ValInSchool = CKEDITOR.instances['@Html.IdFor(m => m.EditModel.InSchool)'].getData();
-        var ValOutSchool = CKEDITOR.instances['@Html.IdFor(m => m.EditModel.OutSchool)'].getData();
-        var ValInAndOutSchool = CKEDITOR.instances['@Html.IdFor(m => m.EditModel.InAndOutSchool)'].getData();
+        var ValInSchool = $('#@Html.IdFor(m => m.EditModel.InSchool)').val();
+        var ValOutSchool = $('#@Html.IdFor(m => m.EditModel.OutSchool)').val();
+        var ValInAndOutSchool = $('#@Html.IdFor(m => m.EditModel.InAndOutSchool)').val();
 
         data.append('@Html.NameFor(m => m.EditModel.InSchool)', ValInSchool);
         data.append('@Html.NameFor(m => m.EditModel.OutSchool)', ValOutSchool);
@@ -86,12 +85,25 @@
             processData: false,
             contentType: false,
             success: function (result) {
-                location.reload();
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                location.reload();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+                
             },
-            error: function (response) {
+            error: function (result) {
                 alert(response.responseText);
             }
         });
 
     }
+
 </script>

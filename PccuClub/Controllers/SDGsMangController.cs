@@ -16,8 +16,8 @@ namespace WebPccuClub.Controllers
     [LogAttribute(LogActionChineseName.SDGs維護)]
     public class SDGsMangController : BaseController
     {
-        SDGsMangDataAccess dbAccess = new SDGsMangDataAccess();
         ReturnViewModel vmRtn = new ReturnViewModel();
+        SDGsMangDataAccess dbAccess = new SDGsMangDataAccess();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
