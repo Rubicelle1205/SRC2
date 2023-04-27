@@ -26,6 +26,7 @@
         SDGs維護 = 12,
         匯入Excel = 13,
         匯出Excel = 14,
+        校內樓館 = 15,
     }
 
     public enum DBActionChineseName

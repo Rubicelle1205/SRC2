@@ -1,0 +1,107 @@
+﻿@model WebPccuClub.Models.BuildMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Created)</th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.Created)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.LastModified)</th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.LastModified)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.BuildName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.BuildName, new {@class = "form-control", placeholder="請輸入樓館名稱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Note)<span class="required">*</span></th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Note, new {@class = "form-control", placeholder="請輸入備註"})</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                    @Html.HiddenFor(m => m.EditModel.BuildID)
+                </form> 
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+
+    function SaveData() {
+
+        var data = new FormData()
+        var SDGID = $('#@Html.IdFor(m => m.EditModel.BuildID)').val();
+        var BuildName = $('#@Html.IdFor(m => m.EditModel.BuildName)').val();
+        var Note = $('#@Html.IdFor(m => m.EditModel.Note)').val();
+
+        if (BuildName == "") { $.alert("樓館名稱不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.BuildID)', SDGID);
+        data.append('@Html.NameFor(m => m.EditModel.BuildName)', BuildName);
+        data.append('@Html.NameFor(m => m.EditModel.Note)', Note);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+    function Reset() {
+        $('#@Html.IdFor(m => m.EditModel.BuildName)').val("");
+        $('#@Html.IdFor(m => m.EditModel.Note)').val("");
+    }
+</script>
