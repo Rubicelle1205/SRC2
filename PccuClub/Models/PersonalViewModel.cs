@@ -21,6 +21,9 @@ namespace WebPccuClub.Models
         [DisplayName("名稱")]
         public string? UserName { get; set; }
 
+        [DisplayName("信箱")]
+        public string? EMail { get; set; }
+
         [DisplayName("帳號")]
         public string? LoginId { get; set; }
 

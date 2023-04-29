@@ -11,6 +11,7 @@ namespace WebPccuClub.Controllers
     [LogAttribute(LogActionChineseName.個人資料)]
     public class PersonalController : BaseController
     {
+        ReturnViewModel vmRtn = new ReturnViewModel();
         PersonalDataAccess dbAccess = new PersonalDataAccess();
 
         [Log(LogActionChineseName.首頁)]
@@ -29,42 +30,44 @@ namespace WebPccuClub.Controllers
 
             if (!ChkData(vm.EditModel, out strErr))
             {
-                AlertMsg.Add(string.Format(@"{0}", strErr));
-                return View("Index", vm);
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = string.Format(@"{0}", strErr);
+                return Json(vmRtn);
             }
 
             try
             {
                 dbAccess.DbaInitialTransaction();
+                string EncryptPw = String.Empty;
+                
+                if (!string.IsNullOrEmpty(vm.EditModel.Password))
+                    EncryptPw = auth.EncryptionText(vm.EditModel.Password);
 
-                string EncryptPw = auth.EncryptionText(vm.EditModel.Password);
-
-                var dbResult = dbAccess.UpdatePersonalData(EncryptPw, LoginUser);
+                var dbResult = dbAccess.UpdatePersonalData(EncryptPw, vm.EditModel, LoginUser);
 
                 if (!dbResult.isSuccess)
-                    throw new Exception("寫入資料庫失敗");
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = string.Format(@"更新失敗:{0}", dbResult.ErrorMessage);
+                    return Json(vmRtn);
+                }
 
                 dbAccess.DbaCommit();
             }
             catch (Exception ex)
             {
                 dbAccess.DbaRollBack();
-                AlertMsg.Add(string.Format("更新失敗:{0}", ex.Message.ToString()));
-                return View("Index", vm);
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = string.Format(@"更新失敗:{0}", ex.Message);
+                return Json(vmRtn);
             }
 
-            return View("Index", vm);
+            return Json(vmRtn);
         }
 
         private bool ChkData(PersonalEditModel editModel, out string msg)
         {
             msg = string.Empty;
-
-            if (string.IsNullOrEmpty(editModel.Password))
-                msg += "密碼欄位資料錯誤!<br/>";
-
-            if (string.IsNullOrEmpty(editModel.ConformPassword))
-                msg += "密碼確認欄位資料錯誤!<br/>";
 
             if (!string.IsNullOrEmpty(editModel.Password))
             {
@@ -79,6 +82,14 @@ namespace WebPccuClub.Controllers
 
                 if (!editModel.Password.HasUpperText() && !editModel.Password.HasLowerText())
                     msg += "至少包含一大寫或小寫英文字母!<br/>";
+            }
+
+            if (!string.IsNullOrEmpty(editModel.EMail))
+            {
+                if (!editModel.EMail.Contains("@"))
+                {
+                    msg += "信箱格式錯誤!<br/>";
+                }
             }
 
             return msg == "";

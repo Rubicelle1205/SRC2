@@ -20,7 +20,7 @@ namespace WebPccuClub.DataAccess
 
             #endregion
 
-            CommandText = $@"SELECT LoginId, UserName, Creator, Created, LastModifier, LastModified
+            CommandText = $@"SELECT LoginId, UserName, EMail, Creator, Created, LastModifier, LastModified
                                FROM UserMain";
 
             (DbExecuteInfo info, IEnumerable<PersonalEditModel> entitys) dbResult = DbaExecuteQuery<PersonalEditModel>(CommandText, parameters, true, DBAccessException);
@@ -31,22 +31,43 @@ namespace WebPccuClub.DataAccess
             return new List<PersonalEditModel>();
         }
 
-        public DbExecuteInfo UpdatePersonalData(string EncryptPw, UserInfo LoginUser)
+        public DbExecuteInfo UpdatePersonalData(string EncryptPw, PersonalEditModel editModel, UserInfo LoginUser)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
+            string CommendText = string.Empty;
 
-            #region 參數設定
-            parameters.Add("@Password", EncryptPw);
-            parameters.Add("@LastModifier", LoginUser.UserName);
-            parameters.Add("@LoginId", LoginUser.LoginId);
-            #endregion 參數設定
+            if (!string.IsNullOrEmpty(EncryptPw))
+            {
+                #region 參數設定
+                parameters.Add("@Password", EncryptPw);
+                parameters.Add("@EMail", editModel.EMail);
+                parameters.Add("@LastModifier", LoginUser.UserName);
+                parameters.Add("@LoginId", LoginUser.LoginId);
+                #endregion 參數設定
 
-            string CommendText = $@"UPDATE UserMain 
+                CommendText = $@"UPDATE UserMain 
                                        SET Password = @Password,
+                                           EMail = @EMail,
                                            LastModified = GETDATE(),
                                            LastModifier = @LastModifier
                                      WHERE LoginId = @LoginId";
+            }
+            else
+            {
+                #region 參數設定
+                parameters.Add("@EMail", editModel.EMail);
+                parameters.Add("@LastModifier", LoginUser.UserName);
+                parameters.Add("@LoginId", LoginUser.LoginId);
+                #endregion 參數設定
+
+                CommendText = $@"UPDATE UserMain 
+                                       SET EMail = @EMail,
+                                           LastModified = GETDATE(),
+                                           LastModifier = @LastModifier
+                                     WHERE LoginId = @LoginId";
+            }
+            
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
