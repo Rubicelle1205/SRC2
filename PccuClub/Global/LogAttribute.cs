@@ -27,6 +27,7 @@
         匯入Excel = 13,
         匯出Excel = 14,
         校內樓館 = 15,
+        提醒內容 = 16,
     }
 
     public enum DBActionChineseName

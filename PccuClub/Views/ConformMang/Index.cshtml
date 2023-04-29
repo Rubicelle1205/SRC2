@@ -1,0 +1,106 @@
+﻿@model WebPccuClub.Models.ConformMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body table-responsive-sm">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                        </h6>
+
+                        <table class="table table-bordered">
+                            <tbody>
+                                <!--修改時才顯示 (start)-->
+                                <tr>
+                                    <th width="15%">@Html.LabelFor(m => m.EditModel.Created)</th>
+                                    <td>@Html.DisplayFor(m => m.EditModel.Created)</td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">@Html.LabelFor(m => m.EditModel.LastModified)</th>
+                                    <td>@Html.DisplayFor(m => m.EditModel.LastModified)</td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">@Html.DisplayNameFor(m => m.EditModel.PersonalConform)<span class="required">*</span></th>
+                                    <td>
+                                        @Html.TextAreaFor(m => m.EditModel.PersonalConform, new {@class="form-control", @rows="10"})
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">@Html.DisplayNameFor(m => m.EditModel.ActivityConform)<span class="required">*</span></th>
+                                    <td>
+                                        @Html.TextAreaFor(m => m.EditModel.ActivityConform, new {@class="form-control", @rows="10"})
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">@Html.DisplayNameFor(m => m.EditModel.ClubInfoConform)<span class="required">*</span></th>
+                                    <td>
+                                        @Html.TextAreaFor(m => m.EditModel.ClubInfoConform, new {@class="form-control", @rows="10" })
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer d-flex justify-content-end">
+                        <button type="button" class="btn btn-success" onclick="SaveEditData()">儲存</button>
+                    </div>
+                </div>
+                <!-- /.card -->
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+
+<script>
+
+    function SaveEditData() {
+        var data = new FormData()
+        var ValInSchool = $('#@Html.IdFor(m => m.EditModel.PersonalConform)').val();
+        var ValOutSchool = $('#@Html.IdFor(m => m.EditModel.ActivityConform)').val();
+        var ValInAndOutSchool = $('#@Html.IdFor(m => m.EditModel.ClubInfoConform)').val();
+
+        data.append('@Html.NameFor(m => m.EditModel.PersonalConform)', ValInSchool);
+        data.append('@Html.NameFor(m => m.EditModel.ActivityConform)', ValOutSchool);
+        data.append('@Html.NameFor(m => m.EditModel.ClubInfoConform)', ValInAndOutSchool);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                location.reload();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+
+            },
+            error: function (result) {
+                alert(response.responseText);
+            }
+        });
+
+    }
+
+</script>

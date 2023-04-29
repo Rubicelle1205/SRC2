@@ -9,16 +9,16 @@ using WebPccuClub.Models;
 
 namespace WebPccuClub.Controllers
 {
-    [LogAttribute(LogActionChineseName.場地同意書)]
-    public class ConsentMangController : BaseController
+    [LogAttribute(LogActionChineseName.提醒內容)]
+    public class ConformMangController : BaseController
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
-        ConsentMangDataAccess dbAccess = new ConsentMangDataAccess();
+        ConformMangDataAccess dbAccess = new ConformMangDataAccess();
 
         [Log(LogActionChineseName.首頁)]
         public IActionResult Index()
         {
-            ConsentMangViewModel vm = new ConsentMangViewModel();
+            ConformMangViewModel vm = new ConformMangViewModel();
             vm.EditModel = dbAccess.GetSearchResult().FirstOrDefault();
 
             return View(vm);
@@ -26,7 +26,7 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
-        public IActionResult EditOldData(ConsentMangViewModel vm)
+        public IActionResult EditOldData(ConformMangViewModel vm)
         {
             try
             {
