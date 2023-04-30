@@ -29,6 +29,7 @@
         校內樓館 = 15,
         提醒內容 = 16,
         期限日期 = 17,
+        活動性質項目 = 18,
     }
 
     public enum DBActionChineseName
