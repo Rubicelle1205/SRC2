@@ -2,35 +2,33 @@
 
 @{
     Layout = "_FrontLoginLayout";
-	string Controller = "FrontLogin";
+    string Controller = "FrontLogin";
     string ActionDisptach = "AuthLogin";
     string sUpdateTargetId = "#MainContent";
-
 }
 
 
 
-				<div class="col-xxl-4 align-self-end">
-					<div class="card border-radius bg-color-light">
-						<div class="card-body p-5 m-2">
-							<h4 class="card-title mb-4 pb-2 text-6">登入系統<small class="text-yellow font-weight-normal ms-2">Login</small></h4>
+<div class="col-xxl-4 align-self-end">
+    <div class="card border-radius bg-color-light">
+        <div class="card-body p-5 m-2">
+            <h4 class="card-title mb-4 pb-2 text-6">登入系統<small class="text-yellow font-weight-normal ms-2">Login</small></h4>
 
-							<form class="form-box checkthisform" action="" method="POST" enctype="application/x-www-form-urlencoded">
-								<div class="form-item">
-									<label for="">帳號</label>
-									<input type="text" value="" placeholder="帳號" class="form-control" name="" req="Y" title="請輸入帳號">
-								</div>
-								<div class="form-item">
-									<label for="">密碼</label>
-									<input type="password" value="" placeholder="密碼" class="form-control" name="" req="Y" title="請輸入密碼">
-								</div>
-								<div class="d-grid gap-2 mb-1">
-									<button class="submit-btn btn btn-modern btn-primary box-shadow-6 border-0" type="submit">登入</button>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-
-
+            <form asp-action="@ActionDisptach" asp-controller="@Controller" data-ajax="false"
+                  data-ajax-method="POST" data-ajax-update="@sUpdateTargetId" data-ajax-mode="replace"
+                  data-ajax-begin="SysFormLoadingStart" data-ajax-complete="SysFormLoadingEnd">
+                <div class="form-item">
+                    <label for="">帳號</label>
+                    <input type="text" value="" placeholder="帳號" class="form-control" name="" req="Y" title="請輸入帳號">
+                </div>
+                <div class="form-item">
+                    <label for="">密碼</label>
+                    <input type="password" value="" placeholder="密碼" class="form-control" name="" req="Y" title="請輸入密碼">
+                </div>
+                <div class="d-grid gap-2 mb-1">
+                    <button class="submit-btn btn btn-modern btn-primary box-shadow-6 border-0" type="submit">登入</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

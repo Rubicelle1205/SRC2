@@ -9,6 +9,9 @@ using WebPccuClub.Global;
 using WebPccuClub.DataAccess;
 using WebPccuClub.Global.Extension;
 using Utility;
+using System.ServiceModel;
+using WebAuth.Entity;
+using Newtonsoft.Json;
 
 namespace WebPccuClub.Controllers
 {
@@ -16,15 +19,78 @@ namespace WebPccuClub.Controllers
     {
         private LoginDataAccess dbAccess = new LoginDataAccess();
         public List<string> AlertMsg = new List<string>();
+
+        ReturnViewModel vmRtn = new ReturnViewModel();
         AuthManager auth = new AuthManager();
 
+        Utility.AuthUtil SSOAuth = new AuthUtil();
+
         /// <summary> 功能首頁 </summary>
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string guid)
         {
             FrontLoginViewModel vm = new FrontLoginViewModel();
+            LoginLogEntity loginEntity = GetLoginLogEntity(vm);
 
             HttpContext.Session.Clear();
             TempData.Clear();
+
+            try
+            {
+                var result = await SSOAuth.GetSSOAuthData(guid);
+
+                if (result.bError)
+                    throw new Exception("登入轉換失敗，請使用帳號登入");
+
+                SSOUserInfo sSOUserInfo = JsonConvert.DeserializeObject<SSOUserInfo>(result.JSONData);
+
+                if (!auth.GetUserMain(sSOUserInfo.Account, out UserInfo user))
+                {
+                    loginEntity.Memo = "帳號不存在";
+                    throw new Exception("登入失敗，帳號不存在!");
+                }
+
+                bool isAuth = false;
+
+                isAuth = auth.Login(sSOUserInfo.Account, out UserInfo LoginUser);
+
+                if (!isAuth)
+                {
+                    user.ErrorCount += 1;
+                    loginEntity.Memo = "密碼錯誤";
+                    throw new Exception("登入失敗，密碼錯誤!");
+                }
+
+                HttpContext.Session.Clear();
+                TempData.Clear();
+
+                LoginUser.LastLoginDate = DateTime.Now;
+                user.ErrorCount = 0;
+                user.LastLoginDate = DateTime.Now;
+                user.LastModified = DateTime.Now;
+                user.LastModifier = user.LoginId;
+                loginEntity.Issuccess = true;
+                loginEntity.Loginid = user.LoginId;
+
+                HttpContext.Session.SetObject("LoginUser", LoginUser);
+
+                UpdateLoginInfo(user);
+                InsertLoginLog(loginEntity);
+                InsertActionLog(loginEntity, LoginUser);
+            }
+            catch (FaultException)
+            {
+                loginEntity.Issuccess = false;
+                loginEntity.Memo = "[API錯誤]登入轉換失敗";
+                AlertMsg.Add(string.Format(@"{0}", "登入轉換失敗，請使用帳號登入"));
+                InsertLoginLog(loginEntity);
+            }
+            catch (Exception ex)
+            {
+                loginEntity.Issuccess = false;
+                loginEntity.Memo = "[API回傳錯誤]" + ex.Message;
+                AlertMsg.Add(string.Format(@"{0}", ex.Message));
+                InsertLoginLog(loginEntity);
+            }
 
             return View("Index", vm);
         }

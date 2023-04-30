@@ -55,62 +55,62 @@
 <body>
     <div class="body mt-0">
 
-	<header id="header" class="" data-plugin-options="{'stickyScrollUp': true, 'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': false, 'stickyChangeLogo': true, 'stickyStartAt': 42, 'stickyHeaderContainerHeight': 70}">
-		<div class="header-body header-body-bottom-border border-top-0">
-			<div class="header-container container p-static">
-				<div class="header-row">
-					<div class="header-column">
-						<div class="header-row position-relative">
-							<div class="header-logo">
-								<a href="index.html">
-									<img src="~/images/front/logo_circle.png" class="img-fluid" alt="" />
-								</a>
-							</div>
-							<a href="index.html" class="headerTitle">中國文化大學社團資訊系統</a>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="headerBottom">
-				<div class="header-container container h-auto">
-					<div class="header-row">
-						<div class="header-column justify-content-end">
-							<div class="header-row">
-								<div class="header-nav header-nav-line header-nav-bottom-line header-nav-bottom-line-effect-1">
-									<div class="header-nav-main header-nav-main-text-capitalize header-nav-main-square header-nav-main-arrows header-nav-main-dropdown-no-borders header-nav-main-effect-2 header-nav-main-sub-effect-1">
-										<nav class="collapse">
-											<ul class="nav nav-pills" id="mainNav">
-												<li>
-													<a class="nav-link" href="index.html">
-														帳號管理
-													</a>
-												</li>
-												<li>
-													<a class="nav-link" href="act.html">
-														活動報備管理
-													</a>
-												</li>
-												<li>
-													<a class="nav-link" href="club_list.html">
-														社團基本資料
-													</a>
-												</li>
+        <header id="header" class="" data-plugin-options="{'stickyScrollUp': true, 'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': false, 'stickyChangeLogo': true, 'stickyStartAt': 42, 'stickyHeaderContainerHeight': 70}">
+            <div class="header-body header-body-bottom-border border-top-0">
+                <div class="header-container container p-static">
+                    <div class="header-row">
+                        <div class="header-column">
+                            <div class="header-row position-relative">
+                                <div class="header-logo">
+                                    <a href="index.html">
+                                        <img src="~/images/front/logo_circle.png" class="img-fluid" alt="" />
+                                    </a>
+                                </div>
+                                <a href="index.html" class="headerTitle">中國文化大學社團資訊系統</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="headerBottom">
+                    <div class="header-container container h-auto">
+                        <div class="header-row">
+                            <div class="header-column justify-content-end">
+                                <div class="header-row">
+                                    <div class="header-nav header-nav-line header-nav-bottom-line header-nav-bottom-line-effect-1">
+                                        <div class="header-nav-main header-nav-main-text-capitalize header-nav-main-square header-nav-main-arrows header-nav-main-dropdown-no-borders header-nav-main-effect-2 header-nav-main-sub-effect-1">
+                                            <nav class="collapse">
+                                                <ul class="nav nav-pills" id="mainNav">
+                                                    <li>
+                                                        <a class="nav-link" href="index.html">
+                                                            帳號管理
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="nav-link" href="act.html">
+                                                            活動報備管理
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="nav-link" href="club_list.html">
+                                                            社團基本資料
+                                                        </a>
+                                                    </li>
 
-											</ul>
-										</nav>
-									</div>
-								</div>
-								<button class="btn header-btn-collapse-nav" data-bs-toggle="collapse"
-										data-bs-target=".header-nav-main nav">
-									<i class="fas fa-bars"></i>
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</header>
+                                                </ul>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                    <button class="btn header-btn-collapse-nav" data-bs-toggle="collapse"
+                                            data-bs-target=".header-nav-main nav">
+                                        <i class="fas fa-bars"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
 
         <div role="main" class="main">
             <div class="container-fluid p-relative py-md-5 py-4">
@@ -128,7 +128,9 @@
                             </ul>
                         </div>
                     </div>
-                    @RenderBody()
+
+                        @RenderBody()
+
                 </div>
             </div>
         </div>
@@ -160,3 +162,7 @@
 
 <script src="@Url.Content("~/js/front/custom.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
 <script src="@Url.Content("~/js/front/theme.init.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
+
+    <script src="~/js/custom.js"></script>
+    <script src="~/sweetalert2/sweetalert2.min.js"></script>
+    <link href="~/sweetalert2/sweetalert2.min.css" rel="stylesheet" />

@@ -1,0 +1,104 @@
+﻿@model WebPccuClub.Models.DateLineMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body table-responsive-sm">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                        </h6>
+
+                        <table class="table table-bordered">
+                            <tbody>
+                                <!--修改時才顯示 (start)-->
+                                <tr>
+                                    <th width="20%">@Html.LabelFor(m => m.EditModel.Created)</th>
+                                    <td>@Html.DisplayFor(m => m.EditModel.Created)</td>
+                                </tr>
+                                <tr>
+                                    <th width="20%">@Html.LabelFor(m => m.EditModel.LastModified)</th>
+                                    <td>@Html.DisplayFor(m => m.EditModel.LastModified)</td>
+                                </tr>
+                                <tr>
+                                    <th width="20%">@Html.DisplayNameFor(m => m.EditModel.ActivityReport)<span class="required">*</span>
+                                        <br/>
+                                        <span class="text-xs text-danger font-weight-normal">活動開始日N天前需完成報備</span>
+                                    </th>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.EditModel.ActivityReport, new {@class="form-control", @rows="10", @type = "number", @min = "0"})
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="20%">@Html.DisplayNameFor(m => m.EditModel.TripCancel)<span class="required">*</span>
+                                        <br />
+                                        <span class="text-xs text-danger font-weight-normal">取消行程須在活動日N天前完成</span>
+                                    </th>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.EditModel.TripCancel, new {@class="form-control", @rows="10", @type = "number", @min = "0"})
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer d-flex justify-content-end">
+                        <button type="button" class="btn btn-success" onclick="SaveEditData()">儲存</button>
+                    </div>
+                </div>
+                <!-- /.card -->
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+
+<script>
+
+    function SaveEditData() {
+        var data = new FormData()
+        var ActivityReport = $('#@Html.IdFor(m => m.EditModel.ActivityReport)').val();
+        var TripCancel = $('#@Html.IdFor(m => m.EditModel.TripCancel)').val();
+
+        data.append('@Html.NameFor(m => m.EditModel.ActivityReport)', ActivityReport);
+        data.append('@Html.NameFor(m => m.EditModel.TripCancel)', TripCancel);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                location.reload();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+
+            },
+            error: function (result) {
+                alert(response.responseText);
+            }
+        });
+
+    }
+
+</script>

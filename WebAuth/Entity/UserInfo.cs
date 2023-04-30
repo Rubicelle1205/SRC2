@@ -37,6 +37,18 @@ namespace PccuClub.WebAuth
         /// <summary> 行動電話 </summary>
         public string CellPhone { get; set; }
 
+        /// <summary> SSO帳號 </summary>
+        public string SSOAccount { get; set; }
+
+        /// <summary> SSO角色 </summary>
+        public string SSORole { get; set; }
+
+        /// <summary> SSO姓名 </summary>
+        public string SSO姓名 { get; set; }
+
+        /// <summary> SSO系級/單位 </summary>
+        public string SSODepartment { get; set; }
+
         /// <summary> 最後登入時間 </summary>
         public DateTime? LastLoginDate { get; set; }
 
