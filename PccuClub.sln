@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebPccuClub", "PccuClub\WebPccuClub.csproj", "{9A586F82-82D6-42C6-87D0-6600A6D63DAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebPccuClub", "PccuClub\WebPccuClub.csproj", "{9A586F82-82D6-42C6-87D0-6600A6D63DAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAuth", "WebAuth\WebAuth.csproj", "{5C2241FC-0EC2-457D-9EAA-44957132267D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAuth", "WebAuth\WebAuth.csproj", "{5C2241FC-0EC2-457D-9EAA-44957132267D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{71631EE3-8767-4E21-83D3-63B5C60E56E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{71631EE3-8767-4E21-83D3-63B5C60E56E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility", "Utility\Utility.csproj", "{A81AA03F-2A14-41C6-9ECA-5B5F96E31B51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "Utility\Utility.csproj", "{A81AA03F-2A14-41C6-9ECA-5B5F96E31B51}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
