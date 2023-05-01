@@ -10,13 +10,13 @@ namespace PccuClub.WebAuth
         private AuthDataAccess dbAccess = new AuthDataAccess();
 
         /// <summary> 
-        /// 使用者登入
+        /// 後台使用者登入
         /// </summary>
         /// <param name="LoginId">帳號</param>
         /// <param name="Pwd">密碼</param>
         /// <param name="oUser">使用者資訊</param>
         /// <returns>驗證結果(True:驗證成功，False:驗證失敗)</returns>
-        public bool Login(string LoginId, string Pwd, out UserInfo oUser)
+        public bool Login(string LoginId, string Pwd, out UserInfo oUser, string LoginFrom)
         {
             oUser = null;
             try
@@ -42,7 +42,7 @@ namespace PccuClub.WebAuth
                 LoginUser.UserRole = reolResult.entitys.ToList();
 
                 // 查詢角色功能
-                (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = dbAccess.SelectFunInfo(LoginId, "B");
+                (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = dbAccess.SelectFunInfo(LoginId, LoginFrom);
                 if (!funResult.Info.isSuccess)
                 { return false; }
                 LoginUser.UserRoleFun = funResult.entitys.ToList();
@@ -63,7 +63,7 @@ namespace PccuClub.WebAuth
         /// <param name="LoginId">帳號</param>
         /// <param name="oUser">使用者資訊</param>
         /// <returns>驗證結果(True:驗證成功，False:驗證失敗)</returns>
-        public bool Login(string LoginId, out UserInfo oUser)
+        public bool FLogin(string LoginId, out UserInfo oUser)
         {
             oUser = null;
             try
@@ -86,7 +86,7 @@ namespace PccuClub.WebAuth
                 LoginUser.UserRole = reolResult.entitys.ToList();
 
                 // 查詢角色功能
-                (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = dbAccess.SelectFunInfo(LoginId, "B");
+                (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = dbAccess.SelectFunInfo(LoginId, "F");
                 if (!funResult.Info.isSuccess)
                 { return false; }
                 LoginUser.UserRoleFun = funResult.entitys.ToList();

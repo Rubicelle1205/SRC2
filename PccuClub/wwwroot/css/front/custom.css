@@ -14,6 +14,10 @@ img {
     font-size: 0.95em;
     color: #57a5a8;
 }
+.red-hint {
+    color: #b94015;
+    line-height: 1;
+}
 .table-shadow {
     box-shadow: 0 1px 4px -1px rgba(0,0,0,0.2);
 }
@@ -89,7 +93,7 @@ textarea.alert-border,
 select.form-control {
     -webkit-appearance: none;
     appearance: none;
-    padding: 0.4rem 0.75rem;
+    padding: 0.4rem 1.95rem 0.4rem 0.75rem;
     font-size: 1rem;
     color: #495057;
     /* border: 0; */
@@ -581,11 +585,11 @@ select.form-control {
 }
 .pagelist .listItem {
     display: flex;
-    align-items: center;
+    /* align-items: center; */
     background-color: #f8f0d9;
     font-size: 16px;
     border-radius: 8px;
-    padding: 12px 20px;
+    /* padding: 12px 20px; */
     padding-right: 0;
     line-height: 1.4;
     color: #ae6e19;
@@ -593,7 +597,8 @@ select.form-control {
     overflow: hidden;
     box-shadow: 0 0 24px -2px rgb(156 106 11 / 10%);
 }
-.pagelist .listItem:hover {
+
+.pagelist:not(.pagelist-icon2) .listItem:hover {
     text-decoration: none;
     background-color: #fbe6a9;
     color: #ae6e19;
@@ -604,7 +609,11 @@ select.form-control {
 .pagelist .listItem .textbox {
     width: 90%;
     padding-right: 8px;
+    padding: 12px 20px;
     z-index: 1;
+}
+.pagelist.pagelist-icon2 .listItem .textbox {
+    width: 80%;
 }
 .pagelist .listItem .icon {
     width: 10%;
@@ -614,21 +623,26 @@ select.form-control {
     color: #484848;
     position: relative;
     z-index: 0;
-}
-.pagelist .listItem .icon::before {
-    content: "";
-    width: 200px;
-    height: 200px;
+    display: flex;
     background-color: #ffd966;
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: -1;
-    pointer-events: none;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+.pagelist.pagelist-icon2 .listItem .icon:nth-of-type(1) {
+    background-color: #f9be91;
+}
+.pagelist.pagelist-icon2 .listItem .icon:nth-of-type(1):hover {
+    background-color: #ffab6b;
+}
+.pagelist.pagelist-icon2 .listItem .icon:hover {
+    background-color: #ffcd38;
 }
 .pagelist .listItem:hover .icon {
     opacity: 0.8;
+}
+.pagelist.pagelist-icon2 .listItem:hover .icon {
+    opacity: 1;
 }
 .listItem .title {
     font-size: 19px;
@@ -655,17 +669,27 @@ select.form-control {
 }
 @media (max-width: 575px) {
     .pagelist .listItem {
-        padding: 12px 14px;
         padding-right: 0;
         font-size: 15px;
     }
+    .pagelist.pagelist-icon2 .listItem {
+        flex-wrap: wrap;
+    }
     .pagelist .listItem .textbox {
         width: 80%;
+    }
+    .pagelist.pagelist-icon2 .listItem .textbox {
+        width: 100%;
     }
     .pagelist .listItem .icon {
         width: 20%;
         font-size: 15px;
     }
+    .pagelist.pagelist-icon2 .listItem .icon {
+        width: 50%;
+        padding: 16px 0;
+    }
+    
     .listItem .title {
         font-size: 18px;
     }
@@ -911,6 +935,16 @@ select.form-control {
     /* align-items: center; */
     border-bottom: 1px solid #ebebeb;
 }
+.memberlist .listItem .date {
+    display: block;
+    line-height: 1.2;
+}
+.member-list-page .list-item {
+    background-color: #f2f4f7;
+    padding: 14px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
 .memberlist .listBody .item {
     border-right: 1px solid #eeeeee;
 }
@@ -922,16 +956,20 @@ select.form-control {
     padding: 10px 8px;
     position: relative;
     word-break: break-all;
+    font-size: 15px;
 }
 .memberlist.item-6 .item {
     width: 16.666666666%;
+}
+.memberlist.item-6 .item.item-sm {
+    width: 8%;
 }
 .memberlist.item-9 .item {
     width: 10%;
     flex: 1;
 }
 .memberlist.item-9 .item.item-sm {
-    flex: 0.8;
+    flex: 0.7;
 }
 .memberlist.item-9 .item.item-lg {
     flex: 1.3;
@@ -1109,4 +1147,138 @@ select.form-control {
 }
 .dashlist .listItem .textbox .title {
     margin-bottom: 0;
+}
+
+.handNavlist .item {
+    padding: 20px 22px;
+    background-color: #faf3ed;
+    border-radius: 8px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+.handNavlist .item .num {
+    font-size: 180px;
+    line-height: 1.4;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #b5722a;
+    opacity: 0.1;
+    position: absolute;
+    right: -20px;
+    top: -20px;
+}
+.handNavlist .item h4 {
+    margin-bottom: 16px;
+    color: #b5722a;
+}
+.handNavlist .item li {
+    margin-bottom: 4px;
+}
+.handNavlist .item .btn {
+    box-shadow: 0 0 16px -2px rgb(194 82 13 / 16%);
+}
+@media (max-width: 575px) {
+    nav[aria-label="breadcrumb"] {
+        display: none;
+    }
+}
+.ui-widget.ui-widget-content {
+    list-style: none;
+    padding-left: 0rem;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+}
+.ui-menu-item-wrapper {
+    padding: 6px 0.8rem;
+    line-height: 1.3;
+    font-size: 0.95em;
+}
+.target_list .item {
+    display: flex;
+}
+.target_list .item .del-btn {
+    /* background-color: transparent; */
+    font-size: 18px;
+    padding: 4px 16px;
+    margin-left: 10px;
+    border-radius: 4px;
+}
+.doclist {
+    padding: 8px 16px;
+    background-color: #ebebeb;
+    border-radius: 8px;
+    margin-top: 8px;
+}
+.doclist a {
+    color: #088caa;
+}
+.remindWrapper {
+    background-color: #ddefe1;
+    border: 1px solid #c1ddc7;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+}
+.remindWrapper .title {
+    font-weight: 600;
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+    color: #007d5b;
+}
+.remindWrapper .item {
+    margin-bottom: 4px;
+    display: flex;
+}
+.remindWrapper .item:last-child {
+    margin-bottom: 0;
+}
+.remindWrapper .item p {
+    color: #006e67;
+    margin-bottom: 0;
+}
+.remindWrapper .item::before {
+    content: "";
+    width: 4px;
+    height: 4px;
+    background-color: #00847b;
+    display: inline-block;
+    margin-right: 15px;
+    margin-top: 12px;
+    flex-shrink: 0;
+}
+@media (max-width: 600px) {
+    .remindWrapper {
+        padding: 14px 18px;
+        margin-top: 10px;
+    }
+    .remindWrapper .title {
+        font-size: 1.2rem;
+        margin-bottom: 12px;
+    }
+    .remindWrapper .item p {
+        font-size: 15px;
+        line-height: 1.4;
+    }
+    .remindWrapper .item::before {
+        margin-right: 10px;
+        margin-top: 10px;
+    }
+}
+@media (max-width: 321px) {
+    .remindWrapper {
+        padding: 8px 12px;
+    }
+    .remindWrapper .title {
+        font-size: 1.1rem;
+    }
+    .remindWrapper .item p {
+        font-size: 14px;
+    }
 }

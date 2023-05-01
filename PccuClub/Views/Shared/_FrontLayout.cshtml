@@ -1,4 +1,35 @@
-﻿
+﻿@using PccuClub.WebAuth;
+@using WebPccuClub.Global.Extension;
+@using Microsoft.AspNetCore.Http
+
+@{
+    UserInfo LoginUser = Context.Session.GetObject<UserInfo>("LoginUser");
+
+    string UnitName = string.Empty;
+    string LoginId = string.Empty;
+    string LoginName = string.Empty;
+    string LastLoginDate = string.Empty;
+
+    if (LoginUser != null)
+    {
+        UnitName = LoginUser.UnitName;
+        LoginId = LoginUser.LoginId;
+        LoginName = LoginUser.UserName;
+        LastLoginDate = LoginUser.LastLoginDate.Value.ToString("yyyy/MM/dd HH:mm");
+    }
+    string baseurl = SystemMenu.GetSubUrl();
+    string homeurl = $"{baseurl}/ClubList";
+    string logouturl = $@"{baseurl}/FrontLogin/Logout";
+
+    var router = Context.Request.RouteValues;
+    var path = router["controller"];
+
+    //string sitemap = LoginUser.GetUserSiteMap(path);
+    string headHtml = LoginUser.CreateFrontUserHeadMenu(baseurl, path);
+    string menuHtml = LoginUser.CreateFrontUserMenu(baseurl, path);
+}
+
+
 <html lang="zh-TW">
 
 <head>
@@ -31,7 +62,8 @@
     <link href="@Url.Content("~/vendors/front/owl.carousel/assets/owl.theme.default.min.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/vendors/front/magnific-popup/magnific-popup.min.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/vendors/front/vanilla-calendar-master/vanilla-calendar.min.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
-
+    <link href="@Url.Content("~/vendors/front/jquery-ui/jquery-ui.theme.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+    
     <!-- Theme CSS -->
     <link href="@Url.Content("~/css/front/theme.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/css/front/theme-elements.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
@@ -46,7 +78,6 @@
     <link href="@Url.Content("~/css/front/tools.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/css/front/custom.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
 
-    <link href="@Url.Content("~/css/front/custom.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
     <script src="~/js/jquery.min.js"></script>
     <script src="@Url.Content("~/vendors/front/modernizr/modernizr.min.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
 
@@ -80,22 +111,15 @@
                                         <div class="header-nav-main header-nav-main-text-capitalize header-nav-main-square header-nav-main-arrows header-nav-main-dropdown-no-borders header-nav-main-effect-2 header-nav-main-sub-effect-1">
                                             <nav class="collapse">
                                                 <ul class="nav nav-pills" id="mainNav">
-                                                    <li>
-                                                        <a class="nav-link" href="index.html">
-                                                            帳號管理
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="nav-link" href="act.html">
-                                                            活動報備管理
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="nav-link" href="club_list.html">
-                                                            社團基本資料
-                                                        </a>
-                                                    </li>
-
+                                                    @if (LoginUser != null)
+                                                    {
+                                                        @Html.Raw(headHtml)
+                                                        <li>
+                                                            <a class="nav-link" href="@logouturl">
+                                                                登出<i class="fas fa-sign-out-alt ms-1"></i>
+                                                            </a>
+                                                        </li>
+                                                    }
                                                 </ul>
                                             </nav>
                                         </div>
@@ -116,20 +140,37 @@
             <div class="container-fluid p-relative py-md-5 py-4">
                 <div class="row justify-content-center">
                     <div class="col-xxl-2">
-                        <div class="user-acinfo">
-                            <div class="greetings font-weight-6">歡迎！</div>
-                            <div class="item">身分：<span>訪客</span></div>
-                        </div>
-                        <div class="sidenav">
-                            <ul>
-                                <!-- 未登入即可查看 -->
-                                <li><a class="sideitem" href="club_list.html">社團一覽</a></li>
-                                <li><a class="sideitem" href="act.html">一周場地時間</a></li>
-                            </ul>
-                        </div>
+
+                        @if (LoginUser != null)
+                        {
+                            <div class="user-acinfo">
+                                <div class="greetings font-weight-6">歡迎！</div>
+                                <div class="item">帳號：<span>@LoginId</span></div>
+                                <div class="item">身分：<span>@UnitName</span></div>
+                            </div>
+                            <div class="sidenav">
+                                <ul>
+                                    @Html.Raw(menuHtml)
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="user-acinfo">
+                                <div class="greetings font-weight-6">歡迎！</div>
+                                <div class="item">身分：<span>訪客</span></div>
+                            </div>
+                            <div class="sidenav">
+                                <ul>
+                                    <li><a class="sideitem" href="@Url.Action("Index","ClubList")">社團一覽</a></li>
+                                    <li><a class="sideitem" href="@Url.Action("Index","PlaceTimeList")">一周場地時間</a></li>
+                                </ul>
+                            </div>
+                        }
+
                     </div>
 
-                        @RenderBody()
+                    @RenderBody()
 
                 </div>
             </div>
@@ -154,7 +195,10 @@
 
 <!-- Vendor -->
 <script src="@Url.Content("~/vendors/front/plugins/js/plugins.min.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
+
+<script src="@Url.Content("~/vendor/front/jquery-ui/jquery-ui.min.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
 <script src="@Url.Content("~/js/front/theme.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
+
 <script src="@Url.Content("~/js/front/views/view.contact.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
 <script src="@Url.Content("~/js/front/demos/demo.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
 <script src="@Url.Content("~/js/front/moment.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
@@ -163,6 +207,8 @@
 <script src="@Url.Content("~/js/front/custom.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
 <script src="@Url.Content("~/js/front/theme.init.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
 
-    <script src="~/js/custom.js"></script>
-    <script src="~/sweetalert2/sweetalert2.min.js"></script>
-    <link href="~/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+
+
+<script src="~/js/custom.js"></script>
+<script src="~/sweetalert2/sweetalert2.min.js"></script>
+<link href="~/sweetalert2/sweetalert2.min.css" rel="stylesheet" />

@@ -37,11 +37,9 @@ namespace WebPccuClub.Controllers
             List<string> ValidMsg = new List<string>();
             if (!Valid(vm, ValidMsg))
             {
-                AlertMsg.Add(string.Join(Environment.NewLine, ValidMsg.ToArray()));
+                AlertMsg.Add(string.Join("<br/>", ValidMsg.ToArray()));
                 return PartialView("Index", vm);
             }
-
-            
 
             try
             {
@@ -53,7 +51,7 @@ namespace WebPccuClub.Controllers
 
                 bool isAuth = false;
 
-                isAuth = auth.Login(vm.LoginID, vm.PassWord, out UserInfo LoginUser);
+                isAuth = auth.Login(vm.LoginID, vm.PassWord, out UserInfo LoginUser, "B");
                 if (!isAuth)
                 {
                     user.ErrorCount += 1;

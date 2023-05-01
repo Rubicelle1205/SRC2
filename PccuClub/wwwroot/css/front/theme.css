@@ -46,7 +46,7 @@ a:not(.btn):hover {
 }
 
 li {
-	line-height: 24px;
+	line-height: 1.6;
 }
 
 @media (max-width: 575px) {
@@ -9998,7 +9998,7 @@ a.text-light:focus, a.text-light:hover {
 	background: #555555;
 	border-top: 4px solid #555555;
 	font-size: 0.9em;
-	/*margin-top: 50px;*/
+	margin-top: 50px;
 	padding: 0;
 	position: relative;
 	clear: both;

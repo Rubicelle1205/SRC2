@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 
 namespace WebPccuClub.Controllers
 {
-    public class FrontLoginController : Controller
+    public class FrontLoginController : FBaseController
     {
         private LoginDataAccess dbAccess = new LoginDataAccess();
         public List<string> AlertMsg = new List<string>();
@@ -25,11 +25,14 @@ namespace WebPccuClub.Controllers
 
         Utility.AuthUtil SSOAuth = new AuthUtil();
 
-        /// <summary> 功能首頁 </summary>
+        /// <summary> SSO登入 </summary>
         public async Task<IActionResult> Index(string guid)
         {
             FrontLoginViewModel vm = new FrontLoginViewModel();
             LoginLogEntity loginEntity = GetLoginLogEntity(vm);
+
+            if (string.IsNullOrEmpty(guid))
+                return View(vm);
 
             HttpContext.Session.Clear();
             TempData.Clear();
@@ -51,7 +54,7 @@ namespace WebPccuClub.Controllers
 
                 bool isAuth = false;
 
-                isAuth = auth.Login(sSOUserInfo.Account, out UserInfo LoginUser);
+                isAuth = auth.FLogin(sSOUserInfo.Account, out UserInfo LoginUser);
 
                 if (!isAuth)
                 {
@@ -76,6 +79,8 @@ namespace WebPccuClub.Controllers
                 UpdateLoginInfo(user);
                 InsertLoginLog(loginEntity);
                 InsertActionLog(loginEntity, LoginUser);
+
+                return RedirectToAction("Index", "ClubList");
             }
             catch (FaultException)
             {
@@ -83,20 +88,21 @@ namespace WebPccuClub.Controllers
                 loginEntity.Memo = "[API錯誤]登入轉換失敗";
                 AlertMsg.Add(string.Format(@"{0}", "登入轉換失敗，請使用帳號登入"));
                 InsertLoginLog(loginEntity);
+
+                return View("Index", vm);
             }
             catch (Exception ex)
             {
                 loginEntity.Issuccess = false;
                 loginEntity.Memo = "[API回傳錯誤]" + ex.Message;
-                AlertMsg.Add(string.Format(@"{0}", ex.Message));
+                AlertMsg.Add(string.Format(@"{0}", "登入轉換失敗，請使用帳號登入"));
                 InsertLoginLog(loginEntity);
-            }
 
-            return View("Index", vm);
+                return View("Index", vm);
+            }
         }
 
-        /// <summary> 一般登入 </summary>
-        //[HttpPost]
+        /// <summary> 帳號密碼登入 </summary>
         public IActionResult AuthLogin(FrontLoginViewModel vm)
         {
             LoginLogEntity loginEntity = GetLoginLogEntity(vm);
@@ -104,7 +110,7 @@ namespace WebPccuClub.Controllers
             List<string> ValidMsg = new List<string>();
             if (!Valid(vm, ValidMsg))
             {
-                AlertMsg.Add(string.Join(Environment.NewLine, ValidMsg.ToArray()));
+                AlertMsg.Add(string.Join("<br/>", ValidMsg.ToArray()));
                 return PartialView("Index", vm);
             }
 
@@ -118,7 +124,7 @@ namespace WebPccuClub.Controllers
 
                 bool isAuth = false;
 
-                isAuth = auth.Login(vm.LoginID, vm.PassWord, out UserInfo LoginUser);
+                isAuth = auth.Login(vm.LoginID, vm.PassWord, out UserInfo LoginUser, "F");
                 if (!isAuth)
                 {
                     user.ErrorCount += 1;
@@ -142,16 +148,15 @@ namespace WebPccuClub.Controllers
                 InsertLoginLog(loginEntity);
                 InsertActionLog(loginEntity, LoginUser);
 
-                return RedirectToAction("Index", "Home", new { area = "" });
+                return RedirectToAction("Index", "ClubList");
             }
             catch (Exception ex)
             {
                 loginEntity.Issuccess = false;
                 AlertMsg.Add(string.Format(@"{0}", ex.Message));
                 InsertLoginLog(loginEntity);
+                return PartialView("Index", vm);
             }
-
-            return View("Index", vm);
         }
 
         /// <summary> 登出 </summary>
@@ -164,92 +169,6 @@ namespace WebPccuClub.Controllers
 
             return View("Index", vm);
         }
-
-        /// <summary> 忘記密碼 </summary>
-        public IActionResult ForgetPwd()
-        {
-            FrontLoginViewModel vm = new FrontLoginViewModel();
-
-            HttpContext.Session.Clear();
-            TempData.Clear();
-
-            return View("ForgetPwd", vm);
-        }
-
-        /// <summary> 忘記密碼-帳號認證 </summary>
-        public IActionResult AuthAccount(FrontLoginViewModel vm)
-        {
-            LoginLogEntity loginEntity = GetLoginLogEntity(vm);
-
-            try
-            {
-                if (!auth.GetUserMain(vm.LoginID, out UserInfo user))
-                {
-                    loginEntity.Memo = "帳號不存在";
-                    throw new Exception("查無此帳號!");
-                }
-
-                string newPwd = GenNewPwd();
-                string MailBody = GenMailBody(user, newPwd);
-
-                MailUtil mail = new MailUtil();
-                bool ok = mail.ExecuteSendMail(user.Email, "忘記密碼通知信", MailBody, System.Net.Mail.MailPriority.High, null);
-
-                if (ok)
-                {
-                    AlertMsg.Add(string.Format(@"{0}", "已將信件寄送至" + user.Email));
-                    SetDefaultPwd(user, newPwd);
-                }
-                else
-                    AlertMsg.Add(string.Format(@"{0}", "信件寄送失敗!"));
-
-                return View("ForgetPwd", vm);
-
-            }
-            catch (Exception ex)
-            {
-                loginEntity.Issuccess = false;
-                AlertMsg.Add(string.Format(@"{0}", ex.Message));
-                InsertLoginLog(loginEntity);
-            }
-
-            return View("ForgetPwd");
-        }
-
-        #region 重設密碼
-
-        private void SetDefaultPwd(UserInfo user, string newPwd)
-        {
-            newPwd = auth.EncryptionText(newPwd);
-            dbAccess.SetToDefaultPwd(user, newPwd);
-        }
-
-        private string GenMailBody(UserInfo user, string newPwd)
-        {
-            string str = string.Empty;
-
-            str = $@"<p>親愛的{user.UserName} 您好:</p>
-                    <p>您的新密碼為 {newPwd} </p>";
-
-            return str;
-        }
-
-        private string GenNewPwd()
-        {
-            string allowedChars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789";
-            int passwordLength = 8;//密碼長度
-            char[] chars = new char[passwordLength];
-            Random rd = new Random();
-
-            for (int i = 0; i < passwordLength; i++)
-            {
-                chars[i] = allowedChars[rd.Next(0, allowedChars.Length)];
-            }
-
-            return new string(chars);
-        }
-
-        #endregion
 
         #region 登入相關
 

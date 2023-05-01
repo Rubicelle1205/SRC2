@@ -1837,7 +1837,7 @@ Theme Version:	9.8.0
 }
 
 .badge.badge-sm {
-	padding: 0.5em 0.8em;
+	padding: 0.4em;
 }
 
 .badge.badge-md {
@@ -2067,18 +2067,25 @@ Theme Version:	9.8.0
 
 .breadcrumb > li {
 	display: inline-block;
-	font-size: 0.8em;
+	font-size: 0.9em;
 	text-transform: uppercase;
 	text-shadow: none;
 }
 
 .breadcrumb > li + li:before {
 	color: inherit;
-	opacity: 0.5;
-	font-family: 'Font Awesome 6 Free';
-	font-weight: 900;
-	content: "\f105";
-	padding: 0 7px 0 5px;
+	font-family: 'simple-line-icons';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+	content: "\e606";
+	padding: 0 7px 0 0;
+	font-size: 0.8em;
 }
 
 .breadcrumb.breadcrumb-dividers-no-opacity > li + li:before {

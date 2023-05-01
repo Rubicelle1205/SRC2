@@ -228,19 +228,19 @@ $(document).ready(function(){
             })
         })
 
-        $(document).on('change','.speech_ex_trigger',function(){
-            var $val = $(".speech_ex_trigger:checked").val();
-            $("#speech_ex_box").find(".hideBox").each(function(){
-                if ($(this).attr("data-name") == $val) {
-                    $(this).addClass("show")
-                    $(this).fadeIn()
-                }else {
-                    $(this).removeClass("show")
-                    $(this).hide()
+        // $(document).on('change','.speech_ex_trigger',function(){
+        //     var $val = $(".speech_ex_trigger:checked").val();
+        //     $("#speech_ex_box").find(".hideBox").each(function(){
+        //         if ($(this).attr("data-name") == $val) {
+        //             $(this).addClass("show")
+        //             $(this).fadeIn()
+        //         }else {
+        //             $(this).removeClass("show")
+        //             $(this).hide()
 
-                }
-            })
-        })
+        //         }
+        //     })
+        // })
 
         $(document).on('change','.speech_ex2_trigger',function(){
             var $val = $(".speech_ex2_trigger:checked").val();
@@ -288,22 +288,23 @@ $(document).ready(function(){
                     if ($("[name=category]:checked").val() == null || $("[name=category]:checked").val() == "") {
                         $(this).addClass("alert-border");
                         sum_arr.push(title);
-                    }else {
-                        if ($("[name=category]:checked").val() == '演講') {
-                            if ($(".speech_ex2_trigger:checked").val() == "" || $(".speech_ex2_trigger:checked").val() == null) {
-                                $(".speech_ex2_trigger").addClass("alert-border")
-                                sum_arr.push("請確認是否為學術演講");
-                            }else if($(".speech_ex2_trigger:checked").val() == '是'){
-                                $("#speech_ex_box .hideBox2").find(".form-control").each(function(){
-                                    if ($(this).val() == "" || $(this).val() == null) {
-                                        $(this).addClass("alert-border")
-                                        sum_arr.push("請填寫學術演講相關資訊");
-                                    }
-                                })
-                            }
-                            
-                        }
                     }
+                    // else {
+                    //     if ($("[name=category]:checked").val() == '演講') {
+                    //         if ($(".speech_ex2_trigger:checked").val() == "" || $(".speech_ex2_trigger:checked").val() == null) {
+                    //             $(".speech_ex2_trigger").addClass("alert-border")
+                    //             sum_arr.push("請確認是否為學術演講");
+                    //         }else if($(".speech_ex2_trigger:checked").val() == '是'){
+                    //             $("#speech_ex_box .hideBox2").find(".form-control").each(function(){
+                    //                 if ($(this).val() == "" || $(this).val() == null) {
+                    //                     $(this).addClass("alert-border")
+                    //                     sum_arr.push("請填寫學術演講相關資訊");
+                    //                 }
+                    //             })
+                    //         }
+                            
+                    //     }
+                    // }
                 }
                 else if ((this.name).indexOf("poster") >= 0){
                     if ($("[name=poster]:checked").val()== "" || $("[name=poster]:checked").val() == null) {
@@ -360,13 +361,14 @@ $(document).ready(function(){
         
         $(document).on('change','.class_input_trigger',function(){
             var $val = $(".class_input_trigger:checked").val();
-            if ($val == '校內場地') {
-                $("#class_input_box").find("[data-name='校內場地']").fadeIn().addClass("show");
-                $("#class_input_box").find("[data-name='其他']").hide().removeClass("show");
-            }else {
-                $("#class_input_box").find("[data-name='校內場地']").hide().removeClass("show");
-                $("#class_input_box").find("[data-name='其他']").fadeIn().addClass("show");
-            }
+            $("#class_input_box").find(".hideBox").each(function(){
+                if ($(this).attr("data-name") == $val) {
+                    $(this).fadeIn().addClass("show");
+                }else {
+                    $(this).hide().removeClass("show");
+                }
+            })
+            
         })
 
         var optionHtml = '<option selected="selected" value="大恩B101(112人)">大恩B101(112人)</option><option value="大恩B103(114人)">大恩B103(114人)</option><option value="大恩102(會議講堂)">大恩102(會議講堂)</option><option value="大恩103(會議講堂)">大恩103(會議講堂)</option><option value="大恩301-煮食教室(93人)">大恩301-煮食教室(93人)</option><option value="大恩302(37人)">大恩302(37人)</option><option value="大恩304(12人)">大恩304(12人)</option><option value="大恩306(12人)">大恩306(12人)</option><option value="大恩307-煮食教室(91人)">大恩307-煮食教室(91人)</option><option value="大恩308(13人)">大恩308(13人)</option><option value="大恩310-煮食教室(63人)">大恩310-煮食教室(63人)</option><option value="大恩312(64人)">大恩312(64人)</option><option value="大恩401(55人)">大恩401(55人)</option><option value="大恩402(63人)">大恩402(63人)</option><option value="大恩403-煮食教室(85人)">大恩403-煮食教室(85人)</option><option value="大恩404-煮食教室(63人)">大恩404-煮食教室(63人)</option><option value="大恩405(84人)">大恩405(84人)</option><option value="大恩406(64人)">大恩406(64人)</option><option value="大恩407(86人)">大恩407(86人)</option><option value="大恩408(66人)">大恩408(66人)</option><option value="大恩409(85人)">大恩409(85人)</option><option value="大恩411(84人)">大恩411(84人)</option><option value="大恩413(84人)">大恩413(84人)</option><option value="大恩501(57人)">大恩501(57人)</option><option value="大恩502-投影機教室(66人)">大恩502-投影機教室(66人)</option><option value="大恩503(85人)-新增投影機教室">大恩503(85人)-新增投影機教室</option><option value="大恩504-投影機教室(63人)">大恩504-投影機教室(63人)</option><option value="大恩505(84人)--新增投影機教室">大恩505(84人)--新增投影機教室</option></option><option value="大恩507(84人)--新增投影機教室">大恩507(84人)--新增投影機教室</option><option value="大恩508-投影機教室(68人)">大恩508-投影機教室(68人)</option><option value="大恩509(84人)">大恩509(84人)</option><option value="大恩511(91人)">大恩511(91人)</option><option value="大恩513(84人)">大恩513(84人)</option><option value="大恩601(54人)">大恩601(54人)</option><option value="大恩602(68人)">大恩602(68人)</option><option value="大恩603(84人)">大恩603(84人)</option><option value="大恩604(63人)">大恩604(63人)</option><option value="大恩605(88人)">大恩605(88人)</option><option value="大恩606(63人)">大恩606(63人)</option><option value="大恩607(86人)">大恩607(86人)</option><option value="大恩608(69人)">大恩608(69人)</option><option value="大恩609(84人)">大恩609(84人)</option><option value="大恩611(84人)">大恩611(84人)</option><option value="大恩613(84人)">大恩613(84人)</option>'
@@ -384,7 +386,15 @@ $(document).ready(function(){
             }else {
                 $("#thisdayTable_box").add("#thisroom_box").addClass("hidden")
             }
+            alertClass()
         })
+        
+        function alertClass(){
+            var option = $(".classroom2_select option:selected").val()
+            if (option == '大恩B103(114人)') {
+                alert("此教室已有租借紀錄")
+            }
+        }
 
         $(document).on('click',".addevent-btn",function(e){
             e.preventDefault();
@@ -483,7 +493,26 @@ $(document).ready(function(){
                 location.href = "apply_add3.html"
             }
         }) 
+
+        // autocomplete
+        var input1 = [
+            "體育館-2F-綜合球場",
+            "大仁館-1F-舞蹈教室"
+        ];
+        var input2 = [
+            "救國團-復興青年活動中心",
+            "圖書館"
+        ];
+        $("#jq_input1").autocomplete({
+            source: input1,
+            appendTo: ".jq_box1"
+        });
+        $("#jq_input2").autocomplete({
+            source: input2,
+            appendTo: ".jq_box2"
+        });
     }
+
 
     if ((location.pathname).indexOf("apply_add3.") >= 0) {
         $(document).on('click',".submit-btn",function(e){
@@ -568,8 +597,75 @@ $(document).ready(function(){
             }
     
         }) 
+
     }
 
+    if ((location.pathname).indexOf("apply_detail.") >= 0) {
+        $(document).on('click','.dateItem .del-btn',function(){
+            if (confirm("確認移除？") == false) {
+                return false
+            }else {
+                var cancel_date = $(this).closest(".item").find(".date").html();
+                var cancel_time = $(this).closest(".item").find(".time").html();
+                var cancel_location = $(this).closest(".item").find(".location").html();
+
+                var cancel_html = '<div class="item">'
+                cancel_html += '<span class="date">'+cancel_date+'</span>'
+                cancel_html += '<span class="time">'+cancel_time+'</span>'
+                cancel_html += '<span class="location">'+cancel_location+'</span>'
+                cancel_html += '</div>'
+
+                $("#cancel_wrapper .default-text").addClass("hidden");
+                $("#cancel_wrapper").append(cancel_html)
+
+                $(this).closest(".item").remove();
+            }
+        })
+    }
+
+    if($(".target_list").length > 0){
+        $(document).on('click','#add_input_btn',function(){
+            var addItem = '<div class="item mb-2"><input type="file" class="form-control w-auto" title="請上傳附件檔案" accept=".pdf,.zip,.rar,.7z"><button class="del-btn hidden" type="button"><i class="fas fa-times"></i></button></div>';
+            var addItem2 = '<div class="item mb-2"><input type="file" class="form-control w-auto" title="請上傳附件檔案" accept=".docx,.doc,.odt,.pdf"><button class="del-btn hidden" type="button"><i class="fas fa-times"></i></button></div>'
+            checkNum()
+            if ($(".target_list").find("[type='file']").length <= 7) {  
+                if ((location.pathname).indexOf("apply_add4.") >= 0) {
+                    $(".target_list").append(addItem2);
+                }else{
+                    $(".target_list").append(addItem);
+                }
+                $(".target_list .del-btn").removeClass("hidden")
+            }
+        })
+        $(document).on('click','.target_list .del-btn',function(){
+            var num = $(".target_list").find("[type='file']").length
+
+            if (confirm("確認清除？") == false) {
+                return false
+            }else{
+                if (num >=2) {
+                    $(this).closest(".item").remove()
+                    $("#add_input_btn").prop("disabled",false)
+                }
+
+                if(num <= 2){
+                    $(".target_list .del-btn").addClass("hidden")
+                }else {
+                    $(".target_list .del-btn").removeClass("hidden")
+                }
+            }
+        })
+  
+        function checkNum(){
+            var num = $(".target_list").find("[type='file']").length
+            if (num >= 7) {
+                $("#add_input_btn").prop("disabled",true)
+            }else{
+                $("#add_input_btn").prop("disabled",false)
+            }
+        }
+    }
+    
     if ((location.pathname).indexOf("club_sch.") >= 0) {
         $(document).on('click',".submit-btn",function(e){
             e.preventDefault();
@@ -667,17 +763,18 @@ $(document).ready(function(){
     }
 
     if ((location.pathname).indexOf("member_edit.") >= 0) {
-        var html = '<div class="listItem"><div class="item"><input type="text" class="form-control" req="Y" value="" placeholder="學年度/任職期間" title="請輸入學年度/任職期間"></div><div class="item"><input type="text" class="form-control" req="Y" value="" placeholder="學系班級" title="請輸入學系班級"></div><div class="item"><select name="" id="" class="form-control" req="Y" title="請選擇生理性別"><option value="" disabled selected>請選擇</option><option value="女">女</option><option value="男">男</option><option value="其他">其他</option></select></div><div class="item"><input type="text" class="form-control" req="Y" value="" placeholder="學號" title="請輸入學號"></div><div class="item"><input type="text" class="form-control" req="Y" value="" placeholder="姓名" title="請輸入姓名"></div><div class="item"><input type="text" class="form-control" value="" placeholder="備註"></div><div class="item"><button class="btn del-btn" type="button"><i class="fas fa-times"></i></button></div></div>'
+        var html = '<div class="list-item"><div class="text-end"><button class="btn del-btn" type="button"><i class="fas fa-times"></i></button></div><div class="row"><div class="col-lg-3 col-md-3"><div class="form-item"><label for="">學年度<span class="req-star">*</span></label><input type="text" class="form-control" req="Y" value="111" readonly disabled></div></div><div class="col-lg-9 col-md-9"><div class="form-item"><label for="">參與期間<span class="req-star">*</span></label><div class="d-flex align-items-center"><input type="date" class="form-control" req="Y" placeholder="參與期間開始日期" title="請輸入參與期間開始日期"><span class="mx-1">至</span><input type="date" class="form-control" req="Y" placeholder="參與期間結束日期" title="請輸入參與期間結束日期"></div></div></div><div class="col-lg-3 col-md-3"><div class="form-item"><label for="">學系班級<span class="req-star">*</span></label><input type="text" class="form-control" req="Y" value="俄文3" placeholder="學系班級" title="請輸入學系班級"></div></div><div class="col-lg-3 col-md-3"><div class="form-item"><label for="">生理性別<span class="req-star">*</span></label><select name="" id="" class="form-control" req="Y" title="請選擇生理性別"><option value="" disabled>請選擇</option><option value="女" selected>女</option><option value="男">男</option><option value="其他">其他</option></select></div></div>'
+        html += '<div class="col-lg-3 col-md-3"><div class="form-item"><label for="">學號<span class="req-star">*</span></label><input type="text" class="form-control" req="Y" value="A0000000" placeholder="學號" title="請輸入學號"></div></div><div class="col-lg-3 col-md-3"><div class="form-item"><label for="">姓名<span class="req-star">*</span></label><input type="text" class="form-control" req="Y" value="陳煜文" placeholder="姓名" title="請輸入姓名"></div></div><div class="col-lg-12 col-md-12"><div class="form-item"><label for="">備註</label><input type="text" class="form-control" value="" placeholder="備註"></div></div></div></div>'
 
         $(document).on('click','#add_btn',function(){
-            $(".memberlist .listBody").append(html)
+            $(".member-list-page").append(html)
         })
 
         $(document).on('click','.del-btn',function(){
             if (confirm("確認刪除？") == false) {
                 return false
             }else {
-                $(this).closest(".listItem").remove()
+                $(this).closest(".list-item").remove()
             }
         })
 
@@ -715,17 +812,18 @@ $(document).ready(function(){
     }
 
     if ((location.pathname).indexOf("member_c_edit.") >= 0) {
-        var html = '<div class="listItem"><div class="item"><input type="text" class="form-control" req="Y" value="" placeholder="學年度/任職期間" title="請輸入學年度/任職期間"></div><div class="item"><input type="text" class="form-control" req="Y" value="" placeholder="職別" title="請輸入職別"></div><div class="item"><input type="text" class="form-control" req="Y" value="" placeholder="姓名" title="請輸入姓名"></div><div class="item"><input type="text" class="form-control" req="Y" value="" placeholder="學號" title="請輸入學號"></div><div class="item"><input type="text" class="form-control" req="Y" value="" placeholder="學系年級" title="請輸入學系年級"></div><div class="item item-sm"><select name="" id="" class="form-control" req="Y" title="請選擇生理性別"><option value="" disabled selected>請選擇</option><option value="女">女</option><option value="男">男</option><option value="其他">其他</option></select></div><div class="item item-lg"><input type="tel" class="form-control" req="Y" value="" placeholder="連絡電話" title="請輸入連絡電話"></div><div class="item item-lg"><input type="email" class="form-control" req="Y" value="" placeholder="Email" title="請輸入Email"></div><div class="item"><input type="text" class="form-control" value="" placeholder="其他"></div><div class="item"><button class="btn del-btn" type="button"><i class="fas fa-times"></i></button></div></div>'
+        var html = '<div class="list-item"><div class="text-end"><button class="btn del-btn" type="button"><i class="fas fa-times"></i></button></div><div class="row"><div class="col-lg-3 col-md-3"><div class="form-item"><label for="">學年度</label><input type="text" class="form-control" req="Y" value="111" readonly></div></div><div class="col-lg-9 col-md-9"><div class="form-item"><label for="">任職期間<span class="req-star">*</span></label><div class="d-flex align-items-center"><input type="date" class="form-control" req="Y" placeholder="任職期間開始日期" title="請輸入任職期間開始日期"><span class="mx-1">至</span><input type="date" class="form-control" req="Y" placeholder="任職期間結束日期" title="請輸入任職期間結束日期"></div></div></div><div class="col-lg-3 col-md-3"><div class="form-item"><label for="">職別<span class="req-star">*</span></label><input type="text" class="form-control" req="Y" value="" placeholder="職別" title="請輸入職別"></div></div><div class="col-lg-3 col-md-3"><div class="form-item"><label for="">姓名<span class="req-star">*</span></label><input type="text" class="form-control" req="Y" value="" placeholder="姓名" title="請輸入姓名"></div></div><div class="col-lg-3 col-md-3"><div class="form-item"><label for="">學號<span class="req-star">*</span></label><input type="text" class="form-control" req="Y" value="" placeholder="學號" title="請輸入學號"></div></div><div class="col-lg-3 col-md-3"><div class="form-item"><label for="">學系年級<span class="req-star">*</span></label><input type="text" class="form-control" req="Y" value="" placeholder="學系年級" title="請輸入學系年級"></div></div><div class="col-lg-3 col-md-3"><div class="form-item"><label for="">生理性別<span class="req-star">*</span></label><select name="" id="" class="form-control" req="Y" title="請選擇生理性別"><option value="" selected disabled>請選擇</option><option value="女">女</option><option value="男">男</option><option value="其他">其他</option></select></div></div>'
+        html += '<div class="col-lg-3 col-md-3"><div class="form-item"><label for="">連絡電話<span class="req-star">*</span></label><input type="tel" class="form-control" req="Y" value="" placeholder="連絡電話" title="請輸入連絡電話"></div></div><div class="col-lg-6 col-md-6"><div class="form-item"><label for="">Email<span class="req-star">*</span></label><input type="email" class="form-control" req="Y" value="" placeholder="Email" title="請輸入Email"></div></div><div class="col-lg-12 col-md-12"><div class="form-item"><label for="">其他</label><input type="text" class="form-control" value="" placeholder="其他"></div></div></div></div>'
 
         $(document).on('click','#add_btn',function(){
-            $(".memberlist .listBody").append(html)
+            $(".member-list-page").append(html)
         })
 
         $(document).on('click','.del-btn',function(){
             if (confirm("確認刪除？") == false) {
                 return false
             }else {
-                $(this).closest(".listItem").remove()
+                $(this).closest(".list-item").remove()
             }
         })
 
@@ -762,9 +860,14 @@ $(document).ready(function(){
         }) 
     }
 
-
+    // 列印按鈕
     $(document).on('click','.print-btn',function(){
         window.print();
     })
     
+    // 返回上一頁
+    $('.go-back-btn').on('click', function() {
+        history.back(-1)
+    })
+
 })

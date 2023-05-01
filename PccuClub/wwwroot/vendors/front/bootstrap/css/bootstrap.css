@@ -4514,10 +4514,16 @@ textarea.form-control-lg {
 	padding-left: var(--bs-breadcrumb-item-padding-x);
 }
 .breadcrumb-item + .breadcrumb-item::before {
-	float: left;
-	padding-right: var(--bs-breadcrumb-item-padding-x);
-	color: var(--bs-breadcrumb-divider-color);
-	content: var(--bs-breadcrumb-divider, "/") /* rtl: var(--bs-breadcrumb-divider, "/") */;
+	font-family: 'simple-line-icons';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+	content: "\e606";
 }
 .breadcrumb-item.active {
 	color: var(--bs-breadcrumb-item-active-color);

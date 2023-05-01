@@ -10,6 +10,8 @@ namespace WebPccuClub.Global.Extension
 {
     public static class SystemMenu
     {
+        #region 後台
+
         /// <summary>
         /// 建立使用者選單
         /// </summary>
@@ -114,6 +116,136 @@ namespace WebPccuClub.Global.Extension
 
             return SiteMap;
         }
+
+        #endregion
+
+        #region 前台
+
+        #region Header
+
+
+        /// <summary>
+        /// 取得HeaderMenu
+        /// </summary>
+        /// <param name="thisUser">LoginUser</param>
+        public static string CreateFrontUserHeadMenu(this UserInfo thisUser, string baseurl, object routeurl = null)
+        {
+            StringBuilder Menu = new StringBuilder();
+
+            if (thisUser != null)
+            {
+                List<FunInfo> rootMenu = thisUser.UserRoleFun.FindAll(f => f.MenuUpNode == "-1" && f.IsVisIble == true);
+                foreach (FunInfo menu in rootMenu.OrderBy(p => p.SortOrder))
+                {
+                    StringBuilder thisUserMenu = BuildFUserHeadMenu(menu, thisUser, baseurl, routeurl);
+                    Menu.Append(thisUserMenu.ToString());
+                }
+            }
+
+            return Menu.ToString();
+        }
+
+        /// <summary>
+        /// 建立使用者選單項目
+        /// </summary>
+        /// <param name="rootNode">選單</param>
+        /// <returns></returns>
+        private static StringBuilder BuildFUserHeadMenu(FunInfo rootMenu, UserInfo thisUser, string baseurl, object routeurl = null)
+        {
+            List<FunInfo> roleFuns = thisUser.UserRoleFun;
+            StringBuilder MenuBuilder = new StringBuilder();
+            List<FunInfo> subMenus = roleFuns.FindAll(f => f.MenuUpNode == rootMenu.MenuNode);
+
+            string suburl = GetSubUrl();
+            string funUrl = string.IsNullOrEmpty(rootMenu.Url) ? "#" : rootMenu.Url;
+            string leftHtml = "";
+
+            string sitemap = GetUserSiteMap(thisUser, routeurl);
+            string[] arr = sitemap.Split("|");
+            string RouteUpNode = thisUser.UserRoleFun.Find(f => f.MenuNode == arr[0]) == null ? arr[0] : thisUser.UserRoleFun.Find(f => f.MenuNode == arr[0]).MenuNode;
+            string RouteFunUrl = thisUser.UserRoleFun.Find(f => f.MenuNode == arr[1]) == null ? arr[1] : thisUser.UserRoleFun.Find(f => f.MenuNode == arr[1]).Url;
+
+            if (subMenus.Any(f => f.Url == RouteFunUrl))
+            {
+
+                leftHtml = $@"<li><a class='nav-link active current-page-active' href='{baseurl}{funUrl}'>{rootMenu.MenuName}</a></li>";
+            }
+            else
+            {
+                leftHtml = $@"<li><a class='nav-link' href='{baseurl}{funUrl}'>{rootMenu.MenuName}</a></li>";
+            }
+
+            MenuBuilder.Append(leftHtml);
+
+            return MenuBuilder;
+        }
+
+        #endregion
+
+        #region Side
+
+        /// <summary>
+        /// 建立使用者選單
+        /// </summary>
+        /// <param name="thisUser">LoginUser</param>
+        public static string CreateFrontUserMenu(this UserInfo thisUser, string baseurl, object routeurl = null)
+        {
+            StringBuilder Menu = new StringBuilder();
+
+            if (thisUser != null)
+            {
+                List<FunInfo> rootMenu = thisUser.UserRoleFun.FindAll(f => f.MenuUpNode == "-1" && f.IsVisIble == true);
+
+                foreach (FunInfo menu in rootMenu.OrderBy(p => p.SortOrder))
+                {
+                    StringBuilder thisUserMenu = BuildFUserMenu(menu, thisUser, baseurl, routeurl);
+                    Menu.Append(thisUserMenu.ToString());
+                }
+            }
+
+            return Menu.ToString();
+        }
+
+        /// <summary>
+        /// 建立使用者選單項目
+        /// </summary>
+        /// <param name="rootNode">選單</param>
+        /// <returns></returns>
+        private static StringBuilder BuildFUserMenu(FunInfo rootMenu, UserInfo thisUser, string baseurl, object routeurl = null)
+        {
+            List<FunInfo> roleFuns = thisUser.UserRoleFun;
+            StringBuilder MenuBuilder = new StringBuilder();
+            List<FunInfo> subMenus = roleFuns.FindAll(f => f.MenuUpNode == rootMenu.MenuNode);
+
+            string suburl = GetSubUrl();
+            string funUrl = string.IsNullOrEmpty(rootMenu.Url) ? "#" : rootMenu.Url;
+
+            string sitemap = GetUserSiteMap(thisUser, routeurl);
+            string[] arr = sitemap.Split("|");
+            string RouteUpNode = thisUser.UserRoleFun.Find(f => f.MenuNode == arr[0]) == null ? arr[0] : thisUser.UserRoleFun.Find(f => f.MenuNode == arr[0]).MenuNode;
+            string RouteFunUrl = thisUser.UserRoleFun.Find(f => f.MenuNode == arr[1]) == null ? arr[1] : thisUser.UserRoleFun.Find(f => f.MenuNode == arr[1]).Url;
+
+            if (subMenus.Any(f => f.Url == "/" + routeurl))
+            {
+                foreach (var item in subMenus)
+                {
+                    if ("/" + routeurl == item.Url)
+                    {
+                        MenuBuilder.Append($@"<li><a class='sideitem active' href='{baseurl}{funUrl}'>{item.MenuName}</a></li>");
+                    }
+                    else
+                    {
+                        MenuBuilder.Append($@"<li><a class='sideitem' href='{baseurl}{funUrl}'>{item.MenuName}</a></li>");
+                    }
+                }
+            }
+
+            return MenuBuilder;
+        }
+
+        #endregion
+
+        #endregion
 
         /// <summary>
         /// IIS子目錄

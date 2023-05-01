@@ -13,12 +13,11 @@ using WebPccuClub.DataAccess;
 
 namespace WebPccuClub.Controllers
 {
-    public class BaseController : Controller
+    public class FBaseController : Controller
     {
         BaseDataAccess dbAccess = new BaseDataAccess();
 
         #region 共用屬性
-        //private const string strConst_LoginPageUrl = @"/BakeendLogin";
         private const string strConst_LoginPageUrl = @"/FrontLogin";
         private const string strConst_DefaultPageUrl = @"/Home/Index?node=-1";
         private const string strConst_Timeout = "操作逾時，請重新登入！";
@@ -163,21 +162,12 @@ namespace WebPccuClub.Controllers
 
         #endregion 頁面導向
 
-        public BaseController()
+        public FBaseController()
         { }
 
         /// <summary> OnActionExecuting </summary>
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            if (!CheckUserAuth(1))
-            {
-                filterContext.Result = AlertMsgRedirect(strConst_Timeout, SystemMenu.GetSubUrl() + strConst_LoginPageUrl);
-            }
-            else if (!CheckUserAuth(2))
-            {
-                filterContext.Result = AlertMsgRedirect(strConst_NoAccess, SystemMenu.GetSubUrl() + strConst_DefaultPageUrl);
-            }
-
             ModelState.Clear();
 
             var controller = (ControllerBase)filterContext.Controller;
