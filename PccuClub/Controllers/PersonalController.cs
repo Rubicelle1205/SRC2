@@ -18,7 +18,7 @@ namespace WebPccuClub.Controllers
         public IActionResult Index()
         {
             PersonalViewModel vm = new PersonalViewModel();
-            vm.EditModel = dbAccess.GetSearchResult().FirstOrDefault();
+            vm.EditModel = dbAccess.GetSearchResult(LoginUser.LoginId).FirstOrDefault();
             return View(vm);
         }
 

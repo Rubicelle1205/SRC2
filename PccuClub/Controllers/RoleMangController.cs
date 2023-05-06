@@ -16,7 +16,7 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WebPccuClub.Controllers
 {
-    [LogAttribute(LogActionChineseName.管理員及權限設定)]
+    [LogAttribute(LogActionChineseName.角色權限設定)]
     public class RoleMangController : BaseController
     {
         ReturnViewModel vmRtn = new ReturnViewModel();

@@ -1,5 +1,6 @@
 ﻿using DataAccess;
 using Microsoft.AspNetCore.Components.Forms;
+using NPOI.POIFS.Crypt;
 using PccuClub.WebAuth;
 using System.Data;
 using System.Text.Encodings.Web;
@@ -10,7 +11,7 @@ namespace WebPccuClub.DataAccess
 {
     public class PersonalDataAccess : BaseAccess
     {
-        public List<PersonalEditModel> GetSearchResult()
+        public List<PersonalEditModel> GetSearchResult(string LoginId)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -18,10 +19,13 @@ namespace WebPccuClub.DataAccess
             DBAParameter parameters = new DBAParameter();
             #region 參數設定
 
+            parameters.Add("@LoginId", LoginId);
+
             #endregion
 
             CommandText = $@"SELECT LoginId, UserName, EMail, Creator, Created, LastModifier, LastModified
-                               FROM UserMain";
+                               FROM UserMain
+                              WHERE LoginId = @LoginId";
 
             (DbExecuteInfo info, IEnumerable<PersonalEditModel> entitys) dbResult = DbaExecuteQuery<PersonalEditModel>(CommandText, parameters, true, DBAccessException);
 
