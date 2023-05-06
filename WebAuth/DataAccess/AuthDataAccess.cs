@@ -75,8 +75,9 @@ namespace WebAuth.DataAccess
                            inner join SystemMenu SM on SM.MenuNode=RF.MenuNode
                            inner join SystemFun F on F.FunId=SM.FunId
                            where 1 = 1
-                           AND R.LoginId = @LoginId 
-                           AND SM.BackOrFront = @BackOrFront ";
+                             AND R.LoginId = @LoginId 
+                             AND SM.BackOrFront = @BackOrFront
+                        ORDER BY SM.SortOrder";
 
             (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) result = dbAccess.DbaExecuteQuery<FunInfo>(SQL, parameter, false, null);
 
