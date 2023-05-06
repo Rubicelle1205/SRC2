@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Views\RoleMang\Index.cshtml~RF1eb3cd6.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AntiXSS" Version="4.3.0" />
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.9" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />

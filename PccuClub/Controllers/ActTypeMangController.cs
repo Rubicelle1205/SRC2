@@ -213,6 +213,7 @@ namespace WebPccuClub.Controllers
 
                 if (!dbResult.isSuccess)
                 {
+                    dbAccess.DbaRollBack();
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "新增失敗";
                     return Json(vmRtn);
@@ -243,6 +244,7 @@ namespace WebPccuClub.Controllers
 
                 if (!dbResult.isSuccess)
                 {
+                    dbAccess.DbaRollBack();
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "修改失敗";
                     return Json(vmRtn);

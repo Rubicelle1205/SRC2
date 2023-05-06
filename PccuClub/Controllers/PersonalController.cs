@@ -47,6 +47,7 @@ namespace WebPccuClub.Controllers
 
                 if (!dbResult.isSuccess)
                 {
+                    dbAccess.DbaRollBack();
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = string.Format(@"更新失敗:{0}", dbResult.ErrorMessage);
                     return Json(vmRtn);

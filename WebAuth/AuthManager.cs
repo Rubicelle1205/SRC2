@@ -120,11 +120,69 @@ namespace PccuClub.WebAuth
             return true;
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="功能清單List">功能清單List</param>
+        /// <returns>驗證結果(True:驗證成功，False:驗證失敗)</returns>
+
+        /// <summary>
+        /// 取得功能清單
+        /// </summary>
+        /// <param name="BackOrFront">前台或後台或全部</param>
+        /// <param name="LstFunInfo">功能清單List</param>
+        /// <returns>驗證結果(True:驗證成功，False:驗證失敗)</returns>
+        public bool SelectAllFunInfo(string BackOrFront, out List<FunInfo> LstFunInfo)
+        {
+            LstFunInfo = new List<FunInfo>();
+
+            try
+            {
+                // 查詢功能
+                (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = dbAccess.SelectAllFunInfo(BackOrFront);
+                if (!funResult.Info.isSuccess)
+                { return false; }
+
+                LstFunInfo = funResult.entitys.ToList();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool SelectAllRoleFun(out List<RoleFunInfo> lstRoleFun)
+        {
+            lstRoleFun = new List<RoleFunInfo>();
+
+            try
+            {
+                // 查詢功能
+                (DbExecuteInfo Info, IEnumerable<RoleFunInfo> entitys) funResult = dbAccess.SelectAllFunInfo();
+                if (!funResult.Info.isSuccess)
+                { return false; }
+
+                lstRoleFun = funResult.entitys.ToList();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public string EncryptionText(string str)
         {
             EncryptUtil Encrypt = new EncryptUtil("WebPccuAuth");
             
             return Encrypt.Encrypt(str);
         }
+
+       
     }
 }

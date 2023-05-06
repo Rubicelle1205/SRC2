@@ -38,4 +38,12 @@ namespace WebAuth.Entity
         /// <summary> 排序 </summary>
         public int SortOrder { get; set; }
     }
+
+
+    public class RoleFunInfo
+    {
+        public string RoleID { get; set; }
+
+        public string MenuNode { get; set; }
+    }
 }

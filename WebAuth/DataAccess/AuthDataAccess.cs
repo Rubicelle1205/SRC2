@@ -74,10 +74,44 @@ namespace WebAuth.DataAccess
                            inner join SystemRoleFun RF on RF.RoleId=R.RoleId
                            inner join SystemMenu SM on SM.MenuNode=RF.MenuNode
                            inner join SystemFun F on F.FunId=SM.FunId
-                           where R.LoginId = @LoginId 
+                           where 1 = 1
+                           AND R.LoginId = @LoginId 
                            AND SM.BackOrFront = @BackOrFront ";
 
             (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) result = dbAccess.DbaExecuteQuery<FunInfo>(SQL, parameter, false, null);
+
+            return result;
+        }
+
+        public (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) SelectAllFunInfo(string BackOrFront = null)
+        {
+            DBAParameter parameter = new DBAParameter();
+
+            parameter.Add("@BackOrFront", BackOrFront);
+
+            string SQL = @"select SM.MenuNode, SM.MenuName, SM.MenuUpNode, SM.IconTag, F.Url, SM.IsEnable, SM.IsVisIble, SM.SortOrder
+                           from SystemRole SR
+                           inner join UserRole R on R.RoleId=SR.RoleId
+                           inner join SystemRoleFun RF on RF.RoleId=R.RoleId
+                           inner join SystemMenu SM on SM.MenuNode=RF.MenuNode
+                           inner join SystemFun F on F.FunId=SM.FunId
+                           where 1 = 1
+                           AND (@BackOrFront IS NULL OR SM.BackOrFront = @BackOrFront) ";
+
+            (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) result = dbAccess.DbaExecuteQuery<FunInfo>(SQL, parameter, false, null);
+
+            return result;
+        }
+
+        public (DbExecuteInfo Info, IEnumerable<RoleFunInfo> entitys) SelectAllFunInfo()
+        {
+            DBAParameter parameter = new DBAParameter();
+
+            
+
+            string SQL = @"select * from SystemRoleFun ";
+
+            (DbExecuteInfo Info, IEnumerable<RoleFunInfo> entitys) result = dbAccess.DbaExecuteQuery<RoleFunInfo>(SQL, parameter, false, null);
 
             return result;
         }
