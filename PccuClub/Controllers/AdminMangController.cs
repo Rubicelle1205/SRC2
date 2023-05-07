@@ -1,5 +1,6 @@
 ﻿using DataAccess;
 using Microsoft.AspNetCore.Mvc;
+using NPOI.POIFS.Crypt;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -16,16 +17,16 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WebPccuClub.Controllers
 {
-    [LogAttribute(LogActionChineseName.角色權限設定)]
-    public class RoleMangController : BaseController
+    [LogAttribute(LogActionChineseName.管理員維護)]
+    public class AdminMangController : BaseController
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
-        RoleMangDataAccess dbAccess = new RoleMangDataAccess();
+        AdminMangDataAccess dbAccess = new AdminMangDataAccess();
         AuthManager auth = new AuthManager();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
-        public RoleMangController(IHostingEnvironment _hostingEnvironment)
+        public AdminMangController(IHostingEnvironment _hostingEnvironment)
         {
             hostingEnvironment = _hostingEnvironment;
         }
@@ -34,11 +35,12 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.首頁)]
         public IActionResult Index()
         {
-            ViewBag.ddlFunInfo = dbAccess.GetAllFunInfo();
+            ViewBag.ddlRole = dbAccess.GetAllRole();
+            ViewBag.ddlIsEnable = dbAccess.GetIsEnable();
             ViewBag.ddlLifeClass = dbAccess.GetAllLifeClass();
 
-            RoleMangViewModel vm = new RoleMangViewModel();
-            vm.ConditionModel = new RoleMangConditionModel();
+            AdminMangViewModel vm = new AdminMangViewModel();
+            vm.ConditionModel = new AdminMangConditionModel();
 
             return View(vm);
         }
@@ -46,72 +48,35 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public IActionResult Create()
         {
-            ViewBag.ddlFunInfo = dbAccess.GetAllFunInfo();
+            ViewBag.ddlRole = dbAccess.GetAllRole();
+            ViewBag.ddlIsEnable = dbAccess.GetIsEnable();
+            ViewBag.ddlLifeClass = dbAccess.GetAllLifeClass();
 
-            RoleMangViewModel vm = new RoleMangViewModel();
-            vm.CreateModel = new RoleMangCreateModel();
+            AdminMangViewModel vm = new AdminMangViewModel();
+            vm.CreateModel = new AdminMangCreateModel();
             return View(vm);
         }
 
         [Log(LogActionChineseName.編輯)]
-        public IActionResult Edit(string submitBtn, RoleMangViewModel vm)
+        public IActionResult Edit(string submitBtn, AdminMangViewModel vm)
         {
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
-            ViewBag.ddlFunInfo = dbAccess.GetAllFunInfo();
+            ViewBag.ddlRole = dbAccess.GetAllRole();
+            ViewBag.ddlIsEnable = dbAccess.GetIsEnable();
+            ViewBag.ddlLifeClass = dbAccess.GetAllLifeClass();
 
             vm.EditModel = dbAccess.GetEditData(submitBtn);
-            vm.EditModel.LstFunItem = dbAccess.GetUserFunInfo(vm.EditModel.RoleId);
 
             return View(vm);
         }
 
         [LogAttribute(LogActionChineseName.查詢)]
-        public IActionResult GetSearchResult(RoleMangViewModel vm)
+        public IActionResult GetSearchResult(AdminMangViewModel vm)
         {
             vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel).ToList();
 
-            List<FunInfo> LstAllFunInfo = new List<FunInfo>();
-            auth.SelectAllFunInfo(null, out LstAllFunInfo);
-
-            List<RoleFunInfo> LstAllRoleFun = new List<RoleFunInfo>();
-            auth.SelectAllRoleFun(out LstAllRoleFun);
-
-            List<RoleFunInfo> oRoleFunInfo = new List<RoleFunInfo>();
-
-            foreach (RoleMangResultModel item in vm.ResultModel)
-            {
-                List<FunInfo> oFunInfo = new List<FunInfo>();
-
-                oRoleFunInfo = LstAllRoleFun.Where(x => x.RoleID == item.RoleId).ToList();
-
-                foreach (RoleFunInfo item2 in oRoleFunInfo)
-                {
-                    FunInfo fun = new FunInfo();
-                    fun = LstAllFunInfo.Where(x => x.MenuNode == item2.MenuNode && x.MenuUpNode != "-1" && item2.RoleID == item.RoleId).FirstOrDefault();
-                    
-                    if(fun != null)
-                        oFunInfo.Add(fun);
-                }
-
-                item.LstFunInfo = oFunInfo;
-            }
-
-            if (vm.ConditionModel.MenuNode != null) {
-
-                List<RoleMangResultModel> oResult = new List<RoleMangResultModel>();
-
-                foreach (RoleMangResultModel item in vm.ResultModel) {
-                    var r = item.LstFunInfo.Where(x => x.MenuNode == vm.ConditionModel.MenuNode).FirstOrDefault();
-
-                    if (r != null)
-                        oResult.Add(item);
-                }
-
-                vm.ResultModel = oResult;
-            }
-                
                 #region 分頁
         vm.ConditionModel.TotalCount = vm.ResultModel.Count();
             int StartRow = vm.ConditionModel.Page * vm.ConditionModel.PageSize;
@@ -123,22 +88,27 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.新增儲存)]
         [ValidateInput(false)]
-        public IActionResult SaveNewData(RoleMangViewModel vm)
+        public IActionResult SaveNewData(AdminMangViewModel vm)
         {
             try
             {
-                vm.EditModel = dbAccess.GetEditData(vm.CreateModel.RoleId);
+                vm.EditModel = dbAccess.GetEditData(vm.CreateModel.LoginId);
 
                 if (vm.EditModel != null)
                 {
+                    dbAccess.DbaRollBack();
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "新增失敗，角色代碼" + vm.CreateModel.RoleId + "已存在";
+                    vmRtn.ErrorMsg = String.Format("管理者帳號:{0}已存在", vm.CreateModel.LoginId);
                     return Json(vmRtn);
                 }
 
                 dbAccess.DbaInitialTransaction();
 
-                var dbResult = dbAccess.InsertData(vm, LoginUser);
+                string EncryptPw = String.Empty;
+                if (!string.IsNullOrEmpty(vm.CreateModel.Password))
+                    EncryptPw = auth.EncryptionText(vm.CreateModel.Password);
+
+                var dbResult = dbAccess.InsertData(vm, LoginUser, EncryptPw);
 
                 if (!dbResult.isSuccess)
                 {
@@ -148,17 +118,24 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
-                if (!string.IsNullOrEmpty(vm.CreateModel.strFunInfo))
-                {
-                    dbResult = dbAccess.InsertFunData(vm);
+                dbResult = dbAccess.InsertLifeClass(vm, LoginUser);
 
-                    if (!dbResult.isSuccess)
-                    {
-                        dbAccess.DbaRollBack();
-                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        vmRtn.ErrorMsg = "新增失敗";
-                        return Json(vmRtn);
-                    }
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                dbResult = dbAccess.InsertRole(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
                 }
 
                 dbAccess.DbaCommit();
@@ -176,13 +153,17 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
-        public IActionResult EditOldData(RoleMangViewModel vm)
+        public IActionResult EditOldData(AdminMangViewModel vm)
         {
             try
             {
                 dbAccess.DbaInitialTransaction();
 
-                var dbResult = dbAccess.UpdateData(vm, LoginUser);
+                string EncryptPw = String.Empty;
+                if (!string.IsNullOrEmpty(vm.EditModel.Password))
+                    EncryptPw = auth.EncryptionText(vm.EditModel.Password);
+
+                var dbResult = dbAccess.UpdateData(vm, LoginUser, EncryptPw);
 
                 if (!dbResult.isSuccess)
                 {
@@ -192,18 +173,26 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
-                if (!string.IsNullOrEmpty(vm.EditModel.strFunInfo))
-                {
-                    dbResult = dbAccess.UpdateFunData(vm);
+                dbResult = dbAccess.UpdateLifeClass(vm, LoginUser);
 
-                    if (!dbResult.isSuccess)
-                    {
-                        dbAccess.DbaRollBack();
-                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        vmRtn.ErrorMsg = "修改失敗";
-                        return Json(vmRtn);
-                    }
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
                 }
+
+                dbResult = dbAccess.UpdateRole(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
 
                 dbAccess.DbaCommit();
             }
@@ -226,9 +215,9 @@ namespace WebPccuClub.Controllers
             {
                 dbAccess.DbaInitialTransaction();
 
-                var dbResult = dbAccess.DeleteFunData(Ser);
+                var dbResult = dbAccess.DeleteRole(Ser);
 
-                if (!dbResult.isSuccess)
+                if (!dbResult.isSuccess) 
                 {
                     dbAccess.DbaRollBack();
                     vmRtn.ErrorCode =  (int)DBActionChineseName.失敗;
@@ -236,7 +225,17 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
-                 dbResult = dbAccess.DeletetData(Ser);
+                dbResult = dbAccess.DeleteLifeClass(Ser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "刪除失敗";
+                    return Json(vmRtn);
+                }
+
+                dbResult = dbAccess.DeletetData(Ser);
 
                 if (!dbResult.isSuccess)
                 {

@@ -31,6 +31,7 @@
         期限日期 = 17,
         活動性質項目 = 18,
         角色權限設定 = 19,
+        管理員維護 = 20,
     }
 
     public enum DBActionChineseName
