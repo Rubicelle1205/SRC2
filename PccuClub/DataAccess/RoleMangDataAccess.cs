@@ -281,6 +281,27 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
         }
 
         /// <summary>
+        /// 刪除角色資料
+        /// </summary>
+        /// <param name="ser"></param>
+        /// <returns></returns>
+        public DbExecuteInfo DeletetUserRole(string ser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@RoleId", ser);
+            #endregion 參數設定
+
+            string CommendText = $@"DELETE FROM UserRole WHERE RoleId = @RoleId ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        /// <summary>
         /// 刪除功能資料
         /// </summary>
         /// <param name="ser"></param>
