@@ -5,6 +5,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using PccuClub.WebAuth;
 using System.ComponentModel;
+using System.Data;
 using System.Reflection;
 using System.Web.Mvc;
 using Utility;
@@ -224,6 +225,16 @@ namespace WebPccuClub.Controllers
         {
             try
             {
+                DataTable dt = dbAccess.ChkHasOtherUseRole(Ser);
+
+                if (dt.Rows.Count > 0)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "此角色仍有帳號在使用，不可刪除";
+                    return Json(vmRtn);
+                }
+
                 dbAccess.DbaInitialTransaction();
 
                 var dbResult = dbAccess.DeleteFunData(Ser);

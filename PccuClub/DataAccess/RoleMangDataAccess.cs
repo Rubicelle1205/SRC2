@@ -398,5 +398,30 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
             return new List<SelectListItem>();
         }
 
+        public DataTable ChkHasOtherUseRole(string ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@RoleId", ser);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"
+                            SELECT A.RoleId, A.LoginId, B.RoleName
+                              FROM UserRole A
+                         LEFT JOIN SystemRole B ON B.RoleId = A.RoleId
+                             WHERE 1 = 1
+                               AND A.RoleId = @RoleId";
+
+
+            (DbExecuteInfo info, IEnumerable<RoleMangEditModel> entitys) dbResult = DbaExecuteQuery<RoleMangEditModel>(CommandText, parameters, true, DBAccessException);
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+            return ds.Tables[0];
+        }
     }
 }
