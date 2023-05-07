@@ -1,6 +1,7 @@
 $(function () {
     
-    if ((location.pathname).indexOf("Personal") >= 0 || (location.pathname).indexOf("AdminMang") >= 0) {
+    if ((location.pathname).indexOf("Personal") >= 0 || (location.pathname).indexOf("AdminMang") >= 0 ||
+        (location.pathname).indexOf("UserMang") >= 0) {
         //###############以下為通用fun#######################//
 
         //避免任何場合下ENTER送出
@@ -26,7 +27,8 @@ $(function () {
         })
 
         //###############以下為特定頁面fun#######################//
-        if ((location.pathname).indexOf("Personal") >= 0 || (location.pathname).indexOf("AdminMang") >= 0) {
+        if ((location.pathname).indexOf("Personal") >= 0 || (location.pathname).indexOf("AdminMang") >= 0 ||
+            (location.pathname).indexOf("UserMang") >= 0) {
             // 密碼驗證
             $('[id$=Password]').blur(function () {
                 var result = validatePasswd('[id$=Password]', '#passwdRules', 6, 15)

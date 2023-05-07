@@ -1,0 +1,221 @@
+﻿@model WebPccuClub.Models.UserMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+    var LstAllFunInfo = ViewBag.ddlFunInfo;
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body table-responsive-sm">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                            <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                        </h6>
+                        @if (null != Model.EditModel)
+                        {
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Created)</th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.Created)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.LastModified)</th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.LastModified)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.IsEnable)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.IsEnable ,(List<SelectListItem>)ViewBag.ddlIsEnable,"是否啟用", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.LifeClass)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.LifeClass,(List<SelectListItem>)ViewBag.ddlLifeClass,"請選擇組別", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.RoleId)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.RoleId,(List<SelectListItem>)ViewBag.ddlRole,"請選擇角色", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.UserName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.UserName, new {@class="form-control", placeholder="請輸入使用者名稱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.LoginId)<span class="required">*</span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.LoginId, new {@class="form-control", placeholder="請輸入使用者帳號"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.EMail)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.EMail, new {@class="form-control", placeholder="請輸入使用者信箱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            @Html.LabelFor(m => m.EditModel.Password)
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
+                                        </th>
+                                        <td>
+                                            <div class="input-group">
+                                                @Html.PasswordFor(m => m.EditModel.Password, new {@class="form-control", placeholder="請輸入密碼"})
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text" id="pwvisible1"><i class="fa-solid fa-eye-slash"></i></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            @Html.LabelFor(m => m.EditModel.ConformPassword)
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
+                                        </th>
+                                        <td>
+                                            <div class="input-group">
+                                                @Html.PasswordFor(m => m.EditModel.ConformPassword, new {@class="form-control", placeholder="請再輸入一次密碼"})
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text" id="pwvisible2"><i class="fa-solid fa-eye-slash"></i></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">密碼規則</th>
+                                        <td class="text-muted text-sm">
+                                            <ul class="m-0" id="passwdRules">
+                                                <li id="isValidLength">長度需介於6 ~ 15位</li>
+                                                <li id="isContainsUpperOrLowercase">至少包含一大寫或小寫英文字母</li>
+                                                <li id="isContainsNumber">至少包含一數字</li>
+                                                <li id="isPassedOverall">符合上述所有規則，且不可夾帶任何特殊符號</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Memo)</th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class="form-control", placeholder="請輸入備註", rows="6"})</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                            @Html.HiddenFor(m => m.EditModel.LoginId)
+                        }
+
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer d-flex justify-content-end">
+                        <button type="button" name="submitBtn" class="btn btn-success" onclick="SaveEditData()">儲存</button>
+                    </div>
+                </div>
+                <!-- /.card -->
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    function SaveEditData() {
+
+        var data = new FormData()
+
+        var IsEnable  = $('#@Html.IdFor(m => m.EditModel.IsEnable)').val();
+        var LifeClass = $('#@Html.IdFor(m => m.EditModel.LifeClass)').val();
+        var RoleId = $('#@Html.IdFor(m => m.EditModel.RoleId)').val();
+        var UserName = $('#@Html.IdFor(m => m.EditModel.UserName)').val();
+        var LoginId = $('#@Html.IdFor(m => m.EditModel.LoginId)').val();
+        var EMail = $('#@Html.IdFor(m => m.EditModel.EMail)').val();
+        var Password = $('#@Html.IdFor(m => m.EditModel.Password)').val();
+        var ConformPassword = $('#@Html.IdFor(m => m.EditModel.ConformPassword)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+        if (IsEnable == "") {
+            $.alert("啟用不可為空");
+            return;
+        }
+        if (LifeClass == "") {
+            $.alert("組別不可為空");
+            return;
+        }
+        if (RoleId == "") {
+            $.alert("角色不可為空");
+            return;
+        }
+        if (UserName == "") {
+            $.alert("管理者名稱不可為空");
+            return;
+        }
+        if (LoginId == "") {
+            $.alert("管理者帳號不可為空");
+            return;
+        }
+        if (EMail == "") {
+            $.alert("管理者信箱不可為空");
+            return;
+        }
+        if (Password != "") {
+            if (ConformPassword == "") {
+                $.alert("確認密碼不可為空");
+                return;
+            }
+
+            if (Password != ConformPassword) {
+                $.alert("密碼與確認密碼需相符");
+                return;
+            }
+        }
+        
+
+        data.append('@Html.NameFor(m => m.EditModel.IsEnable)', IsEnable);
+        data.append('@Html.NameFor(m => m.EditModel.LifeClass)', LifeClass);
+        data.append('@Html.NameFor(m => m.EditModel.RoleId)', RoleId);
+        data.append('@Html.NameFor(m => m.EditModel.UserName)', UserName);
+        data.append('@Html.NameFor(m => m.EditModel.LoginId)', LoginId);
+        data.append('@Html.NameFor(m => m.EditModel.EMail)', EMail);
+        data.append('@Html.NameFor(m => m.EditModel.Password)', Password);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                location.reload();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+    }
+</script>
