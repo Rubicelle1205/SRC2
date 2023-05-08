@@ -151,14 +151,27 @@ namespace WebPccuClub.Controllers
 
                 if (!string.IsNullOrEmpty(vm.CreateModel.strFunInfo))
                 {
-                    dbResult = dbAccess.InsertFunData(vm);
 
-                    if (!dbResult.isSuccess)
+                    string[] arr = vm.CreateModel.strFunInfo.Split(",");
+
+                    if (arr.Length > 0)
                     {
-                        dbAccess.DbaRollBack();
-                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        vmRtn.ErrorMsg = "新增失敗";
-                        return Json(vmRtn);
+                        DataTable dt = dbAccess.GetUpMenuNode(arr);
+
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            arr = arr.Concat(new string[] { dr["MenuUpNode"].ToString() }).ToArray();
+                        }
+
+                        dbResult = dbAccess.UpdateFunData(vm, arr);
+
+                        if (!dbResult.isSuccess)
+                        {
+                            dbAccess.DbaRollBack();
+                            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                            vmRtn.ErrorMsg = "修改失敗";
+                            return Json(vmRtn);
+                        }
                     }
                 }
 
@@ -193,16 +206,30 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
+
                 if (!string.IsNullOrEmpty(vm.EditModel.strFunInfo))
                 {
-                    dbResult = dbAccess.UpdateFunData(vm);
 
-                    if (!dbResult.isSuccess)
+                    string[] arr = vm.EditModel.strFunInfo.Split(",");
+
+                    if (arr.Length > 0)
                     {
-                        dbAccess.DbaRollBack();
-                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        vmRtn.ErrorMsg = "修改失敗";
-                        return Json(vmRtn);
+                        DataTable dt = dbAccess.GetUpMenuNode(arr);
+
+                        foreach(DataRow dr in dt.Rows)
+                        {
+                            arr = arr.Concat(new string[] { dr["MenuUpNode"].ToString() }).ToArray();
+                        }
+
+                        dbResult = dbAccess.UpdateFunData(vm, arr);
+
+                        if (!dbResult.isSuccess)
+                        {
+                            dbAccess.DbaRollBack();
+                            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                            vmRtn.ErrorMsg = "修改失敗";
+                            return Json(vmRtn);
+                        }
                     }
                 }
 

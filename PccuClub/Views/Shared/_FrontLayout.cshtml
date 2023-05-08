@@ -54,33 +54,35 @@
     <link id="googleFonts" href="https://fonts.googleapis.com/css?family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" type="text/css">
 
     <!-- Vendor CSS -->
-    <link href="@Url.Content("~/vendors/front/bootstrap/css/bootstrap.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
-    <link href="@Url.Content("~/vendors/front/fontawesome-free/css/all.min.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
-    <link href="@Url.Content("~/vendors/front/animate/animate.compat.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
-    <link href="@Url.Content("~/vendors/front/simple-line-icons/css/simple-line-icons.min.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
-    <link href="@Url.Content("~/vendors/front/owl.carousel/assets/owl.carousel.min.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
-    <link href="@Url.Content("~/vendors/front/owl.carousel/assets/owl.theme.default.min.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
-    <link href="@Url.Content("~/vendors/front/magnific-popup/magnific-popup.min.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
-    <link href="@Url.Content("~/vendors/front/vanilla-calendar-master/vanilla-calendar.min.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
-    <link href="@Url.Content("~/vendors/front/jquery-ui/jquery-ui.theme.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" href="~/assets/vendor/bootstrap/css/bootstrap.css?v=1">
+	<link rel="stylesheet" href="~/assets/vendor/fontawesome-free/css/all.min.css?v=1">
+	<link rel="stylesheet" href="~/assets/vendor/animate/animate.compat.css">
+	<link rel="stylesheet" href="~/assets/vendor/simple-line-icons/css/simple-line-icons.min.css">
+	<link rel="stylesheet" href="~/assets/vendor/owl.carousel/assets/owl.carousel.min.css">
+	<link rel="stylesheet" href="~/assets/vendor/owl.carousel/assets/owl.theme.default.min.css">
+	<link rel="stylesheet" href="~/assets/vendor/magnific-popup/magnific-popup.min.css">
+	<link rel="stylesheet" href="~/assets/vendor/vanilla-calendar-master/vanilla-calendar.min.css">
+	<link rel="stylesheet" href="~/assets/vendor/jquery-ui/jquery-ui.theme.css">
+
     
-    <!-- Theme CSS -->
-    <link href="@Url.Content("~/css/front/theme.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
-    <link href="@Url.Content("~/css/front/theme-elements.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+	<!-- Theme CSS -->
+	<link rel="stylesheet" href="~/assets/css/theme.css?v=1">
+    <link rel="stylesheet" href="~/assets/css/theme-elements.css?v=1">
 
-    <!-- Demo CSS -->
-    <link href="@Url.Content("~/css/front/demos/demo.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+    
+	<!-- Demo CSS -->
+	<link rel="stylesheet" href="~/assets/css/demos/demo.css?v=1">
 
-    <!-- Skin CSS -->
-    <link href="@Url.Content("~/css/front/skins/skin.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+	<!-- Skin CSS -->
+	<link id="skinCSS" rel="stylesheet" href="~/assets/css/skins/skin.css?v=1">
 
-    <!-- Theme Custom CSS -->
-    <link href="@Url.Content("~/css/front/tools.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
-    <link href="@Url.Content("~/css/front/custom.css")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" rel="stylesheet" type="text/css" />
+	<!-- Theme Custom CSS -->
+	<link rel="stylesheet" href="~/assets/css/tools.css">
+    <link rel="stylesheet" href="~/assets/css/custom.css?v=1">
 
     <script src="~/js/jquery.min.js"></script>
-    <script src="@Url.Content("~/vendors/front/modernizr/modernizr.min.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
-
+	<!-- Head Libs -->
+    <script src="~/assets/vendor/modernizr/modernizr.min.js"></script>
 </head>
 
 <body>
@@ -192,23 +194,15 @@
 </html>
 
 
-
 <!-- Vendor -->
-<script src="@Url.Content("~/vendors/front/plugins/js/plugins.min.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
+<script src="~/assets/vendor/plugins/js/plugins.min.js"></script>
+<script src="~/assets/vendor/jquery-ui/jquery-ui.min.js"></script>
+<script src="~/assets/js/theme.js"></script>
+<script src="~/assets/js/views/view.contact.js"></script>
+<script src="~/assets/js/demos/demo.js"></script>
+<script src="~/assets/js/moment.js"></script>
+<script src="~/assets/vendor/vanilla-calendar-master/vanilla-calendar.min.js"></script>
 
-<script src="@Url.Content("~/vendor/front/jquery-ui/jquery-ui.min.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
-<script src="@Url.Content("~/js/front/theme.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
+<script src="~/assets/js/custom.js?v=1"></script>
 
-<script src="@Url.Content("~/js/front/views/view.contact.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
-<script src="@Url.Content("~/js/front/demos/demo.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
-<script src="@Url.Content("~/js/front/moment.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
-<script src="@Url.Content("~/vendors/front/vanilla-calendar-master/vanilla-calendar.min.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
-
-<script src="@Url.Content("~/js/front/custom.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
-<script src="@Url.Content("~/js/front/theme.init.js")?v=@DateTime.Now.ToString("yyyyMMddHHmmss")" type="text/javascript"></script>
-
-
-
-<script src="~/js/custom.js"></script>
-<script src="~/sweetalert2/sweetalert2.min.js"></script>
-<link href="~/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+<script src="~/assets/js/theme.init.js"></script>

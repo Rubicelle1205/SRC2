@@ -9,6 +9,7 @@ using WebPccuClub.Global.Extension;
 using NPOI.POIFS.Crypt;
 using X.PagedList;
 using MathNet.Numerics.Optimization;
+using System.Runtime.ConstrainedExecution;
 
 namespace WebPccuClub.DataAccess
 {
@@ -206,7 +207,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
         }
 
         /// <summary> 修改功能資料 </summary>
-        public DbExecuteInfo UpdateFunData(RoleMangViewModel vm)
+        public DbExecuteInfo UpdateFunData(RoleMangViewModel vm, string[] arrFun)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
@@ -219,40 +220,31 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
 
             #endregion 參數設定
 
-            if (!string.IsNullOrEmpty(vm.EditModel.strFunInfo))
+            CommendText = $@"DELETE FROM SystemRoleFun WHERE RoleId = @RoleId ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            if (!ExecuteResult.isSuccess)
             {
-                string[] arrFun = vm.EditModel.strFunInfo.Split(",");
+                if (ExecuteResult.ErrorCode != dbErrorCode._EC_NotAffect)
+                    return ExecuteResult;
+            }
 
-                if (arrFun.Count() > 0)
-                {
-                    CommendText = $@"DELETE FROM SystemRoleFun WHERE RoleId = @RoleId ";
+            for (int i = 0; i <= arrFun.Count() - 1; i++)
+            {
+                parameters.Add("@MenuNode", arrFun[i].ToString());
 
-                    ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-                    if (!ExecuteResult.isSuccess)
-                    { 
-                        if(ExecuteResult.ErrorCode != dbErrorCode._EC_NotAffect)
-                            return ExecuteResult;
-                    }
-                        
-
-                    for (int i = 0; i <= arrFun.Count() - 1; i++)
-                    {
-                        parameters.Add("@MenuNode", arrFun[i].ToString());
-
-                        CommendText = $@"INSERT INTO SystemRoleFun
+                CommendText = $@"INSERT INTO SystemRoleFun
                                                (RoleId
                                                ,MenuNode)
                                          VALUES
                                                (@RoleId
                                                ,@MenuNode)";
 
-                        ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+                ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
-                        if (!ExecuteResult.isSuccess)
-                            return ExecuteResult;
-                    }
-                }
+                if (!ExecuteResult.isSuccess)
+                    return ExecuteResult;
             }
 
             return ExecuteResult;
@@ -437,6 +429,42 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
                          LEFT JOIN SystemRole B ON B.RoleId = A.RoleId
                              WHERE 1 = 1
                                AND A.RoleId = @RoleId";
+
+
+            (DbExecuteInfo info, IEnumerable<RoleMangEditModel> entitys) dbResult = DbaExecuteQuery<RoleMangEditModel>(CommandText, parameters, true, DBAccessException);
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+            return ds.Tables[0];
+        }
+
+        public DataTable GetUpMenuNode(string[] arr)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+            string strMenuNode = string.Empty;
+
+            for (int i = 0; i <= arr.Length - 1; i++)
+            {
+                if (i != arr.Length - 1)
+                {
+                    strMenuNode = strMenuNode + string.Format("'{0}',", arr[i]);
+                }
+                else
+                {
+                    strMenuNode = strMenuNode + string.Format("'{0}'", arr[i]);
+                }
+            }
+            
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"
+                            SELECT DISTINCT MenuUpNode
+                              FROM SystemMenu
+                             WHERE 1 = 1
+                               AND MenuNode IN ({strMenuNode})";
 
 
             (DbExecuteInfo info, IEnumerable<RoleMangEditModel> entitys) dbResult = DbaExecuteQuery<RoleMangEditModel>(CommandText, parameters, true, DBAccessException);
