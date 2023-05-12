@@ -163,6 +163,8 @@ namespace WebPccuClub.Controllers
                             arr = arr.Concat(new string[] { dr["MenuUpNode"].ToString() }).ToArray();
                         }
 
+                        arr = arr.Concat(new string[] { "202303180000001" }).ToArray();
+
                         dbResult = dbAccess.UpdateFunData(vm, arr);
 
                         if (!dbResult.isSuccess)
@@ -220,6 +222,8 @@ namespace WebPccuClub.Controllers
                         {
                             arr = arr.Concat(new string[] { dr["MenuUpNode"].ToString() }).ToArray();
                         }
+
+                        arr = arr.Concat(new string[] { "202303180000001" }).ToArray();
 
                         dbResult = dbAccess.UpdateFunData(vm, arr);
 
