@@ -33,6 +33,7 @@
         角色權限設定 = 19,
         管理員維護 = 20,
         使用者維護 = 21,
+        社團基本資料 = 22,
     }
 
     public enum DBActionChineseName

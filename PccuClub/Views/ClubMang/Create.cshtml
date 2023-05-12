@@ -1,0 +1,239 @@
+﻿@model WebPccuClub.Models.ClubMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+    var LstAllFunInfo = ViewBag.ddlFunInfo;
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body table-responsive-sm">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                            <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                        </h6>
+                        @if (null != Model.CreateModel)
+                        {
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ClubId)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.ClubId, new {@class="form-control", placeholder="請輸入社團代號"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.SchoolYear)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇學年度", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ClubCName)</th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.ClubCName, new {@class="form-control", placeholder="請輸入社團中文名稱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ClubEName)</th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.ClubEName, new {@class="form-control", placeholder="請輸入社團英文名稱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.LifeClass)</th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.LifeClass ,(List<SelectListItem>)ViewBag.ddlLifeClass,"請選擇社團組別", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ClubClass)</th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.ClubClass ,(List<SelectListItem>)ViewBag.ddlClubClass,"請選擇社團分類", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Address)</th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.Address, new {@class="form-control", placeholder="請輸入社辦地址"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Tel)</th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.Tel, new {@class="form-control", placeholder="請輸入連絡電話"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.EMail)</th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.EMail, new {@class="form-control", placeholder="請輸入E-mail"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Social1)</th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.Social1, new {@class="form-control", placeholder="請輸入社群連結一"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Social2)</th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.Social2, new {@class="form-control", placeholder="請輸入社群連結二"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Social3)</th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.Social3, new {@class="form-control", placeholder="請輸入社群連結三"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            @Html.LabelFor(m => m.CreateModel.LogoPath)
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">可上傳.jpeg,.jpg,.png</span>
+                                        </th>
+                                        <td style="display:flex;">
+                                            <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
+                                                @Html.TextBoxFor(m => m.CreateModel.LogoPath, new { @type = "file", @class="file", accept = ".jpeg,.jpg,.png" })
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            @Html.LabelFor(m => m.CreateModel.ActImgPath)
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">可上傳.jpeg,.jpg,.png</span>
+                                        </th>
+                                        <td style="display:flex;">
+                                            <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
+                                                @Html.TextBoxFor(m => m.CreateModel.ActImgPath, new { @type = "file", @class="file", accept = ".jpeg,.jpg,.png" })
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ShortInfo)</th>
+                                        <td>@Html.TextAreaFor(m => m.CreateModel.ShortInfo, new {@class="form-control", placeholder="請輸入簡介", rows="6" })</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Memo)</th>
+                                        <td>@Html.TextAreaFor(m => m.CreateModel.Memo, new {@class="form-control", placeholder="請輸入備註", rows="6" })</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        }
+
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer d-flex justify-content-end">
+                        <button type="button" name="submitBtn" class="btn btn-success" onclick="SaveEditData()">儲存</button>
+                    </div>
+                </div>
+                <!-- /.card -->
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    function SaveEditData() {
+
+        var data = new FormData()
+
+        var ClubId = $('#@Html.IdFor(m => m.CreateModel.ClubId)').val();
+        var SchoolYear = $('#@Html.IdFor(m => m.CreateModel.SchoolYear)').val();
+        var ClubCName = $('#@Html.IdFor(m => m.CreateModel.ClubCName)').val();
+        var ClubEName = $('#@Html.IdFor(m => m.CreateModel.ClubEName)').val();
+        var LifeClass = $('#@Html.IdFor(m => m.CreateModel.LifeClass)').val();
+        var ClubClass = $('#@Html.IdFor(m => m.CreateModel.ClubClass)').val();
+        var Address = $('#@Html.IdFor(m => m.CreateModel.Address)').val();
+        var Tel = $('#@Html.IdFor(m => m.CreateModel.Tel)').val();
+        var EMail = $('#@Html.IdFor(m => m.CreateModel.EMail)').val();
+        var Social1 = $('#@Html.IdFor(m => m.CreateModel.Social1)').val();
+        var Social2 = $('#@Html.IdFor(m => m.CreateModel.Social2)').val();
+        var Social3 = $('#@Html.IdFor(m => m.CreateModel.Social3)').val();
+        var ShortInfo = $('#@Html.IdFor(m => m.CreateModel.ShortInfo)').val();
+        var Memo = $('#@Html.IdFor(m => m.CreateModel.Memo)').val();
+
+        if (SchoolYear == "") {
+            $.alert("學年度不可為空");
+            return;
+        }
+
+        if (ClubCName == "") {
+            $.alert("社團中文名稱不可為空");
+            return;
+        }
+
+        if (LifeClass == "") {
+            $.alert("社團組別不可為空");
+            return;
+        }
+
+        if (ClubClass == "") {
+            $.alert("社團分類不可為空");
+            return;
+        }
+
+
+        var Logo = $('#@Html.IdFor(m => m.CreateModel.LogoPath)')[0].files[0];
+        if (typeof Logo !== 'undefined') {
+            var fileExtension = Logo.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("Logo檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.CreateModel.LogoPath)', Logo);
+        }
+
+
+        var ActImg = $('#@Html.IdFor(m => m.CreateModel.ActImgPath)')[0].files[0];
+        if (typeof ActImg !== 'undefined') {
+            var fileExtension = ActImg.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("活動簡圖檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.CreateModel.ActImgPath)', ActImg);
+        }
+
+        data.append('@Html.NameFor(m => m.CreateModel.ClubId)', ClubId);
+        data.append('@Html.NameFor(m => m.CreateModel.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.CreateModel.ClubCName)', ClubCName);
+        data.append('@Html.NameFor(m => m.CreateModel.ClubEName)', ClubEName);
+        data.append('@Html.NameFor(m => m.CreateModel.LifeClass)', LifeClass);
+        data.append('@Html.NameFor(m => m.CreateModel.ClubClass)', ClubClass);
+        data.append('@Html.NameFor(m => m.CreateModel.Address)', Address);
+        data.append('@Html.NameFor(m => m.CreateModel.Tel)', Tel);
+        data.append('@Html.NameFor(m => m.CreateModel.EMail)', EMail);
+        data.append('@Html.NameFor(m => m.CreateModel.Social1)', Social1);
+        data.append('@Html.NameFor(m => m.CreateModel.Social2)', Social2);
+        data.append('@Html.NameFor(m => m.CreateModel.Social3)', Social3);
+        data.append('@Html.NameFor(m => m.CreateModel.ShortInfo)', ShortInfo);
+        data.append('@Html.NameFor(m => m.CreateModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("SaveNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                location.reload();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+</script>

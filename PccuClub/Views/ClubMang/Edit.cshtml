@@ -1,0 +1,263 @@
+﻿@model WebPccuClub.Models.ClubMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+    var LogoPath = Model.EditModel.LogoPath;
+    var ActImgPath = Model.EditModel.ActImgPath;
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body table-responsive-sm">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                            <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                        </h6>
+                        @if (null != Model.EditModel)
+                        {
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Created)</th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.Created)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.LastModified)</th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.LastModified)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubId)<span class="required">*</span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.ClubId)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.SchoolYear)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇學年度", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubCName)</th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ClubCName, new {@class="form-control", placeholder="請輸入社團中文名稱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubEName)</th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ClubEName, new {@class="form-control", placeholder="請輸入社團英文名稱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.LifeClass)</th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.LifeClass ,(List<SelectListItem>)ViewBag.ddlLifeClass,"請選擇社團組別", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubClass)</th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.ClubClass ,(List<SelectListItem>)ViewBag.ddlClubClass,"請選擇社團分類", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Address)</th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Address, new {@class="form-control", placeholder="請輸入社辦地址"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Tel)</th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Tel, new {@class="form-control", placeholder="請輸入連絡電話"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.EMail)</th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.EMail, new {@class="form-control", placeholder="請輸入E-mail"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Social1)</th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Social1, new {@class="form-control", placeholder="請輸入社群連結一"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Social2)</th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Social2, new {@class="form-control", placeholder="請輸入社群連結二"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Social3)</th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Social3, new {@class="form-control", placeholder="請輸入社群連結三"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            @Html.LabelFor(m => m.EditModel.LogoPath)
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">可上傳.jpeg,.jpg,.png</span>
+                                        </th>
+                                        <td style="display:flex;">
+                                            <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
+                                                @Html.TextBoxFor(m => m.EditModel.LogoPath, new { @type = "file", @class="file", accept = ".jpeg,.jpg,.png" })
+                                            </label>
+
+                                            @if (LogoPath != null)
+                                            {
+                                                <label class="upload_cover img-thumbnail" name="file1_prev">
+                                                    <img src="@Model.EditModel.LogoPath" style="width:100%;" />
+                                                </label>
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ActImgPath)
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">可上傳.jpeg,.jpg,.png</span>
+                                        </th>
+                                        <td style="display:flex;">
+                                            <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
+                                                @Html.TextBoxFor(m => m.EditModel.ActImgPath, new { @type = "file", @class="file", accept = ".jpeg,.jpg,.png" })
+                                            </label>
+
+                                            @if (ActImgPath != null)
+                                            {
+                                                <label class="upload_cover img-thumbnail" name="file1_prev">
+                                                    <img src="@Model.EditModel.ActImgPath" style="width:100%;" />
+                                                </label>
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ShortInfo)</th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.ShortInfo, new {@class="form-control", placeholder="請輸入簡介", rows="6" })</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Memo)</th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class="form-control", placeholder="請輸入備註", rows="6" })</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            @Html.HiddenFor(m => m.EditModel.ClubId)
+                        }
+
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer d-flex justify-content-end">
+                        <button type="button" name="submitBtn" class="btn btn-success" onclick="SaveEditData()">儲存</button>
+                    </div>
+                </div>
+                <!-- /.card -->
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    function SaveEditData() {
+
+        var data = new FormData()
+
+        var ClubId = $('#@Html.IdFor(m => m.EditModel.ClubId)').val();
+        var SchoolYear = $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val();
+        var ClubCName = $('#@Html.IdFor(m => m.EditModel.ClubCName)').val();
+        var ClubEName = $('#@Html.IdFor(m => m.EditModel.ClubEName)').val();
+        var LifeClass = $('#@Html.IdFor(m => m.EditModel.LifeClass)').val();
+        var ClubClass = $('#@Html.IdFor(m => m.EditModel.ClubClass)').val();
+        var Address = $('#@Html.IdFor(m => m.EditModel.Address)').val();
+        var Tel = $('#@Html.IdFor(m => m.EditModel.Tel)').val();
+        var EMail = $('#@Html.IdFor(m => m.EditModel.EMail)').val();
+        var Social1 = $('#@Html.IdFor(m => m.EditModel.Social1)').val();
+        var Social2 = $('#@Html.IdFor(m => m.EditModel.Social2)').val();
+        var Social3 = $('#@Html.IdFor(m => m.EditModel.Social3)').val();
+        var ShortInfo = $('#@Html.IdFor(m => m.EditModel.ShortInfo)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+        if (SchoolYear == "") {
+            $.alert("學年度不可為空");
+            return;
+        }
+
+        if (ClubCName == "") {
+            $.alert("社團中文名稱不可為空");
+            return;
+        }
+
+        if (LifeClass == "") {
+            $.alert("社團組別不可為空");
+            return;
+        }
+
+        if (ClubClass == "") {
+            $.alert("社團分類不可為空");
+            return;
+        }
+
+        
+        var Logo = $('#@Html.IdFor(m => m.EditModel.LogoPath)')[0].files[0];
+        if (typeof Logo !== 'undefined') {
+            var fileExtension = Logo.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("Logo檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.EditModel.LogoPath)', Logo);
+        }
+        
+
+        var ActImg = $('#@Html.IdFor(m => m.EditModel.ActImgPath)')[0].files[0];
+        if (typeof ActImg !== 'undefined') {
+            var fileExtension = ActImg.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("活動簡圖檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.EditModel.ActImgPath)', ActImg);
+        }
+        
+        data.append('@Html.NameFor(m => m.EditModel.ClubId)', ClubId);
+        data.append('@Html.NameFor(m => m.EditModel.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.EditModel.ClubCName)', ClubCName);
+        data.append('@Html.NameFor(m => m.EditModel.ClubEName)', ClubEName);
+        data.append('@Html.NameFor(m => m.EditModel.LifeClass)', LifeClass);
+        data.append('@Html.NameFor(m => m.EditModel.ClubClass)', ClubClass);
+        data.append('@Html.NameFor(m => m.EditModel.Address)', Address);
+        data.append('@Html.NameFor(m => m.EditModel.Tel)', Tel);
+        data.append('@Html.NameFor(m => m.EditModel.EMail)', EMail);
+        data.append('@Html.NameFor(m => m.EditModel.Social1)', Social1);
+        data.append('@Html.NameFor(m => m.EditModel.Social2)', Social2);
+        data.append('@Html.NameFor(m => m.EditModel.Social3)', Social3);
+        data.append('@Html.NameFor(m => m.EditModel.ShortInfo)', ShortInfo);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                location.reload();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+    }
+</script>

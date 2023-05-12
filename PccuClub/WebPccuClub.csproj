@@ -34,6 +34,7 @@
 
   <ItemGroup>
     <Folder Include="Connected Services\" />
+    <Folder Include="Upload\" />
   </ItemGroup>
 
 </Project>

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.FileProviders;
 using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +30,13 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+           Path.Combine(builder.Environment.ContentRootPath, "Upload")),
+    RequestPath = "/Upload"
+});
 
 app.UseRouting();
 
