@@ -1,0 +1,131 @@
+﻿@model WebPccuClub.Models.PlaceOutSideMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            @if (null != Model.EditModel)
+                            {
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.Created)</th>
+                                            <td>@Html.DisplayFor(m => m.EditModel.Created)</td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.LastModified)</th>
+                                            <td>@Html.DisplayFor(m => m.EditModel.LastModified)</td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.PlaceName)<span class="required">*</span></th>
+                                            <td>@Html.TextBoxFor(m => m.EditModel.PlaceName, new {@class="form-control", placeholder="請輸入場地名稱"})</td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.CityCode)<span class="required">*</span></th>
+                                            <td>
+                                                @Html.DropDownListFor(m => m.EditModel.CityCode,(List<SelectListItem>)ViewBag.ddlCityCode,"全部所在縣市", new {@class = "form-control"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.PlaceType)<span class="required">*</span></th>
+                                            <td>
+                                                @Html.DropDownListFor(m => m.EditModel.PlaceType,(List<SelectListItem>)ViewBag.ddlPlaceType,"全部場地類型", new {@class = "form-control"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.Memo)</th>
+                                            <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class="form-control", placeholder="請輸入備註", rows="6"})</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+
+                                @Html.HiddenFor(m => m.EditModel.PlaceID)
+                            }
+
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                    @Html.HiddenFor(m => m.EditModel.PlaceID)
+                </form>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+
+    function SaveData() {
+
+        var data = new FormData()
+        var PlaceID = $('#@Html.IdFor(m => m.EditModel.PlaceID)').val();
+        var PlaceName = $('#@Html.IdFor(m => m.EditModel.PlaceName)').val();
+        var CityCode = $('#@Html.IdFor(m => m.EditModel.CityCode)').val();
+        var PlaceType = $('#@Html.IdFor(m => m.EditModel.PlaceType)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+        if (PlaceName == "") { $.alert("場地名稱不可為空白"); return; }
+        if (CityCode == "") { $.alert("所在縣市不可為空白"); return; }
+        if (CityCode == "") { $.alert("場地類型不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.PlaceID)', PlaceID);
+        data.append('@Html.NameFor(m => m.EditModel.PlaceName)', PlaceName);
+        data.append('@Html.NameFor(m => m.EditModel.CityCode)', CityCode);
+        data.append('@Html.NameFor(m => m.EditModel.PlaceType)', PlaceType);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+    function Reset() {
+        $('#@Html.IdFor(m => m.EditModel.PlaceName)').val("");
+        $('#@Html.IdFor(m => m.EditModel.Memo)').val("");
+    }
+</script>

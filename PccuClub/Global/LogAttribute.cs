@@ -34,6 +34,7 @@
         管理員維護 = 20,
         使用者維護 = 21,
         社團基本資料 = 22,
+        校外建議場地 = 23,
     }
 
     public enum DBActionChineseName
