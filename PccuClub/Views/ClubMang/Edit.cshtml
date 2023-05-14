@@ -35,6 +35,53 @@
                                         <td>@Html.DisplayFor(m => m.EditModel.ClubId)</td>
                                     </tr>
                                     <tr>
+                                        <th width="15%">
+                                            @Html.LabelFor(m => m.EditModel.Password)
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
+                                        </th>
+                                        <td>
+                                            <div class="input-group">
+                                                @Html.PasswordFor(m => m.EditModel.Password, new {@class="form-control", placeholder="請輸入密碼"})
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text" id="pwvisible1"><i class="fa-solid fa-eye-slash"></i></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            @Html.LabelFor(m => m.EditModel.ConformPassword)
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
+                                        </th>
+                                        <td>
+                                            <div class="input-group">
+                                                @Html.PasswordFor(m => m.EditModel.ConformPassword, new {@class="form-control", placeholder="請再輸入一次密碼"})
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text" id="pwvisible2"><i class="fa-solid fa-eye-slash"></i></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">密碼規則</th>
+                                        <td class="text-muted text-sm">
+                                            <ul class="m-0" id="passwdRules">
+                                                <li id="isValidLength">長度需介於6 ~ 15位</li>
+                                                <li id="isContainsUpperOrLowercase">至少包含一大寫或小寫英文字母</li>
+                                                <li id="isContainsNumber">至少包含一數字</li>
+                                                <li id="isPassedOverall">符合上述所有規則，且不可夾帶任何特殊符號</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Role)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.Role ,(List<SelectListItem>)ViewBag.ddlRoleClass,"請選擇角色", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.SchoolYear)<span class="required">*</span></th>
                                         <td>
                                             @Html.DropDownListFor(m => m.EditModel.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇學年度", new {@class = "form-control"})
@@ -159,6 +206,9 @@
         var data = new FormData()
 
         var ClubId = $('#@Html.IdFor(m => m.EditModel.ClubId)').val();
+        var pw = $('#@Html.IdFor(m => m.EditModel.Password)').val();
+        var cpw = $('#@Html.IdFor(m => m.EditModel.ConformPassword)').val();
+        var Role = $('#@Html.IdFor(m => m.EditModel.Role)').val();
         var SchoolYear = $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val();
         var ClubCName = $('#@Html.IdFor(m => m.EditModel.ClubCName)').val();
         var ClubEName = $('#@Html.IdFor(m => m.EditModel.ClubEName)').val();
@@ -172,6 +222,17 @@
         var Social3 = $('#@Html.IdFor(m => m.EditModel.Social3)').val();
         var ShortInfo = $('#@Html.IdFor(m => m.EditModel.ShortInfo)').val();
         var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+        if (pw != "") {
+            if (pw != cpw) {
+                $.alert("密碼與確認密碼需相符");
+            }
+        }
+
+        if (Role == "") {
+            $.alert("角色不可為空");
+            return;
+        }
 
         if (SchoolYear == "") {
             $.alert("學年度不可為空");
@@ -220,6 +281,9 @@
         }
         
         data.append('@Html.NameFor(m => m.EditModel.ClubId)', ClubId);
+        data.append('@Html.NameFor(m => m.EditModel.Password)', pw);
+        data.append('@Html.NameFor(m => m.EditModel.ConformPassword)', cpw);
+        data.append('@Html.NameFor(m => m.EditModel.Role)', Role);
         data.append('@Html.NameFor(m => m.EditModel.SchoolYear)', SchoolYear);
         data.append('@Html.NameFor(m => m.EditModel.ClubCName)', ClubCName);
         data.append('@Html.NameFor(m => m.EditModel.ClubEName)', ClubEName);

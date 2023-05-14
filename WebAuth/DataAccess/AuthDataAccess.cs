@@ -13,13 +13,12 @@ namespace WebAuth.DataAccess
         {
             DBAParameter parameter = new DBAParameter();
             parameter.Add("@LoginId", LoginId);
-            string SQL = @"--declare @LoginId nvarchar(30)
-                           --set @LoginId=''
 
-                           select M.*, U.Name UnitName
-                           from UserMain M
-                           left join Unit U on U.UnitId=M.UnitId
-                           where LoginId=@LoginId";
+            string SQL = @"SELECT A.*, C.RoleName AS UnitName
+                             FROM UserMain A
+                        LEFT JOIN UserRole B ON B.LoginId = A.LoginId
+                        LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
+                            WHERE A.LoginId = @LoginId ";
 
             (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) result = dbAccess.DbaExecuteQuery<UserInfo>(SQL, parameter, false, null);
 
@@ -31,14 +30,11 @@ namespace WebAuth.DataAccess
             DBAParameter parameter = new DBAParameter();
             parameter.Add("@LoginId", LoginId);
             parameter.Add("@Password", EncryptPwd);
-            string SQL = @"--declare @LoginId nvarchar(30), @Password nvarchar(30)
-                           --set @LoginId=''
-                           --set @Password=''
-
-                           select M.*, U.Name UnitName
-                           from UserMain M
-                           left join Unit U on U.UnitId=M.UnitId
-                           where LoginId=@LoginId and Password=@Password and IsEnable=1";
+            string SQL = @"SELECT A.*, C.RoleName AS UnitName
+                             FROM UserMain A
+                        LEFT JOIN UserRole B ON B.LoginId = A.LoginId
+                        LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
+                            WHERE A.LoginId = @LoginId AND A.Password = @Password and A.IsEnable = 1";
 
             (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) result = dbAccess.DbaExecuteQuery<UserInfo>(SQL, parameter, false, null);
 

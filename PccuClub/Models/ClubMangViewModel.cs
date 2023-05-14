@@ -132,6 +132,18 @@ namespace WebPccuClub.Models
         [DisplayName("社團代號")]
         public string? ClubId { get; set; }
 
+        /// <summary>密碼</summary>
+        [DisplayName("密碼")]
+        public string? Password { get; set; }
+
+        /// <summary>密碼</summary>
+        [DisplayName("密碼")]
+        public string? ConformPassword { get; set; }
+
+        /// <summary>角色</summary>
+        [DisplayName("角色")]
+        public string? Role { get; set; }
+
         /// <summary>社團中文名稱</summary>
         [DisplayName("社團中文名稱")]
         public string? ClubCName { get; set; }
@@ -199,6 +211,18 @@ namespace WebPccuClub.Models
         /// <summary>社團代號</summary>
         [DisplayName("社團代號")]
         public string? ClubId { get; set; }
+
+        /// <summary>密碼</summary>
+        [DisplayName("密碼")]
+        public string? Password { get; set; }
+
+        /// <summary>密碼</summary>
+        [DisplayName("密碼")]
+        public string? ConformPassword { get; set; }
+
+        /// <summary>角色</summary>
+        [DisplayName("角色")]
+        public string? Role { get; set; }
 
         /// <summary>社團中文名稱</summary>
         [DisplayName("社團中文名稱")]

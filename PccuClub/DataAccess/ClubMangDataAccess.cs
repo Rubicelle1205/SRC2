@@ -84,10 +84,11 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 
             CommandText = $@"
                             SELECT A.ClubId, A.ClubCName, A.ClubEName, A.SchoolYear, A.LifeClass, A.ClubClass, A.Address, A.EMail, A.Tel, 
-                                   A.Social1, A.Social2, A.Social3, A.LogoPath, A.ActImgPath, A.ShortInfo, A.Memo, A.Created, A.LastModified
+                                   A.Social1, A.Social2, A.Social3, A.LogoPath, A.ActImgPath, A.ShortInfo, A.Memo, A.Created, A.LastModified, D.RoleId AS Role
                                FROM ClubMang A
 							   LEFT JOIN Code B ON B.Code = A.ClubClass AND B.Type = 'ClubClass'
 							   LEFT JOIN Code C ON C.Code = A.LifeClass AND C.Type = 'LifeClass'
+                               LEFT JOIN UserRole D ON D.LoginId = A.ClubId
                               WHERE 1 = 1
                                AND A.ClubId = @ClubId";
 
@@ -101,7 +102,7 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
         }
 
         /// <summary> 新增資料 </summary>
-        public DbExecuteInfo InsertData(ClubMangViewModel vm, UserInfo LoginUser)
+        public DbExecuteInfo InsertData(string EncryptPw, ClubMangViewModel vm, UserInfo LoginUser)
         {
 
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
@@ -109,6 +110,7 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 
             #region 參數設定
             parameters.Add("@ClubId", vm.CreateModel.ClubId);
+            parameters.Add("@Password", EncryptPw);
             parameters.Add("@ClubCName", vm.CreateModel.ClubCName);
             parameters.Add("@ClubEName", vm.CreateModel.ClubEName);
             parameters.Add("@SchoolYear", vm.CreateModel.SchoolYear);
@@ -135,6 +137,7 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 
             string CommendText = $@"INSERT INTO ClubMang
                                                 (ClubId
+                                               ,Password
                                                ,ClubCName
                                                ,ClubEName
                                                ,SchoolYear
@@ -158,6 +161,7 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
                                                ,ModifiedReason)
                                          VALUES
                                                (@ClubId
+                                               ,@Password
                                                ,@ClubCName
                                                ,@ClubEName
                                                ,@SchoolYear
@@ -180,22 +184,46 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
                                                ,GETDATE()
                                                ,NULL)";
 
-            if (!string.IsNullOrEmpty(vm.CreateModel.LogoPath))
+                if (!string.IsNullOrEmpty(vm.CreateModel.LogoPath))
                 CommendText = CommendText.Replace("%LogoPath%", ",@LogoPath");
 
             if (!string.IsNullOrEmpty(vm.CreateModel.ActImgPath))
                 CommendText = CommendText.Replace("%ActImgPath%", ",@ActImgPath");
 
-            CommendText = CommendText.Replace("%LogoPath%", "NULL");
-            CommendText = CommendText.Replace("%ActImgPath%", "NULL");
+            CommendText = CommendText.Replace("%LogoPath%", ",NULL");
+            CommendText = CommendText.Replace("%ActImgPath%", ",NULL");
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
             return ExecuteResult;
         }
 
+        /// <summary> 新增角色 </summary>
+        public DbExecuteInfo InsertRole(ClubMangViewModel vm, UserInfo LoginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ClubId", vm.CreateModel.ClubId);
+            parameters.Add("@RoleId", vm.CreateModel.Role);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO UserRole
+                                                (LoginId
+                                               ,RoleId)
+                                         VALUES
+                                               (@ClubId
+                                               ,@RoleId)";
+            
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
         /// <summary> 修改資料 </summary>
-        public DbExecuteInfo UpdateData(ClubMangViewModel vm, UserInfo LoginUser)
+        public DbExecuteInfo UpdateData(string EncryptPw, ClubMangViewModel vm, UserInfo LoginUser)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
@@ -205,6 +233,10 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
             #region 參數設定
 
             parameters.Add("@ClubId", vm.EditModel.ClubId);
+
+            if (!string.IsNullOrEmpty(EncryptPw))
+                parameters.Add("@Password", EncryptPw);
+
             parameters.Add("@ClubCName", vm.EditModel.ClubCName);
             parameters.Add("@ClubEName", vm.EditModel.ClubEName);
             parameters.Add("@SchoolYear", vm.EditModel.SchoolYear);
@@ -230,7 +262,8 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
                 #endregion 參數設定
 
                 CommendText = $@"UPDATE ClubMang 
-                                           SET ClubCName = @ClubCName, 
+                                           SET  %Password%
+                                                ClubCName = @ClubCName, 
                                                 ClubEName = @ClubEName, 
                                                 SchoolYear = @SchoolYear, 
                                                 LifeClass = @LifeClass, 
@@ -249,14 +282,41 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
                                                 LastModified = GETDATE()
                                          WHERE ClubId = @ClubId ";
 
+            if (!string.IsNullOrEmpty(EncryptPw))
+            {
+                CommendText = CommendText.Replace("%Password%", ",Password = @Password, ");
+            }
+
             if (!string.IsNullOrEmpty(vm.EditModel.LogoPath))
                 CommendText = CommendText.Replace("%LogoPath%", "LogoPath = @LogoPath,");
 
             if (!string.IsNullOrEmpty(vm.EditModel.ActImgPath))
                 CommendText = CommendText.Replace("%ActImgPath%", "ActImgPath = @ActImgPath,");
 
+            CommendText = CommendText.Replace("%Password%", "");
             CommendText = CommendText.Replace("%LogoPath%", "");
             CommendText = CommendText.Replace("%ActImgPath%", "");
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        /// <summary> 更新角色 </summary>
+        public DbExecuteInfo UpdateRole(ClubMangViewModel vm, UserInfo LoginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ClubId", vm.EditModel.ClubId);
+            parameters.Add("@RoleId", vm.EditModel.Role);
+            #endregion 參數設定
+
+            string CommendText = $@"UPDATE UserRole 
+                                       SET RoleId = @RoleID 
+                                     WHERE LoginId = @ClubId ";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -434,6 +494,26 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
             #endregion
 
             CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'ClubClass'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetAllRoleClass()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT RoleId AS VALUE, RoleName AS TEXT FROM SystemRole WHERE RoleId <> 'supervisor' ";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 

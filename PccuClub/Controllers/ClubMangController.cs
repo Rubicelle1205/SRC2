@@ -54,6 +54,7 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlLifeClass = dbAccess.GetAllLifeClass();
             ViewBag.ddlClubClass = dbAccess.GetAllClubClass();
+            ViewBag.ddlRoleClass = dbAccess.GetAllRoleClass();
 
             ClubMangViewModel vm = new ClubMangViewModel();
             vm.CreateModel = new ClubMangCreateModel();
@@ -69,6 +70,7 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlLifeClass = dbAccess.GetAllLifeClass();
             ViewBag.ddlClubClass = dbAccess.GetAllClubClass();
+            ViewBag.ddlRoleClass = dbAccess.GetAllRoleClass();
 
             vm.EditModel = dbAccess.GetEditData(submitBtn);
 
@@ -120,7 +122,22 @@ namespace WebPccuClub.Controllers
                     }
                 }
 
-                var dbResult = dbAccess.InsertData(vm, LoginUser);
+                string EncryptPw = String.Empty;
+
+                if (!string.IsNullOrEmpty(vm.CreateModel.Password))
+                    EncryptPw = auth.EncryptionText(vm.CreateModel.Password);
+
+                var dbResult = dbAccess.InsertData(EncryptPw, vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                dbResult = dbAccess.InsertRole(vm, LoginUser);
 
                 if (!dbResult.isSuccess)
                 {
@@ -174,7 +191,12 @@ namespace WebPccuClub.Controllers
                     }
                 }
 
-                var dbResult = dbAccess.UpdateData(vm, LoginUser);
+                string EncryptPw = String.Empty;
+
+                if (!string.IsNullOrEmpty(vm.EditModel.Password))
+                    EncryptPw = auth.EncryptionText(vm.EditModel.Password);
+
+                var dbResult = dbAccess.UpdateData(EncryptPw, vm, LoginUser);
 
                 if (!dbResult.isSuccess)
                 {
@@ -184,6 +206,15 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
+                dbResult = dbAccess.UpdateRole(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
 
                 dbAccess.DbaCommit();
             }
