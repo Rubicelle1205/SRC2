@@ -142,7 +142,7 @@ namespace WebPccuClub.Models
 
         /// <summary>角色</summary>
         [DisplayName("角色")]
-        public string? Role { get; set; }
+        public string? RoleId { get; set; }
 
         /// <summary>社團中文名稱</summary>
         [DisplayName("社團中文名稱")]
@@ -222,7 +222,7 @@ namespace WebPccuClub.Models
 
         /// <summary>角色</summary>
         [DisplayName("角色")]
-        public string? Role { get; set; }
+        public string? RoleId { get; set; }
 
         /// <summary>社團中文名稱</summary>
         [DisplayName("社團中文名稱")]

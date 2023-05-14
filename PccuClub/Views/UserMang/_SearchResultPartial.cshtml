@@ -6,12 +6,12 @@
     <table class="table table-bordered table-hover text-nowrap">
         <thead>
             <tr class="text-center">
-                <th width="10%">名稱<br><span class="text-xs text-secondary">帳號</span></th>
-                <th width="10%">組別</th>
-                <th width="10%">角色</th>
-                <th width="20%">備註</th>
-                <th width="10%">啟用狀態</th>
+                <th width="10%">帳號<br><span class="text-xs text-secondary">身分</span></th>
+                <th width="10%">單位名稱<br><span class="text-xs text-secondary">組別</span></th>
+                <th width="10%">姓名</th>
+                <th width="10%">聯絡電話<br><span class="text-xs text-secondary">E-mail</span></th>
                 <th width="10%">最後登入時間</th>
+                <th width="10%">啟用狀態</th>
                 <th width="20%">功能</th>
             </tr>
         </thead>
@@ -21,19 +21,27 @@
                 foreach (var item in Model.ResultModel)
                 {
                     <tr>
-                        <td class="text-center text-sm">@item.UserName<br><span class="text-sm text-secondary">@item.LoginId</span></td>
-                        <td class="text-center text-sm">@item.LifeClassText</td>
-                        <td class="text-center text-sm">@item.RoleName</td>
-                        <td class="text-center text-sm">@item.Memo</td>
-                        <td class="text-center text-sm">@item.EnableText</td>
-                        <td class="text-center text-sm">@item.LastModified.Value.ToString("yyyy/MM/dd HH:mm:ss")</td>
+                        <td class="text-center text-sm">@item.Clubid<br><span class="text-sm text-secondary">@item.RoleName</span></td>
+                        <td class="text-center text-sm">@item.ClubCName<br><span class="text-sm text-secondary">@item.LifeClassName</span></td>
+
+                        <td class="text-center text-sm">@item.UserName</td>
+                        <td class="text-center text-sm">@item.CellPhone<br><span class="text-sm text-secondary">@item.EMail</span></td>
+
+                        @if (item.LastLoginDate != null)
+                        {
+                            <td class="text-center text-sm">@item.LastLoginDate.Value.ToString("yyyy/MM/dd HH:mm:ss")</td>
+                        }
+                        else
+                        {
+                            <td class="text-center text-sm"></td>
+                        }
+
+                        <td class="text-center text-sm">@item.IsEnableText</td>
                         <td class="text-center text-sm">
                             @using (Html.BeginForm("Edit", "UserMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
                             {
-                                <button type="submit" value="@item.LoginId" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
+                                <button type="submit" value="@item.Clubid" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
                             }
-
-                            <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel('@item.LoginId');">刪除</a>
                         </td>
                     </tr>
                 }
@@ -82,28 +90,28 @@
         GoSearch();
     }
 
-    function ChkDel(Ser) {
-        $.confirm({
-            title: '確定刪除?',
-            content: '刪除後資料無法復原!',
-            buttons: {
-                確定: function () {
-                    SendAjax({
-                        url: '@Url.Action("Delete")',
-                        data: { 'Ser': Ser },
-                        success: function (result) {
-                            if (result.errorCode == 0) { $.alert("刪除成功"); }
-                            else { $.alert(result.errorMsg); }
+    //function ChkDel(Ser) {
+    //    $.confirm({
+    //        title: '確定刪除?',
+    //        content: '刪除後資料無法復原!',
+    //        buttons: {
+    //            確定: function () {
+    //                SendAjax({
+    //                    url: '@Url.Action("Delete")',
+    //                    data: { 'Ser': Ser },
+    //                    success: function (result) {
+    //                        if (result.errorCode == 0) { $.alert("刪除成功"); }
+    //                        else { $.alert(result.errorMsg); }
 
-                            GoSearch();
-                        }
-                    });
-                },
-                取消: function () {
-                },
-            }
-        });
-    }
+    //                        GoSearch();
+    //                    }
+    //                });
+    //            },
+    //            取消: function () {
+    //            },
+    //        }
+    //    });
+    //}
 
 
 </script>

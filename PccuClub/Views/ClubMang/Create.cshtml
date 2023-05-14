@@ -69,7 +69,7 @@
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.CreateModel.SchoolYear)<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.CreateModel.Role ,(List<SelectListItem>)ViewBag.ddlRoleClass,"請選擇角色", new {@class = "form-control"})
+                                            @Html.DropDownListFor(m => m.CreateModel.RoleId ,(List<SelectListItem>)ViewBag.ddlRoleClass,"請選擇角色", new {@class = "form-control"})
                                         </td>
                                     </tr>
                                     <tr>
@@ -185,7 +185,7 @@
         var ClubId = $('#@Html.IdFor(m => m.CreateModel.ClubId)').val();
         var pw = $('#@Html.IdFor(m => m.CreateModel.Password)').val();
         var cpw = $('#@Html.IdFor(m => m.CreateModel.ConformPassword)').val();
-        var Role = $('#@Html.IdFor(m => m.CreateModel.Role)').val();
+        var RoleId = $('#@Html.IdFor(m => m.CreateModel.RoleId)').val();
         var SchoolYear = $('#@Html.IdFor(m => m.CreateModel.SchoolYear)').val();
         var ClubCName = $('#@Html.IdFor(m => m.CreateModel.ClubCName)').val();
         var ClubEName = $('#@Html.IdFor(m => m.CreateModel.ClubEName)').val();
@@ -219,7 +219,7 @@
             $.alert("密碼與確認密碼需相符");
         }
 
-        if (Role == "") {
+        if (RoleId == "") {
             $.alert("角色不可為空");
             return;
         }
@@ -273,7 +273,7 @@
         data.append('@Html.NameFor(m => m.CreateModel.ClubId)', ClubId);
         data.append('@Html.NameFor(m => m.CreateModel.Password)', pw);
         data.append('@Html.NameFor(m => m.CreateModel.ConformPassword)', cpw);
-        data.append('@Html.NameFor(m => m.CreateModel.Role)', Role);
+        data.append('@Html.NameFor(m => m.CreateModel.RoleId)', RoleId);
         data.append('@Html.NameFor(m => m.CreateModel.SchoolYear)', SchoolYear);
         data.append('@Html.NameFor(m => m.CreateModel.ClubCName)', ClubCName);
         data.append('@Html.NameFor(m => m.CreateModel.ClubEName)', ClubEName);

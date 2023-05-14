@@ -76,9 +76,9 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Role)<span class="required">*</span></th>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.RoleId)<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.EditModel.Role ,(List<SelectListItem>)ViewBag.ddlRoleClass,"請選擇角色", new {@class = "form-control"})
+                                            @Html.DropDownListFor(m => m.EditModel.RoleId ,(List<SelectListItem>)ViewBag.ddlRoleClass,"請選擇角色", new {@class = "form-control"})
                                         </td>
                                     </tr>
                                     <tr>
@@ -208,7 +208,7 @@
         var ClubId = $('#@Html.IdFor(m => m.EditModel.ClubId)').val();
         var pw = $('#@Html.IdFor(m => m.EditModel.Password)').val();
         var cpw = $('#@Html.IdFor(m => m.EditModel.ConformPassword)').val();
-        var Role = $('#@Html.IdFor(m => m.EditModel.Role)').val();
+        var RoleId = $('#@Html.IdFor(m => m.EditModel.RoleId)').val();
         var SchoolYear = $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val();
         var ClubCName = $('#@Html.IdFor(m => m.EditModel.ClubCName)').val();
         var ClubEName = $('#@Html.IdFor(m => m.EditModel.ClubEName)').val();
@@ -229,7 +229,7 @@
             }
         }
 
-        if (Role == "") {
+        if (RoleId == "") {
             $.alert("角色不可為空");
             return;
         }
@@ -283,7 +283,7 @@
         data.append('@Html.NameFor(m => m.EditModel.ClubId)', ClubId);
         data.append('@Html.NameFor(m => m.EditModel.Password)', pw);
         data.append('@Html.NameFor(m => m.EditModel.ConformPassword)', cpw);
-        data.append('@Html.NameFor(m => m.EditModel.Role)', Role);
+        data.append('@Html.NameFor(m => m.EditModel.RoleId)', RoleId);
         data.append('@Html.NameFor(m => m.EditModel.SchoolYear)', SchoolYear);
         data.append('@Html.NameFor(m => m.EditModel.ClubCName)', ClubCName);
         data.append('@Html.NameFor(m => m.EditModel.ClubEName)', ClubEName);

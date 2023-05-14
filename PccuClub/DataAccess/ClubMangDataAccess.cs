@@ -84,7 +84,7 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 
             CommandText = $@"
                             SELECT A.ClubId, A.ClubCName, A.ClubEName, A.SchoolYear, A.LifeClass, A.ClubClass, A.Address, A.EMail, A.Tel, 
-                                   A.Social1, A.Social2, A.Social3, A.LogoPath, A.ActImgPath, A.ShortInfo, A.Memo, A.Created, A.LastModified, D.RoleId AS Role
+                                   A.Social1, A.Social2, A.Social3, A.LogoPath, A.ActImgPath, A.ShortInfo, A.Memo, A.Created, A.LastModified, D.RoleId
                                FROM ClubMang A
 							   LEFT JOIN Code B ON B.Code = A.ClubClass AND B.Type = 'ClubClass'
 							   LEFT JOIN Code C ON C.Code = A.LifeClass AND C.Type = 'LifeClass'
@@ -207,7 +207,7 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 
             #region 參數設定
             parameters.Add("@ClubId", vm.CreateModel.ClubId);
-            parameters.Add("@RoleId", vm.CreateModel.Role);
+            parameters.Add("@RoleId", vm.CreateModel.RoleId);
             #endregion 參數設定
 
             string CommendText = $@"INSERT INTO UserRole
@@ -311,7 +311,7 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 
             #region 參數設定
             parameters.Add("@ClubId", vm.EditModel.ClubId);
-            parameters.Add("@RoleId", vm.EditModel.Role);
+            parameters.Add("@RoleId", vm.EditModel.RoleId);
             #endregion 參數設定
 
             string CommendText = $@"UPDATE UserRole 

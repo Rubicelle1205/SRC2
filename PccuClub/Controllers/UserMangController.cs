@@ -6,6 +6,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using PccuClub.WebAuth;
 using System.ComponentModel;
+using System.Data;
 using System.Reflection;
 using System.Web.Mvc;
 using Utility;
@@ -45,27 +46,13 @@ namespace WebPccuClub.Controllers
             return View(vm);
         }
 
-        [Log(LogActionChineseName.新增)]
-        public IActionResult Create()
-        {
-            ViewBag.ddlRole = dbAccess.GetAllRole();
-            ViewBag.ddlIsEnable = dbAccess.GetIsEnable();
-            ViewBag.ddlLifeClass = dbAccess.GetAllLifeClass();
-
-            UserMangViewModel vm = new UserMangViewModel();
-            vm.CreateModel = new UserMangCreateModel();
-            return View(vm);
-        }
-
         [Log(LogActionChineseName.編輯)]
         public IActionResult Edit(string submitBtn, UserMangViewModel vm)
         {
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
-            ViewBag.ddlRole = dbAccess.GetAllRole();
             ViewBag.ddlIsEnable = dbAccess.GetIsEnable();
-            ViewBag.ddlLifeClass = dbAccess.GetAllLifeClass();
 
             vm.EditModel = dbAccess.GetEditData(submitBtn);
 
@@ -86,71 +73,6 @@ namespace WebPccuClub.Controllers
             return PartialView("_SearchResultPartial", vm);
         }
 
-        [Log(LogActionChineseName.新增儲存)]
-        [ValidateInput(false)]
-        public IActionResult SaveNewData(UserMangViewModel vm)
-        {
-            try
-            {
-                vm.EditModel = dbAccess.GetEditData(vm.CreateModel.LoginId);
-
-                if (vm.EditModel != null)
-                {
-                    dbAccess.DbaRollBack();
-                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = String.Format("管理者帳號:{0}已存在", vm.CreateModel.LoginId);
-                    return Json(vmRtn);
-                }
-
-                dbAccess.DbaInitialTransaction();
-
-                string EncryptPw = String.Empty;
-                if (!string.IsNullOrEmpty(vm.CreateModel.Password))
-                    EncryptPw = auth.EncryptionText(vm.CreateModel.Password);
-
-                var dbResult = dbAccess.InsertData(vm, LoginUser, EncryptPw);
-
-                if (!dbResult.isSuccess)
-                {
-                    dbAccess.DbaRollBack();
-                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "新增失敗";
-                    return Json(vmRtn);
-                }
-
-                dbResult = dbAccess.InsertLifeClass(vm, LoginUser);
-
-                if (!dbResult.isSuccess)
-                {
-                    dbAccess.DbaRollBack();
-                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "新增失敗";
-                    return Json(vmRtn);
-                }
-
-                dbResult = dbAccess.InsertRole(vm, LoginUser);
-
-                if (!dbResult.isSuccess)
-                {
-                    dbAccess.DbaRollBack();
-                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "新增失敗";
-                    return Json(vmRtn);
-                }
-
-                dbAccess.DbaCommit();
-            }
-            catch (Exception ex)
-            {
-                dbAccess.DbaRollBack();
-                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                vmRtn.ErrorMsg = "新增失敗" + ex.Message;
-                return Json(vmRtn);
-            }
-
-            return Json(vmRtn);
-        }
-
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
         public IActionResult EditOldData(UserMangViewModel vm)
@@ -159,11 +81,7 @@ namespace WebPccuClub.Controllers
             {
                 dbAccess.DbaInitialTransaction();
 
-                string EncryptPw = String.Empty;
-                if (!string.IsNullOrEmpty(vm.EditModel.Password))
-                    EncryptPw = auth.EncryptionText(vm.EditModel.Password);
-
-                var dbResult = dbAccess.UpdateData(vm, LoginUser, EncryptPw);
+                var dbResult = dbAccess.UpdateUserClub(vm);
 
                 if (!dbResult.isSuccess)
                 {
@@ -173,7 +91,12 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
-                dbResult = dbAccess.UpdateLifeClass(vm, LoginUser);
+                DataTable dt = dbAccess.GetFUserData(vm.EditModel.FUserId);
+
+                if (dt.Rows.Count > 0)
+                    dbResult = dbAccess.UpdateData(vm, LoginUser);
+                else
+                    dbResult = dbAccess.InsertData(vm, LoginUser);
 
                 if (!dbResult.isSuccess)
                 {
@@ -182,17 +105,6 @@ namespace WebPccuClub.Controllers
                     vmRtn.ErrorMsg = "修改失敗";
                     return Json(vmRtn);
                 }
-
-                dbResult = dbAccess.UpdateRole(vm, LoginUser);
-
-                if (!dbResult.isSuccess)
-                {
-                    dbAccess.DbaRollBack();
-                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "修改失敗";
-                    return Json(vmRtn);
-                }
-
 
                 dbAccess.DbaCommit();
             }
@@ -257,6 +169,7 @@ namespace WebPccuClub.Controllers
 
             return Json(vmRtn);
         }
+
 
         #region Method
 

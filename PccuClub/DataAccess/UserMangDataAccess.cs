@@ -9,6 +9,8 @@ using WebPccuClub.Global.Extension;
 using NPOI.POIFS.Crypt;
 using X.PagedList;
 using MathNet.Numerics.Optimization;
+using MathNet.Numerics.RootFinding;
+using System.Runtime.ConstrainedExecution;
 
 namespace WebPccuClub.DataAccess
 {
@@ -26,32 +28,34 @@ namespace WebPccuClub.DataAccess
 
             #region 參數設定
 
-            parameters.Add("@LoginId", model.LoginId);
+            parameters.Add("@Clubid", model.Clubid);
             parameters.Add("@UserName", model.UserName);
             parameters.Add("@RoleId", model.RoleId);
             parameters.Add("@LifeClass", model.LifeClass);
-            parameters.Add("@IsEnable", model.IsEnable);
+            parameters.Add("@CellPhone", model.CellPhone);
             parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
             parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
 
             #endregion
 
-            CommandText = $@"SELECT A.LoginId, A.UserName, A.Memo, A.IsEnable, A.LastModified, 
-                                    B.RoleId, C.RoleName, D.LifeClass, E.Text AS LifeClassText, F.Text AS EnableText
-                               FROM UserMain A
-                          LEFT JOIN UserRole B ON B.LoginId = A.LoginId
-                          LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
-                          LEFT JOIN MatchLifeClass D ON D.MatchID = A.LoginId
-                          LEFT JOIN CODE E ON E.Code = D.LifeClass AND E.Type = 'LifeClass'
-                          LEFT JOIN CODE F ON F.Code = A.IsEnable AND F.Type = 'Enable'
+            CommandText = $@"SELECT A.Clubid, E.RoleName, A.ClubCName, A.ClubEName, A.SchoolYear, A.LifeClass, F.Text AS LifeClassName,
+                                    A.ClubClass, G.Text AS ClubClassText, C.UserName, C.CellPhone, C.EMail, C.LastLoginDate, C.IsEnable,
+                                    CASE C.IsEnable WHEN 1 THEN '啟用' WHEN 0 THEN '停用' ELSE '' END IsEnableText
+                               FROM ClubMang A
+                          LEFT JOIN Clubuser B on B.Clubid = A.Clubid
+                          LEFT JOIN FUsermain C on C.FUserid = B.FUserid
+						  LEFT JOIN UserRole D on D.LoginId = A.ClubId
+						  LEFT JOIN SystemRole E ON E.RoleId = D.RoleId
+                          LEFT JOIN Code F ON F.Code = A.LifeClass AND F.Type = 'LifeClass'
+                          LEFT JOIN Code G ON G.Code = A.ClubClass AND G.Type = 'ClubClass'
                               WHERE 1 = 1
-AND (A.UserType = '02')
-{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.LastModified BETWEEN @FromDate AND @ToDate" : " ")}
-{(model.LoginId != null ? " AND A.LoginId LIKE '%' + @LoginId + '%'" : " ")}
-{(model.UserName != null ? " AND A.UserName LIKE '%' + @UserName + '%'" : " ")}
-AND (@RoleId IS NULL OR B.RoleId = @RoleId)
-AND (@LifeClass IS NULL OR D.LifeClass = @LifeClass)
-AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND C.LastLoginDate BETWEEN @FromDate AND @ToDate" : " ")}
+{(model.Clubid != null ? " AND A.Clubid LIKE '%' + @Clubid + '%'" : " ")}
+{(model.UserName != null ? " AND C.UserName LIKE '%' + @UserName + '%'" : " ")}
+{(model.CellPhone != null ? " AND C.CellPhone LIKE '%' + @CellPhone + '%'" : " ")}
+AND (@RoleId IS NULL OR E.RoleId = @RoleId)
+AND (@LifeClass IS NULL OR A.LifeClass = @LifeClass)
+
 ";
 
             (DbExecuteInfo info, IEnumerable<UserMangResultModel> entitys) dbResult = DbaExecuteQuery<UserMangResultModel>(CommandText, parameters, true, DBAccessException);
@@ -63,7 +67,7 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
         }
 
         /// <summary>取得編輯資料 </summary>
-        public UserMangEditModel GetEditData(string LoginId)
+        public UserMangEditModel GetEditData(string ClubId)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -71,22 +75,15 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@LoginId", LoginId);
+            parameters.Add("@ClubId", ClubId);
             #endregion
 
-            CommandText = $@"
-                            SELECT A.LoginId, A.UserName, A.EMail, A.Memo, 
-                                    A.IsEnable,
-                                    A.Created, A.LastModified, B.RoleId, C.RoleName, D.LifeClass, E.Text AS LifeClassText, F.Text AS EnableText
-                               FROM UserMain A
-                          LEFT JOIN UserRole B ON B.LoginId = A.LoginId
-                          LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
-                          LEFT JOIN MatchLifeClass D ON D.MatchID = A.LoginId
-                          LEFT JOIN CODE E ON E.Code = D.LifeClass AND E.Type = 'LifeClass'
-                          LEFT JOIN CODE F ON F.Code = A.IsEnable AND F.Type = 'Enable'
-                              WHERE 1 = 1
-AND (A.UserType = '01')
-AND (A.LoginId = @LoginId)";
+            CommandText = $@"SELECT A.ClubId, A.ClubCName, A.ClubEName, 
+	                                C.FUserId, C.FUserId AS OldFUserId, C.UserName, C.EMail, CellPhone, C.Department, C.Created, C.LastLoginDate, C.Memo, C.IsEnable, C.LastModified
+                               FROM ClubMang A
+                          LEFT JOIN ClubUser B on B.ClubId = A.ClubId
+                          LEFT JOIN FUserMain C on C.FUserId = B.FUserId
+                              WHERE A.ClubId = @ClubId";
 
 
             (DbExecuteInfo info, IEnumerable<UserMangEditModel> entitys) dbResult = DbaExecuteQuery<UserMangEditModel>(CommandText, parameters, true, DBAccessException);
@@ -97,100 +94,91 @@ AND (A.LoginId = @LoginId)";
             return null;
         }
 
+        public DataTable GetFUserData(string FUserId)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@FUserId", FUserId);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"
+                            SELECT *
+                              FROM FUserMain
+                             WHERE 1 = 1
+                               AND FUserId = @FUserId";
+
+
+            (DbExecuteInfo info, IEnumerable<RoleMangEditModel> entitys) dbResult = DbaExecuteQuery<RoleMangEditModel>(CommandText, parameters, true, DBAccessException);
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+            return ds.Tables[0];
+        }
+
         #region 新增
 
 
         /// <summary> 新增資料 </summary>
-        public DbExecuteInfo InsertData(UserMangViewModel vm, UserInfo LoginUser, string EncryptPw)
+        public DbExecuteInfo InsertData(UserMangViewModel vm, UserInfo LoginUser)
         {
 
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@IsEnable", vm.CreateModel.Enable);
-            parameters.Add("@LifeClass", vm.CreateModel.LifeClass);
-            parameters.Add("@RoleId", vm.CreateModel.RoleId);
-            parameters.Add("@LoginId", vm.CreateModel.LoginId.TrimStartAndEnd());
-            parameters.Add("@Password", EncryptPw);
-            parameters.Add("@UserName", vm.CreateModel.UserName.TrimStartAndEnd());
-            parameters.Add("@EMail", vm.CreateModel.EMail.TrimStartAndEnd());
-            parameters.Add("@Memo", vm.CreateModel.Memo.TrimStartAndEnd());
+            parameters.Add("@ClubId", vm.EditModel.ClubId);
+            parameters.Add("@FUserId", vm.EditModel.FUserId);
+            parameters.Add("@OldFUserId", vm.EditModel.OldFUserId);
+            parameters.Add("@IsEnable", vm.EditModel.IsEnable);
+            parameters.Add("@UserName", vm.EditModel.UserName);
+            parameters.Add("@Department", vm.EditModel.Department);
+            parameters.Add("@EMail", vm.EditModel.EMail);
+            parameters.Add("@CellPhone", vm.EditModel.CellPhone);
+            parameters.Add("@Memo", vm.EditModel.Memo);
 
             parameters.Add("@LastModifier", LoginUser.LoginId);
             #endregion 參數設定
 
-            string CommendText = $@"INSERT INTO UserMain
-                                                (LoginId
-                                                ,Password
-                                                ,UserName
-                                                ,EMail
-                                                ,UserType
-                                                ,Memo
-                                                ,IsEnable
-                                                ,Creator
-                                                ,Created
-                                                ,LastModifier
+            string CommendText = string.Empty;
+
+            CommendText = $@"DELETE FUserMain WHERE FUserId = @OldFUserId";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            if (ExecuteResult.isSuccess)
+            {
+
+                CommendText = $@"INSERT INTO FUserMain
+                                                (FUserId 
+                                                ,UserName 
+                                                ,EMail 
+                                                ,CellPhone 
+                                                ,Department 
+                                                ,Memo 
+                                                ,IsEnable 
+                                                ,Creator 
+                                                ,Created 
+                                                ,LastModifier 
                                                 ,LastModified)
                                             VALUES
-                                                 (@LoginId
-                                                ,@Password
-                                                ,@UserName
-                                                ,@EMail
-                                                ,'02'
-                                                ,@Memo
-                                                ,@IsEnable
+                                                 (@FUserId 
+                                                ,@UserName 
+                                                ,@EMail 
+                                                ,@CellPhone
+                                                ,@Department
+                                                ,@Memo 
+                                                ,@IsEnable 
                                                 ,@LastModifier
                                                 ,GETDATE()
                                                 ,@LastModifier
                                                 ,GETDATE())";
 
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-            return ExecuteResult;
-        }
-
-        /// <summary> 修改組別資料 </summary>
-        public DbExecuteInfo InsertLifeClass(UserMangViewModel vm, UserInfo LoginUser)
-        {
-            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
-            DBAParameter parameters = new DBAParameter();
-
-            string CommendText = string.Empty;
-
-            #region 參數設定
-            parameters.Add("@MatchID", vm.CreateModel.LoginId.TrimStartAndEnd());
-            parameters.Add("@LifeClass", vm.CreateModel.LifeClass);
-
-            #endregion 參數設定
-
-            CommendText = $@"INSERT INTO MatchLifeClass 
-                                (MatchID, LifeClass) VALUES (@MatchID, @LifeClass) ";
-
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-            return ExecuteResult;
-        }
-
-        /// <summary> 修改角色資料 </summary>
-        public DbExecuteInfo InsertRole(UserMangViewModel vm, UserInfo LoginUser)
-        {
-            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
-            DBAParameter parameters = new DBAParameter();
-
-            string CommendText = string.Empty;
-
-            #region 參數設定
-            parameters.Add("@LoginId", vm.CreateModel.LoginId.TrimStartAndEnd());
-            parameters.Add("@RoleId", vm.CreateModel.RoleId);
-
-            #endregion 參數設定
-
-            CommendText = $@"INSERT INTO UserRole 
-                                (RoleId, LoginId) VALUES (@RoleId, @LoginId) ";
-
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
+                ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+            }
             return ExecuteResult;
         }
 
@@ -198,103 +186,64 @@ AND (A.LoginId = @LoginId)";
 
         #region 修改
 
+        /// <summary> 修改資料 </summary>
+        public DbExecuteInfo UpdateUserClub(UserMangViewModel vm)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommendText = string.Empty;
+
+            #region 參數設定
+            parameters.Add("@ClubId", vm.EditModel.ClubId);
+            parameters.Add("@FUserId", vm.EditModel.FUserId);
+            #endregion 參數設定
+
+            CommendText = $@"DELETE ClubUser WHERE ClubId = @ClubId";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            if (ExecuteResult.isSuccess)
+            {
+                CommendText = $@"INSERT INTO ClubUser (ClubId, FUserID) VALUES (@ClubId, @FUserId) ";
+
+                ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+            }
+
+            return ExecuteResult;
+        }
 
         /// <summary> 修改資料 </summary>
-        public DbExecuteInfo UpdateData(UserMangViewModel vm, UserInfo LoginUser, string EncryptPw)
+        public DbExecuteInfo UpdateData(UserMangViewModel vm, UserInfo LoginUser)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
             string CommendText = string.Empty;
 
-            if (!string.IsNullOrEmpty(EncryptPw))
-            {
-                #region 參數設定
-                parameters.Add("@IsEnable", vm.EditModel.IsEnable);
-                parameters.Add("@LoginId", vm.EditModel.LoginId.TrimStartAndEnd());
-                parameters.Add("@Password", EncryptPw);
-                parameters.Add("@UserName", vm.EditModel.UserName.TrimStartAndEnd());
-                parameters.Add("@EMail", vm.EditModel.EMail.TrimStartAndEnd());
-                parameters.Add("@Memo", vm.EditModel.Memo.TrimStartAndEnd());
+            #region 參數設定
+            parameters.Add("@ClubId", vm.EditModel.ClubId);
+            parameters.Add("@FUserId", vm.EditModel.OldFUserId);
+            parameters.Add("@IsEnable", vm.EditModel.IsEnable);
+            parameters.Add("@UserName", vm.EditModel.UserName);
+            parameters.Add("@Department", vm.EditModel.Department);
+            parameters.Add("@EMail", vm.EditModel.EMail);
+            parameters.Add("@CellPhone", vm.EditModel.CellPhone);
+            parameters.Add("@Memo", vm.EditModel.Memo);
 
-                parameters.Add("@LastModifier", LoginUser.LoginId);
-                #endregion 參數設定
+            parameters.Add("@LastModifier", LoginUser.LoginId);
+            #endregion 參數設定
 
-                CommendText = $@"UPDATE UserMain 
-                                SET Password = @Password,
-                                    UserName = @UserName,
-                                    EMail = @EMail,
-                                    Memo = @Memo,
-                                    LastModifier = @LastModifier,
-                                    LastModified = GETDATE()
-                              WHERE LoginID = @LoginId ";
-            }
-            else
-            {
-                #region 參數設定
-                parameters.Add("@IsEnable", vm.EditModel.IsEnable);
-                parameters.Add("@LoginId", vm.EditModel.LoginId.TrimStartAndEnd());
-                parameters.Add("@UserName", vm.EditModel.UserName.TrimStartAndEnd());
-                parameters.Add("@EMail", vm.EditModel.EMail.TrimStartAndEnd());
-                parameters.Add("@Memo", vm.EditModel.Memo.TrimStartAndEnd());
-
-                parameters.Add("@LastModifier", LoginUser.LoginId);
-                #endregion 參數設定
-
-                CommendText = $@"UPDATE UserMain 
+            CommendText = $@"UPDATE FUserMain 
                                 SET UserName = @UserName,
                                     EMail = @EMail,
+                                    CellPhone = @CellPhone,
+                                    Department = @Department,
+                                    IsEnable = @IsEnable,
                                     Memo = @Memo,
                                     LastModifier = @LastModifier,
                                     LastModified = GETDATE()
-                              WHERE LoginID = @LoginId ";
-            }
-
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-            return ExecuteResult;
-        }
-
-        /// <summary> 修改組別資料 </summary>
-        public DbExecuteInfo UpdateLifeClass(UserMangViewModel vm, UserInfo LoginUser)
-        {
-            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
-            DBAParameter parameters = new DBAParameter();
-
-            string CommendText = string.Empty;
-
-            #region 參數設定
-            parameters.Add("@LoginId", vm.EditModel.LoginId.TrimStartAndEnd());
-            parameters.Add("@LifeClass", vm.EditModel.LifeClass);
-
-            #endregion 參數設定
-
-            CommendText = $@"UPDATE MatchLifeClass 
-                                SET LifeClass = @LifeClass
-                              WHERE MatchID = @LoginId ";
-
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-            return ExecuteResult;
-        }
-
-        /// <summary> 修改角色資料 </summary>
-        public DbExecuteInfo UpdateRole(UserMangViewModel vm, UserInfo LoginUser)
-        {
-            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
-            DBAParameter parameters = new DBAParameter();
-
-            string CommendText = string.Empty;
-
-            #region 參數設定
-            parameters.Add("@LoginId", vm.EditModel.LoginId.TrimStartAndEnd());
-            parameters.Add("@RoleId", vm.EditModel.RoleId);
-
-            #endregion 參數設定
-
-            CommendText = $@"UPDATE UserRole 
-                                SET RoleId = @RoleId
-                              WHERE LoginId = @LoginId ";
+                              WHERE FUserId = @FUserId ";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 

@@ -23,7 +23,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="card-tools">
-                                <a href=@Url.Action("Create") class="btn btn-sm btn-success">新增</a>
+                                @*<a href=@Url.Action("Create") class="btn btn-sm btn-success">新增</a>*@
                             </div>
                         </div>
                         <div class="card-body">
@@ -35,17 +35,9 @@
                                     <span class="input-group-text">至</span>
                                     <input type="date" class="form-control" id="@Html.IdFor(m => m.ConditionModel.To_ReleaseDate)" name="@Html.NameFor(m => m.ConditionModel.To_ReleaseDate)">
                                 </div>
-                                
-                                <div class="col-md-3 col-sm-6 mt-2">
-                                    <input type="text" class="form-control auto-input" placeholder="請輸入使用者帳號" id="@Html.IdFor(m => m.ConditionModel.LoginId)" name="@Html.NameFor(m => m.ConditionModel.LoginId)">
-                                </div>
-
-                                <div class="col-md-3 col-sm-6 mt-2">
-                                    <input type="text" class="form-control auto-input" placeholder="請輸入使用者名稱" id="@Html.IdFor(m => m.ConditionModel.UserName)" name="@Html.NameFor(m => m.ConditionModel.UserName)">
-                                </div>
                                
                                 <div class="col-md-3 col-sm-6 mt-2">
-                                    @Html.DropDownListFor(m => m.ConditionModel.RoleId,(List<SelectListItem>)ViewBag.ddlRole,"請選擇角色", new {@class = "form-control"})
+                                    @Html.DropDownListFor(m => m.ConditionModel.RoleId,(List<SelectListItem>)ViewBag.ddlRole,"請選擇身分", new {@class = "form-control"})
                                 </div>
 
                                 <div class="col-md-3 col-sm-6 mt-2">
@@ -53,7 +45,15 @@
                                 </div>
 
                                 <div class="col-md-3 col-sm-6 mt-2">
-                                    @Html.DropDownListFor(m => m.ConditionModel.IsEnable,(List<SelectListItem>)ViewBag.ddlIsEnable,"啟用/停用", new {@class = "form-control"})
+                                    <input type="text" class="form-control auto-input" placeholder="請輸入單位代碼" id="@Html.IdFor(m => m.ConditionModel.Clubid)" name="@Html.NameFor(m => m.ConditionModel.Clubid)">
+                                </div>
+
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    <input type="text" class="form-control auto-input" placeholder="請輸入負責人姓名" id="@Html.IdFor(m => m.ConditionModel.UserName)" name="@Html.NameFor(m => m.ConditionModel.UserName)">
+                                </div>
+
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    <input type="text" class="form-control auto-input" placeholder="請輸入負責人電話" id="@Html.IdFor(m => m.ConditionModel.CellPhone)" name="@Html.NameFor(m => m.ConditionModel.CellPhone)">
                                 </div>
 
                                 <div class="col-md-12 mt-2 row">
@@ -120,10 +120,10 @@
 
     $('#@Html.IdFor(m => m.ConditionModel.From_ReleaseDate)').tooltip({ title: "更新時間[起]" });
     $('#@Html.IdFor(m => m.ConditionModel.To_ReleaseDate)').tooltip({ title: "更新時間[迄]" });
-    $('#@Html.IdFor(m => m.ConditionModel.LoginId)').tooltip({ title: "使用者帳號" });
+    $('#@Html.IdFor(m => m.ConditionModel.Clubid)').tooltip({ title: "單位代碼" });
     $('#@Html.IdFor(m => m.ConditionModel.UserName)').tooltip({ title: "使用者名稱" });
-    $('#@Html.IdFor(m => m.ConditionModel.RoleId)').tooltip({ title: "角色" });
+    $('#@Html.IdFor(m => m.ConditionModel.RoleId)').tooltip({ title: "身分" });
     $('#@Html.IdFor(m => m.ConditionModel.LifeClass)').tooltip({ title: "組別" });
-    $('#@Html.IdFor(m => m.ConditionModel.IsEnable)').tooltip({ title: "啟用" });
+    $('#@Html.IdFor(m => m.ConditionModel.CellPhone)').tooltip({ title: "負責人電話" });
 
 </script>
