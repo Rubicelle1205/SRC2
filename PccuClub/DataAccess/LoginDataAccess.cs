@@ -2,6 +2,7 @@
 using WebPccuClub.Entity;
 using PccuClub.WebAuth;
 using WebPccuClub.Global;
+using System.Data;
 
 namespace WebPccuClub.DataAccess
 {
@@ -112,11 +113,12 @@ namespace WebPccuClub.DataAccess
         }
 
         /// <summary> 更新使用者登入資訊 </summary>
-        public DbExecuteInfo UpdateEntity(UserInfo dbEntity)
+        public DbExecuteInfo UpdateEntity(UserInfo dbEntity, string LoginFrom = "B")
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             string CommandTxt = string.Empty;
             DBAParameter parameters = new DBAParameter();
+            DataSet ds = new DataSet();
 
             #region 參數設定
             // 登入帳號
@@ -135,14 +137,40 @@ namespace WebPccuClub.DataAccess
 
 
             #region CommandText
-            CommandTxt = @"update UserMain set 
-						Lastlogindate=ISNULL(@Lastlogindate,Lastlogindate),
-						Errorcount=ISNULL(@Errorcount,Errorcount),
-						Lastmodifier=ISNULL(@Lastmodifier,Lastmodifier),
-						Lastmodified=ISNULL(@Lastmodified,Lastmodified),
-						Modifiedreason=ISNULL(@Modifiedreason,Modifiedreason)
-					where
-						Loginid=@Loginid";
+
+            if (LoginFrom == "F")
+            {
+                CommandTxt = @"SELECT FUserId FROM ClubUser WHERE ClubId = @Loginid";
+
+                ExecuteResult = DbaExecuteNonQuery(CommandTxt, parameters, true, DBAccessException);
+
+                DbaExecuteQuery(CommandTxt, parameters, ds, true, DBAccessException);
+
+                string FUserId = ds.Tables[0].Rows[0]["FUserId"].ToString();
+                parameters.Add("FUserId", FUserId);
+
+                CommandTxt = @"update FUserMain set 
+						        Lastlogindate=ISNULL(@Lastlogindate,Lastlogindate),
+						        Errorcount=ISNULL(@Errorcount,Errorcount),
+						        Lastmodifier=ISNULL(@Lastmodifier,Lastmodifier),
+						        Lastmodified=ISNULL(@Lastmodified,Lastmodified),
+						        Modifiedreason=ISNULL(@Modifiedreason,Modifiedreason)
+					        where
+						        FUserId = @FUserId";
+            }
+            else
+            {
+
+                CommandTxt = @"update UserMain set 
+						        Lastlogindate=ISNULL(@Lastlogindate,Lastlogindate),
+						        Errorcount=ISNULL(@Errorcount,Errorcount),
+						        Lastmodifier=ISNULL(@Lastmodifier,Lastmodifier),
+						        Lastmodified=ISNULL(@Lastmodified,Lastmodified),
+						        Modifiedreason=ISNULL(@Modifiedreason,Modifiedreason)
+					        where
+						        Loginid=@Loginid";
+            }
+
             #endregion CommandText
 
             ExecuteResult = DbaExecuteNonQuery(CommandTxt, parameters, true, DBAccessException);

@@ -27,7 +27,7 @@ namespace PccuClub.WebAuth
                 string EncryptPwd = EncryptionText(Pwd);
 
                 // 查詢基本資料
-                (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectUserMain(LoginId, EncryptPwd);
+                (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectUserMain(LoginId, EncryptPwd, LoginFrom);
                 if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0 || mainResult.entitys.Count() > 1)
                 { return false; }
 
@@ -111,7 +111,7 @@ namespace PccuClub.WebAuth
             oUser = null;
 
             // 查詢基本資料
-            (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectUserMain(LoginId);
+            (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectFUserMain(LoginId);
             if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0 || mainResult.entitys.Count() > 1)
             { return false; }
 
@@ -120,8 +120,33 @@ namespace PccuClub.WebAuth
             return true;
         }
 
+        public bool GetUserByFUserID(string LoginId, out UserInfo oUser)
+        {
+            oUser = null;
 
+            // 查詢基本資料
+            (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectFUserMain(LoginId);
+            if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0 || mainResult.entitys.Count() > 1)
+            { return false; }
 
+            oUser = mainResult.entitys.First();
+
+            return true;
+        }
+
+        public bool GetUserByFLogin(string ClubId, out UserInfo oUser)
+        {
+            oUser = null;
+
+            // 查詢基本資料
+            (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectFLoginUserMain(ClubId);
+            if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0 || mainResult.entitys.Count() > 1)
+            { return false; }
+
+            oUser = mainResult.entitys.First();
+
+            return true;
+        }
         /// <summary>
         /// 
         /// </summary>

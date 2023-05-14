@@ -1,6 +1,7 @@
 ﻿using DataAccess;
 using WebAuth.Entity;
 using PccuClub.WebAuth;
+using MathNet.Numerics.RootFinding;
 
 
 namespace WebAuth.DataAccess
@@ -8,6 +9,40 @@ namespace WebAuth.DataAccess
     internal class AuthDataAccess : MsSqlDBAccess
     {
         private IDBAccess dbAccess = new BaseAccess();
+        
+        public (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) SelectFUserMain(string FUserId)
+        {
+            DBAParameter parameter = new DBAParameter();
+            parameter.Add("@FUserId", FUserId);
+
+            string SQL = @"SELECT A.FUserId, A.UserName, A.EMail, A.CellPhone, A.Department, C.ClubId, C.ClubCName, C.ClubEName, C.SchoolYear, C.LifeClass, C.ClubClass
+                             FROM FUserMain A
+                        LEFT JOIN ClubUser B ON B.FUserId = A.FUserId
+                        LEFT JOIN ClubMang C ON C.ClubId = B.ClubId
+                        LEFT JOIN UserRole D ON D.LoginId = C.ClubId
+                        LEFT JOIN SystemRole E ON E.RoleId = D.RoleId
+                            WHERE A.FUserId = @FUserId AND A.IsEnable = 1
+ ";
+
+            (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) result = dbAccess.DbaExecuteQuery<UserInfo>(SQL, parameter, false, null);
+
+            return result;
+        }
+
+        public (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) SelectFLoginUserMain(string ClubId)
+        {
+            DBAParameter parameter = new DBAParameter();
+            parameter.Add("@ClubId", ClubId);
+
+            string SQL = @"SELECT A.*
+                             FROM ClubMang A
+                            WHERE A.ClubId = @ClubId
+ ";
+
+            (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) result = dbAccess.DbaExecuteQuery<UserInfo>(SQL, parameter, false, null);
+
+            return result;
+        }
 
         public (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) SelectUserMain(string LoginId)
         {
@@ -25,16 +60,28 @@ namespace WebAuth.DataAccess
             return result;
         }
 
-        public (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) SelectUserMain(string LoginId, string EncryptPwd)
+        public (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) SelectUserMain(string LoginId, string EncryptPwd, string LoginFrom)
         {
             DBAParameter parameter = new DBAParameter();
             parameter.Add("@LoginId", LoginId);
             parameter.Add("@Password", EncryptPwd);
-            string SQL = @"SELECT A.*, C.RoleName AS UnitName
+
+            string SQL = string.Empty;
+            if (LoginFrom == "B"){
+                SQL = @"SELECT A.*, C.RoleName AS UnitName
                              FROM UserMain A
                         LEFT JOIN UserRole B ON B.LoginId = A.LoginId
                         LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
                             WHERE A.LoginId = @LoginId AND A.Password = @Password and A.IsEnable = 1";
+            }
+            else {
+                SQL = @"SELECT A.*, A.ClubId AS LoginId, A.ClubCName AS UserName, B.*
+                             FROM ClubMang A
+                        LEFT JOIN UserRole B ON B.LoginId = A.ClubId
+                        LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
+                            WHERE A.ClubId = @LoginId AND A.Password = @Password and A.IsEnable = 1";
+            }
+          
 
             (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) result = dbAccess.DbaExecuteQuery<UserInfo>(SQL, parameter, false, null);
 

@@ -46,7 +46,7 @@ namespace WebPccuClub.Controllers
 
                 SSOUserInfo sSOUserInfo = JsonConvert.DeserializeObject<SSOUserInfo>(result.JSONData);
 
-                if (!auth.GetUserMain(sSOUserInfo.Account, out UserInfo user))
+                if (!auth.GetUserByFUserID(sSOUserInfo.Account, out UserInfo user))
                 {
                     loginEntity.Memo = "帳號不存在";
                     throw new Exception("登入失敗，帳號不存在!");
@@ -116,7 +116,7 @@ namespace WebPccuClub.Controllers
 
             try
             {
-                if (!auth.GetUserMain(vm.LoginID, out UserInfo user))
+                if (!auth.GetUserByFLogin(vm.LoginID, out UserInfo user))
                 {
                     loginEntity.Memo = "帳號不存在";
                     throw new Exception("登入失敗，帳號不存在!");
@@ -136,15 +136,15 @@ namespace WebPccuClub.Controllers
                 TempData.Clear();
 
                 LoginUser.LastLoginDate = DateTime.Now;
-                user.ErrorCount = 0;
-                user.LastLoginDate = DateTime.Now;
-                user.LastModified = DateTime.Now;
-                user.LastModifier = user.LoginId;
+                LoginUser.ErrorCount = 0;
+                LoginUser.LastLoginDate = DateTime.Now;
+                LoginUser.LastModified = DateTime.Now;
+                LoginUser.LastModifier = user.LoginId;
                 loginEntity.Issuccess = true;
 
                 HttpContext.Session.SetObject("LoginUser", LoginUser);
 
-                UpdateLoginInfo(user);
+                UpdateLoginInfo(LoginUser);
                 InsertLoginLog(loginEntity);
                 InsertActionLog(loginEntity, LoginUser);
 
@@ -190,7 +190,7 @@ namespace WebPccuClub.Controllers
         /// <summary> 更新使用者登入資訊(最後登入日期、登日次數等) </summary>
         private bool UpdateLoginInfo(UserInfo user)
         {
-            DbExecuteInfo dbResult = dbAccess.UpdateEntity(user);
+            DbExecuteInfo dbResult = dbAccess.UpdateEntity(user, "F");
             return dbResult.isSuccess;
         }
 

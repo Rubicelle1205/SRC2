@@ -18,8 +18,8 @@ namespace WebPccuClub.Controllers
         BaseDataAccess dbAccess = new BaseDataAccess();
 
         #region 共用屬性
-        private const string strConst_LoginPageUrl = @"/BakeendLogin";
-        //private const string strConst_LoginPageUrl = @"/FrontLogin";
+        //private const string strConst_LoginPageUrl = @"/BakeendLogin";
+        private const string strConst_LoginPageUrl = @"/FrontLogin";
         private const string strConst_DefaultPageUrl = @"/Home/Index?node=-1";
         private const string strConst_Timeout = "操作逾時，請重新登入！";
         private const string strConst_NoAccess = "很抱歉 您無此頁面的存取權限！！";
