@@ -1,0 +1,221 @@
+﻿@model WebPccuClub.Models.ClubListViewModel
+
+
+
+
+
+@if (Model.ResultModel.Count > 0)
+{
+    foreach (var item in Model.ResultModel)
+    {
+        <div class="col-lg-3 col-md-6">
+            <a class="item" href="club_detail.html">
+                <div class="imgbox">
+                    <div class="imgbox__inner-6-9">
+                        <div class="image" style="background-image: url(@item.LogoPath);"></div>
+                    </div>
+                </div>
+                <div class="textbox">
+                    <div class="num">@item.ClubId.ToUpper()<span class="badge badge-primary badge-sm ms-2">@item.ClubClassText</span></div>
+                    <div class="title">@item.ClubCName</div>
+                </div>
+            </a>
+        </div>
+    }
+}
+<div class="col-lg-3 col-md-6">
+    <a class="item" href="club_detail.html">
+        <div class="imgbox">
+            <div class="imgbox__inner-6-9">
+                <div class="image" style="background-image: url(assets/img/sample/club_logo2.jpg);"></div>
+            </div>
+        </div>
+        <div class="textbox">
+            <div class="num">A072<span class="badge badge-primary badge-sm ms-2">全校性</span></div>
+            <div class="title">學生會</div>
+        </div>
+    </a>
+</div>
+
+
+<div class="col-lg-3 col-md-6">
+    <a class="item" href="club_detail.html">
+        <div class="imgbox">
+            <div class="imgbox__inner-6-9">
+                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
+            </div>
+        </div>
+        <div class="textbox">
+            <div class="num">A177<span class="badge badge-primary badge-sm ms-2">系學會類</span></div>
+            <div class="title">研究生幹事會</div>
+        </div>
+    </a>
+</div>
+<div class="col-lg-3 col-md-6">
+    <a class="item" href="club_detail.html">
+        <div class="imgbox">
+            <div class="imgbox__inner-6-9">
+                <div class="image" style="background-image: url(assets/img/sample/club_logo3.jpg);"></div>
+            </div>
+        </div>
+        <div class="textbox">
+            <div class="num">A035<span class="badge badge-primary badge-sm ms-2">全校性</span></div>
+            <div class="title">畢業生服務委員會</div>
+        </div>
+    </a>
+</div>
+<div class="col-lg-3 col-md-6">
+    <a class="item" href="club_detail.html">
+        <div class="imgbox">
+            <div class="imgbox__inner-6-9">
+                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
+            </div>
+        </div>
+        <div class="textbox">
+            <div class="num">A011<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
+            <div class="title">熱門舞蹈社</div>
+        </div>
+    </a>
+</div>
+<div class="col-lg-3 col-md-6">
+    <a class="item" href="club_detail.html">
+        <div class="imgbox">
+            <div class="imgbox__inner-6-9">
+                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
+            </div>
+        </div>
+        <div class="textbox">
+            <div class="num">A021<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
+            <div class="title">國世舞雙</div>
+        </div>
+    </a>
+</div>
+<div class="col-lg-3 col-md-6">
+    <a class="item" href="club_detail.html">
+        <div class="imgbox">
+            <div class="imgbox__inner-6-9">
+                <div class="image" style="background-image: url(assets/img/sample/club_logo2.jpg);"></div>
+            </div>
+        </div>
+        <div class="textbox">
+            <div class="num">A023<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
+            <div class="title">華岡國樂社</div>
+        </div>
+    </a>
+</div>
+<div class="col-lg-3 col-md-6">
+    <a class="item" href="club_detail.html">
+        <div class="imgbox">
+            <div class="imgbox__inner-6-9">
+                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
+            </div>
+        </div>
+        <div class="textbox">
+            <div class="num">A028<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
+            <div class="title">管樂社</div>
+        </div>
+    </a>
+</div>
+<div class="col-lg-3 col-md-6">
+    <a class="item" href="club_detail.html">
+        <div class="imgbox">
+            <div class="imgbox__inner-6-9">
+                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
+            </div>
+        </div>
+        <div class="textbox">
+            <div class="num">A026<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
+            <div class="title">詞曲創作社</div>
+        </div>
+    </a>
+</div>
+<div class="col-lg-3 col-md-6">
+    <a class="item" href="club_detail.html">
+        <div class="imgbox">
+            <div class="imgbox__inner-6-9">
+                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
+            </div>
+        </div>
+        <div class="textbox">
+            <div class="num">A025<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
+            <div class="title">華岡吉他社</div>
+        </div>
+    </a>
+</div>
+<div class="col-lg-3 col-md-6">
+    <a class="item" href="club_detail.html">
+        <div class="imgbox">
+            <div class="imgbox__inner-6-9">
+                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
+            </div>
+        </div>
+        <div class="textbox">
+            <div class="num">A022<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
+            <div class="title">華岡合唱團</div>
+        </div>
+    </a>
+</div>
+<div class="col-lg-3 col-md-6">
+    <a class="item" href="club_detail.html">
+        <div class="imgbox">
+            <div class="imgbox__inner-6-9">
+                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
+            </div>
+        </div>
+        <div class="textbox">
+            <div class="num">A031<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
+            <div class="title">草山劇廠</div>
+        </div>
+    </a>
+</div>
+<div class="col-lg-3 col-md-6">
+    <a class="item" href="club_detail.html">
+        <div class="imgbox">
+            <div class="imgbox__inner-6-9">
+                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
+            </div>
+        </div>
+        <div class="textbox">
+            <div class="num">A204<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
+            <div class="title">嘻哈音樂文化研究社</div>
+        </div>
+    </a>
+</div>
+
+<div class="card-footer clearfix">
+    <div class="pagination justify-content-end" id="SearchResultListPagination"></div>
+</div>
+<!-- /.card-body -->
+
+<script>
+    $("#SearchResultListPagination").solventoPageBar(
+        {
+            containerHtml: "<ul class='pagination justify-content-end'>{{:firstPageRender}}{{:prePageRender}}{{:pageRender}}{{:nextPageRender}}{{:lastPageRender}}</ul>{{:totalPageRender}}", // render: pagesbarHtml
+            firstPageHtml: "<li class='page-item {{:disable}}'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-double-left'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            lastPageHtml: "<li class='page-item {{:disable}}'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-double-right'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            pageHtml: " <li class='page-item {{:selectedHtml}}'><a {{:idx}} class='page-link {{:pageClass}}'>{{:pageNumber}}</a></li>",//pageClass: clickEventClass, pageNumber: pageNumber, selectedHtml : selectedHtml,idx : idx
+            prePageHtml: "<li class='page-item'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-left'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            nextPageHtml: "<li class='page-item'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-right'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            //totalPageHtml: "<div class='page-intro'>共<span>{{:totalCount}}</span>筆資料</div>",
+            totalPageHtml: "",
+            pNow: "目前為第 {{:pnow}} 頁 / 共 {{:ptotle}} 頁",
+            pEver: "每頁顯示 {{:pever}} 筆 / 共 {{:ptotleever}} 筆",
+            pageSelectedHtml: "active",
+        },
+        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.ConditionModel.Page)']").val()) + 1,
+        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.ConditionModel.PageSize)']").val()),
+
+    @Model.ConditionModel.TotalCount,
+        changePage
+    );
+
+    function changePage(idx) {
+        //動畫
+        $('#SearchForm').find("input[name='@Html.NameFor(m => m.ConditionModel.Page)']").val(idx - 1);
+        //取頁面數
+        $("#@Html.IdFor(m => m.ConditionModel.Page)").val(idx - 1);
+
+        GoSearch();
+    }
+
+</script>

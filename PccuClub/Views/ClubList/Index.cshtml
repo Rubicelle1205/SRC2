@@ -1,4 +1,4 @@
-﻿@model WebPccuClub.Models.FrontLoginViewModel;
+﻿@model WebPccuClub.Models.ClubListViewModel
 
 @{
     Layout = "_FrontLayout";
@@ -9,212 +9,68 @@
 
 
 <div class="col-xxl-8 col-xl-8">
-							<div class="remindWrapper">
-								<div class="title"><i class="fa-solid fa-bell"></i> 提醒</div>
-								<div class="remindBox">
-									<div class="item">
-										<p>請於2023/08/15之前，填寫送出「個人資料告知暨同意書」</p>
-									</div>
-									<div class="item">
-										<p>請於2023/08/15之前，填寫送出「改選會議概要」</p>
-									</div>
-									<div class="item">
-										<p>請於2023/08/15之前，填寫送出「社團負責人資訊」</p>
-									</div>
-								</div>
-							</div>
-							<div class="contentWrapper">
-								<h4 class="pageTitle">社團一覽</h4>
-								<hr>
-								<div class="filter-box form-box mb-4">
-									<div class="row">
-										<div class="col-md-4">
-											<div class="d-flex align-items-center">
-												<i class="fas fa-filter text-primary"></i>
-												<select name="" id="" class="form-control ms-3">
-													<option value="" selected>請選擇</option>
-													<option value="全校性">全校性</option>
-													<option value="康樂類">康樂類</option>
-													<option value="服務類">服務類</option>
-													<option value="生命關懷類">生命關懷類</option>
-													<option value="學藝類">學藝類</option>
-													<option value="體能類">體能類</option>
-													<option value="系學會類">系學會類</option>
-												</select>
-											</div>
-											<!-- <div class="input-group">
-												<input type="text" class="form-control" placeholder="關鍵字查詢">
-												<button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
-											</div> -->
-										</div>
-									</div>
-								</div>
-								<div class="thumblist">
-									<div class="row">
-										<div class="col-lg-3 col-md-6">
-											<a class="item" href="club_detail.html">
-												<div class="imgbox">
-													<div class="imgbox__inner-6-9">
-														<div class="image" style="background-image: url(assets/img/sample/club_logo2.jpg);"></div>
-													</div>
-												</div>
-												<div class="textbox">
-													<div class="num">A072<span class="badge badge-primary badge-sm ms-2">全校性</span></div>
-													<div class="title">學生會</div>
-												</div>
-											</a>
-										</div>
-										<div class="col-lg-3 col-md-6">
-											<a class="item" href="club_detail.html">
-												<div class="imgbox">
-													<div class="imgbox__inner-6-9">
-														<div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-													</div>
-												</div>
-												<div class="textbox">
-													<div class="num">A177<span class="badge badge-primary badge-sm ms-2">系學會類</span></div>
-													<div class="title">研究生幹事會</div>
-												</div>
-											</a>
-										</div>
-										<div class="col-lg-3 col-md-6">
-											<a class="item" href="club_detail.html">
-												<div class="imgbox">
-													<div class="imgbox__inner-6-9">
-														<div class="image" style="background-image: url(assets/img/sample/club_logo3.jpg);"></div>
-													</div>
-												</div>
-												<div class="textbox">
-													<div class="num">A035<span class="badge badge-primary badge-sm ms-2">全校性</span></div>
-													<div class="title">畢業生服務委員會</div>
-												</div>
-											</a>
-										</div>
-										<div class="col-lg-3 col-md-6">
-											<a class="item" href="club_detail.html">
-												<div class="imgbox">
-													<div class="imgbox__inner-6-9">
-														<div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-													</div>
-												</div>
-												<div class="textbox">
-													<div class="num">A011<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-													<div class="title">熱門舞蹈社</div>
-												</div>
-											</a>
-										</div>
-										<div class="col-lg-3 col-md-6">
-											<a class="item" href="club_detail.html">
-												<div class="imgbox">
-													<div class="imgbox__inner-6-9">
-														<div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-													</div>
-												</div>
-												<div class="textbox">
-													<div class="num">A021<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-													<div class="title">國世舞雙</div>
-												</div>
-											</a>
-										</div>
-										<div class="col-lg-3 col-md-6">
-											<a class="item" href="club_detail.html">
-												<div class="imgbox">
-													<div class="imgbox__inner-6-9">
-														<div class="image" style="background-image: url(assets/img/sample/club_logo2.jpg);"></div>
-													</div>
-												</div>
-												<div class="textbox">
-													<div class="num">A023<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-													<div class="title">華岡國樂社</div>
-												</div>
-											</a>
-										</div>
-										<div class="col-lg-3 col-md-6">
-											<a class="item" href="club_detail.html">
-												<div class="imgbox">
-													<div class="imgbox__inner-6-9">
-														<div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-													</div>
-												</div>
-												<div class="textbox">
-													<div class="num">A028<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-													<div class="title">管樂社</div>
-												</div>
-											</a>
-										</div>
-										<div class="col-lg-3 col-md-6">
-											<a class="item" href="club_detail.html">
-												<div class="imgbox">
-													<div class="imgbox__inner-6-9">
-														<div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-													</div>
-												</div>
-												<div class="textbox">
-													<div class="num">A026<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-													<div class="title">詞曲創作社</div>
-												</div>
-											</a>
-										</div>
-										<div class="col-lg-3 col-md-6">
-											<a class="item" href="club_detail.html">
-												<div class="imgbox">
-													<div class="imgbox__inner-6-9">
-														<div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-													</div>
-												</div>
-												<div class="textbox">
-													<div class="num">A025<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-													<div class="title">華岡吉他社</div>
-												</div>
-											</a>
-										</div>
-										<div class="col-lg-3 col-md-6">
-											<a class="item" href="club_detail.html">
-												<div class="imgbox">
-													<div class="imgbox__inner-6-9">
-														<div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-													</div>
-												</div>
-												<div class="textbox">
-													<div class="num">A022<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-													<div class="title">華岡合唱團</div>
-												</div>
-											</a>
-										</div>
-										<div class="col-lg-3 col-md-6">
-											<a class="item" href="club_detail.html">
-												<div class="imgbox">
-													<div class="imgbox__inner-6-9">
-														<div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-													</div>
-												</div>
-												<div class="textbox">
-													<div class="num">A031<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-													<div class="title">草山劇廠</div>
-												</div>
-											</a>
-										</div>
-										<div class="col-lg-3 col-md-6">
-											<a class="item" href="club_detail.html">
-												<div class="imgbox">
-													<div class="imgbox__inner-6-9">
-														<div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-													</div>
-												</div>
-												<div class="textbox">
-													<div class="num">A204<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-													<div class="title">嘻哈音樂文化研究社</div>
-												</div>
-											</a>
-										</div>
-									</div>
-								</div>
-								<ul class="pagination justify-content-center pt-4">
-									<li class="page-item"><a class="page-link" href="javascript:void(0)"><i class="icon-arrow-left"></i></a></li>
-									<li class="page-item active"><a class="page-link" href="javascript:void(0)">1</a></li>
-									<li class="page-item"><a class="page-link" href="javascript:void(0)">2</a></li>
-									<li class="page-item"><a class="page-link" href="javascript:void(0)">3</a></li>
-									<li class="page-item"><a class="page-link" href="javascript:void(0)"><i class="icon-arrow-right"></i></a></li>
-								</ul>
-							</div>
-						</div>
+    <div class="contentWrapper">
+        <h4 class="pageTitle">社團一覽</h4>
+        <hr>
+
+        <div class="filter-box form-box mb-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <form method="post" id="SearchForm" enctype="multipart/form-data" action="">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-filter text-primary"></i>
+                            @Html.DropDownListFor(m => m.ConditionModel.ClubClass,(List<SelectListItem>)ViewBag.ddlClubClass,"請選擇", new {@class = "form-control ms-3"})
+                        </div>
+                        <input type="button" style="visibility:hidden;" value="" onclick="GoSearch()">
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="thumblist">
+            <div id="SearchResultList" class="row">
+              
+            </div>
+        </div>
+
+
+        <ul class="pagination justify-content-center pt-4">
+            <li class="page-item"><a class="page-link" href="javascript:void(0)"><i class="icon-arrow-left"></i></a></li>
+            <li class="page-item active"><a class="page-link" href="javascript:void(0)">1</a></li>
+            <li class="page-item"><a class="page-link" href="javascript:void(0)">2</a></li>
+            <li class="page-item"><a class="page-link" href="javascript:void(0)">3</a></li>
+            <li class="page-item"><a class="page-link" href="javascript:void(0)"><i class="icon-arrow-right"></i></a></li>
+        </ul>
+
+
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        GoSearch();
+    });
+
+    function GoSearch() {
+        SendAjax({
+            url: '@Url.Action("GetSearchResult")',
+            data: $("#SearchForm").serialize(),
+            success: function (result) {
+                $('#SearchResultList').html(result);
+            }
+        });
+    }
+
+    $('#JumpPergroup').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val(e.target.value);
+        GoSearch();
+    });
+
+    $('#Jumppage').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.Page)").val(e.target.value);
+        GoSearch();
+    });
+
+</script>

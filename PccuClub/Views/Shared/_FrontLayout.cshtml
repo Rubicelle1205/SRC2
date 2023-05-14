@@ -12,7 +12,7 @@
 
     if (LoginUser != null)
     {
-        UnitName = LoginUser.UnitName;
+        UnitName = LoginUser.UserRole[0].RoleName != null ? LoginUser.UserRole[0].RoleName : "訪客";
         LoginId = LoginUser.LoginId;
         LoginName = LoginUser.UserName;
         LastLoginDate = LoginUser.LastLoginDate.Value.ToString("yyyy/MM/dd HH:mm");
@@ -95,11 +95,11 @@
                         <div class="header-column">
                             <div class="header-row position-relative">
                                 <div class="header-logo">
-                                    <a href="index.html">
+                                    <a href="@Url.Action("Index","ClubList")">
                                         <img src="~/images/front/logo_circle.png" class="img-fluid" alt="" />
                                     </a>
                                 </div>
-                                <a href="index.html" class="headerTitle">中國文化大學社團資訊系統</a>
+                                <a href="@Url.Action("Index","ClubList")" class="headerTitle">中國文化大學社團資訊系統</a>
                             </div>
                         </div>
                     </div>
@@ -210,3 +210,7 @@
 <script src="~/js/custom.js"></script>
 <script src="~/sweetalert2/sweetalert2.min.js"></script>
 <link href="~/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+
+<script src="~/js/main.js"></script>
+<script src="~/js/BlockUI.js"></script>
+<script src="~/js/solvento.pagebar.js"></script>

@@ -71,7 +71,7 @@ namespace PccuClub.WebAuth
                 UserInfo LoginUser = new UserInfo();
 
                 // 查詢基本資料
-                (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectUserMain(LoginId);
+                (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectFUserMain(LoginId);
                 if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0 || mainResult.entitys.Count() > 1)
                 { return false; }
 
@@ -111,7 +111,7 @@ namespace PccuClub.WebAuth
             oUser = null;
 
             // 查詢基本資料
-            (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectFUserMain(LoginId);
+            (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectUserMain(LoginId);
             if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0 || mainResult.entitys.Count() > 1)
             { return false; }
 

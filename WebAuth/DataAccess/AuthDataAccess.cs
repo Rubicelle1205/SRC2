@@ -9,13 +9,13 @@ namespace WebAuth.DataAccess
     internal class AuthDataAccess : MsSqlDBAccess
     {
         private IDBAccess dbAccess = new BaseAccess();
-        
+
         public (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) SelectFUserMain(string FUserId)
         {
             DBAParameter parameter = new DBAParameter();
             parameter.Add("@FUserId", FUserId);
 
-            string SQL = @"SELECT A.FUserId, A.UserName, A.EMail, A.CellPhone, A.Department, C.ClubId, C.ClubCName, C.ClubEName, C.SchoolYear, C.LifeClass, C.ClubClass
+            string SQL = @"SELECT A.FUserId, A.UserName, C.ClubId AS LoginId, A.EMail, A.CellPhone, A.Department, C.ClubId, C.ClubCName, C.ClubEName, C.SchoolYear, C.LifeClass, C.ClubClass
                              FROM FUserMain A
                         LEFT JOIN ClubUser B ON B.FUserId = A.FUserId
                         LEFT JOIN ClubMang C ON C.ClubId = B.ClubId

@@ -1,23 +1,46 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebPccuClub.Models;
 using System.Diagnostics;
+using WebPccuClub.Global;
+using WebPccuClub.DataAccess;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WebPccuClub.Controllers
 {
+    [LogAttribute(LogActionChineseName.社團一覽)]
     public class ClubListController : FBaseController
     {
-        private readonly ILogger<ClubListController> _logger;
+        ReturnViewModel vmRtn = new ReturnViewModel();
+        ClubListDataAccess dbAccess = new ClubListDataAccess();
 
-        public ClubListController(ILogger<ClubListController> logger)
+        private readonly IHostingEnvironment hostingEnvironment;
+
+        public ClubListController(IHostingEnvironment _hostingEnvironment)
         {
-            _logger = logger;
+            hostingEnvironment = _hostingEnvironment;
         }
 
         public IActionResult Index()
         {
+            ViewBag.ddlClubClass = dbAccess.GetAllClubClass();
 
+            ClubListViewModel vm = new ClubListViewModel();
+            vm.ConditionModel = new ClubListConditionModel();
+            return View(vm);
+        }
 
-            return View();
+        [LogAttribute(LogActionChineseName.查詢)]
+        public IActionResult GetSearchResult(ClubListViewModel vm)
+        {
+            vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel).ToList();
+
+            #region 分頁
+            vm.ConditionModel.TotalCount = vm.ResultModel.Count();
+            int StartRow = vm.ConditionModel.Page * vm.ConditionModel.PageSize;
+            vm.ResultModel = vm.ResultModel.Skip(StartRow).Take(vm.ConditionModel.PageSize).ToList();
+            #endregion
+
+            return PartialView("_SearchResultPartial", vm);
         }
 
     }

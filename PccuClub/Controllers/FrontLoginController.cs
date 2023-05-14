@@ -67,16 +67,16 @@ namespace WebPccuClub.Controllers
                 TempData.Clear();
 
                 LoginUser.LastLoginDate = DateTime.Now;
-                user.ErrorCount = 0;
-                user.LastLoginDate = DateTime.Now;
-                user.LastModified = DateTime.Now;
-                user.LastModifier = user.LoginId;
+                LoginUser.ErrorCount = 0;
+                LoginUser.LastLoginDate = DateTime.Now;
+                LoginUser.LastModified = DateTime.Now;
+                LoginUser.LastModifier = user.LoginId;
                 loginEntity.Issuccess = true;
                 loginEntity.Loginid = user.LoginId;
 
                 HttpContext.Session.SetObject("LoginUser", LoginUser);
 
-                UpdateLoginInfo(user);
+                UpdateLoginInfo(LoginUser);
                 InsertLoginLog(loginEntity);
                 InsertActionLog(loginEntity, LoginUser);
 
