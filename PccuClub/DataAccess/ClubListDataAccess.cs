@@ -27,13 +27,15 @@ namespace WebPccuClub.DataAccess
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@RoleId", model.ClubClass);
+            parameters.Add("@ClubClass", model.ClubClass);
             
             #endregion
 
             CommandText = $@"SELECT A.ClubId, A.ClubCName, A.ClubClass, B.Text AS ClubClassText, A.LogoPath
                                FROM ClubMang A
-                          LEFT JOIN Code B ON B.Code = A.ClubClass AND B.Type = 'ClubClass' ";
+                          LEFT JOIN Code B ON B.Code = A.ClubClass AND B.Type = 'ClubClass' 
+                              WHERE 1 = 1 
+                                AND (@ClubClass IS NULL OR A.ClubClass = @ClubClass)";
 
             (DbExecuteInfo info, IEnumerable<ClubListResultModel> entitys) dbResult = DbaExecuteQuery<ClubListResultModel>(CommandText, parameters, true, DBAccessException);
 
@@ -43,6 +45,42 @@ namespace WebPccuClub.DataAccess
             return new List<ClubListResultModel>();
         }
 
+        /// <summary>
+        /// 取得編輯資料
+        /// </summary>
+        /// <param name="submitBtn"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public ClubListEditModel GetEditData(string ClubId)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@ClubId", ClubId);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"
+                            SELECT A.ClubId, A.ClubCName, A.ClubEName, A.SchoolYear, A.LifeClass, C.Text AS LifeClassText, A.ClubClass, B.Text AS ClubClassText, A.Address, A.EMail, A.Tel, 
+                                   A.Social1, A.Social2, A.Social3, A.LogoPath, A.ActImgPath, A.ShortInfo, A.Memo, A.Created, A.LastModified, D.RoleId
+                               FROM ClubMang A
+							   LEFT JOIN Code B ON B.Code = A.ClubClass AND B.Type = 'ClubClass'
+							   LEFT JOIN Code C ON C.Code = A.LifeClass AND C.Type = 'LifeClass'
+                               LEFT JOIN UserRole D ON D.LoginId = A.ClubId
+                              WHERE 1 = 1
+                               AND A.ClubId = @ClubId";
+
+
+            (DbExecuteInfo info, IEnumerable<ClubListEditModel> entitys) dbResult = DbaExecuteQuery<ClubListEditModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList().FirstOrDefault();
+
+            return null;
+        }
 
         public List<SelectListItem> GetAllClubClass()
         {

@@ -1,15 +1,11 @@
 ﻿@model WebPccuClub.Models.ClubListViewModel
 
-
-
-
-
 @if (Model.ResultModel.Count > 0)
 {
     foreach (var item in Model.ResultModel)
     {
         <div class="col-lg-3 col-md-6">
-            <a class="item" href="club_detail.html">
+            <a id = "Detail" class="item" href="@Url.Action("Edit", "ClubList", new { id = item.ClubId })">
                 <div class="imgbox">
                     <div class="imgbox__inner-6-9">
                         <div class="image" style="background-image: url(@item.LogoPath);"></div>
@@ -23,167 +19,9 @@
         </div>
     }
 }
-<div class="col-lg-3 col-md-6">
-    <a class="item" href="club_detail.html">
-        <div class="imgbox">
-            <div class="imgbox__inner-6-9">
-                <div class="image" style="background-image: url(assets/img/sample/club_logo2.jpg);"></div>
-            </div>
-        </div>
-        <div class="textbox">
-            <div class="num">A072<span class="badge badge-primary badge-sm ms-2">全校性</span></div>
-            <div class="title">學生會</div>
-        </div>
-    </a>
-</div>
 
-
-<div class="col-lg-3 col-md-6">
-    <a class="item" href="club_detail.html">
-        <div class="imgbox">
-            <div class="imgbox__inner-6-9">
-                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-            </div>
-        </div>
-        <div class="textbox">
-            <div class="num">A177<span class="badge badge-primary badge-sm ms-2">系學會類</span></div>
-            <div class="title">研究生幹事會</div>
-        </div>
-    </a>
-</div>
-<div class="col-lg-3 col-md-6">
-    <a class="item" href="club_detail.html">
-        <div class="imgbox">
-            <div class="imgbox__inner-6-9">
-                <div class="image" style="background-image: url(assets/img/sample/club_logo3.jpg);"></div>
-            </div>
-        </div>
-        <div class="textbox">
-            <div class="num">A035<span class="badge badge-primary badge-sm ms-2">全校性</span></div>
-            <div class="title">畢業生服務委員會</div>
-        </div>
-    </a>
-</div>
-<div class="col-lg-3 col-md-6">
-    <a class="item" href="club_detail.html">
-        <div class="imgbox">
-            <div class="imgbox__inner-6-9">
-                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-            </div>
-        </div>
-        <div class="textbox">
-            <div class="num">A011<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-            <div class="title">熱門舞蹈社</div>
-        </div>
-    </a>
-</div>
-<div class="col-lg-3 col-md-6">
-    <a class="item" href="club_detail.html">
-        <div class="imgbox">
-            <div class="imgbox__inner-6-9">
-                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-            </div>
-        </div>
-        <div class="textbox">
-            <div class="num">A021<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-            <div class="title">國世舞雙</div>
-        </div>
-    </a>
-</div>
-<div class="col-lg-3 col-md-6">
-    <a class="item" href="club_detail.html">
-        <div class="imgbox">
-            <div class="imgbox__inner-6-9">
-                <div class="image" style="background-image: url(assets/img/sample/club_logo2.jpg);"></div>
-            </div>
-        </div>
-        <div class="textbox">
-            <div class="num">A023<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-            <div class="title">華岡國樂社</div>
-        </div>
-    </a>
-</div>
-<div class="col-lg-3 col-md-6">
-    <a class="item" href="club_detail.html">
-        <div class="imgbox">
-            <div class="imgbox__inner-6-9">
-                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-            </div>
-        </div>
-        <div class="textbox">
-            <div class="num">A028<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-            <div class="title">管樂社</div>
-        </div>
-    </a>
-</div>
-<div class="col-lg-3 col-md-6">
-    <a class="item" href="club_detail.html">
-        <div class="imgbox">
-            <div class="imgbox__inner-6-9">
-                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-            </div>
-        </div>
-        <div class="textbox">
-            <div class="num">A026<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-            <div class="title">詞曲創作社</div>
-        </div>
-    </a>
-</div>
-<div class="col-lg-3 col-md-6">
-    <a class="item" href="club_detail.html">
-        <div class="imgbox">
-            <div class="imgbox__inner-6-9">
-                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-            </div>
-        </div>
-        <div class="textbox">
-            <div class="num">A025<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-            <div class="title">華岡吉他社</div>
-        </div>
-    </a>
-</div>
-<div class="col-lg-3 col-md-6">
-    <a class="item" href="club_detail.html">
-        <div class="imgbox">
-            <div class="imgbox__inner-6-9">
-                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-            </div>
-        </div>
-        <div class="textbox">
-            <div class="num">A022<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-            <div class="title">華岡合唱團</div>
-        </div>
-    </a>
-</div>
-<div class="col-lg-3 col-md-6">
-    <a class="item" href="club_detail.html">
-        <div class="imgbox">
-            <div class="imgbox__inner-6-9">
-                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-            </div>
-        </div>
-        <div class="textbox">
-            <div class="num">A031<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-            <div class="title">草山劇廠</div>
-        </div>
-    </a>
-</div>
-<div class="col-lg-3 col-md-6">
-    <a class="item" href="club_detail.html">
-        <div class="imgbox">
-            <div class="imgbox__inner-6-9">
-                <div class="image" style="background-image: url(assets/img/sample/club_logo.jpg);"></div>
-            </div>
-        </div>
-        <div class="textbox">
-            <div class="num">A204<span class="badge badge-primary badge-sm ms-2">康樂類</span></div>
-            <div class="title">嘻哈音樂文化研究社</div>
-        </div>
-    </a>
-</div>
-
-<div class="card-footer clearfix">
-    <div class="pagination justify-content-end" id="SearchResultListPagination"></div>
+<div class="card-footer clearfix" style="background:none;">
+    <div class="pagination justify-content-end" id="SearchResultListPagination" style="justify-content:center !important;"></div>
 </div>
 <!-- /.card-body -->
 
@@ -217,5 +55,7 @@
 
         GoSearch();
     }
+
+    
 
 </script>

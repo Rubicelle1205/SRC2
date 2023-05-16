@@ -1,0 +1,115 @@
+﻿@model WebPccuClub.Models.ClubListViewModel
+
+@{
+    Layout = "_FrontLayout";
+}
+
+@if (null != Model.EditModel)
+{
+    <div class="col-xxl-8 col-xl-8">
+        <div class="contentWrapper">
+            <h4 class="pageTitle">@Html.DisplayFor(m => m.EditModel.ClubCName)</h4>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index")">社團簡介</a></li>
+                    <li class="breadcrumb-item active">@Html.DisplayFor(m => m.EditModel.ClubCName)</li>
+                </ol>
+            </nav>
+            <hr>
+            <div class="mb-4">
+                <a href="@Url.Action("Index")"><i class="fas fa-chevron-left"></i> 返回列表</a>
+            </div>
+
+
+            <div class="actcover mb-4">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="imgbox">
+                            <div class="imgbox__inner-6-9">
+                                @if (!string.IsNullOrEmpty(Model.EditModel.ActImgPath))
+                                {
+                                    <div class="image" style="background-image: url(../@Html.DisplayFor(m => m.EditModel.ActImgPath));"></div>
+                                }
+                                else
+                                {
+                                    <div class="image" style="background-image: url(../../uploads/others/nophoto.png);"></div>
+                                }
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="infoWrapper mb-4">
+                <div class="infoItem">
+                    <div class="tag">社團代號</div>
+                    <div class="content">@Html.DisplayFor(m => m.EditModel.ClubId)</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">社團分類</div>
+                    <div class="content">@Html.DisplayFor(m => m.EditModel.ClubClassText)</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">中文名稱</div>
+                    <div class="content">@Html.DisplayFor(m => m.EditModel.ClubCName)</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">英文名稱</div>
+                    <div class="content">@Html.DisplayFor(m => m.EditModel.ClubEName)</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">社辦地址</div>
+                    <div class="content">@Html.DisplayFor(m => m.EditModel.Address)</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">聯絡電話</div>
+                    <div class="content">@Html.DisplayFor(m => m.EditModel.Tel)</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">Email</div>
+                    <div class="content"><a href="mailto:@Html.DisplayFor(m => m.EditModel.EMail)">@Html.DisplayFor(m => m.EditModel.EMail)</a></div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">Logo</div>
+                    <div class="content">
+                        <div class="logo imgbox__inner-3-6">
+                            @if (!string.IsNullOrEmpty(Model.EditModel.LogoPath))
+                            {
+                                <img src="@($@"../{ Model.EditModel.LogoPath } ")" alt="">
+                            }
+                            else
+                            {
+                                <img src="../../uploads/others/nophoto.png" alt="">
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">簡介</div>
+                    <div class="content">
+                        @Html.DisplayFor(m => m.EditModel.ShortInfo)
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">社群平台連結</div>
+                    <div class="content">
+                        <div class="row">
+                            <div class="mb-2">
+                                <a href="@Html.DisplayFor(m => m.EditModel.Social1)" target="_blank">連結1 <i class="fas fa-external-link-alt"></i></a>
+                            </div>
+                            <div class="mb-2">
+                                <a href="@Html.DisplayFor(m => m.EditModel.Social2)" target="_blank">連結2 <i class="fas fa-external-link-alt"></i></a>
+                            </div>
+                            <div class="">
+                                <a href="@Html.DisplayFor(m => m.EditModel.Social3)" target="_blank">連結3 <i class="fas fa-external-link-alt"></i></a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+}

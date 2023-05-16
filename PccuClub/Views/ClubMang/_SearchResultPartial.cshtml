@@ -26,7 +26,14 @@
                         <td class="text-center text-sm">@item.ClubCName<br /><span class="text-muted">@item.ClubEName</span></td>
                         <td class="text-center text-sm">@item.ClubLeader<br /><span class="text-muted">@item.Department</span></td>
                         <td class="text-center text-sm">@item.Tel<br /><span class="text-muted">@item.EMail</span></td>
-                        <td class="text-center text-sm">@item.Created.Value.ToString("yyyy/MM/dd HH:mm:ss")</td>
+                        @if (item.Created.HasValue)
+                        {
+                            <td class="text-center text-sm">@item.Created.Value.ToString("yyyy/MM/dd HH:mm:ss")</td>
+                        }
+                        else
+                        {
+                            <td class="text-center text-sm"></td>
+                        }
                         <td class="text-center text-sm">
                             @using (Html.BeginForm("Edit", "ClubMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
                             {

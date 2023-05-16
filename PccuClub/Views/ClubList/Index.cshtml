@@ -22,17 +22,18 @@
                             @Html.DropDownListFor(m => m.ConditionModel.ClubClass,(List<SelectListItem>)ViewBag.ddlClubClass,"請選擇", new {@class = "form-control ms-3"})
                         </div>
                         <input type="button" style="visibility:hidden;" value="" onclick="GoSearch()">
+                        @Html.HiddenFor(m => m.ConditionModel.Page)
+                        @Html.HiddenFor(m => m.ConditionModel.PageSize)
+                        @Html.HiddenFor(m => m.ConditionModel.TotalCount)
                     </form>
                 </div>
             </div>
         </div>
 
         <div class="thumblist">
-            <div id="SearchResultList" class="row">
-              
-            </div>
+            <div id="SearchResultList" class="row"></div>
         </div>
-
+@*
 
         <ul class="pagination justify-content-center pt-4">
             <li class="page-item"><a class="page-link" href="javascript:void(0)"><i class="icon-arrow-left"></i></a></li>
@@ -41,7 +42,7 @@
             <li class="page-item"><a class="page-link" href="javascript:void(0)">3</a></li>
             <li class="page-item"><a class="page-link" href="javascript:void(0)"><i class="icon-arrow-right"></i></a></li>
         </ul>
-
+*@
 
     </div>
 </div>
@@ -62,6 +63,10 @@
             }
         });
     }
+
+    $('#@Html.IdFor(m => m.ConditionModel.ClubClass)').change(function (e) {
+        GoSearch();
+    });
 
     $('#JumpPergroup').change(function (e) {
         $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val(e.target.value);

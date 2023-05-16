@@ -43,5 +43,17 @@ namespace WebPccuClub.Controllers
             return PartialView("_SearchResultPartial", vm);
         }
 
+        [Log(LogActionChineseName.編輯)]
+        public IActionResult Edit(string id, ClubListViewModel vm)
+        {
+            if (string.IsNullOrEmpty(id))
+                return RedirectToAction("Index");
+
+
+            vm.EditModel = dbAccess.GetEditData(id);
+
+            return View(vm);
+        }
+
     }
 }

@@ -6295,9 +6295,10 @@ window.theme.fn = {
 					_isScrolling = false;
 
 				// Click Element Action
-				self.$el.on('click', function(e) {
+				$('.scroll-to-top').on('click', function(e) {
 					e.preventDefault();
-					$('html').animate({
+					
+					$('html, body').animate({
 						scrollTop: 0
 					}, self.options.delay, self.options.easing);
 					return false;
