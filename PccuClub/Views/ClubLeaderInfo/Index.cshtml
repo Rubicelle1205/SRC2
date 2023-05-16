@@ -1,0 +1,123 @@
+﻿@model WebPccuClub.Models.ClubLeaderInfoViewModel
+
+@{
+    Layout = "_FrontLayout";
+}
+<div class="col-xxl-8">
+	<div class="contentWrapper">
+		<h4 class="pageTitle">個人資料</h4>
+		<hr>
+		@if (null != Model.EditModel)
+        {
+			<div class="row justify-content-center">
+				<div class="col-lg-6">
+					<div class="form-item">
+						<label for="">帳號</label>
+						<span class="form-control" style="background-color:#e9ecef;">
+							@Html.DisplayFor(m => m.EditModel.ClubId, new { @class="form-control"})
+						</span>
+					</div>
+					<div class="form-item">
+						<label for="">學校/人員代號</label>
+						<span class="form-control" style="background-color:#e9ecef;">
+							@Html.DisplayFor(m => m.EditModel.FUserId, new { @class="form-control", @readonly="readonly"})
+						</span>
+					</div>
+					<div class="form-item">
+						<label for="">單位名稱</label>
+						<span class="form-control" style="background-color:#e9ecef;">
+							@Html.DisplayFor(m => m.EditModel.ClubCName, new { @class="form-control", @readonly="readonly"})
+						</span>
+					</div>
+					<div class="form-item">
+						<label for="">姓名</label>
+						@Html.TextBoxFor(m => m.EditModel.UserName, new { @class="form-control"})
+					</div>
+					<div class="form-item">
+						<label for="">系級</label>
+						@Html.TextBoxFor(m => m.EditModel.Department, new { @class="form-control"})
+					</div>
+					<div class="form-item">
+						<label for="">行動電話</label>
+						@Html.TextBoxFor(m => m.EditModel.CellPhone, new { @class="form-control"})
+					</div>
+					<div class="form-item">
+						<label for="">常用EMAIL</label>
+						@Html.TextBoxFor(m => m.EditModel.EMail, new { @class="form-control"})
+					</div>
+					<div class="text-center py-4">
+						<button type="button" name="submitBtn" class="btn btn-modern btn-secondary box-shadow-6 border-0 w-100" onclick="SaveEditData()">儲存</button>
+					</div>
+				</div>
+			</div>
+
+			@Html.HiddenFor(m => m.EditModel.ClubId)
+			@Html.HiddenFor(m => m.EditModel.FUserId)
+			@Html.HiddenFor(m => m.EditModel.ClubCName)
+        }
+	</div>
+</div>
+
+<script>
+
+    function SaveEditData() {
+
+        var data = new FormData()
+		var ClubId = $('#@Html.IdFor(m => m.EditModel.ClubId)').val();
+		var FUserId = $('#@Html.IdFor(m => m.EditModel.FUserId)').val();
+		var ClubCName = $('#@Html.IdFor(m => m.EditModel.ClubCName)').val();
+		var UserName = $('#@Html.IdFor(m => m.EditModel.UserName)').val();
+		var Department = $('#@Html.IdFor(m => m.EditModel.Department)').val();
+		var CellPhone = $('#@Html.IdFor(m => m.EditModel.CellPhone)').val();
+		var EMail = $('#@Html.IdFor(m => m.EditModel.EMail)').val();
+
+		if (UserName == "") {
+			$.alert("姓名不可為空");
+			return;
+		}
+
+		if (CellPhone == "") {
+			$.alert("行動電話不可為空");
+			return;
+		}
+
+		if (EMail == "") {
+			$.alert("常用EMAIL不可為空");
+			return;
+		}
+
+
+		data.append('@Html.NameFor(m => m.EditModel.ClubId)', ClubId);
+		data.append('@Html.NameFor(m => m.EditModel.FUserId)', FUserId);
+		data.append('@Html.NameFor(m => m.EditModel.ClubCName)', ClubCName);
+		data.append('@Html.NameFor(m => m.EditModel.UserName)', UserName);
+		data.append('@Html.NameFor(m => m.EditModel.Department)', Department);
+		data.append('@Html.NameFor(m => m.EditModel.CellPhone)', CellPhone);
+		data.append('@Html.NameFor(m => m.EditModel.EMail)', EMail);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                location.reload();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+    }
+</script>
