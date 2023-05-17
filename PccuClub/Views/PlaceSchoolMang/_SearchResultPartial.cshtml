@@ -1,42 +1,50 @@
-﻿@model WebPccuClub.Models.PlaceSchoolElseMangViewModel
+﻿@model WebPccuClub.Models.PlaceSchoolMangViewModel
 
 
-    <!-- /.card-header -->
-    <div class="card-body table-responsive p-0">
-        <table class="table table-bordered table-hover text-nowrap">
-            <thead>
-                <tr class="text-center">
+<!-- /.card-header -->
+<div class="card-body table-responsive p-0">
+    <table class="table table-bordered table-hover text-nowrap">
+        <thead>
+            <tr class="text-center">
                 <th width="20%">樓館</th>
                 <th width="20%">
                     場地名稱
-                    <br/>
-                    <span class="text-sm text-secondary">樓層</span>
+                    <br />
+                    <span class="text-sm text-secondary">場地層級</span>
                 </th>
-                <th width="20%">場地代碼</th>
-                    <th width="20%">更新時間</th>
-                    <th width="20%">功能</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.ResultModel.Count > 0)
-                { 
-                    foreach (var item in Model.ResultModel)
-                    {
+                <th width="20%">可容納人數</th>
+                <th width="20%">場地狀態</th>
+                <th width="20%">更新時間</th>
+                <th width="20%">功能</th>
+            </tr>
+        </thead>
+        <tbody class="text-center text-sm">
+            @if (Model.ResultModel.Count > 0)
+            {
+                foreach (var item in Model.ResultModel)
+                {
                     <tr>
                         <td class="text-center text-sm">@item.BuildName</td>
                         <td class="text-center text-sm">
-                            @item.PlaceName<br/>
-                            @if (!string.IsNullOrEmpty(item.Floor))
-                            {
-                                <span class="text-muted">@string.Format("{0}F", item.Floor)</span>
-                            }
-                            else
-                            {
-                                <span class="text-muted">-</span>
-                            }
+                            @item.PlaceName<br />
 
+                            
+                            <span class="text-muted">@item.PlaceDesc</span>
                         </td>
-                        <td class="text-center text-sm">@item.PlaceId</td>
+                        <td class="text-center text-sm">@item.Capacity</td>
+
+                        @if (item.IsEnable == "01")
+                        {
+                            <td><span class="text-success">@item.IsEnableText</span></td>
+                        }
+                        else if (item.IsEnable == "02")
+                        {
+                            <td><span class="text-danger">@item.IsEnableText</span></td>
+                        }
+                        else
+                        {
+                            <td><span class="text-danger">-</span></td>
+                        }
                         @if (item.LastModified.HasValue)
                         {
                             <td class="text-center text-sm">@item.LastModified.Value.ToString("yyyy/MM/dd HH:mm:ss")</td>
@@ -46,29 +54,32 @@
                             <td class="text-center text-sm"></td>
                         }
                         <td class="text-center text-sm">
-                            @using (Html.BeginForm("Edit", "PlaceSchoolElseMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
+                            @using (Html.BeginForm("Edit", "PlaceSchoolMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
                             {
                                 <button type="submit" value="@item.PlaceId" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
                             }
-
+                            @using (Html.BeginForm("Edit", "PlaceSchoolMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
+                            {
+                                <button type="submit" value="@item.PlaceId" name="submitBtn" class="mx-1 btn btn-sm btn-outline-dark">批次借用/關閉時段</button>
+                            }
                             <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel('@item.PlaceId');">刪除</a>
                             <br><span class="text-sm text-secondary"> </span>
                         </td>
                     </tr>
-                    }
                 }
-                else
-                {
-                    <td colspan="10">查無資料</td>
-                }
-            </tbody>
-        </table>
-    </div>
+            }
+            else
+            {
+            <td colspan="10">查無資料</td>
+            }
+        </tbody>
+    </table>
+</div>
 
 <div class="card-footer clearfix">
     <div class="pagination justify-content-end" id="SearchResultListPagination"></div>
 </div>
-    <!-- /.card-body -->
+<!-- /.card-body -->
 
 <script>
     $("#SearchResultListPagination").solventoPageBar(
@@ -123,6 +134,6 @@
             }
         });
     }
-    
+
 
 </script>

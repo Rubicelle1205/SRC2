@@ -14,15 +14,15 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WebPccuClub.Controllers
 {
-    [LogAttribute(LogActionChineseName.校內其他場地)]
-    public class PlaceSchoolElseMangController : BaseController
+    [LogAttribute(LogActionChineseName.校內場地)]
+    public class PlaceSchoolMangController : BaseController
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
-        PlaceSchoolElseMangDataAccess dbAccess = new PlaceSchoolElseMangDataAccess();
+        PlaceSchoolMangDataAccess dbAccess = new PlaceSchoolMangDataAccess();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
-        public PlaceSchoolElseMangController(IHostingEnvironment _hostingEnvironment)
+        public PlaceSchoolMangController(IHostingEnvironment _hostingEnvironment)
         {
             hostingEnvironment = _hostingEnvironment;
         }
@@ -31,10 +31,11 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.首頁)]
         public IActionResult Index()
         {
-            ViewBag.ddlFloor = dbAccess.GetAllFloor();
+            ViewBag.ddlAllBuild = dbAccess.GetAllBuild();
+            ViewBag.ddlAllPlaceStatus = dbAccess.GetAllPlaceStatus();
 
-            PlaceSchoolElseMangViewModel vm = new PlaceSchoolElseMangViewModel();
-            vm.ConditionModel = new PlaceSchoolElseMangConditionModel();
+            PlaceSchoolMangViewModel vm = new PlaceSchoolMangViewModel();
+            vm.ConditionModel = new PlaceSchoolMangConditionModel();
             return View(vm);
         }
 
@@ -43,29 +44,31 @@ namespace WebPccuClub.Controllers
         {
             ViewBag.ddlFloor = dbAccess.GetAllFloor();
             ViewBag.ddlAllBuild = dbAccess.GetAllBuild();
+            ViewBag.ddlAllPlaceStatus = dbAccess.GetAllPlaceStatus();
 
-            PlaceSchoolElseMangViewModel vm = new PlaceSchoolElseMangViewModel();
-            vm.CreateModel = new PlaceSchoolElseMangCreateModel();
+            PlaceSchoolMangViewModel vm = new PlaceSchoolMangViewModel();
+            vm.CreateModel = new PlaceSchoolMangCreateModel();
             return View(vm);
         }
 
         [Log(LogActionChineseName.編輯)]
-        public IActionResult Edit(string submitBtn, PlaceSchoolElseMangViewModel vm)
+        public IActionResult Edit(string submitBtn, PlaceSchoolMangViewModel vm)
         {
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
             ViewBag.ddlFloor = dbAccess.GetAllFloor();
             ViewBag.ddlAllBuild = dbAccess.GetAllBuild();
+            ViewBag.ddlAllPlaceStatus = dbAccess.GetAllPlaceStatus();
 
-            //PlaceSchoolElseMangViewModel vm = new PlaceSchoolElseMangViewModel();
+            //PlaceSchoolMangViewModel vm = new PlaceSchoolMangViewModel();
             vm.EditModel = dbAccess.GetEditData(submitBtn);
             return View(vm);
         }
 
 
         [LogAttribute(LogActionChineseName.查詢)]
-        public IActionResult GetSearchResult(PlaceSchoolElseMangViewModel vm)
+        public IActionResult GetSearchResult(PlaceSchoolMangViewModel vm)
         {
             vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel).ToList();
 
@@ -80,7 +83,7 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.新增儲存)]
         [ValidateInput(false)]
-        public IActionResult SaveNewData(PlaceSchoolElseMangViewModel vm)
+        public IActionResult SaveNewData(PlaceSchoolMangViewModel vm)
         {
             try
             {
@@ -111,7 +114,7 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
-        public IActionResult EditOldData(PlaceSchoolElseMangViewModel vm)
+        public IActionResult EditOldData(PlaceSchoolMangViewModel vm)
         {
             try
             {

@@ -37,6 +37,7 @@
         校外建議場地 = 23,
         社團一覽 = 24,
         校內其他場地 = 25,
+        校內場地 = 26,
     }
 
     public enum DBActionChineseName
