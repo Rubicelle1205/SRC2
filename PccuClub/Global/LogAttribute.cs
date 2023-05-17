@@ -36,6 +36,7 @@
         社團基本資料 = 22,
         校外建議場地 = 23,
         社團一覽 = 24,
+        校內其他場地 = 25,
     }
 
     public enum DBActionChineseName
