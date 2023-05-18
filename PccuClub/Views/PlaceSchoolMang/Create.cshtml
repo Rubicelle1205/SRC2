@@ -1,0 +1,207 @@
+﻿@model WebPccuClub.Models.PlaceSchoolMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            @if (null != Model.CreateModel)
+                            {
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.CreateModel.BuildId)<span class="required">*</span></th>
+                                            <td>
+                                                @Html.DropDownListFor(m => m.CreateModel.BuildId,(List<SelectListItem>)ViewBag.ddlAllBuild,"請選擇樓館", new {@class = "form-control"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.CreateModel.Floor)<span class="required">*</span></th>
+                                            <td>
+                                                @Html.DropDownListFor(m => m.CreateModel.Floor,(List<SelectListItem>)ViewBag.ddlFloor,"請選擇樓層", new {@class = "form-control"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.CreateModel.PlaceID)<span class="required">*</span></th>
+                                            <td>@Html.TextBoxFor(m => m.CreateModel.PlaceID, new {@class="form-control", placeholder="請輸入場地代碼"})</td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.CreateModel.PlaceName)<span class="required">*</span></th>
+                                            <td>@Html.TextBoxFor(m => m.CreateModel.PlaceName, new {@class="form-control", placeholder="請輸入場地名稱"})</td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.CreateModel.PlaceDesc)<span class="required">*</span></th>
+                                            <td>@Html.TextBoxFor(m => m.CreateModel.PlaceDesc, new {@class="form-control", placeholder="請輸入場地層級"})</td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.CreateModel.IsEnable)<span class="required">*</span></th>
+                                            <td>
+                                                @Html.DropDownListFor(m => m.CreateModel.IsEnable,(List<SelectListItem>)ViewBag.ddlAllPlaceStatus,"請輸入場地狀態", new {@class = "form-control"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">
+                                                平日借用時間<span class="required">*</span>
+                                                <br/>
+                                                <span class="text-xs text-danger font-weight-normal">全天借用請輸入00與24</span>
+                                            </th>
+                                            <td>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">開始時間(小時)</span>
+                                                    </div>
+                                                    @Html.DropDownListFor(m => m.CreateModel.Normal_STime,(List<SelectListItem>)ViewBag.ddlHour,"請輸入開始時間", new {@class = "form-control"} )
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">結束時間(小時)</span>
+                                                    </div>
+                                                    @Html.DropDownListFor(m => m.CreateModel.Normal_ETime,(List<SelectListItem>)ViewBag.ddlHour,"請輸入結束時間", new {@class = "form-control"} )
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">
+                                                假日借用時間<span class="required">*</span>
+                                                <br />
+                                                <span class="text-xs text-danger font-weight-normal">全天借用請輸入00與24</span>
+                                            </th>
+                                            <td>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">開始時間(小時)</span>
+                                                    </div>
+                                                    @Html.DropDownListFor(m => m.CreateModel.Holiday_STime,(List<SelectListItem>)ViewBag.ddlHour,"請輸入開始時間", new {@class = "form-control"} )
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">結束時間(小時)</span>
+                                                    </div>
+                                                    @Html.DropDownListFor(m => m.CreateModel.Holiday_ETime,(List<SelectListItem>)ViewBag.ddlHour,"請輸入結束時間", new {@class = "form-control"} )
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.CreateModel.Capacity)</th>
+                                            <td>@Html.TextBoxFor(m => m.CreateModel.Capacity, new {@class="form-control", placeholder="請輸入可使用人數", type="number", min="0"})</td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.CreateModel.PlaceEquip)</th>
+                                            <td>@Html.TextAreaFor(m => m.CreateModel.PlaceEquip, new {@class="form-control", placeholder="請輸入已配置資訊器材", rows="6"})</td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.CreateModel.Memo)</th>
+                                            <td>@Html.TextAreaFor(m => m.CreateModel.Memo, new {@class="form-control", placeholder="請輸入場地備註", rows="6"})</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </form> 
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+
+    function SaveData() {
+
+        var data = new FormData()
+        var BuildId = $('#@Html.IdFor(m => m.CreateModel.BuildId)').val();
+        var Floor = $('#@Html.IdFor(m => m.CreateModel.Floor)').val();
+        var PlaceID = $('#@Html.IdFor(m => m.CreateModel.PlaceID)').val();
+        var PlaceName = $('#@Html.IdFor(m => m.CreateModel.PlaceName)').val();
+        var PlaceDesc = $('#@Html.IdFor(m => m.CreateModel.PlaceDesc)').val();
+        var IsEnable = $('#@Html.IdFor(m => m.CreateModel.IsEnable)').val();
+        var Normal_STime = $('#@Html.IdFor(m => m.CreateModel.Normal_STime)').val();
+        var Normal_ETime = $('#@Html.IdFor(m => m.CreateModel.Normal_ETime)').val();
+        var Holiday_STime = $('#@Html.IdFor(m => m.CreateModel.Holiday_STime)').val();
+        var Holiday_ETime = $('#@Html.IdFor(m => m.CreateModel.Holiday_ETime)').val();
+        var Capacity = $('#@Html.IdFor(m => m.CreateModel.Capacity)').val();
+        var PlaceEquip = $('#@Html.IdFor(m => m.CreateModel.PlaceEquip)').val();
+        var Memo = $('#@Html.IdFor(m => m.CreateModel.Memo)').val();
+        
+        if (BuildId == "") { $.alert("請選擇樓館"); return; }
+        if (Floor == "") { $.alert("請選擇樓層"); return; }
+        if (PlaceID == "") { $.alert("請輸入場地代碼"); return; }
+        if (PlaceName == "") { $.alert("請輸入場地名稱"); return; }
+        if (PlaceDesc == "") { $.alert("請輸入場地層級"); return; }
+        if (IsEnable == "") { $.alert("請輸入場地狀態"); return; }
+        if (Normal_STime == "") { $.alert("請輸入平日開始時間"); return; }
+        if (Normal_ETime == "") { $.alert("請輸入平日結束時間"); return; }
+        if (Holiday_STime == "") { $.alert("請輸入假日開始時間"); return; }
+        if (Holiday_ETime == "") { $.alert("請輸入假日結束時間"); return; }
+
+        data.append('@Html.NameFor(m => m.CreateModel.BuildId)', BuildId);
+        data.append('@Html.NameFor(m => m.CreateModel.Floor)', Floor);
+        data.append('@Html.NameFor(m => m.CreateModel.PlaceID)', PlaceID);
+        data.append('@Html.NameFor(m => m.CreateModel.PlaceName)', PlaceName);
+        data.append('@Html.NameFor(m => m.CreateModel.PlaceDesc)', PlaceDesc);
+        data.append('@Html.NameFor(m => m.CreateModel.IsEnable)', IsEnable);
+        data.append('@Html.NameFor(m => m.CreateModel.Normal_STime)', Normal_STime);
+        data.append('@Html.NameFor(m => m.CreateModel.Normal_ETime)', Normal_ETime);
+        data.append('@Html.NameFor(m => m.CreateModel.Holiday_STime)', Holiday_STime);
+        data.append('@Html.NameFor(m => m.CreateModel.Holiday_ETime)', Holiday_ETime);
+        data.append('@Html.NameFor(m => m.CreateModel.Capacity)', Capacity);
+        data.append('@Html.NameFor(m => m.CreateModel.PlaceEquip)', PlaceEquip);
+        data.append('@Html.NameFor(m => m.CreateModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("SaveNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                Reset();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+    function Reset() {
+        $('#@Html.IdFor(m => m.CreateModel.BuildId)').val("");
+        $('#@Html.IdFor(m => m.CreateModel.Floor)').val("");
+        $('#@Html.IdFor(m => m.CreateModel.PlaceID)').val("");
+        $('#@Html.IdFor(m => m.CreateModel.PlaceName)').val("");
+        $('#@Html.IdFor(m => m.CreateModel.Memo)').val("");
+
+    }
+</script>

@@ -74,9 +74,10 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT  A.PlaceID, A.PlaceName, A.Buildid, B.BuildName, A.Floor, A.Memo, A.Creator, A.Created, A.LastModifier, A.LastModified, A.ModifiedReason
+            CommandText = $@"SELECT A.PlaceID, A.PlaceName, A.Buildid, B.BuildName, A.Floor, A.PlaceDesc, A.Capacity, A.PlaceEquip, A.IsEnable, A.Memo, 
+	                                A.Normal_STime, A.Normal_ETime, A.Holiday_STime, A.Holiday_ETime, A.Creator, A.Created, A.LastModifier, A.LastModified
                                FROM PlaceSchoolMang A
-                          LEFT JOIN BuildMang B ON B.BuildID = A.Buildid
+                          LEFT JOIN BuildMang B ON B.Buildid = A.Buildid
                               WHERE 1 = 1
                                 AND (A.PlaceID = @PlaceID) ";
 
@@ -97,36 +98,60 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@BuildId", vm.CreateModel.BuildId);
-            parameters.Add("@Floor", vm.CreateModel.Floor);
             parameters.Add("@PlaceID", vm.CreateModel.PlaceID);
             parameters.Add("@PlaceName", vm.CreateModel.PlaceName);
+            parameters.Add("@Buildid", vm.CreateModel.BuildId);
+            parameters.Add("@Floor", vm.CreateModel.Floor);
+            parameters.Add("@PlaceDesc", vm.CreateModel.PlaceDesc);
+            parameters.Add("@Capacity", vm.CreateModel.Capacity);
+            parameters.Add("@PlaceEquip", vm.CreateModel.PlaceEquip);
+            parameters.Add("@IsEnable", vm.CreateModel.IsEnable);
             parameters.Add("@Memo", vm.CreateModel.Memo);
+            parameters.Add("@Normal_STime", string.Format("{0}", vm.CreateModel.Normal_STime));
+            parameters.Add("@Normal_ETime", string.Format("{0}", vm.CreateModel.Normal_ETime));
+            parameters.Add("@Holiday_STime", string.Format("{0}", vm.CreateModel.Holiday_STime));
+            parameters.Add("@Holiday_ETime", string.Format("{0}", vm.CreateModel.Holiday_ETime));
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
             string CommendText = $@"INSERT INTO PlaceSchoolMang
-                                               (PlaceID
-                                               ,PlaceName 
-                                               ,Buildid 
-                                               ,Floor 
-                                               ,Memo 
-                                               ,Creator 
-                                               ,Created 
-                                               ,LastModifier 
-                                               ,LastModified 
-                                               ,ModifiedReason)
+                                               (PlaceID 
+                                                ,PlaceName 
+                                                ,Buildid 
+                                                ,Floor 
+                                                ,PlaceDesc 
+                                                ,Capacity 
+                                                ,PlaceEquip 
+                                                ,IsEnable 
+                                                ,Memo 
+                                                ,Normal_STime 
+                                                ,Normal_ETime 
+                                                ,Holiday_STime 
+                                                ,Holiday_ETime 
+                                                ,Creator 
+                                                ,Created 
+                                                ,LastModifier 
+                                                ,LastModified 
+                                                ,ModifiedReason )
                                          VALUES
-                                               (@PlaceID
-                                               ,@PlaceName 
-                                               ,@Buildid 
-                                               ,@Floor 
-                                               ,@Memo 
-                                               ,@LoginId
-                                               ,GETDATE()
-                                               ,@LoginId
-                                               ,GETDATE()
-                                               ,NULL)";
+                                               (@PlaceID 
+                                                ,@PlaceName 
+                                                ,@Buildid 
+                                                ,@Floor 
+                                                ,@PlaceDesc 
+                                                ,@Capacity 
+                                                ,@PlaceEquip 
+                                                ,@IsEnable 
+                                                ,@Memo 
+                                                ,@Normal_STime 
+                                                ,@Normal_ETime 
+                                                ,@Holiday_STime 
+                                                ,@Holiday_ETime 
+                                                ,@LoginId
+                                                ,GETDATE()
+                                                ,@LoginId
+                                                ,GETDATE()
+                                                ,NULL)";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -140,16 +165,37 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@BuildId", vm.EditModel.BuildId);
-            parameters.Add("@Floor", vm.EditModel.Floor);
             parameters.Add("@PlaceID", vm.EditModel.PlaceID);
             parameters.Add("@PlaceName", vm.EditModel.PlaceName);
+            parameters.Add("@Buildid", vm.EditModel.BuildId);
+            parameters.Add("@Floor", vm.EditModel.Floor);
+            parameters.Add("@PlaceDesc", vm.EditModel.PlaceDesc);
+            parameters.Add("@Capacity", vm.EditModel.Capacity);
+            parameters.Add("@PlaceEquip", vm.EditModel.PlaceEquip);
+            parameters.Add("@IsEnable", vm.EditModel.IsEnable);
             parameters.Add("@Memo", vm.EditModel.Memo);
-            parameters.Add("@LoginId", LoginUser.LoginId);
+            parameters.Add("@Normal_STime", string.Format("{0}", vm.EditModel.Normal_STime));
+            parameters.Add("@Normal_ETime", string.Format("{0}", vm.EditModel.Normal_ETime));
+            parameters.Add("@Holiday_STime", string.Format("{0}", vm.EditModel.Holiday_STime));
+            parameters.Add("@Holiday_ETime", string.Format("{0}", vm.EditModel.Holiday_ETime));
+            parameters.Add("@LastModifier", LoginUser.LoginId);
             #endregion 參數設定
 
             string CommendText = $@"UPDATE PlaceSchoolMang 
-                                       SET PlaceName = @PlaceName, Buildid = @Buildid, Floor = @Floor, Memo = @Memo, LastModifier = @LoginId, LastModified = GETDATE()
+                                       SET PlaceName = @PlaceName
+                                            ,Buildid = @Buildid
+                                            ,Floor = @Floor
+                                            ,PlaceDesc = @PlaceDesc
+                                            ,Capacity = @Capacity
+                                            ,PlaceEquip = @PlaceEquip
+                                            ,IsEnable = @IsEnable
+                                            ,Memo = @Memo
+                                            ,Normal_STime = @Normal_STime
+                                            ,Normal_ETime = @Normal_ETime
+                                            ,Holiday_STime = @Holiday_STime
+                                            ,Holiday_ETime = @Holiday_ETime
+                                            ,LastModifier = @LastModifier
+                                            ,LastModified = GETDATE()
                                      WHERE PlaceID = @PlaceID";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
@@ -176,6 +222,18 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
             return ExecuteResult;
+        }
+
+        public List<SelectListItem> GetAllHour()
+        {
+            List<SelectListItem> LstItem = new List<SelectListItem>();
+
+            for (int i = 0; i <= 24; i++)
+            {
+                LstItem.Add(new SelectListItem() { Value = i.ToString().PadLeft(2, '0'), Text = i.ToString().PadLeft(2, '0') });
+            }
+
+            return LstItem;
         }
 
         public List<SelectListItem> GetAllFloor()

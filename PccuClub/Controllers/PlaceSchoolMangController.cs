@@ -42,6 +42,7 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public IActionResult Create()
         {
+            ViewBag.ddlHour = dbAccess.GetAllHour();
             ViewBag.ddlFloor = dbAccess.GetAllFloor();
             ViewBag.ddlAllBuild = dbAccess.GetAllBuild();
             ViewBag.ddlAllPlaceStatus = dbAccess.GetAllPlaceStatus();
@@ -57,6 +58,7 @@ namespace WebPccuClub.Controllers
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
+            ViewBag.ddlHour = dbAccess.GetAllHour();
             ViewBag.ddlFloor = dbAccess.GetAllFloor();
             ViewBag.ddlAllBuild = dbAccess.GetAllBuild();
             ViewBag.ddlAllPlaceStatus = dbAccess.GetAllPlaceStatus();
