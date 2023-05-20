@@ -58,7 +58,7 @@
                             {
                                 <button type="submit" value="@item.PlaceId" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
                             }
-                            @using (Html.BeginForm("Edit", "PlaceSchoolMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
+                            @using (Html.BeginForm("BatchAddAct", "PlaceSchoolMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
                             {
                                 <button type="submit" value="@item.PlaceId" name="submitBtn" class="mx-1 btn btn-sm btn-outline-dark">批次借用/關閉時段</button>
                             }

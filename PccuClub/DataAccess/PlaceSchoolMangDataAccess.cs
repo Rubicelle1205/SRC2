@@ -56,12 +56,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             return new List<PlaceSchoolMangResultModel>();
         }
 
-        /// <summary>
-        /// 取得編輯資料
-        /// </summary>
-        /// <param name="submitBtn"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <summary>取得編輯資料</summary>
         public PlaceSchoolMangEditModel GetEditData(string Ser)
         {
             string CommandText = string.Empty;
@@ -90,7 +85,31 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             return null;
         }
 
-        /// <summary> 新增資料 </summary>
+        /// <summary>取得批次借用/關閉資料</summary>
+        public PlaceSchoolMangBatchAddActModel GetBatchAddActData(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@PlaceID", Ser);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT A.BuildiD, A.PlaceID
+                               FROM PlaceSchoolMang A
+                              WHERE 1 = 1
+                                AND (A.PlaceID = @PlaceID) ";
+
+
+            (DbExecuteInfo info, IEnumerable<PlaceSchoolMangBatchAddActModel> entitys) dbResult = DbaExecuteQuery<PlaceSchoolMangBatchAddActModel>(CommandText, parameters, true, DBAccessException);
+
+            return dbResult.entitys.ToList().FirstOrDefault();
+        }
+
+        /// <summary> 新增資料</summary>
         public DbExecuteInfo InsertData(PlaceSchoolMangViewModel vm, UserInfo LoginUser)
         {
 
@@ -158,7 +177,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             return ExecuteResult;
         }
 
-        /// <summary> 修改資料 </summary>
+        /// <summary> 修改資料</summary>
         public DbExecuteInfo UpdateData(PlaceSchoolMangViewModel vm, UserInfo LoginUser)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
@@ -203,11 +222,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             return ExecuteResult;
         }
 
-        /// <summary>
-        /// 刪除資料
-        /// </summary>
-        /// <param name="ser"></param>
-        /// <returns></returns>
+        /// <summary>刪除資料</summary>
         public DbExecuteInfo DeletetData(string ser)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
@@ -218,6 +233,112 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             #endregion 參數設定
 
             string CommendText = $@"DELETE FROM PlaceSchoolMang WHERE PlaceID = @PlaceID ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        /// <summary> 新增批次資料</summary>
+        public DbExecuteInfo InsertActMainData(PlaceSchoolMangViewModel vm, UserInfo LoginUser, out DataTable dt)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@PlaceID", vm.BatchAddActModel.PlaceID);
+            parameters.Add("@PlaceName", vm.BatchAddActModel.PlaceName);
+            parameters.Add("@BuildId", vm.BatchAddActModel.BuildId);
+            parameters.Add("@Reason", vm.BatchAddActModel.Reason);
+            parameters.Add("@BorrowType", vm.BatchAddActModel.BorrowType);
+            parameters.Add("@SDate", vm.BatchAddActModel.SDate);
+            parameters.Add("@EDate", vm.BatchAddActModel.EDate);
+            parameters.Add("@Memo", vm.BatchAddActModel.Memo);
+
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO ActMain
+                                               (ActName 
+                                                ,BuildId 
+                                                ,PlaceID 
+                                                ,PlaceName 
+                                                ,CreateSource 
+                                                ,BorrowType 
+                                                ,SDate 
+                                                ,EDate 
+                                                ,ActInOrOut 
+                                                ,ActStep 
+                                                ,Memo 
+                                                ,Creator 
+                                                ,Created 
+                                                ,LastModifier 
+                                                ,LastModified 
+                                                ,ModifiedReason )
+                                         OUTPUT Inserted.ActID
+                                         VALUES
+                                               (@Reason 
+                                                ,@BuildId 
+                                                ,@PlaceID 
+                                                ,@PlaceName 
+                                                ,'01' 
+                                                ,@BorrowType 
+                                                ,@SDate 
+                                                ,@EDate 
+                                                ,'01'
+                                                ,'05'
+                                                ,@Memo 
+                                                ,@LoginId
+                                                ,GETDATE()
+                                                ,@LoginId
+                                                ,GETDATE()
+                                                ,NULL)";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+            
+            dt = ds.Tables[0];
+
+            return ExecuteResult;
+
+        }
+
+        /// <summary> 新增批次資料</summary>
+        public DbExecuteInfo InsertActRundownData(PlaceSchoolMangViewModel vm, string ActId, DateTime date, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ActID", ActId);
+            parameters.Add("@Date", date.ToString("yyyy-MM-dd"));
+            parameters.Add("@Stime", vm.BatchAddActModel.STime);
+            parameters.Add("@Status", "01");
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO ActRundown
+                                               (ActID
+                                                , Date
+                                                , Stime
+                                                , Status
+                                                , Creator
+                                                , Created
+                                                , LastModifier
+                                                , LastModified
+                                                , ModifiedReason
+                                                )
+                                         VALUES
+                                               (@ActID
+                                                , @Date
+                                                , @Stime
+                                                , @Status
+                                                , @LoginId
+                                                , GETDATE()
+                                                , @LoginId
+                                                , GETDATE()
+                                                , NULL)";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -268,6 +389,26 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             return new List<SelectListItem>();
         }
 
+        public List<SelectListItem> GetAllWeek()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code where type = 'Week'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
         public List<SelectListItem> GetAllPlaceStatus()
         {
             string CommandText = string.Empty;
@@ -279,6 +420,46 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             #endregion
 
             CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code WHERE Type = 'PlaceStatus'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetAllBorrowType()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code WHERE Type = 'BorrowType'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetAllPlaceSchool()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT PlaceId AS VALUE, PlaceName AS TEXT FROM PlaceSchoolMang";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 

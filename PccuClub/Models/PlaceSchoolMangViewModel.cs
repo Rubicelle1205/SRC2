@@ -16,6 +16,8 @@ namespace WebPccuClub.Models
         public PlaceSchoolMangCreateModel CreateModel { get; set; }
 
         public PlaceSchoolMangEditModel EditModel { get; set; }
+
+        public PlaceSchoolMangBatchAddActModel BatchAddActModel { get; set; }
     }
 
     public class PlaceSchoolMangConditionModel
@@ -198,6 +200,53 @@ namespace WebPccuClub.Models
         public string? PlaceEquip { get; set; }
 
         [DisplayName("場地備註")]
+        public string? Memo { get; set; }
+    }
+
+    public class PlaceSchoolMangBatchAddActModel
+    {
+        /// <summary>樓館分類</summary>
+        [DisplayName("樓館分類")]
+        public string? BuildId { get; set; }
+
+        /// <summary>場地名稱</summary>
+        [DisplayName("場地名稱")]
+        public string? PlaceID { get; set; }
+
+        /// <summary>場地名稱</summary>
+        [DisplayName("場地名稱")]
+        public string? PlaceName { get; set; }
+
+        /// <summary>借用類型</summary>
+        [DisplayName("借用類型")]
+        public string? BorrowType { get; set; }
+
+        /// <summary>借用/關閉起訖日</summary>
+        [DisplayName("借用/關閉起訖日")]
+        public string? SDate{ get; set; }
+
+        /// <summary>借用/關閉起訖日</summary>
+        [DisplayName("借用/關閉起訖日")]
+        public string? EDate { get; set; }
+
+        /// <summary>借用/關閉星期幾</summary>
+        [DisplayName("借用/關閉星期幾")]
+        public string? Week { get; set; }
+
+        /// <summary>借用/關閉借用時段</summary>
+        [DisplayName("借用/關閉借用時段")]
+        public string? STime { get; set; }
+
+        /// <summary>借用/關閉借用時段</summary>
+        [DisplayName("借用/關閉借用時段")]
+        public string? ETime { get; set; }
+
+        /// <summary>借用名稱(原因)</summary>
+        [DisplayName("借用名稱(原因)")]
+        public string? Reason { get; set; }
+
+        /// <summary>簡介(備註)</summary>
+        [DisplayName("簡介(備註)")]
         public string? Memo { get; set; }
     }
 }

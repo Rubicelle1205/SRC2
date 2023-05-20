@@ -5,15 +5,28 @@
     UserInfo LoginUser = Context.Session.GetObject<UserInfo>("LoginUser");
     string[] arr = Model.Split("|");
     string UpFunName = LoginUser.UserRoleFun.Find(f => f.MenuNode == arr[0]) == null ? arr[0] : LoginUser.UserRoleFun.Find(f => f.MenuNode == arr[0]).MenuName;
+    string FunMenu = arr[1];
     string FunName = LoginUser.UserRoleFun.Find(f => f.MenuNode == arr[1]).MenuName;
-    string actionName = ViewContext.RouteData.Values["action"].ToString().ToUpper().Contains("UPLOAD") ? "匯入" : "";
+
+
+    string actionName = ViewContext.RouteData.Values["action"].ToString().ToUpper().Contains("UPLOAD") ? 
+                        "匯入" : ViewContext.RouteData.Values["action"].ToString().ToUpper().Contains("BATCHADDACT") ?
+                        "場地借用/關閉時段" : "";
 }
 
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                    <h1 class="m-0">@FunName@actionName</h1>
+                @if (!string.IsNullOrEmpty(actionName))
+                {
+                    <h1 class="m-0">@FunName - @actionName</h1>
+                }
+                else
+                {
+                    <h1 class="m-0">@FunName</h1>
+                }
+
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">

@@ -1,7 +1,9 @@
 ﻿using Dapper;
 using DataAccess;
 using System.Data;
+using System.Drawing;
 using WebPccuClub.Global.Extension;
+using WebPccuClub.Models;
 using X.PagedList;
 
 namespace WebPccuClub.Global
@@ -94,6 +96,39 @@ namespace WebPccuClub.Global
             PaperKeyword = Keyword?.IndexOf("[") >= 0 ? Keyword.Replace("[", "[[]") : Keyword;
 
             return PaperKeyword;
+        }
+
+
+        public string QueryField(string StrTable, string StrField, string StrWhereSQL = "", string StrOrderbySQL = "")
+        {
+            DBAParameter parameters = new DBAParameter();
+            DataSet ds = new DataSet();
+            string strRtn = string.Empty;
+
+
+            string CommandText = string.Format("SELECT {0} FROM {1} ", StrField, StrTable);
+
+            if (!string.IsNullOrEmpty(StrWhereSQL))
+                CommandText = CommandText + " WHERE " + StrWhereSQL;
+
+
+            if (!string.IsNullOrEmpty(StrOrderbySQL))
+                CommandText = CommandText + " Order By " + StrOrderbySQL;
+
+
+            (DbExecuteInfo info, IEnumerable<RoleMangEditModel> entitys) dbResult = DbaExecuteQuery<RoleMangEditModel>(CommandText, parameters, true, DBAccessException);
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            if (ds != null)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    strRtn = ds.Tables[0].Rows[0].ToString();
+                }
+            }
+
+            return strRtn;
         }
 
         #endregion

@@ -216,7 +216,10 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
 
             #region 參數設定
 
-            parameters.Add("@RoleId", vm.EditModel.RoleId);
+            if(vm.EditModel != null)
+                parameters.Add("@RoleId", vm.EditModel.RoleId);
+            else if(vm.CreateModel != null)
+                parameters.Add("@RoleId", vm.CreateModel.RoleId);
 
             #endregion 參數設定
 

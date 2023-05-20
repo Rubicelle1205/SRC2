@@ -1,4 +1,5 @@
 ﻿//using Microsoft.International.Formatters;
+using System.Data;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -195,6 +196,7 @@ namespace WebPccuClub.Global
             { return null; }
         }
 
+       
         #endregion 日期轉換
 
         #region 文字驗證
@@ -311,7 +313,18 @@ namespace WebPccuClub.Global
             }
         }
 
-        
+
+        public static string QueryFieldByDT(this DataTable? dt, string strField)
+        {
+            string strRtn = string.Empty;
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                strRtn = dt.Rows[0][strField].ToString();
+            }
+
+            return strRtn;
+        }
 
         #endregion
     }
