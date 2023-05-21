@@ -63,7 +63,7 @@ namespace PccuClub.WebAuth
         /// <param name="LoginId">帳號</param>
         /// <param name="oUser">使用者資訊</param>
         /// <returns>驗證結果(True:驗證成功，False:驗證失敗)</returns>
-        public bool FLogin(string LoginId, out UserInfo oUser)
+        public bool FLogin(string FUserId, out UserInfo oUser)
         {
             oUser = null;
             try
@@ -71,7 +71,7 @@ namespace PccuClub.WebAuth
                 UserInfo LoginUser = new UserInfo();
 
                 // 查詢基本資料
-                (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectFUserMain(LoginId);
+                (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectFUserMain(FUserId);
                 if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0 || mainResult.entitys.Count() > 1)
                 { return false; }
 
@@ -80,13 +80,13 @@ namespace PccuClub.WebAuth
                 { return false; }
 
                 // 查詢使用者角色
-                (DbExecuteInfo Info, IEnumerable<RoleInfo> entitys) reolResult = dbAccess.SelectRoleInfo(LoginId);
+                (DbExecuteInfo Info, IEnumerable<RoleInfo> entitys) reolResult = dbAccess.SelectRoleInfo(LoginUser.LoginId);
                 if (!mainResult.Info.isSuccess)
                 { return false; }
                 LoginUser.UserRole = reolResult.entitys.ToList();
 
                 // 查詢角色功能
-                (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = dbAccess.SelectFunInfo(LoginId, "F");
+                (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = dbAccess.SelectFunInfo(LoginUser.LoginId, "F");
                 if (!funResult.Info.isSuccess)
                 { return false; }
                 LoginUser.UserRoleFun = funResult.entitys.ToList();
@@ -120,12 +120,12 @@ namespace PccuClub.WebAuth
             return true;
         }
 
-        public bool GetUserByFUserID(string LoginId, out UserInfo oUser)
+        public bool GetUserByFUserID(string FUserId, out UserInfo oUser)
         {
             oUser = null;
 
             // 查詢基本資料
-            (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectFUserMain(LoginId);
+            (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectFUserMain(FUserId);
             if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0 || mainResult.entitys.Count() > 1)
             { return false; }
 

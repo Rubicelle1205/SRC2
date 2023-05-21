@@ -269,7 +269,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
                                                 ,SDate 
                                                 ,EDate 
                                                 ,ActInOrOut 
-                                                ,ActStep 
+                                                ,ActVerify 
                                                 ,Memo 
                                                 ,Creator 
                                                 ,Created 
@@ -303,7 +303,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
 
         }
 
-        /// <summary> 新增批次資料</summary>
+        /// <summary> 新增批次行程資料</summary>
         public DbExecuteInfo InsertActRundownData(PlaceSchoolMangViewModel vm, string ActId, DateTime date, UserInfo LoginUser)
         {
             DataSet ds = new DataSet();
