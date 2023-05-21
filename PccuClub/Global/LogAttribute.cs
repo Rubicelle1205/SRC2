@@ -40,6 +40,7 @@
         校內場地 = 26,
         批次借用或關閉場地 = 27,
         執行批次借用或關閉場地 = 28,
+        已報備活動 = 29,
     }
 
     public enum DBActionChineseName

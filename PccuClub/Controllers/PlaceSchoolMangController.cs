@@ -205,8 +205,6 @@ namespace WebPccuClub.Controllers
                 List<DateTime> dates = new List<DateTime>();
                 string[] daysOfWeek = GetSelectedWeek(arr);
 
-                string s = "";
-
                 for (DateTime currentDate = SDate; currentDate <= EDate; currentDate = currentDate.AddDays(1))
                 {
                     string dayOfWeek = currentDate.ToString("dddd");
@@ -216,14 +214,6 @@ namespace WebPccuClub.Controllers
                         dates.Add(currentDate);
                     }
                 }
-
-                string ss = "";
-
-
-
-
-
-
 
                 dbAccess.DbaInitialTransaction();
 
@@ -240,6 +230,16 @@ namespace WebPccuClub.Controllers
                 }
 
                 string ActId = dt.QueryFieldByDT("ActID");
+
+                dbResult = dbAccess.InsertActDetailData(vm, ActId, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
 
                 for (int i = 0; i <= dates.Count - 1; i++)
                 {
@@ -304,11 +304,6 @@ namespace WebPccuClub.Controllers
             return LstSelectedWeek.ToArray();
         }
 
-        private IEnumerable<DateTime> EachDayTo(DateTime sDate, DateTime eDate)
-        {
-            for (var day = sDate; day.Date <= eDate; day = day.AddDays(1))
-                yield return day;
-        }
 
 
     }

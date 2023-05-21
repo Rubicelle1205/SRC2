@@ -14,6 +14,7 @@ namespace WebPccuClub.DataAccess
     
     public class PlaceSchoolMangDataAccess : BaseAccess
     {
+        PublicFun PublicFun = new PublicFun();
 
         /// <summary> 查詢結果 </summary>
 
@@ -303,6 +304,55 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
 
         }
 
+        public DbExecuteInfo InsertActDetailData(PlaceSchoolMangViewModel vm, string ActId, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ActID", ActId);
+            parameters.Add("@ActName", vm.BatchAddActModel.Reason);
+            parameters.Add("@ActShortDesc", vm.BatchAddActModel.Memo);
+            parameters.Add("@SchoolYear", PublicFun.GetSchoolYear(vm.BatchAddActModel.SDate));
+            parameters.Add("@StaticOrDynamic", "01");
+            parameters.Add("@Capacity", "0");
+            
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO ActDetail
+                                               (ActID
+                                                , ActName 
+                                                , ActShortDesc 
+                                                , SchoolYear 
+                                                , StaticOrDynamic 
+                                                , Capacity 
+                                                , Creator
+                                                , Created
+                                                , LastModifier
+                                                , LastModified
+                                                , ModifiedReason
+                                                )
+                                         VALUES
+                                               (@ActID
+                                                , @ActName 
+                                                , @ActShortDesc 
+                                                , @SchoolYear 
+                                                , @StaticOrDynamic 
+                                                , @Capacity 
+                                                , @LoginId
+                                                , GETDATE()
+                                                , @LoginId
+                                                , GETDATE()
+                                                , NULL)";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+
         /// <summary> 新增批次行程資料</summary>
         public DbExecuteInfo InsertActRundownData(PlaceSchoolMangViewModel vm, string ActId, DateTime date, UserInfo LoginUser)
         {
@@ -314,6 +364,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             parameters.Add("@ActID", ActId);
             parameters.Add("@Date", date.ToString("yyyy-MM-dd"));
             parameters.Add("@Stime", vm.BatchAddActModel.STime);
+            parameters.Add("@Week", date.ToString("dddd"));
             parameters.Add("@Status", "01");
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
@@ -322,6 +373,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
                                                (ActID
                                                 , Date
                                                 , Stime
+                                                , Week
                                                 , Status
                                                 , Creator
                                                 , Created
@@ -333,6 +385,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
                                                (@ActID
                                                 , @Date
                                                 , @Stime
+                                                , @Week
                                                 , @Status
                                                 , @LoginId
                                                 , GETDATE()

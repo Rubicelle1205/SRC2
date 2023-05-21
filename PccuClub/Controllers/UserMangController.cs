@@ -24,6 +24,7 @@ namespace WebPccuClub.Controllers
         ReturnViewModel vmRtn = new ReturnViewModel();
         UserMangDataAccess dbAccess = new UserMangDataAccess();
         AuthManager auth = new AuthManager();
+        Utility.AuthUtil StdService = new AuthUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
@@ -75,8 +76,20 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
-        public IActionResult EditOldData(UserMangViewModel vm)
+        public async Task<IActionResult> EditOldData(UserMangViewModel vm)
         {
+            if(vm.EditModel == null)
+                RedirectToAction("Index");
+
+            //bool isStudent = await StdService.ChkStudent(vm.EditModel.FUserId);
+
+            //if (!isStudent)
+            //{
+            //    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+            //    vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", vm.EditModel.FUserId);
+            //    return Json(vmRtn);
+            //}
+
             try
             {
                 dbAccess.DbaInitialTransaction();

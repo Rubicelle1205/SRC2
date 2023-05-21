@@ -5,32 +5,36 @@ namespace Utility
 
     public class AuthUtil
     {
-        //string account = string.Empty;
-        //string password = string.Empty;
-        //string appID = string.Empty;
-        string accessToken = string.Empty;
+        string SSOaccessToken = string.Empty;
+        string StdaccessToken = string.Empty;
 
-        SSOAuth.getIdentitySoapClient soap = new SSOAuth.getIdentitySoapClient(SSOAuth.getIdentitySoapClient.EndpointConfiguration.getIdentitySoap12);
+        SSOAuth.getIdentitySoapClient SSOsoap = new SSOAuth.getIdentitySoapClient(SSOAuth.getIdentitySoapClient.EndpointConfiguration.getIdentitySoap12);
+        StdSevice.ServiceSoapClient Stdsoap = new StdSevice.ServiceSoapClient(StdSevice.ServiceSoapClient.EndpointConfiguration.ServiceSoap12);
 
         public AuthUtil()
         {
             var builder = new ConfigurationBuilder().AddJsonFile(@"appsettings.json");
             IConfiguration config = builder.Build();
-            //account = config.GetValue<string>("SSOAuthSetting:account");
-            //password = config.GetValue<string>("SSOAuthSetting:password");
-            //appID = config.GetValue<string>("SSOAuthSetting:appID");
-            accessToken = config.GetValue<string>("SSOAuthSetting:accessToken");
+            SSOaccessToken = config.GetValue<string>("SSOAuthSetting:accessToken");
+            StdaccessToken = config.GetValue<string>("StdService:accessToken");
         }
 
         public async Task<SSOAuth.clsJSONResult> GetSSOAuthData(string Guid)
         {
-            var Result = await soap.getComplexIdentityAsync(Guid, accessToken);
+            var Result = await SSOsoap.getComplexIdentityAsync(Guid, SSOaccessToken);
 
             SSOAuth.clsJSONResult sResultData = Result.Body.getComplexIdentityResult;
 
             return sResultData;
         }
 
+        public async Task<bool> ChkStudent(string StudentNo)
+        {
+            var Result = await Stdsoap.isMyStudentAsync(StudentNo, StdaccessToken);
 
+            bool BlnRtn = Result;
+
+            return BlnRtn;
+        }
     }
 }

@@ -1,7 +1,9 @@
 ﻿//using Microsoft.International.Formatters;
+using NPOI.OpenXmlFormats.Spreadsheet;
 using System.Data;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using WebPccuClub.Global;
 
 namespace WebPccuClub.Global
 {
@@ -328,4 +330,40 @@ namespace WebPccuClub.Global
 
         #endregion
     }
+
+    public class PublicFun
+    {
+        public string GetNowSchoolYear()
+        {
+            string strRtn = string.Empty;
+
+            string CNSDate = PublicFunction.GRE2CNS(DateTime.Now);
+            int CNSYear = int.Parse(CNSDate.Split("/")[0]);
+            int CNSMonth = int.Parse(CNSDate.Split("/")[1]);
+
+            if (1 <= CNSMonth && CNSMonth <= 7)
+                CNSYear = CNSYear - 1;
+
+            strRtn = CNSYear.ToString();
+
+            return strRtn;
+        }
+
+        public string GetSchoolYear(object dateTimeobj)
+        {
+            string strRtn = string.Empty;
+
+            string CNSDate = PublicFunction.GRE2CNS(dateTimeobj);
+            int CNSYear = int.Parse(CNSDate.Split("/")[0]);
+            int CNSMonth = int.Parse(CNSDate.Split("/")[1]);
+
+            if (1 <= CNSMonth && CNSMonth <= 7)
+                CNSYear = CNSYear - 1;
+
+            strRtn = CNSYear.ToString();
+
+            return strRtn;
+        }
+    }
 }
+
