@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -43,6 +44,17 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public IActionResult Create()
         {
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            ViewBag.ddlStaticOrDynamic = dbAccess.GetStaticOrDynamic();
+            ViewBag.ddlActInOrOut = dbAccess.GetActInOrOut();
+            ViewBag.ddlActType = dbAccess.GetActType();
+            ViewBag.ddlUseITEquip = dbAccess.GetUseITEquip();
+            ViewBag.ddlSDGs = dbAccess.GetSDGs();
+            ViewBag.ddlPassport = dbAccess.GetPassport();
+            ViewBag.ddlPlaceSource = dbAccess.GetPlaceSource();
+            ViewBag.ddlHour = dbAccess.GetAllHour();
+            ViewBag.ddlActVerify = dbAccess.GetAllActVerify();
+
             ActListMangViewModel vm = new ActListMangViewModel();
             vm.CreateModel = new ActListMangCreateModel();
             return View(vm);
@@ -230,6 +242,58 @@ namespace WebPccuClub.Controllers
             }
 
             return Json(vmRtn);
+        }
+
+        [Log(LogActionChineseName.取得樓館選單)]
+        [ValidateInput(false)]
+        public IActionResult InitBuildSelect(string PlaceSource)
+        {
+            if (PlaceSource != "03")
+            {
+                ViewBag.ddlBuild = dbAccess.GetBuild();
+            }
+
+            ActListMangViewModel vm = new ActListMangViewModel();
+            vm.CreateModel = new ActListMangCreateModel();
+            vm.CreateModel.PlaceSource = PlaceSource;
+
+            return PartialView("_PlaceResultPartial", vm);
+        }
+
+        [Log(LogActionChineseName.取得場地選單)]
+        [ValidateInput(false)]
+        public IActionResult InitPlaceSelect(string PlaceSource, string Buildid)
+        {
+            ViewBag.ddlBuild = dbAccess.GetBuild();
+            ViewBag.ddlPlace = dbAccess.GetPlace(PlaceSource, Buildid);
+
+
+            ActListMangViewModel vm = new ActListMangViewModel();
+            vm.CreateModel = new ActListMangCreateModel();
+            vm.CreateModel.PlaceSource = PlaceSource;
+            vm.CreateModel.Buildid = Buildid;
+
+
+            return PartialView("_PlaceResultPartial", vm);
+        }
+
+        [Log(LogActionChineseName.取得場地資料)]
+        [ValidateInput(false)]
+        public IActionResult InitPlaceData(string PlaceSource, string Buildid, string PlaceId)
+        {
+            ViewBag.ddlBuild = dbAccess.GetBuild();
+            ViewBag.ddlPlace = dbAccess.GetPlace(PlaceSource, Buildid);
+
+
+            ActListMangViewModel vm = new ActListMangViewModel();
+            vm.CreateModel = new ActListMangCreateModel();
+            vm.CreateModel.PlaceSource = PlaceSource;
+            vm.CreateModel.Buildid = Buildid;
+            vm.CreateModel.PlaceId = PlaceId;
+
+            vm.PlaceDataModel = dbAccess.GetPlaceData(PlaceSource, PlaceId);
+
+            return PartialView("_PlaceResultPartial", vm);
         }
 
         public IActionResult DownloadTemplate()

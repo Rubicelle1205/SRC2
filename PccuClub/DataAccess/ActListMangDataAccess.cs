@@ -206,7 +206,10 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
             return new List<ActListMangResultModel>();
         }
 
-            public List<SelectListItem> GetAllActVerify()
+
+        #region 取得預設資料
+
+        public List<SelectListItem> GetAllActVerify()
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -257,5 +260,245 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
 
             return LstItem;
         }
+
+        public List<SelectListItem> GetStaticOrDynamic()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'StaticOrDynamic'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetActInOrOut()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'ActInOrOut'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetActType()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT ActTypeID AS VALUE, ActTypeName AS TEXT FROM ActTypeMang";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetUseITEquip()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'UseITEquip'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetSDGs()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT SDGID AS VALUE, ShortName AS TEXT FROM SDGsMang";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetPassport()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'PassPort'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetPlaceSource()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'PlaceSource'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetAllHour()
+        {
+            List<SelectListItem> LstItem = new List<SelectListItem>();
+
+            for (int i = 0; i <= 24; i++)
+            {
+                LstItem.Add(new SelectListItem() { Value = i.ToString().PadLeft(2, '0'), Text = i.ToString().PadLeft(2, '0') });
+            }
+
+            return LstItem;
+        }
+
+        #endregion
+
+        #region 取得樓館資料
+
+        #endregion
+        public List<SelectListItem> GetBuild()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT BuildID AS VALUE, BuildName AS TEXT FROM BuildMang";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+
+        public List<SelectListItem> GetPlace(string PlaceSource, string Buildid)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@Buildid", Buildid);
+
+            #endregion
+
+            if (PlaceSource == "01")
+                CommandText = @"SELECT PlaceID AS VALUE, PlaceName AS TEXT FROM PlaceSchoolMang WHERE Buildid = @Buildid";
+            else
+                CommandText = @"SELECT PlaceID AS VALUE, PlaceName AS TEXT FROM PlaceSchoolElseMang WHERE Buildid = @Buildid";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<ActListMangPlaceDataModel> GetPlaceData(string PlaceSource, string PlaceId)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@PlaceId", PlaceId);
+
+            #endregion
+
+            if (PlaceSource == "01")
+            {
+                CommandText = @"SELECT A.PlaceID, A.PlaceName, A.Capacity, A.PlaceEquip, A.PlaceStatus, B.Text AS PlaceStatusText, A.Memo, 
+                                       A.Normal_STime, A.Normal_ETime, A.Holiday_STime, A.Holiday_ETime
+                                  FROM PlaceSchoolMang A
+                             LEFT JOIN Code B ON B.Code = A.PlaceStatus AND B.Type = 'PlaceStatus'
+                                 WHERE A.PlaceId = @PlaceId";
+            }
+
+            else
+            {
+                CommandText = @"SELECT A.PlaceID, A.PlaceName, A.Memo
+                                  FROM PlaceSchoolElseMang A
+                                 WHERE A.PlaceId = @PlaceId";
+            }
+
+            (DbExecuteInfo info, IEnumerable<ActListMangPlaceDataModel> entitys) dbResult = DbaExecuteQuery<ActListMangPlaceDataModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ActListMangPlaceDataModel>();
+        }
+
     }
 }

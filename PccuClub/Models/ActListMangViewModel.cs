@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using NPOI.OpenXmlFormats.Dml.Diagram;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace WebPccuClub.Models
@@ -18,6 +19,10 @@ namespace WebPccuClub.Models
         public ActListMangEditModel EditModel { get; set; }
 
         public ActListMangExcelResultModel ExcelModel { get; set; }
+
+        public ActListMangActMainModel ActMain { get; set; }
+
+        public List<ActListMangPlaceDataModel> PlaceDataModel { get; set; }
     }
 
     public class ActListMangConditionModel
@@ -137,11 +142,190 @@ namespace WebPccuClub.Models
 
     public class ActListMangCreateModel
     {
-        
+        #region Section1
+
+        /// <summary>社團代號</summary>
+        [DisplayName("社團代號")]
+        public string? ClubId { get; set; }
+
+        /// <summary>學年度</summary>
+        [DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>活動名稱</summary>
+        [DisplayName("活動名稱")]
+        public string? ActName { get; set; }
+
+        /// <summary>活動類型</summary>
+        [DisplayName("活動類型")]
+        public string? StaticOrDynamic { get; set; }
+
+        /// <summary>活動地點</summary>
+        [DisplayName("活動地點")]
+        public string? ActInOrOut { get; set; }
+
+        /// <summary>活動人數</summary>
+        [DisplayName("活動人數")]
+        public string? Capacity { get; set; }
+
+        /// <summary>活動性質</summary>
+        [DisplayName("活動性質")]
+        public string? ActType { get; set; }
+
+        /// <summary>使用資訊設備</summary>
+        [DisplayName("使用資訊設備")]
+        public string? UseITEquip { get; set; }
+
+        /// <summary>活動簡介</summary>
+        [DisplayName("活動簡介")]
+        public string? Memo { get; set; }
+
+        /// <summary>聯合國SDGs永續發展目標</summary>
+        [DisplayName("聯合國SDGs永續發展目標")]
+        public string? SDGs { get; set; }
+
+        /// <summary>是否申請全人學習護照</summary>
+        [DisplayName("是否申請全人學習護照")]
+        public string? PassPort { get; set; }
+
+        #endregion
+
+        #region Section2
+
+        /// <summary>選擇日期</summary>
+        [DisplayName("選擇日期")]
+        public string? Date { get; set; }
+
+        /// <summary>開始時間</summary>
+        [DisplayName("開始時間")]
+        public string? STime { get; set; }
+
+        /// <summary>結束時間</summary>
+        [DisplayName("結束時間")]
+        public string? ETime { get; set; }
+
+        /// <summary>校內/校內其他/校外</summary>
+        [DisplayName("校內/校內其他/校外")]
+        public string? PlaceSource { get; set; }
+
+        /// <summary>選擇樓館</summary>
+        [DisplayName("選擇樓館")]
+        public string? Buildid { get; set; }
+
+        /// <summary>選擇校內場地</summary>
+        [DisplayName("選擇校內場地")]
+        public string? PlaceId { get; set; }
+
+        /// <summary>場地名稱</summary>
+        [DisplayName("場地名稱")]
+        public string? PlaceName { get; set; }
+
+        #endregion
+
+        #region Section3
+
+        /// <summary>上傳活動企劃書</summary>
+        [DisplayName("上傳活動企劃書")]
+        public string? ActProposal { get; set; }
+
+        #endregion
+
+        #region Section4
+
+        /// <summary>領隊姓名</summary>
+        [DisplayName("領隊姓名")]
+        public string? LeaderName { get; set; }
+
+        /// <summary>領隊電話</summary>
+        [DisplayName("領隊電話")]
+        public string? LeaderTel { get; set; }
+
+        /// <summary>領隊手機</summary>
+        [DisplayName("領隊手機")]
+        public string? LeaderPhone { get; set; }
+
+        /// <summary>活動負責人姓名</summary>
+        [DisplayName("活動負責人姓名")]
+        public string? ManagerName { get; set; }
+
+        /// <summary>活動負責人電話</summary>
+        [DisplayName("活動負責人電話")]
+        public string? ManagerTel { get; set; }
+
+        /// <summary>活動負責人手機</summary>
+        [DisplayName("活動負責人手機")]
+        public string? ManagerPhone { get; set; }
+
+        #endregion
+
+        #region Section5
+
+        /// <summary>審核狀態</summary>
+        [DisplayName("審核狀態")]
+        public string? ActVerify { get; set; }
+
+        /// <summary>審核備註</summary>
+        [DisplayName("審核備註")]
+        public string? ActVerifyMemo { get; set; }
+
+        #endregion
+
     }
 
     public class ActListMangEditModel
     {
         
+    }
+
+    public class ActListMangActMainModel
+    {
+
+    }
+
+    public class ActListMangPlaceDataModel
+    {
+        /// <summary>場地代號</summary>
+        [DisplayName("場地代號")]
+        public string? PlaceId { get; set; }
+
+        /// <summary>場地名稱</summary>
+        [DisplayName("場地名稱")]
+        public string? PlaceName { get; set; }
+
+        /// <summary>可使用人數</summary>
+        [DisplayName("可使用人數")]
+        public string? Capacity { get; set; }
+
+        /// <summary>已配置資訊器材</summary>
+        [DisplayName("已配置資訊器材")]
+        public string? PlaceEquip { get; set; }
+
+        /// <summary>場地狀態</summary>
+        [DisplayName("場地狀態")]
+        public string? PlaceStatus { get; set; }
+
+        /// <summary>場地狀態</summary>
+        [DisplayName("場地狀態")]
+        public string? PlaceStatusText { get; set; }
+
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
+        public string? Memo { get; set; }
+
+        /// <summary>平日開放時間</summary>
+        [DisplayName("平日開放時間")]
+        public string? Normal_STime { get; set; }
+
+        /// <summary>平日開放時間</summary>
+        [DisplayName("平日開放時間")]
+        public string? Normal_ETime { get; set; }
+
+        /// <summary>假日開放時間</summary>
+        [DisplayName("假日開放時間")]
+        public string? Holiday_STime { get; set; }
+
+        /// <summary>假日開放時間</summary>
+        [DisplayName("假日開放時間")]
+        public string? Holiday_ETime { get; set; }
     }
 }

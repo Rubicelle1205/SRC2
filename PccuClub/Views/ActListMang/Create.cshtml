@@ -1,0 +1,534 @@
+﻿@model WebPccuClub.Models.ActListMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+    List<SelectListItem> LstStaticOrDynamic = ViewBag.ddlStaticOrDynamic;
+    List<SelectListItem> LstActInOrOut = ViewBag.ddlActInOrOut;
+    List<SelectListItem> LstActType = ViewBag.ddlActType;
+    List<SelectListItem> LstUseITEquip = ViewBag.ddlUseITEquip;
+    List<SelectListItem> LstSDGs = ViewBag.ddlSDGs;
+    List<SelectListItem> LstPassport = ViewBag.ddlPassport;
+    List<SelectListItem> LstPlaceSource = ViewBag.ddlPlaceSource;
+
+}
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body table-responsive-sm">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                            <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                        </h6>
+                        <table class="table table-bordered">
+                            <tbody>
+                            <td colspan="2" class="table-secondary font-weight-bold">Step1. 報備資訊</td>
+                            <tr>
+                                <th width="15%">@Html.LabelFor(m => m.CreateModel.ClubId)<span class="required">*</span></th>
+                                <td>@Html.TextBoxFor(m => m.CreateModel.ClubId, new {@class = "form-control", placeholder="請輸入社團代號"})</td>
+                            </tr>
+                            <tr>
+                                <th width="15%">@Html.LabelFor(m => m.CreateModel.SchoolYear)<span class="required">*</span></th>
+                                <td>
+                                        @Html.DropDownListFor(m => m.CreateModel.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇學年度", new {@class = "form-control"})
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="15%">@Html.LabelFor(m => m.CreateModel.ActName)<span class="required">*</span></th>
+                                <td>@Html.TextBoxFor(m => m.CreateModel.ActName, new {@class = "form-control", placeholder="請輸入活動名稱"})</td>
+                            </tr>
+                            <tr>
+                                <th width="15%">@Html.LabelFor(m => m.CreateModel.StaticOrDynamic)<span class="required">*</span></th>
+                                <td>
+                                        @for (int i = 0; i <= LstStaticOrDynamic.Count - 1; i++)
+                                        {
+                                        <div class="icheck-primary d-inline">
+                                                @Html.RadioButtonFor(m => m.CreateModel.StaticOrDynamic, LstStaticOrDynamic[i].Value, new { @id = string.Format("act_type{0}", i) })
+                                            <label for="@string.Format("act_type{0}", i)">@LstStaticOrDynamic[i].Text</label>
+
+                                        </div>
+                                        }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="15%">活動地點<span class="required">*</span></th>
+                                <td>
+                                        @for (int i = 0; i <= LstActInOrOut.Count - 1; i++)
+                                        {
+                                        <div class="icheck-primary d-inline">
+                                                @Html.RadioButtonFor(m => m.CreateModel.ActInOrOut, LstActInOrOut[i].Value, new { @id = string.Format("act_loc{0}", i) })
+                                            <label for="@string.Format("act_loc{0}", i)">@LstActInOrOut[i].Text</label>
+
+                                        </div>
+                                        }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="15%">活動人數<span class="required">*</span></th>
+                                <td>@Html.TextBoxFor(m => m.CreateModel.Capacity, new {@class = "form-control", placeholder="請輸入活動人數"})</td>
+                            </tr>
+                            <tr>
+                                <th width="15%">活動性質<span class="required">*</span></th>
+                                <td>
+                                    <div class="row p-2">
+                                            @foreach (SelectListItem item in LstActType)
+                                            {
+                                            <div class="col-md-3 custom-control custom-checkbox">
+                                                <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                       type="checkbox" id="@string.Format("ActType_{0}", item.Value)" value="@item.Value">
+                                                <label class="custom-control-label" for="@string.Format("ActType_{0}", item.Value)">@item.Text</label>
+                                            </div>
+                                            }
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="15%">使用資訊設備<span class="required">*</span></th>
+                                <td>
+                                        @foreach (SelectListItem item in LstUseITEquip)
+                                        {
+                                        <div class="icheck-primary d-inline">
+                                                @Html.RadioButtonFor(m => m.CreateModel.UseITEquip, item.Value, new { @id = string.Format("UseITEquip_{0}", item.Value) })
+                                            <label for=@string.Format("UseITEquip_{0}", item.Value)>@item.Text</label>
+
+                                        </div>
+                                        }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="15%">活動簡介<span class="required">*</span></th>
+                                <td>@Html.TextAreaFor(m => m.CreateModel.Memo, new {@class="form-control", rows="5", placeholder = "請輸入活動簡介"})</td>
+                            </tr>
+                            <tr>
+                                <th width="15%">聯合國SDGs永續發展目標<span class="required">*</span></th>
+                                <td>
+                                    <div id="divSDGs" class="row p-2">
+                                            @foreach (SelectListItem item in LstSDGs)
+                                            {
+                                            <div class="col-md-3 custom-control custom-checkbox">
+                                                <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                       type="checkbox" id="@string.Format("SDGs_{0}", item.Value)" value="@item.Value">
+                                                <label class="custom-control-label" for="@string.Format("SDGs_{0}", item.Value)">@item.Text</label>
+                                            </div>
+                                            }
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="15%">是否申請全人學習護照<span class="required"></span></th>
+                                <td>
+                                        @foreach (SelectListItem item in LstPassport)
+                                        {
+                                        <div class="icheck-primary d-inline">
+                                                @Html.RadioButtonFor(m => m.CreateModel.PassPort, item.Value, new { @id = string.Format("Passport_{0}", item.Value) })
+                                            <label for=@string.Format("Passport_{0}", item.Value)>@item.Text</label>
+
+                                        </div>
+                                        }
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div class="card-body table-responsive-sm">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                        </h6>
+                        <table class="table table-bordered" id="step2">
+                            <tbody>
+                            <td colspan="2" class="table-secondary font-weight-bold">Step2. 活動行程</td>
+                            <tr>
+                                <th width="15%">
+                                    選擇日期<span class="required"></span><br /><span class="text-xs text-danger font-weight-normal"></span>
+                                </th>
+                                <td>
+                                    <input type="date" class="form-control" id="@Html.IdFor(m => m.CreateModel.Date)" name="@Html.NameFor(m => m.CreateModel.Date)">
+
+                                    <div id="usedTable"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="15%">選擇地點<span class="required"></span></th>
+                                <td>
+                                        @foreach (SelectListItem item in LstPlaceSource)
+                                        {
+                                        <div class="icheck-primary d-inline">
+                                                @Html.RadioButtonFor(m => m.CreateModel.PlaceSource, item.Value, new { @id = string.Format("PlaceSource_{0}", item.Value) })
+                                            <label for=@string.Format("PlaceSource_{0}", item.Value)>@item.Text</label>
+                                        </div>
+                                        }
+
+                                    <div id="class_input_box"></div>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="15%">選擇時間<span class="required"></span></th>
+                                <td>
+                                    <p id="selected_date" class="mb-0 hidden">
+                                        日期：<span class="font-weight-bold text-primary"></span>
+                                    </p>
+                                    <div class="row">
+                                        <div class="col-lg-5">
+
+                                            <div class="d-flex align-items-center pt-2">
+                                                <label class="flex-shrink-0 me-2" for="">開始時間(小時)：</label>
+                                                    @Html.DropDownListFor(m => m.CreateModel.STime,(List<SelectListItem>)ViewBag.ddlHour,"請選擇開始時間", new {@class = "form-control w-50"} )
+                                            </div>
+                                            <div class="d-flex align-items-center pt-2">
+                                                <label class="flex-shrink-0 me-2" for="">結束時間(小時)：</label>
+
+                                                    @Html.DropDownListFor(m => m.CreateModel.ETime,(List<SelectListItem>)ViewBag.ddlHour,"請選擇結束時間", new {@class = "form-control w-50"} )
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <td colspan="2" class="">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-3">
+                                        <button id="BtnAddRundown" class="addevent-btn btn btn-secondary btn-modern border-0 w-100" onclick="addRundown()">加入行程</button>
+                                    </div>
+                                </div>
+                            </td>
+                            <tr>
+                                <th width="15%">已加入行程<span class="required"></span></th>
+                                <td>
+                                    <!--<p class="text-center mb-0">尚未加入行程</p>-->
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">日期</th>
+                                                <th scope="col">時間</th>
+                                                <th scope="col">地點</th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="event_des">
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div class="card-body table-responsive-sm">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                        </h6>
+                        <table class="table table-bordered" id="step3">
+                            <tbody>
+                            <td colspan="2" class="table-secondary font-weight-bold">Step3. 活動企劃書</td>
+                            <tr>
+                                <th width="15%">
+                                    上傳活動企劃書<span class="required">*</span>
+                                    <span class="mx-1" data-toggle="tooltip" data-bs-placement="top" title="" data-original-title="僅接受.doc,.docx,.odt,.pdf檔">
+                                        <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                        <br />
+                                        <span class="text-xs text-danger font-weight-normal"></span>
+                                    </span>
+                                </th>
+                                <td>
+                                    <label class="btn btn-outline-primary mb-0">
+                                        <input id="ActProposal" name="ActProposal" type="file" class="filesupload" style="display:none;" accept=".doc,.docx,.odt,.pdf" />
+                                        <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                    </label>
+                                    <span class="text-sm mx-2 text-muted" id="ActProposalfilename">尚未選擇檔案...</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div id="step4" class="card-body table-responsive-sm hideBox">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                        </h6>
+                        <table class="table table-bordered">
+                            <tbody>
+                            <td colspan="2" class="table-secondary font-weight-bold">Step4. 校外活動其他資訊</td>
+                            <tr>
+                                <td colspan="2" class="table-warning font-weight-bold">領隊資訊</td>
+                            </tr>
+                            <tr>
+                                <th width="15%">姓名<span class="required"></span></th>
+                                <td>
+                                        @Html.TextBoxFor(m => m.CreateModel.LeaderName, new { @class = "form-control", placeholder="請輸入領隊姓名" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="15%">電話<span class="required"></span></th>
+                                <td>
+                                        @Html.TextBoxFor(m => m.CreateModel.LeaderTel, new { @class = "form-control", placeholder="請輸入領隊電話" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="15%">手機<span class="required"></span></th>
+                                <td>
+                                        @Html.TextBoxFor(m => m.CreateModel.LeaderPhone, new { @class = "form-control", placeholder="請輸入領隊手機" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="table-warning font-weight-bold">活動負責人資訊</td>
+                            </tr>
+                            <tr>
+                                <th width="15%">姓名<span class="required"></span></th>
+                                <td>
+                                        @Html.TextBoxFor(m => m.CreateModel.ManagerName, new { @class = "form-control", placeholder="請輸入活動負責人姓名" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="15%">電話<span class="required"></span></th>
+                                <td>
+                                        @Html.TextBoxFor(m => m.CreateModel.ManagerTel, new { @class = "form-control", placeholder="請輸入活動負責人電話" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="15%">手機<span class="required"></span></th>
+                                <td>
+                                        @Html.TextBoxFor(m => m.CreateModel.ManagerPhone, new { @class = "form-control", placeholder="請輸入活動負責人手機" })
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="2" class="table-warning font-weight-bold">校外活動附件</td>
+                            </tr>
+                            <tr>
+                                <th width="15%">
+                                    附件<span class="required">*</span>
+                                    <span class="mx-1" data-toggle="tooltip" data-bs-placement="top" data-original-title="僅接受.doc、.docx、.odt、.pdf檔">
+                                        <i class="fa-regular fa-circle-question"
+                                           aria-hidden="true"></i><br /><span class="text-xs text-danger font-weight-normal"></span>
+                                    </span>
+                                </th>
+                                <td>
+                                    <div class="target_list">
+
+
+                                        <div class="d-block mb-1 item">
+                                            <label class="btn btn-outline-primary mb-0">
+                                                <input id="ActOutSideFile_1" name="ActOutSideFile_1" type="file" class="filesupload" style="display:none;" accept=".doc,.docx,.odt,.pdf" />
+                                                <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                            </label>
+                                            <span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                            <button class="del-btn btn btn-sm btn-outline-secondary hidden"
+                                                    type="button">
+                                                <i class="fas fa-times"></i> 移除
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                    <button id="add_input_btn" class="btn btn-secondary btn-sm mt-3 d-block" type="button">新增 <i class="icon-plus"></i></button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div class="card-body table-responsive-sm">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                        </h6>
+                        <table class="table table-bordered">
+                            <tbody>
+                                <!--若活動地點為校外、校內外皆有就需要顯示-->
+                            <td colspan="2" class="table-secondary font-weight-bold">審核</td>
+
+                            <tr>
+                                <th width="15%">審核狀態<span class="required">*</span></th>
+                                <td>
+                                        @Html.DropDownListFor(m => m.CreateModel.ActVerify,(List<SelectListItem>)ViewBag.ddlActVerify,"全部審核狀態", new {@class = "form-control"})
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="15%">審核備註<span class="required"></span></th>
+                                <td>
+                                        @Html.TextAreaFor(m => m.CreateModel.ActVerifyMemo, new { @class = "form-control", rows="5", placeholder="請輸入審核備註" })
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer d-flex justify-content-end">
+                        <button id="Reset" type="reset" class="mx-1 btn btn-outline-dark">重設</button>
+                        <button id="btnOK" type="button" class="btn btn-success">儲存</button>
+                    </div>
+                </div>
+                <!-- /.card -->
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    $(document).ready(function () {
+        $(document).on('change', '#@Html.IdFor(m => m.CreateModel.Date)', function () {
+            var $val = $(this).val()
+            $("#selected_date").removeClass("hidden").children("span").text($val)
+        });
+
+        $("#divSDGs .custom-control-input").click(function () {
+            var currentCheckbox = $(this);
+            $("#divSDGs .custom-control-input").not(currentCheckbox).prop("checked", false);
+        });
+
+        $("[id ^= 'PlaceSource_']").on('change', function () {
+            InitBuildSelect($("[id ^= 'PlaceSource_']:checked").val());
+        });
+    });
+
+    function SaveData() {
+
+        var data = new FormData()
+
+
+        SendAjax({
+            url: '@Url.Action("SaveNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                Reset();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+    function Reset() {
+        $('#filename').html("尚未選擇檔案...");
+    }
+
+    function addRundown() {
+
+        var PlaceSource = $("[id ^= 'PlaceSource_']:checked").val()
+        var $date = $('#@Html.IdFor(m => m.CreateModel.Date)').val();
+        var start_hour = $('#@Html.IdFor(m => m.CreateModel.STime)').val();
+        var end_hour = $('#@Html.IdFor(m => m.CreateModel.ETime)').val();
+
+        var place;
+        if (PlaceSource == "01" || PlaceSource == "02") {
+            place = $('#@Html.IdFor(m => m.CreateModel.PlaceId) option:selected').text();
+        } else {
+            place = $('#@Html.IdFor(m => m.CreateModel.PlaceName)').val();
+        }
+
+
+        if ($date == "") { $.alert("請選擇日期"); return false; }
+        if (start_hour == "") { $.alert("請選擇開始時間"); return false; }
+        if (end_hour == "") { $.alert("請選擇結束時間"); return false; }
+        if (place == "") { $.alert("請輸入場地名稱"); return false; }
+
+
+        // 產生tr物件
+        var eventHtml = '<tr class="dateItem">\n';
+        eventHtml += '<th>' + $date + '</th>\n';
+        eventHtml += '<td>' + start_hour + ':00' + '~' + end_hour + ':00' + '</td>\n';
+        eventHtml += '<td>' + place + '</td>\n';
+        eventHtml += '<td><button class="del-btn btn" type="button">移除 <i class="fas fa-times"></i></button></td>\n';
+        eventHtml += '</tr>\n';
+        $("#event_des").append(eventHtml)
+    }
+
+
+
+    function InitBuildSelect(PlaceSource) {
+
+        SendAjax({
+            url: '@Url.Action("InitBuildSelect")',
+            data: { 'PlaceSource': PlaceSource },
+            success: function (result) {
+                $('#class_input_box').html(result);
+            }
+        });
+
+        if (PlaceSource != "03") {
+            $("#step4").hide().removeClass("show");
+        }
+        else {
+            $("#step4").fadeIn().addClass("show");
+        }
+    }
+
+    $('#ActProposal').change(function (e) {
+        var geekss = e.target.files[0].name;
+        $('#ActProposalfilename').text(geekss);
+    });
+
+    $(document).on('click', '#add_input_btn', function () {
+
+        var num = checkNum();
+        var addItem = '<div class="d-block mb-1 item">';
+        addItem += '<label class="btn btn-outline-primary mb-0">';
+        addItem += '<input id="ActOutSideFile_' + num + ' name="ActOutSideFile_' + num + '" type="file" class="filesupload" style="display:none;" accept=".doc,.docx,.odt,.pdf" />';
+        //addItem += '<input style="display:none;" req class="filesupload" data-title="附件" type="file" name="file' + num + '" value="" accept=".doc,.docx,.odt,.pdf" data-file="">';
+        addItem += '<i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案';
+        addItem += '</label>';
+        addItem += '<span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>';
+        addItem += '<button class="del-btn btn btn-sm btn-outline-secondary" type="button"><i class="fas fa-times"></i> 移除</button>';
+        addItem += '</div>';
+        if ($(".target_list").find("[type='file']").length <= 7) {
+            $(".target_list").append(addItem);
+            $(".target_list .del-btn").removeClass("hidden")
+        }
+    })
+
+    $(document).on('click', '.target_list .del-btn', function () {
+        var num = $(".target_list").find("[type='file']").length
+
+        if (confirm("確認清除？") == false) {
+            return false
+        } else {
+            if (num >= 2) {
+                $(this).closest(".item").remove()
+                $("#add_input_btn").prop("disabled", false)
+            }
+
+            if (num <= 2) {
+                $(".target_list .del-btn").addClass("hidden")
+            } else {
+                $(".target_list .del-btn").removeClass("hidden")
+            }
+        }
+    })
+
+    function checkNum() {
+        var num = $(".target_list").find("[type='file']").length
+        if (num >= 7) {
+            $("#add_input_btn").prop("disabled", true)
+        } else {
+            $("#add_input_btn").prop("disabled", false)
+        }
+        return num;
+    }
+
+</script>

@@ -9,58 +9,58 @@
     margin: 0 auto;
 }
 
-.showPage > #page a {
-    display: block;
-    float: left;
-    margin-right: 10px;
-    padding: 2px 12px;
-    height: 35px;
-    text-decoration: none;
-    color: #FFF;
-    font-size: 12px;
-    line-height: 35px;
-}
+    .showPage > #page a {
+        display: block;
+        float: left;
+        margin-right: 10px;
+        padding: 2px 12px;
+        height: 35px;
+        text-decoration: none;
+        color: #FFF;
+        font-size: 12px;
+        line-height: 35px;
+    }
 
-.showPage > #page a:hover {
-    color: #077ee3;
-    border: 1px #077ee3 solid;
-}
+        .showPage > #page a:hover {
+            color: #077ee3;
+            border: 1px #077ee3 solid;
+        }
 
-.showPage > #page a.cur {
-    border: none;
-    background: #7fb808;
-    color: #FFF;
-    border: 1px solid #555;
-}
+        .showPage > #page a.cur {
+            border: none;
+            background: #7fb808;
+            color: #FFF;
+            border: 1px solid #555;
+        }
 
-.showPage > #page p {
-    float: left;
-    padding: 2px 12px;
-    font-size: 12px;
-    height: 35px;
-    line-height: 35px;
-    color: #FFF;
-    margin-right: 8px;
-}
+    .showPage > #page p {
+        float: left;
+        padding: 2px 12px;
+        font-size: 12px;
+        height: 35px;
+        line-height: 35px;
+        color: #FFF;
+        margin-right: 8px;
+    }
 
-.showPage > #page p.pageRemark {
-    border-style: none;
-    background: none;
-    margin-right: 0px;
-    padding: 4px 0px;
-    color: #666;
-}
+        .showPage > #page p.pageRemark {
+            border-style: none;
+            background: none;
+            margin-right: 0px;
+            padding: 4px 0px;
+            color: #666;
+        }
 
-.showPage > #page p.pageRemark b {
-    color: red;
-}
+            .showPage > #page p.pageRemark b {
+                color: red;
+            }
 
-.showPage > #page p.pageEllipsis {
-    border-style: none;
-    background: none;
-    padding: 4px 0px;
-    color: #808080;
-}
+        .showPage > #page p.pageEllipsis {
+            border-style: none;
+            background: none;
+            padding: 4px 0px;
+            color: #808080;
+        }
 
 .showPage_enterprise > #page a {
     background: #FFFFFF;
@@ -138,10 +138,10 @@ div.btn-group button a {
     overflow: hidden;
 }
 
-.img-wrap img {
-    position: absolute;
-    width: 100%;
-}
+    .img-wrap img {
+        position: absolute;
+        width: 100%;
+    }
 
 .img-resize {
     width: 5rem;
@@ -197,34 +197,34 @@ span.required {
     position: relative;
 }
 
-.image-container img {
-    width: 200px;
-    height: 200px;
-    border-radius: 5%;
-    object-fit: cover;
-    object-position: center;
-}
+    .image-container img {
+        width: 200px;
+        height: 200px;
+        border-radius: 5%;
+        object-fit: cover;
+        object-position: center;
+    }
 
-.image-container .button-remove {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin-top: -10px;
-    margin-right: -10px;
-    color: red;
-    width: 40px;
-    height: 40px;
-    background-color: #d2d6d3;
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
-    font-size: 20px;
-}
+    .image-container .button-remove {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin-top: -10px;
+        margin-right: -10px;
+        color: red;
+        width: 40px;
+        height: 40px;
+        background-color: #d2d6d3;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        font-size: 20px;
+    }
 
-.image-container .button-remove:hover {
-    background-color: red;
-    color: white;
-}
+        .image-container .button-remove:hover {
+            background-color: red;
+            color: white;
+        }
 
 .upload_cover {
     position: relative;
@@ -344,46 +344,45 @@ a.text-brown:hover, a.text-brown:focus {
     right: 0;
 }
 
-/* Transparent Overlay */
-.loading:before {
-    content: '';
-    display: block;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(rgba(20, 20, 20, .8), rgba(0, 0, 0, .8));
+    /* Transparent Overlay */
+    .loading:before {
+        content: '';
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(rgba(20, 20, 20, .8), rgba(0, 0, 0, .8));
+        background: -webkit-radial-gradient(rgba(20, 20, 20, .8), rgba(0, 0, 0, .8));
+    }
 
-    background: -webkit-radial-gradient(rgba(20, 20, 20, .8), rgba(0, 0, 0, .8));
-}
+    /* :not(:required) hides these rules from IE9 and below */
+    .loading:not(:required) {
+        /* hide "loading..." text */
+        font: 0/0 a;
+        color: transparent;
+        text-shadow: none;
+        background-color: transparent;
+        border: 0;
+    }
 
-/* :not(:required) hides these rules from IE9 and below */
-.loading:not(:required) {
-    /* hide "loading..." text */
-    font: 0/0 a;
-    color: transparent;
-    text-shadow: none;
-    background-color: transparent;
-    border: 0;
-}
-
-.loading:not(:required):after {
-    content: '';
-    display: block;
-    font-size: 10px;
-    width: 1em;
-    height: 1em;
-    margin-top: -0.5em;
-    -webkit-animation: spinner 150ms infinite linear;
-    -moz-animation: spinner 150ms infinite linear;
-    -ms-animation: spinner 150ms infinite linear;
-    -o-animation: spinner 150ms infinite linear;
-    animation: spinner 150ms infinite linear;
-    border-radius: 0.5em;
-    -webkit-box-shadow: rgba(255, 255, 255, 0.75) 1.5em 0 0 0, rgba(255, 255, 255, 0.75) 1.1em 1.1em 0 0, rgba(255, 255, 255, 0.75) 0 1.5em 0 0, rgba(255, 255, 255, 0.75) -1.1em 1.1em 0 0, rgba(255, 255, 255, 0.75) -1.5em 0 0 0, rgba(255, 255, 255, 0.75) -1.1em -1.1em 0 0, rgba(255, 255, 255, 0.75) 0 -1.5em 0 0, rgba(255, 255, 255, 0.75) 1.1em -1.1em 0 0;
-    box-shadow: rgba(255, 255, 255, 0.75) 1.5em 0 0 0, rgba(255, 255, 255, 0.75) 1.1em 1.1em 0 0, rgba(255, 255, 255, 0.75) 0 1.5em 0 0, rgba(255, 255, 255, 0.75) -1.1em 1.1em 0 0, rgba(255, 255, 255, 0.75) -1.5em 0 0 0, rgba(255, 255, 255, 0.75) -1.1em -1.1em 0 0, rgba(255, 255, 255, 0.75) 0 -1.5em 0 0, rgba(255, 255, 255, 0.75) 1.1em -1.1em 0 0;
-}
+        .loading:not(:required):after {
+            content: '';
+            display: block;
+            font-size: 10px;
+            width: 1em;
+            height: 1em;
+            margin-top: -0.5em;
+            -webkit-animation: spinner 150ms infinite linear;
+            -moz-animation: spinner 150ms infinite linear;
+            -ms-animation: spinner 150ms infinite linear;
+            -o-animation: spinner 150ms infinite linear;
+            animation: spinner 150ms infinite linear;
+            border-radius: 0.5em;
+            -webkit-box-shadow: rgba(255, 255, 255, 0.75) 1.5em 0 0 0, rgba(255, 255, 255, 0.75) 1.1em 1.1em 0 0, rgba(255, 255, 255, 0.75) 0 1.5em 0 0, rgba(255, 255, 255, 0.75) -1.1em 1.1em 0 0, rgba(255, 255, 255, 0.75) -1.5em 0 0 0, rgba(255, 255, 255, 0.75) -1.1em -1.1em 0 0, rgba(255, 255, 255, 0.75) 0 -1.5em 0 0, rgba(255, 255, 255, 0.75) 1.1em -1.1em 0 0;
+            box-shadow: rgba(255, 255, 255, 0.75) 1.5em 0 0 0, rgba(255, 255, 255, 0.75) 1.1em 1.1em 0 0, rgba(255, 255, 255, 0.75) 0 1.5em 0 0, rgba(255, 255, 255, 0.75) -1.1em 1.1em 0 0, rgba(255, 255, 255, 0.75) -1.5em 0 0 0, rgba(255, 255, 255, 0.75) -1.1em -1.1em 0 0, rgba(255, 255, 255, 0.75) 0 -1.5em 0 0, rgba(255, 255, 255, 0.75) 1.1em -1.1em 0 0;
+        }
 
 /* Animation */
 
@@ -395,6 +394,7 @@ a.text-brown:hover, a.text-brown:focus {
         -o-transform: rotate(0deg);
         transform: rotate(0deg);
     }
+
     100% {
         -webkit-transform: rotate(360deg);
         -moz-transform: rotate(360deg);
@@ -412,6 +412,7 @@ a.text-brown:hover, a.text-brown:focus {
         -o-transform: rotate(0deg);
         transform: rotate(0deg);
     }
+
     100% {
         -webkit-transform: rotate(360deg);
         -moz-transform: rotate(360deg);
@@ -429,6 +430,7 @@ a.text-brown:hover, a.text-brown:focus {
         -o-transform: rotate(0deg);
         transform: rotate(0deg);
     }
+
     100% {
         -webkit-transform: rotate(360deg);
         -moz-transform: rotate(360deg);
@@ -446,6 +448,7 @@ a.text-brown:hover, a.text-brown:focus {
         -o-transform: rotate(0deg);
         transform: rotate(0deg);
     }
+
     100% {
         -webkit-transform: rotate(360deg);
         -moz-transform: rotate(360deg);
@@ -453,4 +456,8 @@ a.text-brown:hover, a.text-brown:focus {
         -o-transform: rotate(360deg);
         transform: rotate(360deg);
     }
+}
+
+.hideBox {
+    display: none;
 }

@@ -1,0 +1,180 @@
+﻿@model WebPccuClub.Models.ActListMangViewModel
+
+@{
+
+}
+
+@if (Model.CreateModel.PlaceSource == "01" || Model.CreateModel.PlaceSource == "02")
+{
+    @if (ViewBag.ddlBuild != null)
+    {
+        <div>
+            <div class="row pt-2">
+                <div class="col-lg-6">
+                    @Html.DropDownListFor(m => m.CreateModel.Buildid,(List<SelectListItem>)ViewBag.ddlBuild,"請選擇樓館", new {@class = "form-control mb-1 classroom1_select class_info_req"} )
+
+                    @if (ViewBag.ddlPlace != null)
+                    {
+                        @Html.DropDownListFor(m => m.CreateModel.PlaceId,(List<SelectListItem>)ViewBag.ddlPlace,"請選擇場地", new {@class = "form-control classroom2_select class_info_req"} )
+                    }
+                </div>
+            </div>
+
+            @if (Model.PlaceDataModel != null)
+            {
+                if (Model.CreateModel.PlaceSource == "01")
+                {
+                    <div id="thisroom_box">
+                        <p class="mb-0 py-2 hint">
+                            <i class="fas fa-caret-down"></i>
+                            場地開放時間狀態
+                            <i class="fas fa-caret-down"></i>
+                        </p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">平日開放時間</th>
+                                    <th scope="col">假日開放時間</th>
+                                    <th scope="col">場地狀態</th>
+                                    <th scope="col">可使用人數</th>
+                                    <th scope="col">已配置資訊器材</th>
+                                    <th scope="col">場地備註</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.PlaceDataModel)
+                                {
+                                    <tr>
+                                        <td>@string.Format("{0}:00", item.Normal_STime) ～ @string.Format("{0}:00", item.Normal_ETime)</td>
+                                        <td>@string.Format("{0}:00", item.Holiday_STime) ～ @string.Format("{0}:00", item.Holiday_ETime)</td>
+                                        <td>@item.PlaceStatusText</td>
+                                        @if (!string.IsNullOrEmpty(item.Capacity) && item.Capacity != "0")
+                                        {
+                                            <td>@string.Format("{0}人", item.Capacity)</td>
+                                        }
+                                        else
+                                        {
+                                            <td>-</td>
+                                        }
+                                        <td>@item.PlaceEquip</td>
+                                        <td>@item.Memo</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else if (Model.CreateModel.PlaceSource == "02")
+                {
+                    <div id="thisroom_box">
+                        <p class="mb-0 py-2 hint">
+                            <i class="fas fa-caret-down"></i>
+                            場地資訊
+                            <i class="fas fa-caret-down"></i>
+                        </p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">場地名稱</th>
+                                    <th scope="col">場地備註</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.PlaceDataModel)
+                                {
+                                    <tr>
+                                        <td>@item.PlaceName</td>
+                                        <td>@item.Memo</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+
+                @if (Model.ActMain != null)
+                {
+                    <div id="thisdayTable_box">
+                        <p class="mb-0 py-2 hint">
+                            <i class="fas fa-caret-down"></i>
+                            場地當日借用狀態 <i class="fas fa-caret-down"></i>
+                        </p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">活動名稱</th>
+                                    <th scope="col">活動單位</th>
+                                    <th scope="col">開始時間</th>
+                                    <th scope="col">結束時間</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr>
+                                    <td>A028-中國文化大學管樂社-例行團練</td>
+                                    <td>管樂社</td>
+                                    <td>10:00</td>
+                                    <td>13:00</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            }
+        </div>
+    }
+}
+else
+{
+    <div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="d-flex align-items-center pt-2">
+                    <label class="flex-shrink-0 me-2"
+                           for="">場地名稱：</label>
+                    <div class="jq_box2 position-relative w-100">
+                        <td>@Html.TextBoxFor(m => m.CreateModel.PlaceName, new {@class = "form-control class_info_req", placeholder="請輸入場地名稱"})</td>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<script>
+
+    $('#@Html.IdFor(m => m.CreateModel.Buildid)').on('change', function () {
+            InitPlaceSelect($("[id ^= 'PlaceSource_']:checked").val(), $(this).val());
+        });
+
+
+    $('#@Html.IdFor(m => m.CreateModel.PlaceId)').change(function () {
+        InitPlaceData($("[id ^= 'PlaceSource_']:checked").val(), $('#@Html.IdFor(m => m.CreateModel.Buildid)').val(), $(this).val());
+    });
+        
+    function InitPlaceSelect(PlaceSource, Buildid) {
+
+        SendAjax({
+            url: '@Url.Action("InitPlaceSelect")',
+            data: { 'PlaceSource': PlaceSource, 'Buildid': Buildid },
+            success: function (result) {
+                $('#class_input_box').html(result);
+            }
+        });
+    }
+
+    function InitPlaceData(PlaceSource, Buildid, PlaceId) {
+
+        SendAjax({
+            url: '@Url.Action("InitPlaceData")',
+            data: { 'PlaceSource': PlaceSource, 'Buildid': Buildid, 'PlaceId': PlaceId },
+            success: function (result) {
+                $('#class_input_box').html(result);
+            }
+        });
+    }
+
+</script>
