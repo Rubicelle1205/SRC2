@@ -28,7 +28,7 @@
                             @item.PlaceName<br/>
                             @if (!string.IsNullOrEmpty(item.Floor))
                             {
-                                <span class="text-muted">@string.Format("{0}F", item.Floor)</span>
+                                <span class="text-muted">@item.FloorName</span>
                             }
                             else
                             {

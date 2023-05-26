@@ -37,9 +37,10 @@ namespace WebPccuClub.DataAccess
            
             #endregion
 
-            CommandText = $@"SELECT  A.PlaceID, A.PlaceName, A.Buildid, B.BuildName, A.Floor, A.Memo, A.Creator, A.Created, A.LastModifier, A.LastModified, A.ModifiedReason
+            CommandText = $@"SELECT  A.PlaceID, A.PlaceName, A.Buildid, B.BuildName, A.Floor, C.FloorName, A.Memo, A.Creator, A.Created, A.LastModifier, A.LastModified, A.ModifiedReason
                                FROM PlaceSchoolElseMang A
                           LEFT JOIN BuildMang B ON B.BuildID = A.Buildid
+                          LEFT JOIN FloorMang C ON C.FloorId = A.Floor
                               WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.LastModified BETWEEN @FromDate AND @ToDate" : " ")}
 AND (@Floor IS NULL OR A.Floor = @Floor)
@@ -180,14 +181,22 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
 
         public List<SelectListItem> GetAllFloor()
         {
-            List<SelectListItem> LstItem = new List<SelectListItem>();
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
 
-            for (int i = 1; i <= 15; i++)
-            {
-                LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}F", i) });
-            }
+            DBAParameter parameters = new DBAParameter();
 
-            return LstItem;
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT FloorID AS VALUE, FloorName AS TEXT FROM FloorMang";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
         }
 
         public List<SelectListItem> GetAllBuild()

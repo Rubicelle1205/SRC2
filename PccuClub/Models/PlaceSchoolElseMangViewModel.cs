@@ -71,6 +71,10 @@ namespace WebPccuClub.Models
         [DisplayName("樓層")]
         public string? Floor { get; set; }
 
+        /// <summary>樓層</summary>
+        [DisplayName("樓層")]
+        public string? FloorName { get; set; }
+
         /// <summary>場地代碼</summary>
         [DisplayName("場地代碼")]
         public string? PlaceId { get; set; }

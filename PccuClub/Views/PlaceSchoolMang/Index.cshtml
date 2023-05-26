@@ -29,7 +29,7 @@
                                     <input type="date" class="form-control" id="@Html.IdFor(m => m.ConditionModel.To_ReleaseDate)" name="@Html.NameFor(m => m.ConditionModel.To_ReleaseDate)">
                                 </div>
                                 <div class="col-md-3 col-sm-6 mt-2">
-                                    @Html.TextBoxFor(m => m.ConditionModel.BuildName, new {@class="form-control", placeholder="請輸入樓館名稱"})
+                                    @Html.DropDownListFor(m => m.ConditionModel.BuildName,(List<SelectListItem>)ViewBag.ddlAllBuild,"全部樓館", new {@class = "form-control"})
                                 </div>
                                 <div class="col-md-3 col-sm-6 mt-2">
                                     @Html.DropDownListFor(m => m.ConditionModel.PlaceStatus,(List<SelectListItem>)ViewBag.ddlAllPlaceStatus,"全部場地狀態", new {@class = "form-control"})

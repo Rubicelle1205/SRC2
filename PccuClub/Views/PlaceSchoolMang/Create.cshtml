@@ -47,9 +47,9 @@
                                             <td>@Html.TextBoxFor(m => m.CreateModel.PlaceDesc, new {@class="form-control", placeholder="請輸入場地層級"})</td>
                                         </tr>
                                         <tr>
-                                            <th width="15%">@Html.LabelFor(m => m.CreateModel.IsEnable)<span class="required">*</span></th>
+                                            <th width="15%">@Html.LabelFor(m => m.CreateModel.PlaceStatus)<span class="required">*</span></th>
                                             <td>
-                                                @Html.DropDownListFor(m => m.CreateModel.IsEnable,(List<SelectListItem>)ViewBag.ddlAllPlaceStatus,"請輸入場地狀態", new {@class = "form-control"})
+                                                @Html.DropDownListFor(m => m.CreateModel.PlaceStatus,(List<SelectListItem>)ViewBag.ddlAllPlaceStatus,"請輸入場地狀態", new {@class = "form-control"})
                                             </td>
                                         </tr>
                                         <tr>
@@ -137,7 +137,7 @@
         var PlaceID = $('#@Html.IdFor(m => m.CreateModel.PlaceID)').val();
         var PlaceName = $('#@Html.IdFor(m => m.CreateModel.PlaceName)').val();
         var PlaceDesc = $('#@Html.IdFor(m => m.CreateModel.PlaceDesc)').val();
-        var IsEnable = $('#@Html.IdFor(m => m.CreateModel.IsEnable)').val();
+        var PlaceStatus = $('#@Html.IdFor(m => m.CreateModel.PlaceStatus)').val();
         var Normal_STime = $('#@Html.IdFor(m => m.CreateModel.Normal_STime)').val();
         var Normal_ETime = $('#@Html.IdFor(m => m.CreateModel.Normal_ETime)').val();
         var Holiday_STime = $('#@Html.IdFor(m => m.CreateModel.Holiday_STime)').val();
@@ -151,7 +151,7 @@
         if (PlaceID == "") { $.alert("請輸入場地代碼"); return; }
         if (PlaceName == "") { $.alert("請輸入場地名稱"); return; }
         if (PlaceDesc == "") { $.alert("請輸入場地層級"); return; }
-        if (IsEnable == "") { $.alert("請輸入場地狀態"); return; }
+        if (PlaceStatus == "") { $.alert("請輸入場地狀態"); return; }
         if (Normal_STime == "") { $.alert("請輸入平日開始時間"); return; }
         if (Normal_ETime == "") { $.alert("請輸入平日結束時間"); return; }
         if (Holiday_STime == "") { $.alert("請輸入假日開始時間"); return; }
@@ -162,7 +162,7 @@
         data.append('@Html.NameFor(m => m.CreateModel.PlaceID)', PlaceID);
         data.append('@Html.NameFor(m => m.CreateModel.PlaceName)', PlaceName);
         data.append('@Html.NameFor(m => m.CreateModel.PlaceDesc)', PlaceDesc);
-        data.append('@Html.NameFor(m => m.CreateModel.IsEnable)', IsEnable);
+        data.append('@Html.NameFor(m => m.CreateModel.PlaceStatus)', PlaceStatus);
         data.append('@Html.NameFor(m => m.CreateModel.Normal_STime)', Normal_STime);
         data.append('@Html.NameFor(m => m.CreateModel.Normal_ETime)', Normal_ETime);
         data.append('@Html.NameFor(m => m.CreateModel.Holiday_STime)', Holiday_STime);

@@ -202,6 +202,7 @@ namespace WebPccuClub.Controllers
 
                 DateTime SDate = DateTime.Parse(vm.BatchAddActModel.SDate);
                 DateTime EDate = DateTime.Parse(vm.BatchAddActModel.EDate);
+                List<int> hours = new List<int>();
                 List<DateTime> dates = new List<DateTime>();
                 string[] daysOfWeek = GetSelectedWeek(arr);
 
@@ -213,6 +214,11 @@ namespace WebPccuClub.Controllers
                     {
                         dates.Add(currentDate);
                     }
+                }
+
+                for (int j = int.Parse(vm.BatchAddActModel.STime); j <= int.Parse(vm.BatchAddActModel.ETime) - 1; j++)
+                { 
+                    hours.Add(j);
                 }
 
                 dbAccess.DbaInitialTransaction();
@@ -243,14 +249,17 @@ namespace WebPccuClub.Controllers
 
                 for (int i = 0; i <= dates.Count - 1; i++)
                 {
-                    dbResult = dbAccess.InsertActRundownData(vm, ActId, dates[i], LoginUser);
-
-                    if (!dbResult.isSuccess)
+                    for (int j = 0; j <= hours.Count - 1; j++)
                     {
-                        dbAccess.DbaRollBack();
-                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        vmRtn.ErrorMsg = "新增失敗";
-                        return Json(vmRtn);
+                        dbResult = dbAccess.InsertActRundownData(vm, ActId, dates[i], hours[j], LoginUser);
+
+                        if (!dbResult.isSuccess)
+                        {
+                            dbAccess.DbaRollBack();
+                            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                            vmRtn.ErrorMsg = "新增失敗";
+                            return Json(vmRtn);
+                        }
                     }
                 }
 

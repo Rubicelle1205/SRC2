@@ -36,14 +36,14 @@ namespace WebPccuClub.DataAccess
            
             #endregion
 
-            CommandText = $@"SELECT A.PlaceID, A.PlaceName, A.Buildid, B.BuildName, A.Floor, A.PlaceDesc, A.Capacity, A.PlaceEquip, A.IsEnable, C.Text AS IsEnableText, 
+            CommandText = $@"SELECT A.PlaceID, A.PlaceName, A.Buildid, B.BuildName, A.Floor, A.PlaceDesc, A.Capacity, A.PlaceEquip, A.PlaceStatus, C.Text AS PlaceStatusText, 
                                     A.Memo, A.Normal_STime, A.Normal_ETime, A.Holiday_STime, A.Holiday_ETime, A.LastModified
                                FROM PlaceSchoolMang A
                           LEFT JOIN BuildMang B ON B.BuildID = A.Buildid
-                          LEFT JOIN Code C ON C.Code = A.IsEnable AND C.Type = 'PlaceStatus'
+                          LEFT JOIN Code C ON C.Code = A.PlaceStatus AND C.Type = 'PlaceStatus'
                               WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.LastModified BETWEEN @FromDate AND @ToDate" : " ")}
-AND (@PlaceStatus IS NULL OR A.IsEnable = @PlaceStatus)
+AND (@PlaceStatus IS NULL OR A.PlaceStatus = @PlaceStatus)
 AND (@BuildName IS NULL OR B.BuildName LIKE '%' + @BuildName + '%') 
 AND (@PlaceId IS NULL OR A.PlaceId LIKE '%' + @PlaceId + '%') 
 AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
@@ -70,7 +70,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT A.PlaceID, A.PlaceName, A.Buildid, B.BuildName, A.Floor, A.PlaceDesc, A.Capacity, A.PlaceEquip, A.IsEnable, A.Memo, 
+            CommandText = $@"SELECT A.PlaceID, A.PlaceName, A.Buildid, B.BuildName, A.Floor, A.PlaceDesc, A.Capacity, A.PlaceEquip, A.PlaceStatus, A.Memo, 
 	                                A.Normal_STime, A.Normal_ETime, A.Holiday_STime, A.Holiday_ETime, A.Creator, A.Created, A.LastModifier, A.LastModified
                                FROM PlaceSchoolMang A
                           LEFT JOIN BuildMang B ON B.Buildid = A.Buildid
@@ -125,7 +125,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             parameters.Add("@PlaceDesc", vm.CreateModel.PlaceDesc);
             parameters.Add("@Capacity", vm.CreateModel.Capacity);
             parameters.Add("@PlaceEquip", vm.CreateModel.PlaceEquip);
-            parameters.Add("@IsEnable", vm.CreateModel.IsEnable);
+            parameters.Add("@PlaceStatus", vm.CreateModel.PlaceStatus);
             parameters.Add("@Memo", vm.CreateModel.Memo);
             parameters.Add("@Normal_STime", string.Format("{0}", vm.CreateModel.Normal_STime));
             parameters.Add("@Normal_ETime", string.Format("{0}", vm.CreateModel.Normal_ETime));
@@ -142,7 +142,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
                                                 ,PlaceDesc 
                                                 ,Capacity 
                                                 ,PlaceEquip 
-                                                ,IsEnable 
+                                                ,PlaceStatus 
                                                 ,Memo 
                                                 ,Normal_STime 
                                                 ,Normal_ETime 
@@ -161,7 +161,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
                                                 ,@PlaceDesc 
                                                 ,@Capacity 
                                                 ,@PlaceEquip 
-                                                ,@IsEnable 
+                                                ,@PlaceStatus 
                                                 ,@Memo 
                                                 ,@Normal_STime 
                                                 ,@Normal_ETime 
@@ -192,7 +192,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             parameters.Add("@PlaceDesc", vm.EditModel.PlaceDesc);
             parameters.Add("@Capacity", vm.EditModel.Capacity);
             parameters.Add("@PlaceEquip", vm.EditModel.PlaceEquip);
-            parameters.Add("@IsEnable", vm.EditModel.IsEnable);
+            parameters.Add("@PlaceStatus", vm.EditModel.PlaceStatus);
             parameters.Add("@Memo", vm.EditModel.Memo);
             parameters.Add("@Normal_STime", string.Format("{0}", vm.EditModel.Normal_STime));
             parameters.Add("@Normal_ETime", string.Format("{0}", vm.EditModel.Normal_ETime));
@@ -208,7 +208,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
                                             ,PlaceDesc = @PlaceDesc
                                             ,Capacity = @Capacity
                                             ,PlaceEquip = @PlaceEquip
-                                            ,IsEnable = @IsEnable
+                                            ,PlaceStatus = @PlaceStatus
                                             ,Memo = @Memo
                                             ,Normal_STime = @Normal_STime
                                             ,Normal_ETime = @Normal_ETime
@@ -255,6 +255,8 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             parameters.Add("@BorrowType", vm.BatchAddActModel.BorrowType);
             parameters.Add("@SDate", vm.BatchAddActModel.SDate);
             parameters.Add("@EDate", vm.BatchAddActModel.EDate);
+            parameters.Add("@STime", vm.BatchAddActModel.STime);
+            parameters.Add("@ETime", vm.BatchAddActModel.ETime);
             parameters.Add("@Memo", vm.BatchAddActModel.Memo);
 
             parameters.Add("@LoginId", LoginUser.LoginId);
@@ -269,6 +271,8 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
                                                 ,BorrowType 
                                                 ,SDate 
                                                 ,EDate 
+                                                ,STime 
+                                                ,ETime 
                                                 ,ActInOrOut 
                                                 ,ActVerify 
                                                 ,Memo 
@@ -287,6 +291,8 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
                                                 ,@BorrowType 
                                                 ,@SDate 
                                                 ,@EDate 
+                                                ,@STime 
+                                                ,@ETime
                                                 ,'01'
                                                 ,'05'
                                                 ,@Memo 
@@ -324,7 +330,6 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             string CommendText = $@"INSERT INTO ActDetail
                                                (ActID
                                                 , ActName 
-                                                , ActShortDesc 
                                                 , SchoolYear 
                                                 , StaticOrDynamic 
                                                 , Capacity 
@@ -337,7 +342,6 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
                                          VALUES
                                                (@ActID
                                                 , @ActName 
-                                                , @ActShortDesc 
                                                 , @SchoolYear 
                                                 , @StaticOrDynamic 
                                                 , @Capacity 
@@ -354,7 +358,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
 
 
         /// <summary> 新增批次行程資料</summary>
-        public DbExecuteInfo InsertActRundownData(PlaceSchoolMangViewModel vm, string ActId, DateTime date, UserInfo LoginUser)
+        public DbExecuteInfo InsertActRundownData(PlaceSchoolMangViewModel vm, string ActId, DateTime date, int hour, UserInfo LoginUser)
         {
             DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
@@ -363,7 +367,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             #region 參數設定
             parameters.Add("@ActID", ActId);
             parameters.Add("@Date", date.ToString("yyyy-MM-dd"));
-            parameters.Add("@Stime", vm.BatchAddActModel.STime);
+            parameters.Add("@Stime", hour.ToString().PadLeft(2, '0'));
             parameters.Add("@Week", date.ToString("dddd"));
             parameters.Add("@Status", "01");
             parameters.Add("@LoginId", LoginUser.LoginId);
@@ -412,14 +416,22 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
 
         public List<SelectListItem> GetAllFloor()
         {
-            List<SelectListItem> LstItem = new List<SelectListItem>();
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
 
-            for (int i = 1; i <= 15; i++)
-            {
-                LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}F", i) });
-            }
+            DBAParameter parameters = new DBAParameter();
 
-            return LstItem;
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT FloorID AS VALUE, FloorName AS TEXT FROM FloorMang";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
         }
 
         public List<SelectListItem> GetAllBuild()

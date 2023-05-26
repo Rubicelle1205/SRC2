@@ -85,11 +85,11 @@ namespace WebPccuClub.Models
 
         /// <summary>場地狀態</summary>
         [DisplayName("場地狀態")]
-        public string? IsEnable { get; set; }
+        public string? PlaceStatus { get; set; }
 
         // <summary>場地狀態</summary>
         [DisplayName("場地狀態")]
-        public string? IsEnableText { get; set; }
+        public string? PlaceStatusText { get; set; }
         
         [DisplayName("更新時間")]
         public DateTime? LastModified { get; set; }
@@ -119,7 +119,7 @@ namespace WebPccuClub.Models
 
         /// <summary>場地狀態</summary>
         [DisplayName("場地狀態")]
-        public string? IsEnable { get; set; }
+        public string? PlaceStatus { get; set; }
 
         /// <summary>平日借用時間</summary>
         [DisplayName("平日借用時間")]
@@ -173,7 +173,7 @@ namespace WebPccuClub.Models
 
         /// <summary>場地狀態</summary>
         [DisplayName("場地狀態")]
-        public string? IsEnable { get; set; }
+        public string? PlaceStatus { get; set; }
 
         /// <summary>平日借用時間</summary>
         [DisplayName("平日借用時間")]

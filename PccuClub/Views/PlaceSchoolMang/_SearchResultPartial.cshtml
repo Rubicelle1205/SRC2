@@ -31,19 +31,25 @@
                             
                             <span class="text-muted">@item.PlaceDesc</span>
                         </td>
-                        <td class="text-center text-sm">@item.Capacity</td>
 
-                        @if (item.IsEnable == "01")
+                        @if (!string.IsNullOrEmpty(item.Capacity) && item.Capacity != "0")
                         {
-                            <td><span class="text-success">@item.IsEnableText</span></td>
-                        }
-                        else if (item.IsEnable == "02")
-                        {
-                            <td><span class="text-danger">@item.IsEnableText</span></td>
+
+                            <td class="text-center text-sm">@item.Capacity</td>
                         }
                         else
                         {
-                            <td><span class="text-danger">-</span></td>
+                            <td class="text-center text-sm">-</td>
+
+                        }
+
+                        @if (item.PlaceStatus == "01")
+                        {
+                            <td><span class="text-success">@item.PlaceStatusText</span></td>
+                        }
+                        else if (item.PlaceStatus == "02")
+                        {
+                            <td><span class="text-danger">@item.PlaceStatusText</span></td>
                         }
                         @if (item.LastModified.HasValue)
                         {
@@ -58,10 +64,14 @@
                             {
                                 <button type="submit" value="@item.PlaceId" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
                             }
-                            @using (Html.BeginForm("BatchAddAct", "PlaceSchoolMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
+                            @if (item.PlaceStatus == "01")
                             {
-                                <button type="submit" value="@item.PlaceId" name="submitBtn" class="mx-1 btn btn-sm btn-outline-dark">批次借用/關閉時段</button>
+                                @using (Html.BeginForm("BatchAddAct", "PlaceSchoolMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
+                                {
+                                    <button type="submit" value="@item.PlaceId" name="submitBtn" class="mx-1 btn btn-sm btn-outline-dark">批次借用/關閉時段</button>
+                                }
                             }
+
                             <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel('@item.PlaceId');">刪除</a>
                             <br><span class="text-sm text-secondary"> </span>
                         </td>
