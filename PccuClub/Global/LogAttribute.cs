@@ -45,6 +45,7 @@
         取得場地選單 = 31,
         取得場地資料 = 32,
         樓層維護 = 33,
+        幹部名冊 = 34,
     }
 
     public enum DBActionChineseName

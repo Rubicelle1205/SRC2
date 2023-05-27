@@ -1,0 +1,120 @@
+﻿@model WebPccuClub.Models.CadreMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+
+    var perpage = Model.ConditionModel.PageSize;
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="SearchForm" enctype="multipart/form-data" action="">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-tools">
+                                <a href=@Url.Action("Create") class="btn btn-sm btn-success">新增</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                @Html.AntiForgeryToken()
+                                <div class="col-md-6 input-group mt-2">
+                                    <input type="date" class="form-control" id="@Html.IdFor(m => m.ConditionModel.From_ReleaseDate)" name="@Html.NameFor(m => m.ConditionModel.From_ReleaseDate)">
+                                    <span class="input-group-text">至</span>
+                                    <input type="date" class="form-control" id="@Html.IdFor(m => m.ConditionModel.To_ReleaseDate)" name="@Html.NameFor(m => m.ConditionModel.To_ReleaseDate)">
+                                </div>
+
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.DropDownListFor(m => m.ConditionModel.SchoolYear,(List<SelectListItem>)ViewBag.ddlSchoolYear,"全部學年度", new {@class = "form-control"})
+                                </div>
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.TextBoxFor(m => m.ConditionModel.ClubID, new {@class="form-control", placeholder="請輸入社團代號"})
+                                </div>
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.TextBoxFor(m => m.ConditionModel.ClubName, new {@class="form-control", placeholder="請輸入社團名稱"})
+                                </div>
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.TextBoxFor(m => m.ConditionModel.CadreName, new {@class="form-control", placeholder="請輸入職別"})
+                                </div>
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.TextBoxFor(m => m.ConditionModel.UserName, new {@class="form-control", placeholder="請輸入姓名"})
+                                </div>
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.TextBoxFor(m => m.ConditionModel.Department, new {@class="form-control", placeholder="請輸入系級"})
+                                </div>
+                                <div class="col-md-12 mt-2 row">
+                                    <div class="col-md-6 col-sm-12 float-left">
+                                        <span id="PageNow" class="text-sm text-muted" style="display:none;">
+                                            目前為第 {{:pnow}} 頁 / 共 {{:ptotle}} 頁
+                                        </span>
+                                        <br />
+                                        <span id="PageEver" class="text-muted text-sm" style="display:none;">
+                                            每頁顯示 {{:pever}} 筆 / 共 {{:ptotleever}} 筆
+                                        </span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12 float-right d-flex flex-wrap align-items-end justify-content-end p-0">
+                                        @Html.Partial("_JumpPagePartial", @perpage)
+                                        <input type="reset" class="btn btn-sm btn-outline-info mx-1 mt-2" value="清除條件">
+                                        <input type="button" class="btn btn-sm btn-outline-danger mx-1 mt-2" value="搜尋" onclick="GoSearch()">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    @Html.HiddenFor(m => m.ConditionModel.Page)
+                    @Html.HiddenFor(m => m.ConditionModel.PageSize)
+                    @Html.HiddenFor(m => m.ConditionModel.TotalCount)
+                </form>
+                <div id="SearchResultList" class="card"></div>
+
+            </div>
+            <!-- /.card -->
+        </div>
+    </div>
+    <!-- /.row -->
+</section>
+
+<script>
+    function GoSearch() {
+        SendAjax({
+            url: '@Url.Action("GetSearchResult")',
+            data: $("#SearchForm").serialize(),
+            success: function (result) {
+                $('#SearchResultList').html(result);
+            }
+        });
+    }
+
+    function ExportSearchResult() {
+        window.open('@Url.Action("ExportSearchResult")' + '?' + $("#SearchForm").serialize());
+    }
+
+    $('#JumpPergroup').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val(e.target.value);
+        GoSearch();
+    });
+    
+    $('#Jumppage').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.Page)").val(e.target.value);
+        GoSearch();
+    });
+
+    $('input:reset').click(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val("10");
+    });
+
+    $('#@Html.IdFor(m => m.ConditionModel.From_ReleaseDate)').tooltip({ title: "建立時間[起]" });
+    $('#@Html.IdFor(m => m.ConditionModel.To_ReleaseDate)').tooltip({ title: "建立時間[迄]" });
+    $('#@Html.IdFor(m => m.ConditionModel.SchoolYear)').tooltip({ title: "學年度" });
+    $('#@Html.IdFor(m => m.ConditionModel.ClubID)').tooltip({ title: "社團代號" });
+    $('#@Html.IdFor(m => m.ConditionModel.ClubName)').tooltip({ title: "社團名稱" });
+    $('#@Html.IdFor(m => m.ConditionModel.UserName)').tooltip({ title: "姓名" });
+    $('#@Html.IdFor(m => m.ConditionModel.Department)').tooltip({ title: "系級" });
+    $('#@Html.IdFor(m => m.ConditionModel.CadreName)').tooltip({ title: "職別" });
+
+</script>
