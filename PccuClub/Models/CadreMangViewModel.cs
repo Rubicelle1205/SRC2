@@ -18,6 +18,13 @@ namespace WebPccuClub.Models
         public CadreMangEditModel EditModel { get; set; }
 
         public CadreMangExcelResultModel ExcelModel { get; set; }
+
+        public CadreMangPersonalConsentConditionModel PersonalConsentConditionModel { get; set; }
+
+        public List<CadreMangPersonalConsentResultModel> PersonalConsentResultModel { get; set; }
+
+        public CadreMangPersonalConsentEditModel PersonalConsentEditModel { get; set; }
+        
     }
 
     public class CadreMangConditionModel
@@ -311,4 +318,94 @@ namespace WebPccuClub.Models
         [DisplayName("最後修改時間")]
         public DateTime? LastModified { get; set; }
     }
+
+
+    public class CadreMangPersonalConsentConditionModel
+    {
+        public CadreMangPersonalConsentConditionModel()
+        {
+            this.Page = 0;
+            this.PageSize = 10;
+            this.TotalCount = 0;
+        }
+
+        /// <summary> 目前頁數 </summary>
+        public int Page { get; set; }
+
+        /// <summary> 預設每頁顯示筆數 - 依需求更改 </summary>
+        public int PageSize { get; set; }
+
+        /// <summary> 總筆數 </summary>
+        public int TotalCount { get; set; }
+
+        /// <summary>學年度</summary>
+        [DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>社團代號</summary>
+        [DisplayName("社團代號")]
+        public string? ClubID { get; set; }
+
+        /// <summary>社團名稱</summary>
+        [DisplayName("社團名稱")]
+        public string? ClubName { get; set; }
+
+        [DisplayName("起始日期")]
+        public DateTime? From_ReleaseDate { get; set; }
+
+        [DisplayName("結束日期")]
+        public DateTime? To_ReleaseDate { get; set; }
+    }
+
+    public class CadreMangPersonalConsentResultModel
+    {
+        /// <summary>代號</summary>
+        [DisplayName("代號")]
+        public string? PersonalConID { get; set; }
+
+        /// <summary>學年度</summary>
+        [DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>社團代號</summary>
+        [DisplayName("社團代號")]
+        public string? ClubID { get; set; }
+
+        /// <summary>社團名稱</summary>
+        [DisplayName("社團名稱")]
+        public string? ClubName { get; set; }
+
+        [DisplayName("更新時間")]
+        public DateTime? LastModified { get; set; }
+    }
+
+    public class CadreMangPersonalConsentEditModel
+    {
+        /// <summary>代號</summary>
+        [DisplayName("代號")]
+        public string? PersonalConID { get; set; }
+
+        /// <summary>社團代號</summary>
+        [DisplayName("社團代號")]
+        public string? ClubID { get; set; }
+
+        /// <summary>社團名稱</summary>
+        [DisplayName("社團名稱")]
+        public string? ClubCName { get; set; }
+
+        /// <summary>學年度</summary>
+        [DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>檔案</summary>
+        [DisplayName("檔案")]
+        public string? FilePath { get; set; }
+
+        [DisplayName("建立時間")]
+        public DateTime? Created { get; set; }
+
+        [DisplayName("最後修改時間")]
+        public DateTime? LastModified { get; set; }
+    }
+
 }

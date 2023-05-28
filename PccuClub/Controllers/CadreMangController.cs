@@ -32,6 +32,7 @@ namespace WebPccuClub.Controllers
             hostingEnvironment = _hostingEnvironment;
         }
 
+        #region 幹部
 
         [Log(LogActionChineseName.首頁)]
         public IActionResult Index()
@@ -89,19 +90,6 @@ namespace WebPccuClub.Controllers
             #endregion
 
             return PartialView("_SearchResultPartial", vm);
-        }
-
-        [LogAttribute(LogActionChineseName.下載template檔案)] 
-        public IActionResult DownloadTemplate()
-        {
-            string FileName = "幹部名冊_template.xlsx";
-
-            string filePath = Path.Combine(hostingEnvironment.ContentRootPath, "Template", FileName);
-
-            byte[] fileContents = System.IO.File.ReadAllBytes(filePath);
-
-            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName);
-
         }
 
         [Log(LogActionChineseName.新增儲存)]
@@ -178,7 +166,7 @@ namespace WebPccuClub.Controllers
 
                 if (!dbResult.isSuccess)
                 {
-                    vmRtn.ErrorCode =  (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "刪除失敗";
                     return Json(vmRtn);
                 }
@@ -383,6 +371,118 @@ namespace WebPccuClub.Controllers
             return Json(vmRtn);
         }
 
+        [LogAttribute(LogActionChineseName.下載template檔案)]
+        public IActionResult DownloadTemplate()
+        {
+            string FileName = "幹部名冊_template.xlsx";
 
+            string filePath = Path.Combine(hostingEnvironment.ContentRootPath, "Template", FileName);
+
+            byte[] fileContents = System.IO.File.ReadAllBytes(filePath);
+
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName);
+
+        }
+
+        #endregion
+
+        #region 個資
+
+        [Log(LogActionChineseName.首頁)]
+        public IActionResult PersonalConsentIndex()
+        {
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+
+            CadreMangViewModel vm = new CadreMangViewModel();
+            vm.PersonalConsentConditionModel = new CadreMangPersonalConsentConditionModel();
+            return View(vm);
+        }
+
+        [LogAttribute(LogActionChineseName.查詢)]
+        public IActionResult GetPersonalConsentSearchResult(CadreMangViewModel vm)
+        {
+            vm.PersonalConsentResultModel = dbAccess.GetPersonalConsentSearchResult(vm.PersonalConsentConditionModel).ToList();
+
+            #region 分頁
+            vm.PersonalConsentConditionModel.TotalCount = vm.PersonalConsentResultModel.Count();
+            int StartRow = vm.PersonalConsentConditionModel.Page * vm.PersonalConsentConditionModel.PageSize;
+            vm.PersonalConsentResultModel = vm.PersonalConsentResultModel.Skip(StartRow).Take(vm.PersonalConsentConditionModel.PageSize).ToList();
+            #endregion
+
+            return PartialView("_SearchPersonalConsentResultPartial", vm);
+        }
+
+        [Log(LogActionChineseName.編輯)]
+        public IActionResult PersonalConsentEdit(string submitBtn, CadreMangViewModel vm)
+        {
+            if (string.IsNullOrEmpty(submitBtn))
+                return RedirectToAction("Index");
+
+            //CadreMangViewModel vm = new CadreMangViewModel();
+            vm.PersonalConsentEditModel = dbAccess.GetPersonalConsentEditData(submitBtn);
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public IActionResult PersonalConsentEditOldData(CadreMangViewModel vm)
+        {
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.UpdatePersonalConsentData(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+        [Log(LogActionChineseName.刪除)]
+        [ValidateInput(false)]
+        public IActionResult PersonalConsentDelete(string Ser)
+        {
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.DeletetPersonalConsentData(Ser);
+
+                if (!dbResult.isSuccess)
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "刪除失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "刪除失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+        #endregion
     }
 }

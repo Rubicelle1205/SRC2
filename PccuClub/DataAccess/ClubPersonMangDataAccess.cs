@@ -251,5 +251,92 @@ namespace WebPccuClub.DataAccess
             return new List<SelectListItem>();
         }
 
-    }
+		/// <summary>
+		/// Excel 取得資料
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		public List<ClubCadreMangExcelResultModel> GetCadreMangExportResult(ClubCadreMangConditionModel model, UserInfo LoginUser)
+		{
+			string CommandText = string.Empty;
+			DataSet ds = new DataSet();
+
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+
+
+			parameters.Add("@SchoolYear", model?.SchoolYear);
+			parameters.Add("@ClubID", LoginUser.LoginId);
+
+			#endregion
+
+			CommandText = $@"SELECT A.CadreID, A.ClubID, B.ClubCName AS ClubName, A.CadreName, A.SchoolYear, A.UserName, A.Department, A.SDuring, A.EDuring, A.Created
+                               FROM CadreMang A
+                          LEFT JOIN ClubMang B ON B.ClubID = A.ClubID
+                              WHERE 1 = 1
+AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
+AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') ";
+
+			(DbExecuteInfo info, IEnumerable<ClubCadreMangExcelResultModel> entitys) dbResult = DbaExecuteQuery<ClubCadreMangExcelResultModel>(CommandText, parameters, true, DBAccessException);
+
+			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+				return dbResult.entitys.ToList();
+
+			return new List<ClubCadreMangExcelResultModel>();
+		}
+
+		/// <summary> 新增資料 </summary>
+		public DbExecuteInfo CadreMangImportData(List<ClubCadreMangImportExcelResultModel> dataList, UserInfo LoginUser)
+		{
+
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+
+			#endregion 參數設定
+
+			string CommendText = $@"INSERT INTO CadreMang
+                                               (ClubID
+                                               ,CadreName
+                                               ,SchoolYear
+                                               ,SNo
+                                                ,EMail
+                                               ,UserName
+                                               ,Sex
+                                               ,CellPhone
+                                               ,Department
+                                               ,SDuring
+                                               ,EDuring
+                                               ,Memo
+                                               ,Creator
+                                               ,Created
+                                               ,LastModifier
+                                               ,LastModified
+                                               ,ModifiedReason)
+                                         VALUES
+                                               (@ClubID
+                                               ,@CadreName
+                                               ,@SchoolYear
+                                               ,@SNo
+                                                ,@EMail
+                                               ,@UserName
+                                               ,@Sex
+                                               ,@CellPhone
+                                               ,@Department
+                                               ,@SDuring
+                                               ,@EDuring
+                                               ,@Memo
+                                               ,'{LoginUser.LoginId}'
+                                               ,GETDATE()
+                                               ,'{LoginUser.LoginId}'
+                                               ,GETDATE()
+                                               ,NULL)";
+
+			ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+			return ExecuteResult;
+		}
+	}
 }

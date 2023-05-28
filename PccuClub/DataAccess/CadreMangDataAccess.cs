@@ -324,6 +324,121 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
         }
 
 
+        /// <summary> 查詢結果 </summary>
+
+        public List<CadreMangPersonalConsentResultModel> GetPersonalConsentSearchResult(CadreMangPersonalConsentConditionModel model)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+
+            parameters.Add("@SchoolYear", model?.SchoolYear);
+            parameters.Add("@ClubID", model?.ClubID);
+            parameters.Add("@ClubName", model?.ClubName);
+            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
+            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
+
+
+            #endregion
+
+            CommandText = $@"SELECT A.PersonalConID, A.ClubID, B.ClubCName AS ClubName, A.SchoolYear, A.CadreOrMember, A.FilePath, A.Creator, A.Created, A.LastModifier, A.LastModified
+                               FROM PersonalConsent A
+                          LEFT JOIN ClubMang B ON B.ClubID = A.ClubID
+                              WHERE 1 = 1
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.LastModified BETWEEN @FromDate AND @ToDate" : " ")}
+AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
+AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') 
+AND (@ClubName IS NULL OR B.ClubCName LIKE '%' + @ClubName + '%') ";
+
+
+            (DbExecuteInfo info, IEnumerable<CadreMangPersonalConsentResultModel> entitys) dbResult = DbaExecuteQuery<CadreMangPersonalConsentResultModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<CadreMangPersonalConsentResultModel>();
+        }
+
+        /// <summary>
+        /// 取得編輯資料
+        /// </summary>
+        /// <param name="submitBtn"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public CadreMangPersonalConsentEditModel GetPersonalConsentEditData(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@PersonalConID", Ser);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT A.PersonalConID, A.ClubID, B.ClubCName AS ClubName, A.SchoolYear, A.CadreOrMember, A.FilePath, A.Creator, A.Created, A.LastModifier, A.LastModified
+                               FROM PersonalConsent A
+                              LEFT JOIN ClubMang B ON B.ClubID = A.ClubID
+                              WHERE 1 = 1
+                                AND (PersonalConID = @PersonalConID) ";
+
+
+            (DbExecuteInfo info, IEnumerable<CadreMangPersonalConsentEditModel> entitys) dbResult = DbaExecuteQuery<CadreMangPersonalConsentEditModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList().FirstOrDefault();
+
+            return null;
+        }
+
+        /// <summary> 修改資料 </summary>
+        public DbExecuteInfo UpdatePersonalConsentData(CadreMangViewModel vm, UserInfo LoginUser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@PersonalConID", vm.PersonalConsentEditModel.PersonalConID);
+            parameters.Add("@FilePath", vm.PersonalConsentEditModel.FilePath);
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"UPDATE PersonalConsent 
+                                       SET FilePath = @FilePath
+                                            ,LastModifier = @LoginId 
+                                            ,LastModified = GETDATE() 
+                                     WHERE PersonalConID = @PersonalConID";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        /// <summary>
+        /// 刪除資料
+        /// </summary>
+        /// <param name="ser"></param>
+        /// <returns></returns>
+        public DbExecuteInfo DeletetPersonalConsentData(string ser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@PersonalConID", ser);
+            #endregion 參數設定
+
+            string CommendText = $@"DELETE FROM PersonalConsent WHERE PersonalConID = @PersonalConID ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
 
         public List<SelectListItem> GetAllSex()
         {
