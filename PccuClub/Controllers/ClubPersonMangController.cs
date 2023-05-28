@@ -1,9 +1,10 @@
-﻿using DataAccess;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using PccuClub.WebAuth;
 using System.ComponentModel;
+using System.Data;
 using System.Reflection;
 using System.Web.Mvc;
 using Utility;
@@ -20,6 +21,7 @@ namespace WebPccuClub.Controllers
         PublicFun PublicFun = new PublicFun();
         ReturnViewModel vmRtn = new ReturnViewModel();
         ClubPersonMangDataAccess dbAccess = new ClubPersonMangDataAccess();
+        UploadUtil upload = new UploadUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
@@ -394,17 +396,84 @@ namespace WebPccuClub.Controllers
 		}
 
 
-		public IActionResult AAA(ClubPersonMangViewModel vm)
+		public IActionResult CadreUploadPersonalConsent()
 		{
-			return PartialView("_PersonalConsent", vm);
+            ClubPersonMangViewModel vm = new ClubPersonMangViewModel();
+			vm.CadreMangPersonalConsentModel = new ClubCadreMangPersonalConsentModel();
+            return PartialView("CadreUploadPersonalConsent", vm);
 		}
-		
+
+		public IActionResult DownloadPDF()
+		{
+            return View("_PersonalConsent");
+        }
+
+        public async Task<IActionResult> UploadPersonalCon(ClubPersonMangViewModel vm)
+        {
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("PersonalConsent"))
+                        {
+                            var file = Request.Form.Files.GetFile("CadreMangPersonalConsentModel.PersonalConsent");
+
+                            string strFilePath = await upload.UploadFileAsync("PersonalConsent", file);
+
+                            vm.CadreMangPersonalConsentModel.PersonalConsent = strFilePath;
+                        }
+                    }
+                }
+
+				vm.CadreMangPersonalConsentModel.ClubID = LoginUser.LoginId;
+				vm.CadreMangPersonalConsentModel.SchoolYear = PublicFun.GetNowSchoolYear();
+
+				DataTable dt = dbAccess.ChkHasCadrePersonConData(vm, LoginUser);
+
+				if (dt.Rows.Count > 0)
+				{
+					var dbResult = dbAccess.CadreMangUpdatePersonalConsentData(vm, LoginUser);
+
+					if (!dbResult.isSuccess)
+					{
+						dbAccess.DbaRollBack();
+						vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+						vmRtn.ErrorMsg = "修改失敗";
+						return Json(vmRtn);
+					}
+				}
+				else {
+                    var dbResult = dbAccess.CadreMangInsertPersonalConsentData(vm, LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "新增失敗";
+                        return Json(vmRtn);
+                    }
+                }
+                
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "新增失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+        
 
 
-
-
-
-		[Log(LogActionChineseName.前台會員名冊)]
+        [Log(LogActionChineseName.前台會員名冊)]
         public IActionResult MemberIndex()
         {
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
@@ -413,5 +482,7 @@ namespace WebPccuClub.Controllers
             vm.MemberMangConditionModel = new ClubMemberMangConditionModel();
             return View(vm);
         }
+
+        
     }
 }

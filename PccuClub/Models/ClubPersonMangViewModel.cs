@@ -21,7 +21,9 @@ namespace WebPccuClub.Models
 
 		public ClubCadreMangEditModel CadreMangEditModel { get; set; }
 
-		public List<ClubMemberMangResultModel> MemberMangResultModel { get; set; }
+        public ClubCadreMangPersonalConsentModel CadreMangPersonalConsentModel { get; set; }
+
+        public List<ClubMemberMangResultModel> MemberMangResultModel { get; set; }
 
         
 
@@ -299,6 +301,23 @@ namespace WebPccuClub.Models
 		[DisplayName("備註")]
 		public string? Memo { get; set; }
 	}
+
+    public class ClubCadreMangPersonalConsentModel 
+    {
+        /// <summary>社團代號</summary>
+        [DisplayName("社團代號")]
+        public string? ClubID { get; set; }
+
+        /// <summary>學年度</summary>
+        [DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>PersonalConsent</summary>
+        [DisplayName("PersonalConsent")]
+        public string? PersonalConsent { get; set; }
+
+        
+    }
 
 	public class ClubMemberMangConditionModel
     {

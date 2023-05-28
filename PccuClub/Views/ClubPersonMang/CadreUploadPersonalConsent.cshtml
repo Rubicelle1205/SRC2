@@ -1,0 +1,91 @@
+﻿@model WebPccuClub.Models.ClubPersonMangViewModel
+
+@{
+    Layout = "_FrontLayout";
+}
+
+<div class="col-xxl-8 col-xl-10">
+    <div class="contentWrapper">
+        <h4 class="pageTitle">匯入幹部名冊</h4>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href=@Url.Action("Index")>會員及幹部登錄</a></li>
+                <li class="breadcrumb-item"><a href=@Url.Action("CadreIndex")>幹部名冊</a></li>
+                <li class="breadcrumb-item active">匯入幹部名冊</li>
+            </ol>
+        </nav>
+        <hr>
+        <div class="mb-4">
+            <a id="Back" href=@Url.Action("CadreIndex")><i class="fas fa-chevron-left"></i> 返回</a>
+        </div>
+        <div class=" mb-4">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="d-flex align-items-center">
+                        <label class="flex-shrink-0 me-2" for="">匯入幹部名冊</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(m => m.CadreMangPersonalConsentModel.PersonalConsent, new { @class = "form-control", type="file", accept=".pdf"})
+                            <button id="btnOK" class="submit-btn btn btn-secondary" type="submit">匯入</button>
+                        </div>
+
+                    </div>
+                    <div class="fs-90percent red-hint pt-2">僅接受以下格式：.pdf</div>
+                    <div class="hint pt-2">
+                        <i class="fas fa-info-circle"></i> 下載範例檔案：<a href="@Url.Action("DownloadPDF", "ClubPersonMang")" class="link-primary">範例下載</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $('#UpdFile').change(function (e) {
+        var geekss = e.target.files[0].name;
+        $('#filename').text(geekss);
+    });
+
+    $('#btnOK').click(function () {
+        var formdata = new FormData();
+
+        var PFile = $('#@Html.IdFor(m => m.CadreMangPersonalConsentModel.PersonalConsent)')[0].files[0];
+        if (typeof PFile !== 'undefined') {
+            var fileExtension = PFile.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'pdf') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+            formdata.append('@Html.NameFor(m => m.CadreMangPersonalConsentModel.PersonalConsent)', PFile);
+        }
+
+        $.ajax({
+            method: "POST",
+            url: "@(Url.Action("UploadPersonalCon", "ClubPersonMang"))",
+            async: true,
+            data: formdata,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "上傳成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function () {
+                $.alert(result.errorMsg);
+            }
+        });
+    });
+
+</script>

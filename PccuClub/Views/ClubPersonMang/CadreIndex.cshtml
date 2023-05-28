@@ -33,7 +33,7 @@
 			</form>
 			<div class="col-md-9">
 				<div class="text-end mb-3">
-					<a class="btn btn-primary btn-outline btn-modern" href="member_c_agree.html">個資同意書</a>
+					<a href=@Url.Action("CadreUploadPersonalConsent") class="btn btn-primary btn-outline btn-modern">個資同意書</a>
 					<a href=@Url.Action("CadreUpload") class="btn btn-secondary btn-modern border-0">匯入</a>
 					<button type="button" class="btn btn-secondary-scale-2 btn-modern border-0" onclick="ExportSearchResult()">匯出</button>
 					<a class="btn btn-primary btn-modern border-0" href=@Url.Action("CadreCreate")>新增 <i class="icon-note"></i></a>

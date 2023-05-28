@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Upload\PersonalConsent\20230528\aZTue3jjiKbgNYLiNTLJrQtCUIsXDCp0ZH1572hKWqhkj3AbEYjAE2jBZYZUedBKLNpOqRiGjoAmwYeXc6OkbA==.pdf" />
+    <None Remove="Upload\PersonalConsent\20230528\aZTue3jjiKbgNYLiNTLJrQtCUIsXDCp0ZH1572hKWqhMIO7BXfEj1b4oDxK1DcS0kOH8M+NfcLL4oLLjBEmokg==.pdf" />
+    <None Remove="Upload\PersonalConsent\20230528\aZTue3jjiKbgNYLiNTLJrQtCUIsXDCp0ZH1572hKWqhuIPje8v6JlKA8cI98+y8OPmjPJnhp6JdKNhjIrSVsGg==.pdf" />
+    <None Remove="Upload\PersonalConsent\20230528\aZTue3jjiKbgNYLiNTLJrQtCUIsXDCp0ZH1572hKWqjvXfG3JaiX632TUhnT38jNK+YUEgrWRVh5J1mlvJwGkA==.pdf" />
     <None Remove="Views\RoleMang\Index.cshtml~RF1eb3cd6.TMP" />
   </ItemGroup>
 
@@ -16,6 +20,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.8" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Rotativa.AspNetCore" Version="1.2.0" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     <PackageReference Include="System.ServiceModel.Duplex" Version="4.8.*" />
     <PackageReference Include="System.ServiceModel.Federation" Version="4.8.*" />
@@ -35,6 +40,7 @@
   <ItemGroup>
     <Folder Include="Connected Services\" />
     <Folder Include="Upload\" />
+    <Folder Include="Upload\PersonalConsent\20230528\" />
   </ItemGroup>
 
 </Project>
