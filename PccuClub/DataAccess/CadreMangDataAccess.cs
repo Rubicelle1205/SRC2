@@ -223,6 +223,108 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
             return ExecuteResult;
         }
 
+        /// <summary>
+        /// Excel 取得資料
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public List<CadreMangResultModel> GetExportResult(CadreMangConditionModel model)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+
+            parameters.Add("@SchoolYear", model?.SchoolYear);
+            parameters.Add("@ClubID", model?.ClubID);
+            parameters.Add("@ClubName", model?.ClubName);
+            parameters.Add("@CadreName", model?.CadreName);
+            parameters.Add("@UserName", model?.UserName);
+            parameters.Add("@Department", model?.Department);
+            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
+            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
+
+
+            #endregion
+
+            CommandText = $@"SELECT A.CadreID, A.ClubID, B.ClubCName AS ClubName, A.CadreName, A.SchoolYear, A.UserName, A.Department, A.SDuring, A.EDuring, A.Created
+                               FROM CadreMang A
+                          LEFT JOIN ClubMang B ON B.ClubID = A.ClubID
+                              WHERE 1 = 1
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
+AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
+AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') 
+AND (@ClubName IS NULL OR B.ClubCName LIKE '%' + @ClubName + '%') 
+AND (@CadreName IS NULL OR A.CadreName LIKE '%' + @CadreName + '%') 
+AND (@UserName IS NULL OR A.UserName LIKE '%' + @UserName + '%') 
+AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
+
+            (DbExecuteInfo info, IEnumerable<CadreMangResultModel> entitys) dbResult = DbaExecuteQuery<CadreMangResultModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<CadreMangResultModel>();
+        }
+
+        /// <summary> 新增資料 </summary>
+        public DbExecuteInfo ImportData(List<CadreMangImportExcelResultModel> dataList, UserInfo LoginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO CadreMang
+                                               (ClubID
+                                               ,CadreName
+                                               ,SchoolYear
+                                               ,SNo
+                                                ,EMail
+                                               ,UserName
+                                               ,Sex
+                                               ,CellPhone
+                                               ,Department
+                                               ,SDuring
+                                               ,EDuring
+                                               ,Memo
+                                               ,Creator
+                                               ,Created
+                                               ,LastModifier
+                                               ,LastModified
+                                               ,ModifiedReason)
+                                         VALUES
+                                               (@ClubID
+                                               ,@CadreName
+                                               ,@SchoolYear
+                                               ,@SNo
+                                                ,@EMail
+                                               ,@UserName
+                                               ,@Sex
+                                               ,@CellPhone
+                                               ,@Department
+                                               ,@SDuring
+                                               ,@EDuring
+                                               ,@Memo
+                                               ,'{LoginUser.LoginId}'
+                                               ,GETDATE()
+                                               ,'{LoginUser.LoginId}'
+                                               ,GETDATE()
+                                               ,NULL)";
+
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+            return ExecuteResult;
+        }
+
+
+
         public List<SelectListItem> GetAllSex()
         {
             string CommandText = string.Empty;

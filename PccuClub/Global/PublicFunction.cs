@@ -103,6 +103,7 @@ namespace WebPccuClub.Global
             }
         }
 
+
         #endregion 不含時間
 
         #region 含時間
@@ -363,6 +364,24 @@ namespace WebPccuClub.Global
             strRtn = CNSYear.ToString();
 
             return strRtn;
+        }
+
+
+        public bool ChkDateFormat(string? d, out string reDateStr)
+        {
+            reDateStr = "";
+            bool Bln = false;
+            DateTime dd = DateTime.Now;
+
+            if (string.IsNullOrEmpty(d)) { return Bln; }
+
+            if (!DateTime.TryParse(d, out dd)) { return Bln; }
+
+            reDateStr = dd.ToString("yyyy-MM-dd");
+
+            Bln = true;
+
+            return Bln;
         }
     }
 }

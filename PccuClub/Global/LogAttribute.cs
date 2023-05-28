@@ -51,6 +51,7 @@
 		前台會員名冊 = 37,
 		前台幹部名冊匯入 = 38,
 		前台會員名冊匯入 = 39,
+        下載template檔案 = 40,
 	}
 
     public enum DBActionChineseName

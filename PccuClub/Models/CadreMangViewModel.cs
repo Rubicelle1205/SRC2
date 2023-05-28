@@ -113,17 +113,9 @@ namespace WebPccuClub.Models
 
     public class CadreMangExcelResultModel
     {
-        /// <summary>代號</summary>
-        [DisplayName("代號")]
-        public string? CadreID { get; set; }
-
         /// <summary>學年度</summary>
         [DisplayName("學年度")]
         public string? SchoolYear { get; set; }
-
-        /// <summary>社團代號</summary>
-        [DisplayName("社團代號")]
-        public string? ClubID { get; set; }
 
         /// <summary>社團名稱</summary>
         [DisplayName("社團名稱")]
@@ -141,16 +133,67 @@ namespace WebPccuClub.Models
         [DisplayName("職別")]
         public string? CadreName { get; set; }
 
-        /// <summary>任職期間</summary>
+        /// <summary>任職開始期間</summary>
         [DisplayName("任職期間")]
-        public DateTime? SDuring { get; set; }
+        public string? SDuring { get; set; }
 
-        /// <summary>任職期間</summary>
+        /// <summary>任職結束期間</summary>
         [DisplayName("任職期間")]
-        public DateTime? EDuring { get; set; }
+        public string? EDuring { get; set; }
 
         [DisplayName("建立時間")]
         public DateTime? Created { get; set; }
+    }
+
+    public class CadreMangImportExcelResultModel
+    {
+        /// <summary>社團代號</summary>
+        [DisplayName("社團代號")]
+        public string? ClubID { get; set; }
+
+        /// <summary>學年度</summary>
+        [DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>任職期間</summary>
+        [DisplayName("任職期間")]
+        public string? SDuring { get; set; }
+
+        /// <summary>任職期間</summary>
+        [DisplayName("任職期間")]
+        public string? EDuring { get; set; }
+
+        /// <summary>職別</summary>
+        [DisplayName("職別")]
+        public string? CadreName { get; set; }
+
+        /// <summary>姓名</summary>
+        [DisplayName("姓名")]
+        public string? UserName { get; set; }
+
+        /// <summary>信箱</summary>
+        [DisplayName("信箱")]
+        public string? EMail { get; set; }
+
+        /// <summary>學號</summary>
+        [DisplayName("學號")]
+        public string? SNo { get; set; }
+
+        /// <summary>系級</summary>
+        [DisplayName("系級")]
+        public string? Department { get; set; }
+
+        /// <summary>性別</summary>
+        [DisplayName("性別")]
+        public string? Sex { get; set; }
+
+        /// <summary>聯絡電話</summary>
+        [DisplayName("聯絡電話")]
+        public string? CellPhone { get; set; }
+
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
+        public string? Memo { get; set; }
     }
 
     public class CadreMangCreateModel
