@@ -231,11 +231,11 @@ namespace WebPccuClub.Global.Extension
                 {
                     if ("/" + routeurl == item.Url)
                     {
-                        MenuBuilder.Append($@"<li><a class='sideitem active' href='{baseurl}{funUrl}'>{item.MenuName}</a></li>");
+                        MenuBuilder.Append($@"<li><a class='sideitem active' href='{baseurl}{item.Url}'>{item.MenuName}</a></li>");
                     }
                     else
                     {
-                        MenuBuilder.Append($@"<li><a class='sideitem' href='{baseurl}{funUrl}'>{item.MenuName}</a></li>");
+                        MenuBuilder.Append($@"<li><a class='sideitem' href='{baseurl}{item.Url}'>{item.MenuName}</a></li>");
                     }
                 }
             }

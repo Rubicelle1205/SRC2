@@ -165,11 +165,11 @@ namespace WebPccuClub.Models
 
         /// <summary>任職期間</summary>
         [DisplayName("任職期間")]
-        public string? SDuring { get; set; }
+        public DateTime? SDuring { get; set; }
 
         /// <summary>任職期間</summary>
         [DisplayName("任職期間")]
-        public string? EDuring { get; set; }
+        public DateTime? EDuring { get; set; }
 
         /// <summary>職別</summary>
         [DisplayName("職別")]

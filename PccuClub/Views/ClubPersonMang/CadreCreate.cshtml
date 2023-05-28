@@ -1,0 +1,202 @@
+﻿@model WebPccuClub.Models.ClubPersonMangViewModel
+
+@{
+    Layout = "_FrontLayout";
+}
+
+<div class="col-xxl-8 col-xl-10">
+    <div class="contentWrapper">
+        <h4 class="pageTitle">編輯幹部名冊</h4>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href=@Url.Action("Index")>會員及幹部登錄</a></li>
+                <li class="breadcrumb-item"><a href=@Url.Action("CadreIndex")>幹部名冊</a></li>
+                <li class="breadcrumb-item active">編輯幹部名冊</li>
+            </ol>
+        </nav>
+        <hr>
+        <div class="mb-4">
+            <a id="Back" href=@Url.Action("CadreIndex")><i class="fas fa-chevron-left"></i> 返回</a>
+        </div>
+
+        @if (null != Model.CadreMangCreateModel)
+        {
+            <div class="form-box" action="" method="post" enctype="application/x-www-form-urlencoded">
+                <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
+                <div class="member-list-page">
+                    <div class="list-item">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3">
+                                <div class="form-item">
+                                    <label for="">學年度<span class="req-star">*</span></label>
+                                    @Html.TextBoxFor(m => m.CadreMangCreateModel.SchoolYear, new {@class = "form-control", @readonly="readonly", disabled="disabled"})
+                                </div>
+                            </div>
+                            <div class="col-lg-9 col-md-9">
+                                <div class="form-item">
+                                    <label for="">任職期間<span class="req-star">*</span></label>
+                                    <div class="d-flex align-items-center">
+                                        @Html.TextBoxFor(m => m.CadreMangCreateModel.SDuring, new {@class = "form-control", type="date", placeholder="任職期間開始日期"})
+                                        <span class="mx-1">至</span>
+                                        @Html.TextBoxFor(m => m.CadreMangCreateModel.EDuring, new {@class = "form-control", type="date", placeholder="任職期間開始日期"})
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3">
+                                <div class="form-item">
+                                    <label for="">職別<span class="req-star">*</span></label>
+                                    @Html.TextBoxFor(m => m.CadreMangCreateModel.CadreName, new {@class = "form-control", placeholder="職別"})
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3">
+                                <div class="form-item">
+                                    <label for="">姓名<span class="req-star">*</span></label>
+                                    @Html.TextBoxFor(m => m.CadreMangCreateModel.UserName, new {@class = "form-control", placeholder="姓名"})
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3">
+                                <div class="form-item">
+                                    <label for="">學號<span class="req-star">*</span></label>
+                                    @Html.TextBoxFor(m => m.CadreMangCreateModel.SNo, new {@class = "form-control", placeholder="學號"})
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3">
+                                <div class="form-item">
+                                    <label for="">學系年級<span class="req-star">*</span></label>
+                                    @Html.TextBoxFor(m => m.CadreMangCreateModel.Department, new {@class = "form-control", placeholder="學系年級"})
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3">
+                                <div class="form-item">
+                                    <label for="">生理性別<span class="req-star">*</span></label>
+                                    @Html.DropDownListFor(m => m.CadreMangCreateModel.Sex ,(List<SelectListItem>)ViewBag.ddlAllSex,"請選擇生理性別", new {@class = "form-control"})
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3">
+                                <div class="form-item">
+                                    <label for="">連絡電話<span class="req-star">*</span></label>
+                                    @Html.TextBoxFor(m => m.CadreMangCreateModel.CellPhone, new {@class = "form-control", placeholder="連絡電話"})
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="form-item">
+                                    <label for="">Email<span class="req-star">*</span></label>
+                                    @Html.TextBoxFor(m => m.CadreMangCreateModel.EMail, new {@class = "form-control", placeholder="Email"})
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-md-12">
+                                <div class="form-item">
+                                    <label for="">其他</label>
+                                    @Html.TextBoxFor(m => m.CadreMangCreateModel.Memo, new {@class = "form-control", placeholder="其他"})
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @Html.HiddenFor(m => m.CadreMangCreateModel.CadreID)
+                @Html.HiddenFor(m => m.CadreMangCreateModel.SchoolYear)
+
+                <div class="row justify-content-center mb-5">
+                    <div class="col-lg-4">
+                        <button class="submit-btn btn btn-primary btn-modern border-0 w-100" type="button" onclick="SaveData()">新增 <i class="icon-check"></i></button>
+                    </div>
+                </div>
+
+            </div>
+        }
+
+    </div>
+</div>
+
+
+<script>
+
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var SchoolYear = $('#@Html.IdFor(m => m.CadreMangCreateModel.SchoolYear)').val();
+        var SDuring = $('#@Html.IdFor(m => m.CadreMangCreateModel.SDuring)').val();
+        var EDuring = $('#@Html.IdFor(m => m.CadreMangCreateModel.EDuring)').val();
+        var CadreName = $('#@Html.IdFor(m => m.CadreMangCreateModel.CadreName)').val();
+        var UserName = $('#@Html.IdFor(m => m.CadreMangCreateModel.UserName)').val();
+        var SNo = $('#@Html.IdFor(m => m.CadreMangCreateModel.SNo)').val();
+        var EMail = $('#@Html.IdFor(m => m.CadreMangCreateModel.EMail)').val();
+        var Department = $('#@Html.IdFor(m => m.CadreMangCreateModel.Department)').val();
+        var Sex = $('#@Html.IdFor(m => m.CadreMangCreateModel.Sex)').val();
+        var CellPhone = $('#@Html.IdFor(m => m.CadreMangCreateModel.CellPhone)').val();
+        var Memo = $('#@Html.IdFor(m => m.CadreMangCreateModel.Memo)').val();
+
+        if (SchoolYear == "") { $.alert("學年度不可為空白"); return; }
+        if (SDuring == "") { $.alert("任職開始期間不可為空白"); return; }
+        if (EDuring == "") { $.alert("任職結束期間不可為空白"); return; }
+        if (CadreName == "") { $.alert("職別不可為空白"); return; }
+        if (UserName == "") { $.alert("姓名不可為空白"); return; }
+        if (SNo == "") { $.alert("學號不可為空白"); return; }
+        if (EMail == "") { $.alert("信箱不可為空白"); return; }
+        if (Department == "") { $.alert("系級不可為空白"); return; }
+        if (Sex == "") { $.alert("性別不可為空白"); return; }
+        if (CellPhone == "") { $.alert("聯絡電話不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.CadreMangCreateModel.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.CadreMangCreateModel.SDuring)', SDuring);
+        data.append('@Html.NameFor(m => m.CadreMangCreateModel.EDuring)', EDuring);
+        data.append('@Html.NameFor(m => m.CadreMangCreateModel.CadreName)', CadreName);
+        data.append('@Html.NameFor(m => m.CadreMangCreateModel.UserName)', UserName);
+        data.append('@Html.NameFor(m => m.CadreMangCreateModel.SNo)', SNo);
+        data.append('@Html.NameFor(m => m.CadreMangCreateModel.EMail)', EMail);
+        data.append('@Html.NameFor(m => m.CadreMangCreateModel.Department)', Department);
+        data.append('@Html.NameFor(m => m.CadreMangCreateModel.Sex)', Sex);
+        data.append('@Html.NameFor(m => m.CadreMangCreateModel.CellPhone)', CellPhone);
+        data.append('@Html.NameFor(m => m.CadreMangCreateModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("CadreMangSaveNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+    function ChkDel(Ser) {
+        $.confirm({
+            title: '確定刪除?',
+            content: '刪除後資料無法復原!',
+            buttons: {
+                確定: function () {
+                    SendAjax({
+                        url: '@Url.Action("CadreMangDelete")',
+                        data: { 'Ser': Ser },
+                        success: function (result) {
+                            if (result.errorCode == 0) { $.alert("刪除成功"); }
+                            else { $.alert(result.errorMsg); }
+
+                            GoSearch();
+                        }
+                    });
+                },
+                取消: function () {
+                },
+            }
+        });
+    }
+</script>

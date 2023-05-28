@@ -1,0 +1,119 @@
+﻿@model WebPccuClub.Models.ClubPersonMangViewModel
+
+
+<div class="scroll-box">
+    <div class="memberlist item-9 mb-5">
+        <div class="listHeader">
+            <div class="listItem">
+                <div class="item">學年度</div>
+                <div class="item">任職期間</div>
+                <div class="item">生理性別</div>
+                <div class="item">
+                    職別
+                    <br />
+                    <span class="text-sm text-secondary">姓名</span>
+                </div>
+                <div class="item">
+                    學系年級
+                    <br />
+                    <span class="text-sm text-secondary">學號</span>
+                </div>
+                <div class="item">
+                    連絡電話
+                    <br />
+                    <span class="text-sm text-secondary">Email</span>
+                </div>
+                <div class="item">其他</div>
+                <div class="item"></div>
+            </div>
+        </div>
+        <div class="listBody">
+
+            @if (Model.CadreMangResultModel.Count > 0)
+            {
+                foreach (var item in Model.CadreMangResultModel)
+                {
+                    <div class="listItem">
+                        <div class="item">@item.SchoolYear</div>
+                        <div class="item">
+                            <span class="date">@item.SDuring.Value.ToString("yyyy/MM/dd")</span>
+                            至
+                            <span class="date">@item.EDuring.Value.ToString("yyyy/MM/dd")</span>
+                        </div>
+                        <div class="item">@item.SexText</div>
+                        <div class="item">
+                            @item.CadreName
+                            <br />
+                            <span class="text-muted">
+                                @item.UserName
+                            </span>
+                        </div>
+                        <div class="item">
+                            @item.Department
+                            <br />
+                            <span class="text-muted">
+                                @item.SNo
+                            </span>
+                        </div>
+
+                        <div class="item">
+                            @item.CellPhone
+                            <br />
+                            <span class="text-muted">
+                                @item.EMail
+                            </span>
+                        </div>
+                        <div class="item">@item.Memo</div>
+                           <div class="item">
+                        @using (Html.BeginForm("CadreEdit", "ClubPersonMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
+                        {
+                            <button type="submit" value="@item.CadreID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
+                        }
+                    </div>
+                    </div>
+                 
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<div class="card-footer clearfix" style="background:none;">
+    <div class="pagination justify-content-end" id="SearchResultListPagination" style="justify-content:center !important;"></div>
+</div>
+<!-- /.card-body -->
+
+<script>
+    $("#SearchResultListPagination").solventoPageBar(
+        {
+            containerHtml: "<ul class='pagination justify-content-end'>{{:firstPageRender}}{{:prePageRender}}{{:pageRender}}{{:nextPageRender}}{{:lastPageRender}}</ul>{{:totalPageRender}}", // render: pagesbarHtml
+            firstPageHtml: "<li class='page-item {{:disable}}'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-double-left'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            lastPageHtml: "<li class='page-item {{:disable}}'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-double-right'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            pageHtml: " <li class='page-item {{:selectedHtml}}'><a {{:idx}} class='page-link {{:pageClass}}'>{{:pageNumber}}</a></li>",//pageClass: clickEventClass, pageNumber: pageNumber, selectedHtml : selectedHtml,idx : idx
+            prePageHtml: "<li class='page-item'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-left'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            nextPageHtml: "<li class='page-item'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-right'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            //totalPageHtml: "<div class='page-intro'>共<span>{{:totalCount}}</span>筆資料</div>",
+            totalPageHtml: "",
+            pNow: "目前為第 {{:pnow}} 頁 / 共 {{:ptotle}} 頁",
+            pEver: "每頁顯示 {{:pever}} 筆 / 共 {{:ptotleever}} 筆",
+            pageSelectedHtml: "active",
+        },
+        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.CadreMangConditionModel.Page)']").val()) + 1,
+        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.CadreMangConditionModel.PageSize)']").val()),
+
+    @Model.CadreMangConditionModel.TotalCount,
+        changePage
+    );
+
+    function changePage(idx) {
+        //動畫
+        $('#SearchForm').find("input[name='@Html.NameFor(m => m.CadreMangConditionModel.Page)']").val(idx - 1);
+        //取頁面數
+        $("#@Html.IdFor(m => m.CadreMangConditionModel.Page)").val(idx - 1);
+
+        GoSearch();
+    }
+
+
+
+</script>

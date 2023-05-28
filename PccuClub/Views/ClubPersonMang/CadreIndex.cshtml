@@ -1,0 +1,83 @@
+﻿@model WebPccuClub.Models.ClubPersonMangViewModel
+
+@{
+    Layout = "_FrontLayout";
+}
+
+
+<div class="col-xxl-8 col-xl-10">
+	<div class="contentWrapper">
+		<h4 class="pageTitle">幹部名冊</h4>
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href=@Url.Action("Index")>會員及幹部登錄</a></li>
+				<li class="breadcrumb-item active">幹部名冊</li>
+			</ol>
+		</nav>
+		<hr>
+		<div class="mb-4">
+			<a href=@Url.Action("Index")><i class="fas fa-chevron-left"></i> 返回</a>
+		</div>
+		<div class="row">
+			<form method="post" id="SearchForm" enctype="multipart/form-data" action="" style="display:contents;">
+				
+			<div class="col-md-3">
+				<div class="d-flex align-items-center mb-3">
+					<i class="fas fa-filter text-primary"></i>
+					@Html.DropDownListFor(m => m.CadreMangConditionModel.SchoolYear,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇", new {@class = "form-control ms-3"})
+				</div>
+			</div>
+				@Html.HiddenFor(m => m.CadreMangConditionModel.Page)
+				@Html.HiddenFor(m => m.CadreMangConditionModel.PageSize)
+				@Html.HiddenFor(m => m.CadreMangConditionModel.TotalCount)
+			</form>
+			<div class="col-md-9">
+				<div class="text-end mb-3">
+					<a class="btn btn-primary btn-outline btn-modern" href="member_c_agree.html">個資同意書</a>
+					<a class="btn btn-secondary btn-modern border-0" href="member_c_import.html">匯入</a>
+					<button class="btn btn-secondary-scale-2 btn-modern border-0" type="button">匯出</button>
+					<a class="btn btn-primary btn-modern border-0" href=@Url.Action("CadreCreate")>新增 <i class="icon-note"></i></a>
+				</div>
+			</div>
+		</div>
+
+		
+
+		<div class="scroll-hint hint"><i class="fas fa-info-circle"></i> 左右滑動查看完整表格</div>
+
+		<div id="SearchResultList" class="row"></div>
+
+	</div>
+</div>
+
+<script>
+
+	$(document).ready(function () {
+		GoSearch();
+	});
+
+	function GoSearch() {
+		SendAjax({
+			url: '@Url.Action("GetSearchResult")',
+			data: $("#SearchForm").serialize(),
+			success: function (result) {
+				$('#SearchResultList').html(result);
+			}
+		});
+	}
+
+	$('#@Html.IdFor(m => m.CadreMangConditionModel.SchoolYear)').change(function (e) {
+		GoSearch();
+	});
+
+	$('#JumpPergroup').change(function (e) {
+		$("#@Html.IdFor(m => m.CadreMangConditionModel.PageSize)").val(e.target.value);
+		GoSearch();
+	});
+
+	$('#Jumppage').change(function (e) {
+		$("#@Html.IdFor(m => m.CadreMangConditionModel.Page)").val(e.target.value);
+		GoSearch();
+	});
+
+</script>
