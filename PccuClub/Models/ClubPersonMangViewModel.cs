@@ -11,21 +11,30 @@ namespace WebPccuClub.Models
 
         public ClubCadreMangConditionModel CadreMangConditionModel { get; set; }
 
-        public ClubMemberMangConditionModel MemberMangConditionModel { get; set; }
-
 		public List<ClubCadreMangResultModel> CadreMangResultModel { get; set; }
 
-        public ClubCadreMangCreateModel CadreMangCreateModel { get; set; }
+        public List<ClubCadreMangExcelResultModel> CadreMangExcelModel { get; set; }
 
-		public List<ClubCadreMangExcelResultModel> CadreMangExcelModel { get; set; }
+        public ClubCadreMangCreateModel CadreMangCreateModel { get; set; }
 
 		public ClubCadreMangEditModel CadreMangEditModel { get; set; }
 
         public ClubCadreMangPersonalConsentModel CadreMangPersonalConsentModel { get; set; }
 
+
+        public ClubMemberMangConditionModel MemberMangConditionModel { get; set; }
+
         public List<ClubMemberMangResultModel> MemberMangResultModel { get; set; }
 
-        
+        public List<ClubMemberMangExcelResultModel> MemberMangExcelModel { get; set; }
+
+        public ClubMemberMangCreateModel MemberMangCreateModel { get; set; }
+
+        public ClubMemberMangEditModel MemberMangEditModel { get; set; }
+
+        public ClubMemberMangPersonalConsentModel MemberMangPersonalConsentModel { get; set; }
+
+
 
     }
 
@@ -315,9 +324,11 @@ namespace WebPccuClub.Models
         /// <summary>PersonalConsent</summary>
         [DisplayName("PersonalConsent")]
         public string? PersonalConsent { get; set; }
-
-        
     }
+
+
+
+
 
 	public class ClubMemberMangConditionModel
     {
@@ -344,7 +355,246 @@ namespace WebPccuClub.Models
 
     public class ClubMemberMangResultModel
     {
+        /// <summary>代號</summary>
+        [DisplayName("代號")]
+        public string? MemberID { get; set; }
 
+        /// <summary>學年度</summary>
+        [DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
 
+        /// <summary>任職期間</summary>
+        [DisplayName("任職期間")]
+        public DateTime? SDuring { get; set; }
+
+        /// <summary>任職期間</summary>
+        [DisplayName("任職期間")]
+        public DateTime? EDuring { get; set; }
+
+        /// <summary>姓名</summary>
+        [DisplayName("姓名")]
+        public string? UserName { get; set; }
+
+        /// <summary>信箱</summary>
+        [DisplayName("信箱")]
+        public string? EMail { get; set; }
+
+        /// <summary>學號</summary>
+        [DisplayName("學號")]
+        public string? SNo { get; set; }
+
+        /// <summary>系級</summary>
+        [DisplayName("系級")]
+        public string? Department { get; set; }
+
+        /// <summary>生理性別</summary>
+        [DisplayName("生理性別")]
+        public string? Sex { get; set; }
+
+        /// <summary>生理性別</summary>
+        [DisplayName("生理性別")]
+        public string? SexText { get; set; }
+
+        /// <summary>聯絡電話</summary>
+        [DisplayName("聯絡電話")]
+        public string? CellPhone { get; set; }
+
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
+        public string? Memo { get; set; }
+    }
+
+    public class ClubMemberMangCreateModel
+    {
+        /// <summary>代號</summary>
+        [DisplayName("代號")]
+        public string? MemberID { get; set; }
+
+        /// <summary>學年度</summary>
+        [DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>任職期間</summary>
+        [DisplayName("任職期間")]
+        public string? SDuring { get; set; }
+
+        /// <summary>任職期間</summary>
+        [DisplayName("任職期間")]
+        public string? EDuring { get; set; }
+
+        /// <summary>姓名</summary>
+        [DisplayName("姓名")]
+        public string? UserName { get; set; }
+
+        /// <summary>信箱</summary>
+        [DisplayName("信箱")]
+        public string? EMail { get; set; }
+
+        /// <summary>學號</summary>
+        [DisplayName("學號")]
+        public string? SNo { get; set; }
+
+        /// <summary>系級</summary>
+        [DisplayName("系級")]
+        public string? Department { get; set; }
+
+        /// <summary>生理性別</summary>
+        [DisplayName("生理性別")]
+        public string? Sex { get; set; }
+
+        /// <summary>生理性別</summary>
+        [DisplayName("生理性別")]
+        public string? SexText { get; set; }
+
+        /// <summary>聯絡電話</summary>
+        [DisplayName("聯絡電話")]
+        public string? CellPhone { get; set; }
+
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
+        public string? Memo { get; set; }
+    }
+
+    public class ClubMemberMangEditModel
+    {
+        /// <summary>代號</summary>
+        [DisplayName("代號")]
+        public string? MemberID { get; set; }
+
+        /// <summary>學年度</summary>
+        [DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>任職期間</summary>
+        [DisplayName("任職期間")]
+        public string? SDuring { get; set; }
+
+        /// <summary>任職期間</summary>
+        [DisplayName("任職期間")]
+        public string? EDuring { get; set; }
+
+        /// <summary>姓名</summary>
+        [DisplayName("姓名")]
+        public string? UserName { get; set; }
+
+        /// <summary>信箱</summary>
+        [DisplayName("信箱")]
+        public string? EMail { get; set; }
+
+        /// <summary>學號</summary>
+        [DisplayName("學號")]
+        public string? SNo { get; set; }
+
+        /// <summary>系級</summary>
+        [DisplayName("系級")]
+        public string? Department { get; set; }
+
+        /// <summary>生理性別</summary>
+        [DisplayName("生理性別")]
+        public string? Sex { get; set; }
+
+        /// <summary>生理性別</summary>
+        [DisplayName("生理性別")]
+        public string? SexText { get; set; }
+
+        /// <summary>聯絡電話</summary>
+        [DisplayName("聯絡電話")]
+        public string? CellPhone { get; set; }
+
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
+        public string? Memo { get; set; }
+    }
+
+    public class ClubMemberMangExcelResultModel
+    {
+        /// <summary>學年度</summary>
+        [DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>社團名稱</summary>
+        [DisplayName("社團名稱")]
+        public string? ClubName { get; set; }
+
+        /// <summary>姓名</summary>
+        [DisplayName("姓名")]
+        public string? UserName { get; set; }
+
+        /// <summary>系級</summary>
+        [DisplayName("系級")]
+        public string? Department { get; set; }
+
+		/// <summary>參與開始期間</summary>
+		[DisplayName("參與期間")]
+        public DateTime? SDuring { get; set; }
+
+		/// <summary>參與結束期間</summary>
+		[DisplayName("參與期間")]
+        public DateTime? EDuring { get; set; }
+
+        [DisplayName("建立時間")]
+        public DateTime? Created { get; set; }
+    }
+
+    public class ClubMemberMangImportExcelResultModel
+    {
+        /// <summary>社團代號</summary>
+        [DisplayName("社團代號")]
+        public string? ClubID { get; set; }
+
+        /// <summary>學年度</summary>
+        [DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>任職期間</summary>
+        [DisplayName("任職期間")]
+        public string? SDuring { get; set; }
+
+        /// <summary>任職期間</summary>
+        [DisplayName("任職期間")]
+        public string? EDuring { get; set; }
+
+        /// <summary>姓名</summary>
+        [DisplayName("姓名")]
+        public string? UserName { get; set; }
+
+        /// <summary>信箱</summary>
+        [DisplayName("信箱")]
+        public string? EMail { get; set; }
+
+        /// <summary>學號</summary>
+        [DisplayName("學號")]
+        public string? SNo { get; set; }
+
+        /// <summary>系級</summary>
+        [DisplayName("系級")]
+        public string? Department { get; set; }
+
+        /// <summary>性別</summary>
+        [DisplayName("性別")]
+        public string? Sex { get; set; }
+
+        /// <summary>聯絡電話</summary>
+        [DisplayName("聯絡電話")]
+        public string? CellPhone { get; set; }
+
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
+        public string? Memo { get; set; }
+    }
+
+    public class ClubMemberMangPersonalConsentModel
+    {
+        /// <summary>社團代號</summary>
+        [DisplayName("社團代號")]
+        public string? ClubID { get; set; }
+
+        /// <summary>學年度</summary>
+        [DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>PersonalConsent</summary>
+        [DisplayName("PersonalConsent")]
+        public string? PersonalConsent { get; set; }
     }
 }

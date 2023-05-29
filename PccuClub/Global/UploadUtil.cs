@@ -22,6 +22,8 @@ namespace WebPccuClub.Global
             if (!string.IsNullOrEmpty(file.FileName))
                 encryptedFileName = auth.EncryptionText(Path.GetFileNameWithoutExtension(file.FileName));
 
+            encryptedFileName = encryptedFileName.Replace("/", "").Replace("\\", "");
+
             encryptedFileName = encryptedFileName + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
 
             // 組合檔案儲存路徑
