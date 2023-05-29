@@ -24,6 +24,7 @@ namespace WebPccuClub.Controllers
         PublicFun PublicFun = new PublicFun();
         ReturnViewModel vmRtn = new ReturnViewModel();
         CadreMangDataAccess dbAccess = new CadreMangDataAccess();
+        UploadUtil upload = new UploadUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
@@ -425,15 +426,30 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
-        public IActionResult PersonalConsentEditOldData(CadreMangViewModel vm)
+        public async Task<IActionResult> PersonalConsentEditOldData(CadreMangViewModel vm)
         {
             try
             {
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("PersonalConsent"))
+                        {
+                            var file = Request.Form.Files.GetFile("PersonalConsentEditModel.FilePath");
+
+                            string strFilePath = await upload.UploadFileAsync("PersonalConsent", file);
+
+                            vm.PersonalConsentEditModel.FilePath = strFilePath;
+                        }
+                    }
+                }
+
                 dbAccess.DbaInitialTransaction();
 
-                var dbResult = dbAccess.UpdatePersonalConsentData(vm, LoginUser);
+                var dbResult = dbAccess.CadreMangUpdatePersonalConsentData(vm, LoginUser);
 
-                if (!dbResult.isSuccess)
+                if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
                 {
                     dbAccess.DbaRollBack();
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
@@ -441,13 +457,14 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
+
                 dbAccess.DbaCommit();
             }
             catch (Exception ex)
             {
                 dbAccess.DbaRollBack();
                 vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                vmRtn.ErrorMsg = "新增失敗" + ex.Message;
                 return Json(vmRtn);
             }
 

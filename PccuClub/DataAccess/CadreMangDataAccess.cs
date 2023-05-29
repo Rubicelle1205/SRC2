@@ -440,6 +440,30 @@ AND (@ClubName IS NULL OR B.ClubCName LIKE '%' + @ClubName + '%') ";
             return ExecuteResult;
         }
 
+        public DbExecuteInfo CadreMangUpdatePersonalConsentData(CadreMangViewModel vm, UserInfo LoginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@PersonalConID", vm.PersonalConsentEditModel.PersonalConID);
+            parameters.Add("@FilePath", vm.PersonalConsentEditModel.FilePath);
+            parameters.Add("@LastModifier", LoginUser.LoginId);
+
+            #endregion 參數設定
+
+            string CommendText = $@"UPDATE PersonalConsent
+                                       SET FilePath = @FilePath, LastModifier = @LastModifier, LastModified = GETDATE()
+                                     WHERE PersonalConID = @PersonalConID ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+
         public List<SelectListItem> GetAllSex()
         {
             string CommandText = string.Empty;

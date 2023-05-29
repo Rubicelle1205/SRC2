@@ -391,7 +391,7 @@ namespace WebPccuClub.Models
 
         /// <summary>社團名稱</summary>
         [DisplayName("社團名稱")]
-        public string? ClubCName { get; set; }
+        public string? ClubName { get; set; }
 
         /// <summary>學年度</summary>
         [DisplayName("學年度")]

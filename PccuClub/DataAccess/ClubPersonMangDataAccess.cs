@@ -201,7 +201,96 @@ namespace WebPccuClub.DataAccess
             return ExecuteResult;
         }
 
+        public DataTable ChkHasCadrePersonConData(ClubPersonMangViewModel vm, UserInfo LoginUser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
 
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ClubID", LoginUser.LoginId);
+            parameters.Add("@SchoolYear", vm.CadreMangPersonalConsentModel.SchoolYear);
+            parameters.Add("@FilePath", vm.CadreMangPersonalConsentModel.PersonalConsent);
+            parameters.Add("@LastModifier", LoginUser.LoginId);
+
+            #endregion
+
+            CommandText = $@"SELECT FilePath
+                               FROM PersonalConsent
+                              WHERE ClubID = @ClubID AND SchoolYear = @SchoolYear AND CadreOrMember = '01' ";
+
+
+            (DbExecuteInfo info, IEnumerable<RoleMangEditModel> entitys) dbResult = DbaExecuteQuery<RoleMangEditModel>(CommandText, parameters, true, DBAccessException);
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+            return ds.Tables[0];
+        }
+
+        public DbExecuteInfo CadreMangUpdatePersonalConsentData(ClubPersonMangViewModel vm, UserInfo LoginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@ClubID", LoginUser.LoginId);
+            parameters.Add("@SchoolYear", vm.CadreMangPersonalConsentModel.SchoolYear);
+            parameters.Add("@FilePath", vm.CadreMangPersonalConsentModel.PersonalConsent);
+            parameters.Add("@LastModifier", LoginUser.LoginId);
+
+            #endregion 參數設定
+
+            string CommendText = $@"UPDATE PersonalConsent
+                                       SET FilePath = @FilePath, LastModifier = @LastModifier, LastModified = GETDATE()
+                                     WHERE ClubID = @ClubID AND SchoolYear = @SchoolYear AND CadreOrMember = '01' ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        public DbExecuteInfo CadreMangInsertPersonalConsentData(ClubPersonMangViewModel vm, UserInfo LoginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@ClubID", LoginUser.LoginId);
+            parameters.Add("@SchoolYear", vm.CadreMangPersonalConsentModel.SchoolYear);
+            parameters.Add("@FilePath", vm.CadreMangPersonalConsentModel.PersonalConsent);
+            parameters.Add("@LastModifier", LoginUser.LoginId);
+
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO PersonalConsent
+                                               (ClubID 
+                                                ,SchoolYear 
+                                                ,CadreOrMember 
+                                                ,FilePath 
+                                                ,Creator 
+                                                ,Created 
+                                                ,LastModifier 
+                                                ,LastModified 
+                                                ,ModifiedReason)
+                                         VALUES
+                                               (@ClubID 
+                                                ,@SchoolYear 
+                                                ,'01'
+                                                ,@FilePath 
+                                                ,@LastModifier 
+                                                ,GETDATE()
+                                                ,@LastModifier 
+                                                ,GETDATE()
+                                                ,NULL)";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
 
 
 
@@ -341,96 +430,7 @@ AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') ";
 			return ExecuteResult;
 		}
 
-        public DataTable ChkHasCadrePersonConData(ClubPersonMangViewModel vm, UserInfo LoginUser)
-        {
-            string CommandText = string.Empty;
-            DataSet ds = new DataSet();
-
-            DBAParameter parameters = new DBAParameter();
-
-            #region 參數設定
-            parameters.Add("@ClubID", LoginUser.LoginId);
-            parameters.Add("@SchoolYear", vm.CadreMangPersonalConsentModel.SchoolYear);
-            parameters.Add("@FilePath", vm.CadreMangPersonalConsentModel.PersonalConsent);
-            parameters.Add("@LastModifier", LoginUser.LoginId);
-
-            #endregion
-
-            CommandText = $@"SELECT FilePath
-                               FROM PersonalConsent
-                              WHERE ClubID = @ClubID AND SchoolYear = @SchoolYear AND CadreOrMember = '01' ";
-
-
-            (DbExecuteInfo info, IEnumerable<RoleMangEditModel> entitys) dbResult = DbaExecuteQuery<RoleMangEditModel>(CommandText, parameters, true, DBAccessException);
-
-            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
-            return ds.Tables[0];
-        }
-
-        public DbExecuteInfo CadreMangUpdatePersonalConsentData(ClubPersonMangViewModel vm, UserInfo LoginUser)
-        {
-
-            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
-            DBAParameter parameters = new DBAParameter();
-
-            #region 參數設定
-
-            parameters.Add("@ClubID", LoginUser.LoginId);
-            parameters.Add("@SchoolYear", vm.CadreMangPersonalConsentModel.SchoolYear);
-            parameters.Add("@FilePath", vm.CadreMangPersonalConsentModel.PersonalConsent);
-            parameters.Add("@LastModifier", LoginUser.LoginId);
-
-            #endregion 參數設定
-
-            string CommendText = $@"UPDATE PersonalConsent
-                                       SET FilePath = @FilePath, LastModifier = @LastModifier, LastModified = GETDATE()
-                                     WHERE ClubID = @ClubID AND SchoolYear = @SchoolYear AND CadreOrMember = '01' ";
-
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-            return ExecuteResult;
-        }
-
-        public DbExecuteInfo CadreMangInsertPersonalConsentData(ClubPersonMangViewModel vm, UserInfo LoginUser)
-        {
-
-            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
-            DBAParameter parameters = new DBAParameter();
-
-            #region 參數設定
-
-            parameters.Add("@ClubID", LoginUser.LoginId);
-            parameters.Add("@SchoolYear", vm.CadreMangPersonalConsentModel.SchoolYear);
-            parameters.Add("@FilePath", vm.CadreMangPersonalConsentModel.PersonalConsent);
-            parameters.Add("@LastModifier", LoginUser.LoginId);
-
-            #endregion 參數設定
-
-            string CommendText = $@"INSERT INTO PersonalConsent
-                                               (ClubID 
-                                                ,SchoolYear 
-                                                ,CadreOrMember 
-                                                ,FilePath 
-                                                ,Creator 
-                                                ,Created 
-                                                ,LastModifier 
-                                                ,LastModified 
-                                                ,ModifiedReason)
-                                         VALUES
-                                               (@ClubID 
-                                                ,@SchoolYear 
-                                                ,'01'
-                                                ,@FilePath 
-                                                ,@LastModifier 
-                                                ,GETDATE()
-                                                ,@LastModifier 
-                                                ,GETDATE()
-                                                ,NULL)";
-
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-            return ExecuteResult;
-        }
+        
 
     }
 }

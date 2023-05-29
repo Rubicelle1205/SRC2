@@ -52,6 +52,7 @@ namespace Utility
                     cs.Write(DataBuffer, 0, DataBuffer.Length);
                     cs.FlushFinalBlock();
                     encrypt = Convert.ToBase64String(ms.ToArray());
+
                 }
 
                 return encrypt;

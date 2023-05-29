@@ -403,8 +403,8 @@ namespace WebPccuClub.Controllers
             return PartialView("CadreUploadPersonalConsent", vm);
 		}
 
-		public IActionResult DownloadPDF()
-		{
+        public IActionResult DownloadPDF()
+        {
             return View("_PersonalConsent");
         }
 

@@ -39,8 +39,8 @@
 
   <ItemGroup>
     <Folder Include="Connected Services\" />
-    <Folder Include="Upload\" />
     <Folder Include="Upload\PersonalConsent\20230528\" />
+    <Folder Include="Upload\PersonalConsent\20230529\" />
   </ItemGroup>
 
 </Project>

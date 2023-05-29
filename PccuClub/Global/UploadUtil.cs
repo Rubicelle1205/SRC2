@@ -20,10 +20,12 @@ namespace WebPccuClub.Global
             // 產生加密的檔案名稱
             string encryptedFileName = String.Empty;
             if (!string.IsNullOrEmpty(file.FileName))
-                encryptedFileName = auth.EncryptionText(Path.GetFileNameWithoutExtension(file.FileName) + DateTime.Now.ToString("yyyyMMddHHmmss"));
+                encryptedFileName = auth.EncryptionText(Path.GetFileNameWithoutExtension(file.FileName));
+
+            encryptedFileName = encryptedFileName + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
 
             // 組合檔案儲存路徑
-            string savePath = Path.Combine(uploadPath, encryptedFileName + fileExtension);
+             string savePath = Path.Combine(uploadPath, encryptedFileName + fileExtension);
 
             // 儲存檔案
             using (var stream = new FileStream(savePath, FileMode.Create))

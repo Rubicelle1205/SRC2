@@ -42,7 +42,7 @@
                         }
                         
                         <td class="text-center text-sm">
-                            @using (Html.BeginForm("PersonalConsent", "CadreMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
+                            @using (Html.BeginForm("PersonalConsentEdit", "CadreMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
                             {
                                 <button type="submit" value="@item.PersonalConID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
                             }
