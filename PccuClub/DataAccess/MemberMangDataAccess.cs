@@ -12,12 +12,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace WebPccuClub.DataAccess
 {
     
-    public class CadreMangDataAccess : BaseAccess
+    public class MemberMangDataAccess : BaseAccess
     {
 
         /// <summary> 查詢結果 </summary>
 
-        public List<CadreMangResultModel> GetSearchResult(CadreMangConditionModel model)
+        public List<MemberMangResultModel> GetSearchResult(MemberMangConditionModel model)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -30,7 +30,6 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@SchoolYear", model?.SchoolYear);
             parameters.Add("@ClubID", model?.ClubID);
             parameters.Add("@ClubName", model?.ClubName);
-            parameters.Add("@CadreName", model?.CadreName);
             parameters.Add("@UserName", model?.UserName);
             parameters.Add("@Department", model?.Department);
             parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
@@ -39,25 +38,24 @@ namespace WebPccuClub.DataAccess
            
             #endregion
 
-            CommandText = $@"SELECT A.CadreID, A.ClubID, B.ClubCName AS ClubName, A.CadreName, A.SchoolYear, A.UserName, A.Department, A.SDuring, A.EDuring, A.Created
-                               FROM CadreMang A
+            CommandText = $@"SELECT A.MemberID, A.ClubID, B.ClubCName AS ClubName, A.SchoolYear, A.UserName, A.Department, A.SDuring, A.EDuring, A.Created
+                               FROM MemberMang A
                           LEFT JOIN ClubMang B ON B.ClubID = A.ClubID
                               WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') 
 AND (@ClubName IS NULL OR B.ClubCName LIKE '%' + @ClubName + '%') 
-AND (@CadreName IS NULL OR A.CadreName LIKE '%' + @CadreName + '%') 
 AND (@UserName IS NULL OR A.UserName LIKE '%' + @UserName + '%') 
 AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
 
 
-            (DbExecuteInfo info, IEnumerable<CadreMangResultModel> entitys) dbResult = DbaExecuteQuery<CadreMangResultModel>(CommandText, parameters, true, DBAccessException);
+            (DbExecuteInfo info, IEnumerable<MemberMangResultModel> entitys) dbResult = DbaExecuteQuery<MemberMangResultModel>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList();
 
-            return new List<CadreMangResultModel>();
+            return new List<MemberMangResultModel>();
         }
 
         /// <summary>
@@ -66,27 +64,27 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
         /// <param name="submitBtn"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public CadreMangEditModel GetEditData(string Ser)
+        public MemberMangEditModel GetEditData(string Ser)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
 
             DBAParameter parameters = new DBAParameter();
 
-            parameters.Add("@CadreID", Ser);
+            parameters.Add("@MemberID", Ser);
 
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT A.CadreID, A.ClubID, B.ClubCName, A.CadreName, A.SchoolYear, A.EMail, A.SNo, A.UserName, A.Sex, A.CellPhone, A.Department, A.SDuring, A.EDuring, 
+            CommandText = $@"SELECT A.MemberID, A.ClubID, B.ClubCName, A.SchoolYear, A.EMail, A.SNo, A.UserName, A.Sex, A.CellPhone, A.Department, A.SDuring, A.EDuring, 
                                     A.Memo, A.Created, A.LastModified
-                               FROM CadreMang A
+                               FROM MemberMang A
                               LEFT JOIN ClubMang B ON B.ClubID = A.ClubID
                               WHERE 1 = 1
-                                AND (CadreID = @CadreID) ";
+                                AND (MemberID = @MemberID) ";
 
 
-            (DbExecuteInfo info, IEnumerable<CadreMangEditModel> entitys) dbResult = DbaExecuteQuery<CadreMangEditModel>(CommandText, parameters, true, DBAccessException);
+            (DbExecuteInfo info, IEnumerable<MemberMangEditModel> entitys) dbResult = DbaExecuteQuery<MemberMangEditModel>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList().FirstOrDefault();
@@ -95,7 +93,7 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
         }
 
         /// <summary> 新增資料 </summary>
-        public DbExecuteInfo InsertData(CadreMangViewModel vm, UserInfo LoginUser)
+        public DbExecuteInfo InsertData(MemberMangViewModel vm, UserInfo LoginUser)
         {
 
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
@@ -103,7 +101,6 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
 
             #region 參數設定
             parameters.Add("@ClubID", vm.CreateModel.ClubID);
-            parameters.Add("@CadreName", vm.CreateModel.CadreName);
             parameters.Add("@SchoolYear", vm.CreateModel.SchoolYear);
             parameters.Add("@SNo", vm.CreateModel.SNo);
             parameters.Add("@EMail", vm.CreateModel.EMail);
@@ -117,9 +114,8 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
-            string CommendText = $@"INSERT INTO CadreMang
+            string CommendText = $@"INSERT INTO MemberMang
                                                (ClubID
-                                               ,CadreName
                                                ,SchoolYear
                                                ,SNo
                                                 ,EMail
@@ -137,7 +133,6 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
                                                ,ModifiedReason)
                                          VALUES
                                                (@ClubID
-                                               ,@CadreName
                                                ,@SchoolYear
                                                ,@SNo
                                                 ,@EMail
@@ -160,14 +155,13 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
         }
 
         /// <summary> 修改資料 </summary>
-        public DbExecuteInfo UpdateData(CadreMangViewModel vm, UserInfo LoginUser)
+        public DbExecuteInfo UpdateData(MemberMangViewModel vm, UserInfo LoginUser)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@CadreID", vm.EditModel.CadreID);
-            parameters.Add("@CadreName", vm.EditModel.CadreName);
+            parameters.Add("@MemberID", vm.EditModel.MemberID);
             parameters.Add("@SchoolYear", vm.EditModel.SchoolYear);
             parameters.Add("@SNo", vm.EditModel.SNo);
             parameters.Add("@EMail", vm.EditModel.EMail);
@@ -181,9 +175,8 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
-            string CommendText = $@"UPDATE CadreMang 
-                                       SET CadreName = @CadreName
-                                            ,SchoolYear = @SchoolYear
+            string CommendText = $@"UPDATE MemberMang 
+                                       SET SchoolYear = @SchoolYear
                                             ,SNo = @SNo
                                             ,EMail = @EMail
                                             ,UserName = @UserName
@@ -195,7 +188,7 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
                                             ,Memo = @Memo
                                             ,LastModifier = @LoginId 
                                             ,LastModified = GETDATE() 
-                                     WHERE CadreID = @CadreID";
+                                     WHERE MemberID = @MemberID";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -213,10 +206,10 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@CadreID", ser);
+            parameters.Add("@MemberID", ser);
             #endregion 參數設定
 
-            string CommendText = $@"DELETE FROM CadreMang WHERE CadreID = @CadreID ";
+            string CommendText = $@"DELETE FROM MemberMang WHERE MemberID = @MemberID ";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -228,7 +221,7 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public List<CadreMangResultModel> GetExportResult(CadreMangConditionModel model)
+        public List<MemberMangResultModel> GetExportResult(MemberMangConditionModel model)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -241,7 +234,6 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
             parameters.Add("@SchoolYear", model?.SchoolYear);
             parameters.Add("@ClubID", model?.ClubID);
             parameters.Add("@ClubName", model?.ClubName);
-            parameters.Add("@CadreName", model?.CadreName);
             parameters.Add("@UserName", model?.UserName);
             parameters.Add("@Department", model?.Department);
             parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
@@ -250,28 +242,27 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
 
             #endregion
 
-            CommandText = $@"SELECT A.CadreID, A.ClubID, B.ClubCName AS ClubName, A.CadreName, A.SchoolYear, A.UserName, A.Department, A.SDuring, A.EDuring, A.Created
-                               FROM CadreMang A
+            CommandText = $@"SELECT A.MemberID, A.ClubID, B.ClubCName AS ClubName, A.SchoolYear, A.UserName, A.Department, A.SDuring, A.EDuring, A.Created
+                               FROM MemberMang A
                           LEFT JOIN ClubMang B ON B.ClubID = A.ClubID
                               WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') 
 AND (@ClubName IS NULL OR B.ClubCName LIKE '%' + @ClubName + '%') 
-AND (@CadreName IS NULL OR A.CadreName LIKE '%' + @CadreName + '%') 
 AND (@UserName IS NULL OR A.UserName LIKE '%' + @UserName + '%') 
 AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
 
-            (DbExecuteInfo info, IEnumerable<CadreMangResultModel> entitys) dbResult = DbaExecuteQuery<CadreMangResultModel>(CommandText, parameters, true, DBAccessException);
+            (DbExecuteInfo info, IEnumerable<MemberMangResultModel> entitys) dbResult = DbaExecuteQuery<MemberMangResultModel>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList();
 
-            return new List<CadreMangResultModel>();
+            return new List<MemberMangResultModel>();
         }
 
         /// <summary> 新增資料 </summary>
-        public DbExecuteInfo ImportData(List<CadreMangImportExcelResultModel> dataList, UserInfo LoginUser)
+        public DbExecuteInfo ImportData(List<MemberMangImportExcelResultModel> dataList, UserInfo LoginUser)
         {
 
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
@@ -281,9 +272,8 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
 
             #endregion 參數設定
 
-            string CommendText = $@"INSERT INTO CadreMang
+            string CommendText = $@"INSERT INTO MemberMang
                                                (ClubID
-                                               ,CadreName
                                                ,SchoolYear
                                                ,SNo
                                                 ,EMail
@@ -301,7 +291,6 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
                                                ,ModifiedReason)
                                          VALUES
                                                (@ClubID
-                                               ,@CadreName
                                                ,@SchoolYear
                                                ,@SNo
                                                 ,@EMail
@@ -326,7 +315,7 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
 
         /// <summary> 查詢結果 </summary>
 
-        public List<CadreMangPersonalConsentResultModel> GetPersonalConsentSearchResult(CadreMangPersonalConsentConditionModel model)
+        public List<MemberMangPersonalConsentResultModel> GetPersonalConsentSearchResult(MemberMangPersonalConsentConditionModel model)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -348,19 +337,19 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
             CommandText = $@"SELECT A.PersonalConID, A.ClubID, B.ClubCName AS ClubName, A.SchoolYear, A.CadreOrMember, A.FilePath, A.Creator, A.Created, A.LastModifier, A.LastModified
                                FROM PersonalConsent A
                           LEFT JOIN ClubMang B ON B.ClubID = A.ClubID
-                              WHERE 1 = 1 AND A.CadreOrMember = '01' 
+                              WHERE 1 = 1 AND A.CadreOrMember = '02' 
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.LastModified BETWEEN @FromDate AND @ToDate" : " ")}
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') 
 AND (@ClubName IS NULL OR B.ClubCName LIKE '%' + @ClubName + '%') ";
 
 
-            (DbExecuteInfo info, IEnumerable<CadreMangPersonalConsentResultModel> entitys) dbResult = DbaExecuteQuery<CadreMangPersonalConsentResultModel>(CommandText, parameters, true, DBAccessException);
+            (DbExecuteInfo info, IEnumerable<MemberMangPersonalConsentResultModel> entitys) dbResult = DbaExecuteQuery<MemberMangPersonalConsentResultModel>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList();
 
-            return new List<CadreMangPersonalConsentResultModel>();
+            return new List<MemberMangPersonalConsentResultModel>();
         }
 
         /// <summary>
@@ -369,7 +358,7 @@ AND (@ClubName IS NULL OR B.ClubCName LIKE '%' + @ClubName + '%') ";
         /// <param name="submitBtn"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public CadreMangPersonalConsentEditModel GetPersonalConsentEditData(string Ser)
+        public MemberMangPersonalConsentEditModel GetPersonalConsentEditData(string Ser)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -388,7 +377,7 @@ AND (@ClubName IS NULL OR B.ClubCName LIKE '%' + @ClubName + '%') ";
                                 AND (PersonalConID = @PersonalConID) ";
 
 
-            (DbExecuteInfo info, IEnumerable<CadreMangPersonalConsentEditModel> entitys) dbResult = DbaExecuteQuery<CadreMangPersonalConsentEditModel>(CommandText, parameters, true, DBAccessException);
+            (DbExecuteInfo info, IEnumerable<MemberMangPersonalConsentEditModel> entitys) dbResult = DbaExecuteQuery<MemberMangPersonalConsentEditModel>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList().FirstOrDefault();
@@ -397,7 +386,7 @@ AND (@ClubName IS NULL OR B.ClubCName LIKE '%' + @ClubName + '%') ";
         }
 
         /// <summary> 修改資料 </summary>
-        public DbExecuteInfo UpdatePersonalConsentData(CadreMangViewModel vm, UserInfo LoginUser)
+        public DbExecuteInfo UpdatePersonalConsentData(MemberMangViewModel vm, UserInfo LoginUser)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
@@ -440,7 +429,7 @@ AND (@ClubName IS NULL OR B.ClubCName LIKE '%' + @ClubName + '%') ";
             return ExecuteResult;
         }
 
-        public DbExecuteInfo CadreMangUpdatePersonalConsentData(CadreMangViewModel vm, UserInfo LoginUser)
+        public DbExecuteInfo MemberMangUpdatePersonalConsentData(MemberMangViewModel vm, UserInfo LoginUser)
         {
 
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();

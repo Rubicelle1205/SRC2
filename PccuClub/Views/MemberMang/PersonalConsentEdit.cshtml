@@ -1,0 +1,161 @@
+﻿@model WebPccuClub.Models.MemberMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("PersonalConsentIndex")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.PersonalConsentEditModel.Created)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DisplayFor(m => m.PersonalConsentEditModel.Created)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.PersonalConsentEditModel.LastModified)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DisplayFor(m => m.PersonalConsentEditModel.LastModified)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.PersonalConsentEditModel.ClubID)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DisplayFor(m => m.PersonalConsentEditModel.ClubID)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.PersonalConsentEditModel.ClubName)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DisplayFor(m => m.PersonalConsentEditModel.ClubName)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.PersonalConsentEditModel.SchoolYear)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DisplayFor(m => m.PersonalConsentEditModel.SchoolYear)學年度
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.PersonalConsentEditModel.FilePath)<span class="required">*</span>
+                                            <span class="mx-1" data-toggle="tooltip" data-bs-placement="top" title="" data-original-title="僅接受.pdf檔">
+                                                <i class="fa-regular fa-circle-question" aria-hidden="true"></i></span>
+                                            </th>
+                                        <td>
+                                            <div class="target_list">
+                                                <div class="d-block mb-1 item">
+
+
+                                                    <label class="btn btn-outline-primary mb-0">
+                                                        @Html.TextBoxFor(m => m.PersonalConsentEditModel.FilePath, new { @type = "file", @class="filesupload", accept = ".pdf",  style="display:none;" })
+                                                        <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                                    </label>
+
+                                                    <span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+
+                                                    <br>
+                                                    @if (!string.IsNullOrEmpty(Model.PersonalConsentEditModel.FilePath))
+                                                    {
+                                                        <a class="text-sm text-muted" href=@Html.DisplayFor(m => m.PersonalConsentEditModel.FilePath) target="_blank">
+                                                            <i class="fa-regular fa-file mr-2"></i>@string.Format("{0}_{1}_個人資料告知暨同意書.pdf", Model.PersonalConsentEditModel.SchoolYear,
+                                                        Model.PersonalConsentEditModel.ClubName)
+                                                        </a>
+                                                    }
+                                                    
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                    @Html.HiddenFor(m => m.PersonalConsentEditModel.PersonalConID)
+                    @Html.HiddenFor(m => m.PersonalConsentEditModel.SchoolYear)
+                    @Html.HiddenFor(m => m.PersonalConsentEditModel.ClubID)
+                </form> 
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+    $('#@Html.IdFor(m => m.PersonalConsentEditModel.FilePath)').change(function (e) {
+        var geekss = e.target.files[0].name;
+        $('#filename').text(geekss);
+    });
+
+    function SaveData() {
+
+        var data = new FormData()
+        var PersonalConID = $('#@Html.IdFor(m => m.PersonalConsentEditModel.PersonalConID)').val();
+        var ClubID = $('#@Html.IdFor(m => m.PersonalConsentEditModel.ClubID)').val();
+        var SchoolYear = $('#@Html.IdFor(m => m.PersonalConsentEditModel.SchoolYear)').val();
+
+        var FilePath = $('#@Html.IdFor(m => m.PersonalConsentEditModel.FilePath)')[0].files[0];
+        if (typeof FilePath !== 'undefined') {
+            var fileExtension = FilePath.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'pdf') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.PersonalConsentEditModel.FilePath)', FilePath);
+        }
+
+        data.append('@Html.NameFor(m => m.PersonalConsentEditModel.PersonalConID)', PersonalConID);
+        data.append('@Html.NameFor(m => m.PersonalConsentEditModel.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.PersonalConsentEditModel.SchoolYear)', SchoolYear);
+
+        SendAjax({
+            url: '@Url.Action("PersonalConsentEditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+</script>

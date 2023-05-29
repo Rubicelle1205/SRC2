@@ -1,0 +1,173 @@
+﻿@model WebPccuClub.Models.MemberMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ClubID)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.ClubID ,(List<SelectListItem>)ViewBag.ddlAllClub,"請選擇社團", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.SchoolYear)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇學年度", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.SDuring)<span class="required">*</span></th>
+                                        <td>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">任職開始日</span>
+                                                </div>
+                                                @Html.TextBoxFor(m => m.CreateModel.SDuring, new {@class = "form-control", type="date", placeholder="請輸入任職開始"})
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">任職結束日</span>
+                                                </div>
+                                                @Html.TextBoxFor(m => m.CreateModel.EDuring, new {@class = "form-control", type="date", placeholder="請輸入任職結束"})
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.UserName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.UserName, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.SNo)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.SNo, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.EMail)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.EMail, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Department)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.Department, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Sex)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.Sex ,(List<SelectListItem>)ViewBag.ddlAllSex,"請選擇性別", new {@class = "form-control"})
+                                            </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.CellPhone)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.CellPhone, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Memo)</th>
+                                        <td>@Html.TextAreaFor(m => m.CreateModel.Memo, new {@class = "form-control", rows="6"})</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </form> 
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+
+    function SaveData() {
+
+        var data = new FormData()
+        var ClubID = $('#@Html.IdFor(m => m.CreateModel.ClubID)').val();
+        var SchoolYear = $('#@Html.IdFor(m => m.CreateModel.SchoolYear)').val();
+        var SDuring = $('#@Html.IdFor(m => m.CreateModel.SDuring)').val();
+        var EDuring = $('#@Html.IdFor(m => m.CreateModel.EDuring)').val();
+        var UserName = $('#@Html.IdFor(m => m.CreateModel.UserName)').val();
+        var SNo = $('#@Html.IdFor(m => m.CreateModel.SNo)').val();
+        var EMail = $('#@Html.IdFor(m => m.CreateModel.EMail)').val();
+        var Department = $('#@Html.IdFor(m => m.CreateModel.Department)').val();
+        var Sex = $('#@Html.IdFor(m => m.CreateModel.Sex)').val();
+        var CellPhone = $('#@Html.IdFor(m => m.CreateModel.CellPhone)').val();
+        var Memo = $('#@Html.IdFor(m => m.CreateModel.Memo)').val();
+
+        if (ClubID == "") { $.alert("社團代號不可為空白"); return; }
+        if (SchoolYear == "") { $.alert("學年度不可為空白"); return; }
+        if (SDuring == "") { $.alert("任職開始期間不可為空白"); return; }
+        if (EDuring == "") { $.alert("任職結束期間不可為空白"); return; }
+        if (MemberName == "") { $.alert("職別不可為空白"); return; }
+        if (UserName == "") { $.alert("姓名不可為空白"); return; }
+        if (SNo == "") { $.alert("學號不可為空白"); return; }
+        if (EMail == "") { $.alert("信箱不可為空白"); return; }
+        if (Department == "") { $.alert("系級不可為空白"); return; }
+        if (Sex == "") { $.alert("性別不可為空白"); return; }
+        if (CellPhone == "") { $.alert("聯絡電話不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.CreateModel.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.CreateModel.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.CreateModel.SDuring)', SDuring);
+        data.append('@Html.NameFor(m => m.CreateModel.EDuring)', EDuring);
+        data.append('@Html.NameFor(m => m.CreateModel.UserName)', UserName);
+        data.append('@Html.NameFor(m => m.CreateModel.SNo)', SNo);
+        data.append('@Html.NameFor(m => m.CreateModel.EMail)', EMail);
+        data.append('@Html.NameFor(m => m.CreateModel.Department)', Department);
+        data.append('@Html.NameFor(m => m.CreateModel.Sex)', Sex);
+        data.append('@Html.NameFor(m => m.CreateModel.CellPhone)', CellPhone);
+        data.append('@Html.NameFor(m => m.CreateModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("SaveNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                Reset();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+    function Reset() {
+ 
+    }
+</script>

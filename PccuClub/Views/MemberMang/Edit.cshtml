@@ -1,0 +1,203 @@
+﻿@model WebPccuClub.Models.MemberMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Created)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DisplayFor(m => m.EditModel.Created)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.LastModified)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DisplayFor(m => m.EditModel.LastModified)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubID)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DisplayFor(m => m.EditModel.ClubID)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubCName)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DisplayFor(m => m.EditModel.ClubCName)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.SchoolYear)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇學年度", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.SDuring)<span class="required">*</span></th>
+                                        <td>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">任職開始日</span>
+                                                </div>
+                                                @Html.TextBoxFor(m => m.EditModel.SDuring, new {@class = "form-control", type="date", placeholder="請輸入任職開始"})
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">任職結束日</span>
+                                                </div>
+                                                @Html.TextBoxFor(m => m.EditModel.EDuring, new {@class = "form-control", type="date", placeholder="請輸入任職結束"})
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.UserName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.UserName, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.SNo)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.SNo, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.EMail)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.EMail, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Department)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Department, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Sex)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.Sex ,(List<SelectListItem>)ViewBag.ddlAllSex,"請選擇性別", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.CellPhone)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.CellPhone, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Memo)</th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class = "form-control", rows="6"})</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                    @Html.HiddenFor(m => m.EditModel.MemberID)
+                </form> 
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+
+    function SaveData() {
+
+        var data = new FormData()
+        var MemberID = $('#@Html.IdFor(m => m.EditModel.MemberID)').val();
+        var ClubID = $('#@Html.IdFor(m => m.EditModel.ClubID)').val();
+        var SchoolYear = $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val();
+        var SDuring = $('#@Html.IdFor(m => m.EditModel.SDuring)').val();
+        var EDuring = $('#@Html.IdFor(m => m.EditModel.EDuring)').val();
+        var UserName = $('#@Html.IdFor(m => m.EditModel.UserName)').val();
+        var SNo = $('#@Html.IdFor(m => m.EditModel.SNo)').val();
+        var EMail = $('#@Html.IdFor(m => m.EditModel.EMail)').val();
+        var Department = $('#@Html.IdFor(m => m.EditModel.Department)').val();
+        var Sex = $('#@Html.IdFor(m => m.EditModel.Sex)').val();
+        var CellPhone = $('#@Html.IdFor(m => m.EditModel.CellPhone)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+        if (ClubID == "") { $.alert("社團代號不可為空白"); return; }
+        if (SchoolYear == "") { $.alert("學年度不可為空白"); return; }
+        if (SDuring == "") { $.alert("任職開始期間不可為空白"); return; }
+        if (EDuring == "") { $.alert("任職結束期間不可為空白"); return; }
+        if (UserName == "") { $.alert("姓名不可為空白"); return; }
+        if (SNo == "") { $.alert("學號不可為空白"); return; }
+        if (EMail == "") { $.alert("信箱不可為空白"); return; }
+        if (Department == "") { $.alert("系級不可為空白"); return; }
+        if (Sex == "") { $.alert("性別不可為空白"); return; }
+        if (CellPhone == "") { $.alert("聯絡電話不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.MemberID)', MemberID);
+        data.append('@Html.NameFor(m => m.EditModel.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.EditModel.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.EditModel.SDuring)', SDuring);
+        data.append('@Html.NameFor(m => m.EditModel.EDuring)', EDuring);
+        data.append('@Html.NameFor(m => m.EditModel.UserName)', UserName);
+        data.append('@Html.NameFor(m => m.EditModel.SNo)', SNo);
+        data.append('@Html.NameFor(m => m.EditModel.EMail)', EMail);
+        data.append('@Html.NameFor(m => m.EditModel.Department)', Department);
+        data.append('@Html.NameFor(m => m.EditModel.Sex)', Sex);
+        data.append('@Html.NameFor(m => m.EditModel.CellPhone)', CellPhone);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+    function Reset() {
+        $('#@Html.IdFor(m => m.EditModel.ClubID)').val("");
+        $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val("");
+        $('#@Html.IdFor(m => m.EditModel.SDuring)').val("");
+        $('#@Html.IdFor(m => m.EditModel.EDuring)').val("");
+        $('#@Html.IdFor(m => m.EditModel.UserName)').val("");
+        $('#@Html.IdFor(m => m.EditModel.SNo)').val("");
+        $('#@Html.IdFor(m => m.EditModel.EMail)').val("");
+        $('#@Html.IdFor(m => m.EditModel.Department)').val("");
+        $('#@Html.IdFor(m => m.EditModel.Sex)').val("");
+        $('#@Html.IdFor(m => m.EditModel.CellPhone)').val("");
+        $('#@Html.IdFor(m => m.EditModel.Memo)').val("");
+    }
+</script>
