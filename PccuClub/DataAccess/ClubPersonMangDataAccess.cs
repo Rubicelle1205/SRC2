@@ -378,7 +378,7 @@ AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') ";
 
         #endregion
 
-        #region 幹部
+        #region 會員
 
         public List<ClubMemberMangResultModel> GetMemberSearchResult(ClubMemberMangConditionModel vm, UserInfo LoginUser)
         {
@@ -732,7 +732,6 @@ AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') ";
         #endregion
 
         #endregion
-
 
         public List<SelectListItem> GetSchoolYear()
         {
