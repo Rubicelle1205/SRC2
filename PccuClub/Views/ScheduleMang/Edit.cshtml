@@ -1,0 +1,223 @@
+﻿@model WebPccuClub.Models.ScheduleMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body table-responsive-sm">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                            <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                        </h6>
+                        @if (null != Model.EditModel)
+                        {
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubId)<span class="required">*</span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.ClubId)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.SchoolYear)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇學年度", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ActTypeID)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.ActTypeID ,(List<SelectListItem>)ViewBag.ddlAllActType,"請選擇", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.CScheName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.CScheName, new {@class="form-control", placeholder="請輸入活動名稱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.CScheDate)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.CScheDate, new {@class="form-control", type="date"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Budget)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Budget, new {@class="form-control", placeholder="請輸入預算", type="number"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.BookingPlace)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.BookingPlace, new {@class="form-control", placeholder="請輸入場地"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ShortDesc)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ShortDesc, new {@class="form-control", placeholder="請輸入簡介"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ActHoldType)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.ActHoldType ,(List<SelectListItem>)ViewBag.ddlAllActHoldType,"請選擇", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Support)<span class="required">*</span></th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Support, new {@class="form-control", placeholder="接受那些經費補助"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Participants)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Participants, new {@class="form-control", placeholder="請輸入參與人數", type="number"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Satisfaction)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Satisfaction, new {@class="form-control", placeholder="請輸入滿意度", type="number"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            附件<span class="required">*</span>
+                                            
+                                             <span id="spantip" class="mx-1">
+                                                <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                            </span>
+                                        </th>
+                                        <td>
+                                            <div class="target_list">
+                                                <div class="d-block mb-1 item">
+                                                    <label class="btn btn-outline-primary mb-0">
+                                                        @Html.TextBoxFor(m => m.EditModel.Attachment, new {@style="display:none;", type="file", accept=".doc,.docx,.odt,.pdf,.jpg,.jpeg.,png"})
+                                                        <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                                    </label>
+                                                    <span class="text-sm mx-2 text-muted"
+                                                          id="filename">尚未選擇檔案...</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Memo)</th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class="form-control", placeholder="請輸入備註", rows="6" })</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            @Html.HiddenFor(m => m.EditModel.CScheID)
+                            @Html.HiddenFor(m => m.EditModel.ClubId)
+                        }
+
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer d-flex justify-content-end">
+                        <button type="button" name="submitBtn" class="btn btn-success" onclick="SaveEditData()">儲存</button>
+                    </div>
+                </div>
+                <!-- /.card -->
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    
+
+    $('#spantip').tooltip({ title: "僅接受.doc、.docx、.odt、.pdf、.png、.jpg、.jpeg檔" });
+
+    $('#excelFile').change(function (e) {
+        var geekss = e.target.files[0].name;
+        $('#filename').text(geekss);
+    });
+
+    function SaveEditData() {
+
+        var data = new FormData()
+
+        var CScheID = $('#@Html.IdFor(m => m.EditModel.CScheID)').val();
+        var ClubId = $('#@Html.IdFor(m => m.EditModel.ClubId)').val();
+        var SchoolYear = $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val();
+        var ActTypeID = $('#@Html.IdFor(m => m.EditModel.ActTypeID)').val();
+        var CScheName = $('#@Html.IdFor(m => m.EditModel.CScheName)').val();
+        var CScheDate = $('#@Html.IdFor(m => m.EditModel.CScheDate)').val();
+        var Budget = $('#@Html.IdFor(m => m.EditModel.Budget)').val();
+        var BookingPlace = $('#@Html.IdFor(m => m.EditModel.BookingPlace)').val();
+        var ShortDesc = $('#@Html.IdFor(m => m.EditModel.ShortDesc)').val();
+        var ActHoldType = $('#@Html.IdFor(m => m.EditModel.ActHoldType)').val();
+        var Support = $('#@Html.IdFor(m => m.EditModel.Support)').val();
+        var Participants = $('#@Html.IdFor(m => m.EditModel.Participants)').val();
+        var Satisfaction = $('#@Html.IdFor(m => m.EditModel.Satisfaction)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+        var Attachment = $('#@Html.IdFor(m => m.EditModel.Attachment)')[0].files[0];
+        if (typeof Attachment !== 'undefined') {
+            var fileExtension = Attachment.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.EditModel.Attachment)', Attachment);
+        }
+
+
+        if (SchoolYear == "") { $.alert("學年度不可為空白"); return; }
+        if (ActTypeID == "") { $.alert("活動類別不可為空白"); return; }
+        if (CScheName == "") { $.alert("活動名稱不可為空白"); return; }
+        if (CScheDate == "") { $.alert("活動時間不可為空白"); return; }
+        if (Budget == "") { $.alert("經費預算不可為空白"); return; }
+        if (BookingPlace == "") { $.alert("預定場地不可為空白"); return; }
+        if (ShortDesc == "") { $.alert("內容簡介不可為空白"); return; }
+        if (ActHoldType == "") { $.alert("是否舉辦不可為空白"); return; }
+        if (Support == "") { $.alert("接受那些經費補助不可為空白"); return; }
+        if (Participants == "") { $.alert("參與人數不可為空白"); return; }
+        if (Satisfaction == "") { $.alert("滿意度不可為空白"); return; }
+
+        
+        data.append('@Html.NameFor(m => m.EditModel.CScheID)', CScheID);
+        data.append('@Html.NameFor(m => m.EditModel.ClubId)', ClubId);
+        data.append('@Html.NameFor(m => m.EditModel.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.EditModel.CScheName)', CScheName);
+        data.append('@Html.NameFor(m => m.EditModel.ActTypeID)', ActTypeID);
+        data.append('@Html.NameFor(m => m.EditModel.CScheDate)', CScheDate);
+        data.append('@Html.NameFor(m => m.EditModel.Budget)', Budget);
+        data.append('@Html.NameFor(m => m.EditModel.BookingPlace)', BookingPlace);
+        data.append('@Html.NameFor(m => m.EditModel.ShortDesc)', ShortDesc);
+        data.append('@Html.NameFor(m => m.EditModel.ActHoldType)', ActHoldType);
+        data.append('@Html.NameFor(m => m.EditModel.Support)', Support);
+        data.append('@Html.NameFor(m => m.EditModel.Participants)', Participants);
+        data.append('@Html.NameFor(m => m.EditModel.Satisfaction)', Satisfaction);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                location.reload();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+    }
+</script>

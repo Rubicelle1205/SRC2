@@ -265,6 +265,20 @@ namespace WebPccuClub.DataAccess
             return null;
         }
 
+		public List<SelectListItem> GetSchoolYear()
+		{
+			List<SelectListItem> LstItem = new List<SelectListItem>();
+
+			int NowSchoolYear = int.Parse(PublicFun.GetNowSchoolYear());
+
+			for (int i = NowSchoolYear - 2; i <= NowSchoolYear + 2; i++)
+			{
+				LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
+			}
+
+			return LstItem;
+		}
+
         public List<SelectListItem> GetAllActHoldType()
         {
             string CommandText = string.Empty;
@@ -285,22 +299,7 @@ namespace WebPccuClub.DataAccess
             return new List<SelectListItem>();
         }
 
-
-		public List<SelectListItem> GetSchoolYear()
-		{
-			List<SelectListItem> LstItem = new List<SelectListItem>();
-
-			int NowSchoolYear = int.Parse(PublicFun.GetNowSchoolYear());
-
-			for (int i = NowSchoolYear - 2; i <= NowSchoolYear + 2; i++)
-			{
-				LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
-			}
-
-			return LstItem;
-		}
-
-		public List<SelectListItem> GetAllActType()
+        public List<SelectListItem> GetAllActType()
 		{
 			string CommandText = string.Empty;
 			DataSet ds = new DataSet();
