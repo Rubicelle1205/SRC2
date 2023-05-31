@@ -1,0 +1,142 @@
+﻿@model WebPccuClub.Models.ClubInfoViewModel
+
+@{
+    Layout = "_FrontLayout";
+}
+
+
+<div class="col-xxl-8 col-xl-10">
+    <div class="contentWrapper">
+        <h4 class="pageTitle">幹部名冊</h4>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index")">社團簡介</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("ClubScheduleIndex")">活動績效管理</a></li>
+                <li class="breadcrumb-item active">新增計畫</li>
+            </ol>
+        </nav>
+        <hr>
+        <div class="mb-4">
+            <a id="Back" href=@Url.Action("ClubScheduleIndex")><i class="fas fa-chevron-left"></i> 返回</a>
+        </div>
+
+        <div class="form-box checkthisform">
+            <div class=" mb-4">
+                <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
+
+                <div class="row">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="form-item">
+                            <label for="">學年度</label>
+                            @Html.TextBoxFor(m => m.ClubScheduleCreateModel.SchoolYear, new {@class="form-control w-100", @readonly="readonly"} )
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="form-item">
+                            <label for="">活動類別<span class="req-star">*</span></label>
+                            @Html.DropDownListFor(m => m.ClubScheduleCreateModel.ActType,(List<SelectListItem>)ViewBag.ddlAllActType,"請選擇", new {@class = "form-control w-100"})
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="form-item">
+                            <label for="">活動名稱<span class="req-star">*</span></label>
+                            @Html.TextBoxFor(m => m.ClubScheduleCreateModel.CScheName, new {@class="form-control w-100 input_title", placeholder="請填寫活動名稱"} )
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="form-item">
+                            <label for="">活動時間<span class="req-star">*</span></label>
+                            @Html.TextBoxFor(m => m.ClubScheduleCreateModel.CScheDate, new {@class="form-control w-100", placeholder="請填寫活動時間", type="date"} )
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="form-item">
+                            <label for="">預定場地<span class="req-star">*</span></label>
+                            @Html.TextBoxFor(m => m.ClubScheduleCreateModel.BookingPlace, new {@class="form-control w-100 input_loc", placeholder="請填寫預定場地"} )
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="form-item">
+                            <label for="">經費預算<span class="req-star">*</span></label>
+                            @Html.TextBoxFor(m => m.ClubScheduleCreateModel.Budget, new {@class="form-control w-100 input_bud", placeholder="請填寫經費預算"} )
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="form-item">
+                            <label for="">內容簡介<span class="req-star">*</span></label>
+                            @Html.TextAreaFor(m => m.ClubScheduleCreateModel.ShortDesc, new {@class="form-control input_intro", placeholder="請填寫內容簡介"} )
+                        </div>
+                    </div>
+
+                    @Html.HiddenFor(m => m.ClubScheduleCreateModel.SchoolYear)
+
+                    <div class="col-lg-12 col-md-12">
+                        <div class="toolbox">
+                            <button id="addsch_btn" class="submit-btn btn btn-secondary px-5" type="button" onclick="SaveData()">新增 <i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var SchoolYear = $('#@Html.IdFor(m => m.ClubScheduleCreateModel.SchoolYear)').val();
+        var ActType = $('#@Html.IdFor(m => m.ClubScheduleCreateModel.ActType)').val();
+        var CScheName = $('#@Html.IdFor(m => m.ClubScheduleCreateModel.CScheName)').val();
+        var CScheDate = $('#@Html.IdFor(m => m.ClubScheduleCreateModel.CScheDate)').val();
+        var BookingPlace = $('#@Html.IdFor(m => m.ClubScheduleCreateModel.BookingPlace)').val();
+        var Budget = $('#@Html.IdFor(m => m.ClubScheduleCreateModel.Budget)').val();
+        var ShortDesc = $('#@Html.IdFor(m => m.ClubScheduleCreateModel.ShortDesc)').val();
+
+        if (SchoolYear == "") { $.alert("學年度不可為空白"); return; }
+        if (ActType == "") { $.alert("活動類別不可為空白"); return; }
+        if (CScheName == "") { $.alert("活動名稱不可為空白"); return; }
+        if (CScheDate == "") { $.alert("活動時間不可為空白"); return; }
+        if (BookingPlace == "") { $.alert("預定場地不可為空白"); return; }
+        if (Budget == "") { $.alert("經費預算不可為空白"); return; }
+        if (ShortDesc == "") { $.alert("內容簡介不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.ClubScheduleCreateModel.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.ClubScheduleCreateModel.ActType)', ActType);
+        data.append('@Html.NameFor(m => m.ClubScheduleCreateModel.CScheName)', CScheName);
+        data.append('@Html.NameFor(m => m.ClubScheduleCreateModel.CScheDate)', CScheDate);
+        data.append('@Html.NameFor(m => m.ClubScheduleCreateModel.BookingPlace)', BookingPlace);
+        data.append('@Html.NameFor(m => m.ClubScheduleCreateModel.Budget)', Budget);
+        data.append('@Html.NameFor(m => m.ClubScheduleCreateModel.ShortDesc)', ShortDesc);
+
+        SendAjax({
+            url: '@Url.Action("ClubScheduleSaveNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+</script>

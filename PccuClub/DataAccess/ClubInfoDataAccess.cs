@@ -11,19 +11,23 @@ using X.PagedList;
 using MathNet.Numerics.Optimization;
 using System.Runtime.ConstrainedExecution;
 using MathNet.Numerics.RootFinding;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebPccuClub.DataAccess
 {
 
     public class ClubInfoDataAccess : BaseAccess
     {
-        /// <summary>
-        /// 取得編輯資料
-        /// </summary>
-        /// <param name="submitBtn"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public MyClubEditModel GetEditData(string ClubId)
+		PublicFun PublicFun = new PublicFun();
+
+
+		/// <summary>
+		/// 取得編輯資料
+		/// </summary>
+		/// <param name="submitBtn"></param>
+		/// <returns></returns>
+		/// <exception cref="NotImplementedException"></exception>
+		public MyClubEditModel GetEditData(string ClubId)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -146,7 +150,122 @@ namespace WebPccuClub.DataAccess
             return ExecuteResult;
         }
 
-        public List<SelectListItem> GetAllLifeClass()
+		public List<ClubScheduleResultModel> GetScheduleSearchResult(ClubScheduleConditionModel vm, UserInfo LoginUser)
+		{
+			string CommandText = string.Empty;
+			DataSet ds = new DataSet();
+
+			DBAParameter parameters = new DBAParameter();
+			#region 參數設定
+
+			parameters.Add("@ClubId", LoginUser.LoginId);
+			parameters.Add("@SchoolYear", vm.SchoolYear == null ? PublicFun.GetNowSchoolYear() : vm.SchoolYear);
+
+			#endregion
+
+			CommandText = $@"SELECT A.CScheID, A.ClubID, A.SchoolYear, A.CScheName, A.CScheDate, A.ActHoldType, B.Text AS ActHoldTypeText 
+                               FROM ClubSchedule A
+                          LEFT JOIN Code B ON B.Code = A.ActHoldType AND B.Type = 'ActHoldType'
+                              WHERE A.ClubId = @ClubId 
+                                AND A.SchoolYear = @SchoolYear";
+
+			(DbExecuteInfo info, IEnumerable<ClubScheduleResultModel> entitys) dbResult = DbaExecuteQuery<ClubScheduleResultModel>(CommandText, parameters, true, DBAccessException);
+
+			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+				return dbResult.entitys.ToList();
+
+			return new List<ClubScheduleResultModel>();
+		}
+
+        public DbExecuteInfo ClubScheduleInserNewData(ClubInfoViewModel vm, UserInfo LoginUser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ClubID", LoginUser.LoginId);
+            parameters.Add("@SchoolYear", vm.ClubScheduleCreateModel.SchoolYear);
+            parameters.Add("@ActTypeID", vm.ClubScheduleCreateModel.ActType);
+            parameters.Add("@CScheName", vm.ClubScheduleCreateModel.CScheName);
+            parameters.Add("@CScheDate", vm.ClubScheduleCreateModel.CScheDate);
+            parameters.Add("@Budget", vm.ClubScheduleCreateModel.Budget);
+            parameters.Add("@BookingPlace", vm.ClubScheduleCreateModel.BookingPlace);
+            parameters.Add("@ShortDesc", vm.ClubScheduleCreateModel.ShortDesc);
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO ClubSchedule
+                                               (ClubID 
+                                               ,SchoolYear
+                                               ,ActTypeID
+                                               ,CScheName
+                                               ,CScheDate
+                                               ,Budget
+                                               ,BookingPlace
+                                               ,ShortDesc
+                                               ,ActHoldType 
+                                               ,Creator
+                                               ,Created
+                                               ,LastModifier
+                                               ,LastModified
+                                               ,ModifiedReason)
+                                         VALUES
+                                               (@ClubID 
+                                               ,@SchoolYear 
+                                               ,@ActTypeID
+                                               ,@CScheName
+                                               ,@CScheDate
+                                               ,@Budget
+                                               ,@BookingPlace
+                                               ,'01'
+                                               ,@ActHoldType 
+                                               ,@LoginId
+                                               ,GETDATE()
+                                               ,@LoginId
+                                               ,GETDATE()
+                                               ,NULL)";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        /// <summary>
+		/// 取得編輯資料
+		/// </summary>
+		/// <param name="submitBtn"></param>
+		/// <returns></returns>
+		/// <exception cref="NotImplementedException"></exception>
+		public ClubScheduleEditModel GetClubScheduleEditData(string CScheID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@CScheID", CScheID);
+
+            #endregion
+
+            CommandText = $@"SELECT A.CScheID, A.ClubID, A.SchoolYear, A.ActTypeID, B.ActTypeName, A.CScheName, A.CScheDate, A.Budget, A.BookingPlace, A.ShortDesc, 
+                                    A.ActHoldType, A.Support, A.Participants, A.Satisfaction, A.Attachment
+                               FROM ClubSchedule A
+							   LEFT JOIN ActTypeMang B ON B.ActTypeID = A.ActTypeID
+                              WHERE 1 = 1
+                               AND A.CScheID = @CScheID";
+
+
+            (DbExecuteInfo info, IEnumerable<ClubScheduleEditModel> entitys) dbResult = DbaExecuteQuery<ClubScheduleEditModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList().FirstOrDefault();
+
+            return null;
+        }
+
+        public List<SelectListItem> GetAllActHoldType()
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -156,7 +275,7 @@ namespace WebPccuClub.DataAccess
             #region 參數設定
             #endregion
 
-            CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'LifeClass'";
+            CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'ActHoldType'";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
@@ -166,26 +285,81 @@ namespace WebPccuClub.DataAccess
             return new List<SelectListItem>();
         }
 
-        public List<SelectListItem> GetAllClubClass()
-        {
-            string CommandText = string.Empty;
-            DataSet ds = new DataSet();
 
+		public List<SelectListItem> GetSchoolYear()
+		{
+			List<SelectListItem> LstItem = new List<SelectListItem>();
+
+			int NowSchoolYear = int.Parse(PublicFun.GetNowSchoolYear());
+
+			for (int i = NowSchoolYear - 2; i <= NowSchoolYear + 2; i++)
+			{
+				LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
+			}
+
+			return LstItem;
+		}
+
+		public List<SelectListItem> GetAllActType()
+		{
+			string CommandText = string.Empty;
+			DataSet ds = new DataSet();
+
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			#endregion
+
+			CommandText = @"SELECT ActTypeID AS VALUE, ActTypeName AS TEXT FROM ActTypeMang";
+
+			(DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+				return dbResult.entitys.ToList();
+
+			return new List<SelectListItem>();
+		}
+
+        /// <summary> 修改資料 </summary>
+        public DbExecuteInfo ClubScheduleUpdateData(ClubInfoViewModel vm, UserInfo LoginUser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            #endregion
+            parameters.Add("@CScheID", vm.ClubScheduleEditModel.CScheID);
+            parameters.Add("@ActTypeID", vm.ClubScheduleEditModel.ActTypeID);
+            parameters.Add("@CScheName", vm.ClubScheduleEditModel.CScheName);
+            parameters.Add("@CScheDate", vm.ClubScheduleEditModel.CScheDate);
+            parameters.Add("@BookingPlace", vm.ClubScheduleEditModel.BookingPlace);
+            parameters.Add("@Budget", vm.ClubScheduleEditModel.Budget);
+            parameters.Add("@ShortDesc", vm.ClubScheduleEditModel.ShortDesc);
+            parameters.Add("@ActHoldType", vm.ClubScheduleEditModel.ActHoldType);
+            parameters.Add("@Participants", vm.ClubScheduleEditModel.Participants);
+            parameters.Add("@Support", vm.ClubScheduleEditModel.Support);
+            parameters.Add("@Satisfaction", vm.ClubScheduleEditModel.Satisfaction);
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
 
-            CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'ClubClass'";
+            string CommendText = $@"UPDATE ClubSchedule 
+                                       SET ActTypeID = @ActTypeID
+                                           ,CScheName = @CScheName
+                                           ,CScheDate = @CScheDate
+                                           ,BookingPlace = @BookingPlace
+                                           ,Budget = @Budget
+                                           ,ShortDesc = @ShortDesc
+                                           ,ActHoldType = @ActHoldType
+                                           ,Participants = @Participants
+                                           ,Support = @Support
+                                           ,Satisfaction = @Satisfaction
+                                           ,LastModifier = @LoginId 
+                                           ,LastModified = GETDATE() 
+                                     WHERE CScheID = @CScheID";
 
-            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
-            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
-                return dbResult.entitys.ToList();
-
-            return new List<SelectListItem>();
+            return ExecuteResult;
         }
-
 
     }
 }

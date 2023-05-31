@@ -61,8 +61,10 @@
         前台社團簡介 = 46,
 		我的社團簡介 = 47,
 		我的社團簡介編輯 = 48,
+        活動績效管理 = 49,
 
-	}
+
+    }
 
     public enum DBActionChineseName
     {

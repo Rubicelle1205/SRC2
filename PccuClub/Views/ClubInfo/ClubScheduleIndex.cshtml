@@ -1,0 +1,77 @@
+﻿@model WebPccuClub.Models.ClubInfoViewModel
+
+@{
+    Layout = "_FrontLayout";
+}
+
+
+<div class="col-xxl-8 col-xl-10">
+	<div class="contentWrapper">
+		<h4 class="pageTitle">活動績效管理</h4>
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index")">社團簡介</a></li>
+				<li class="breadcrumb-item active">活動績效管理</li>
+            </ol>
+		</nav>
+		<hr>
+		<div class="mb-4">
+			<a href=@Url.Action("Index")><i class="fas fa-chevron-left"></i> 返回</a>
+		</div>
+		<div class="row">
+			<form method="post" id="SearchForm" enctype="multipart/form-data" action="" style="display:contents;">
+				
+			<div class="col-md-3">
+				<div class="d-flex align-items-center mb-3">
+					<i class="fas fa-filter text-primary"></i>
+					@Html.DropDownListFor(m => m.ClubScheduleConditionModel.SchoolYear,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇", new {@class = "form-control ms-3"})
+				</div>
+			</div>
+				@Html.HiddenFor(m => m.ClubScheduleConditionModel.Page)
+				@Html.HiddenFor(m => m.ClubScheduleConditionModel.PageSize)
+				@Html.HiddenFor(m => m.ClubScheduleConditionModel.TotalCount)
+			</form>
+			<div class="col-md-9">
+				<div class="text-end mb-3">
+					<a class="btn btn-secondary btn-modern border-0" href="club_sch_import.html">匯入計畫表</a>
+					<a class="btn btn-primary btn-modern border-0" href=@Url.Action("ClubScheduleCreate")>新增計畫 <i class="fas fa-plus"></i></a>
+				</div>
+			</div>
+		</div>
+
+		<div id="SearchResultList" class="row"></div>
+
+	</div>
+</div>
+
+<script>
+
+	$(document).ready(function () {
+		GoSearch();
+	});
+
+	function GoSearch() {
+		SendAjax({
+			url: '@Url.Action("GetScheduleSearchResult")',
+			data: $("#SearchForm").serialize(),
+			success: function (result) {
+				$('#SearchResultList').html(result);
+			}
+		});
+	}
+
+	$('#@Html.IdFor(m => m.ClubScheduleConditionModel.SchoolYear)').change(function (e) {
+		GoSearch();
+	});
+
+	$('#JumpPergroup').change(function (e) {
+		$("#@Html.IdFor(m => m.ClubScheduleConditionModel.PageSize)").val(e.target.value);
+		GoSearch();
+	});
+
+	$('#Jumppage').change(function (e) {
+		$("#@Html.IdFor(m => m.ClubScheduleConditionModel.Page)").val(e.target.value);
+		GoSearch();
+	});
+
+</script>

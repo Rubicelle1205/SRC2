@@ -49,7 +49,6 @@ namespace WebPccuClub.Controllers
 			return View(vm);
 		}
 
-
 		[Log(LogActionChineseName.我的社團簡介編輯)]
 		public IActionResult MyClubEdit()
 		{
@@ -134,7 +133,7 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
-        public async Task<IActionResult> EditOldData(ClubInfoViewModel vm)
+        public async Task<IActionResult> MyClubEditOldData(ClubInfoViewModel vm)
         {
             try
             {
@@ -188,10 +187,153 @@ namespace WebPccuClub.Controllers
             return Json(vmRtn);
         }
 
-
-
-
         #endregion
+
+
+        #region 計畫表
+
+        [Log(LogActionChineseName.活動績效管理)]
+        public IActionResult ClubScheduleIndex()
+        {
+			ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+
+			ClubInfoViewModel vm = new ClubInfoViewModel();
+			vm.ClubScheduleConditionModel = new ClubScheduleConditionModel();
+			vm.ClubScheduleConditionModel.SchoolYear = PublicFun.GetNowSchoolYear();
+
+            return View(vm);
+        }
+
+		[LogAttribute(LogActionChineseName.查詢)]
+		public IActionResult GetScheduleSearchResult(ClubInfoViewModel vm)
+		{
+			vm.ClubScheduleResultModel = dbAccess.GetScheduleSearchResult(vm.ClubScheduleConditionModel, LoginUser).ToList();
+
+			#region 分頁
+			vm.ClubScheduleConditionModel.TotalCount = vm.ClubScheduleResultModel.Count();
+			int StartRow = vm.ClubScheduleConditionModel.Page * vm.ClubScheduleConditionModel.PageSize;
+			vm.ClubScheduleResultModel = vm.ClubScheduleResultModel.Skip(StartRow).Take(vm.ClubScheduleConditionModel.PageSize).ToList();
+			#endregion
+
+			return PartialView("_SearchClubScheduleResultPartial", vm);
+		}
+
+		[LogAttribute(LogActionChineseName.新增)]
+		public IActionResult ClubScheduleCreate()
+		{
+			ViewBag.ddlAllActType = dbAccess.GetAllActType();
+
+			ClubInfoViewModel vm = new ClubInfoViewModel();
+			vm.ClubScheduleCreateModel = new ClubScheduleCreateModel();
+			vm.ClubScheduleCreateModel.SchoolYear = PublicFun.GetNowSchoolYear();
+
+			return View(vm);
+		}
+
+        [LogAttribute(LogActionChineseName.新增儲存)]
+        public IActionResult ClubScheduleSaveNewData(ClubInfoViewModel vm)
+        {
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.ClubScheduleInserNewData(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "新增失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+
+        [Log(LogActionChineseName.編輯)]
+        public IActionResult ClubScheduleEdit(string id, ClubInfoViewModel vm)
+        {
+            if (string.IsNullOrEmpty(id))
+                return RedirectToAction("Index");
+
+            ViewBag.ddlAllActType = dbAccess.GetAllActType();
+            ViewBag.ddlAllActHoldType = dbAccess.GetAllActHoldType();
+
+
+            vm.ClubScheduleEditModel = dbAccess.GetClubScheduleEditData(id);
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> ClubScheduleEditOldDataAsync(ClubInfoViewModel vm)
+        {
+            try
+            {
+
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("Attachment"))
+                        {
+                            var file = Request.Form.Files.GetFile("ClubScheduleEditModel.Attachment");
+
+                            string strFilePath = await upload.UploadFileAsync("Schedule", file);
+
+                            vm.ClubScheduleEditModel.Attachment = strFilePath;
+                        }
+                    }
+                }
+
+
+
+
+
+
+
+
+
+
+                        dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.ClubScheduleUpdateData(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+        #endregion
+
+
 
     }
 }
