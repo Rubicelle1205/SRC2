@@ -1,0 +1,32 @@
+﻿@model WebPccuClub.Models.ClubPersonMangViewModel
+
+@{
+    Layout = "_FrontLayout";
+}
+
+<div class="col-xxl-8 col-xl-10">
+	
+	@Html.Partial("_FrontRemindWrapper")
+
+	<div class="contentWrapper">
+		<h4 class="pageTitle">社團簡介</h4>
+		<hr>
+		<div class="pagelist">
+			<a href=@Url.Action("MyClubIndex") class="listItem">
+				<div class="textbox ">
+					<div class="title font-weight-bold mb-0">我的社團簡介</div>
+					<p class="fs-90percent mb-0">檢視編輯社團簡介</p>
+				</div>
+				<div class="icon"><i class="fas fa-chevron-right"></i></div>
+			</a>
+			<a href=@Url.Action("MemberIndex") class="listItem">
+				<div class="textbox ">
+					<div class="title font-weight-bold mb-0">活動績效管理</div>
+					<p class="fs-90percent mb-0">規劃檢核社團活動計畫</p>
+				</div>
+				<div class="icon"><i class="fas fa-chevron-right"></i></div>
+			</a>
+		</div>
+
+	</div>
+</div>

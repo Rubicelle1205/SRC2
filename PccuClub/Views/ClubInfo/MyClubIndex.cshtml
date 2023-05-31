@@ -1,0 +1,129 @@
+﻿@model WebPccuClub.Models.ClubInfoViewModel
+
+@{
+	Layout = "_FrontLayout";
+	ViewBag.Title = "我的社團簡介";
+}
+
+<div class="col-xxl-8 col-xl-8">
+	<div class="contentWrapper">
+		<h4 class="pageTitle">我的社團簡介</h4>
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href=@Url.Action("Index")>社團簡介</a></li>
+				<li class="breadcrumb-item active">我的社團簡介</li>
+			</ol>
+		</nav>
+		<hr>
+		<div class="mb-4">
+			<a href=@Url.Action("Index")><i class="fas fa-chevron-left"></i> 返回</a>
+		</div>
+
+
+		<div class="infoWrapper mb-4">
+			<div class="infoItem">
+				<div class="tag">社團代號</div>
+				<div class="content">@Html.DisplayFor(m => m.MyClubEditModel.ClubId)</div>
+			</div>
+			<div class="infoItem">
+				<div class="tag">社團組別</div>
+				<div class="content">@Html.DisplayFor(m => m.MyClubEditModel.LifeClassText)</div>
+			</div>
+			<div class="infoItem">
+				<div class="tag">社團分類</div>
+				<div class="content">@Html.DisplayFor(m => m.MyClubEditModel.ClubClassText)</div>
+			</div>
+			<div class="infoItem">
+				<div class="tag">中文名稱</div>
+				<div class="content">@Html.DisplayFor(m => m.MyClubEditModel.ClubCName)</div>
+			</div>
+			<div class="infoItem">
+				<div class="tag">英文名稱</div>
+				<div class="content">@Html.DisplayFor(m => m.MyClubEditModel.ClubEName)</div>
+			</div>
+			<div class="infoItem">
+				<div class="tag">社辦地址</div>
+				<div class="content">@Html.DisplayFor(m => m.MyClubEditModel.Address)</div>
+			</div>
+			<div class="infoItem">
+				<div class="tag">聯絡電話</div>
+				<div class="content">@Html.DisplayFor(m => m.MyClubEditModel.Tel)</div>
+			</div>
+			<div class="infoItem">
+				<div class="tag">Email</div>
+				<div class="content"><a href="mailto:@Html.DisplayFor(m => m.MyClubEditModel.EMail)">@Html.DisplayFor(m => m.MyClubEditModel.EMail)</a></div>
+			</div>
+			<div class="infoItem">
+				<div class="tag">Logo</div>
+				<div class="content">
+					<div class="logo">
+						<img src="@Html.DisplayFor(m => m.MyClubEditModel.LogoPath)" alt="">
+					</div>
+				</div>
+			</div>
+			<div class="infoItem">
+				<div class="tag">活動簡圖</div>
+				<div class="content">
+					<div class="actcover">
+						<div class="col-md-6">
+							<div class="imgbox">
+								<div class="imgbox__inner-6-9">
+									<div class="image" style="background-image: url(@Html.DisplayFor(m => m.MyClubEditModel.ActImgPath));"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="infoItem">
+				<div class="tag">簡介</div>
+				<div class="content">
+					@Html.DisplayFor(m => m.MyClubEditModel.ShortInfo)
+				</div>
+			</div>
+			<div class="infoItem">
+				<div class="tag">社群平台連結</div>
+				<div class="content">
+					<div class="row">
+						@if (!string.IsNullOrEmpty(Model.MyClubEditModel.Social1))
+						{
+							<div class="mb-2">
+								<a href="@Html.DisplayFor(m => m.MyClubEditModel.Social1)" target="_blank">連結1 <i class="fas fa-external-link-alt"></i></a>
+							</div>
+						}
+						@if (!string.IsNullOrEmpty(Model.MyClubEditModel.Social2))
+						{
+							<div class="mb-2">
+								<a href="@Html.DisplayFor(m => m.MyClubEditModel.Social2)" target="_blank">連結2 <i class="fas fa-external-link-alt"></i></a>
+							</div>
+						}
+						@if (!string.IsNullOrEmpty(Model.MyClubEditModel.Social3))
+						{
+							<div class="mb-2">
+								<a href="@Html.DisplayFor(m => m.MyClubEditModel.Social3)" target="_blank">連結3 <i class="fas fa-external-link-alt"></i></a>
+							</div>
+						}
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="row justify-content-center mb-5">
+			<div class="col-lg-3">
+				<button type="button" class="btn btn-secondary btn-modern border-0 w-100" onclick="ExportSearchResult()">匯出Excel</button>
+			</div>
+			<div class="col-lg-3">
+				<a href=@Url.Action("MyClubEdit") class="btn btn-primary btn-modern border-0 w-100">編輯 <i class="icon-note"></i></a>
+			</div>
+		</div>
+
+	</div>
+</div>
+<script>
+
+	function ExportSearchResult() {
+		window.open('@Url.Action("ExportSearchResult")' + '?' + $("#SearchForm").serialize());
+    }
+
+</script>

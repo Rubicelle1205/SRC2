@@ -1,0 +1,222 @@
+﻿@model WebPccuClub.Models.ClubInfoViewModel
+
+@{
+    Layout = "_FrontLayout";
+    ViewBag.Title = "編輯社團簡介";
+}
+
+<div class="col-xxl-8 col-xl-8">
+    <div class="contentWrapper">
+        <h4 class="pageTitle">編輯社團簡介</h4>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index")">社團簡介</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("MyClubIndex")">我的社團簡介</a></li>
+                <li class="breadcrumb-item active">編輯社團簡介</li>
+            </ol>
+        </nav>
+        <hr>
+        <div class="mb-4">
+            <a id="Back" href="@Url.Action("MyClubIndex")"><i class="fas fa-chevron-left"></i> 返回</a>
+        </div>
+
+        <p class="hint mb-0"><span class="req-star">*</span>為必填欄位</p>
+        <div class="infoWrapper mb-4">
+            <div class="infoItem">
+                <div class="tag">學年度</div>
+                <div class="content">
+                    @Html.DisplayFor(m => m.MyClubEditModel.SchoolYear)
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">社團代號</div>
+                <div class="content">
+                    @Html.DisplayFor(m => m.MyClubEditModel.ClubId)
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">社團組別</div>
+                <div class="content">
+                    @Html.DisplayFor(m => m.MyClubEditModel.LifeClassText)
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">社團分類<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.DisplayFor(m => m.MyClubEditModel.ClubClassText)
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">中文名稱<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.DisplayFor(m => m.MyClubEditModel.ClubCName)
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">英文名稱<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.DisplayFor(m => m.MyClubEditModel.ClubEName)
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">社辦地址<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextBoxFor(m => m.MyClubEditModel.Address, new { @class = "form-control", placeholder="社辦地址" })
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">聯絡電話<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextBoxFor(m => m.MyClubEditModel.Tel, new { @class = "form-control", placeholder="聯絡電話" })
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">Email<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextBoxFor(m => m.MyClubEditModel.EMail, new { @class = "form-control", placeholder="Email" })
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">Logo<span class="req-star">*</span></div>
+                <div class="content">
+                    <p class="hint mb-2">※僅接受以下格式：.jpg、.jpeg、.png</p>
+                    @Html.TextBoxFor(m => m.MyClubEditModel.LogoPath, new { @type = "file", @class="form-control", accept = ".jpeg,.jpg,.png" })
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">活動簡圖<span class="req-star">*</span></div>
+                <div class="content">
+                    <p class="hint mb-2">※僅接受以下格式：.jpg、.jpeg、.png</p>
+                    @Html.TextBoxFor(m => m.MyClubEditModel.ActImgPath, new { @type = "file", @class="form-control", accept = ".jpeg,.jpg,.png" })
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">簡介<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextAreaFor(m => m.MyClubEditModel.ShortInfo, new { @class = "form-control", placeholder="簡介", cols="30", rows="5" })
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">社群平台連結</div>
+                <div class="content">
+                    <div class="row">
+                        <div class="mb-2">
+                            <div class="d-flex align-items-center">
+                                <span class="flex-shrink-0 me-2">連結1：</span>
+                                @Html.TextBoxFor(m => m.MyClubEditModel.Social1, new { @class = "form-control", placeholder="連結1" })
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <div class="d-flex align-items-center">
+                                <span class="flex-shrink-0 me-2">連結2：</span>
+                                @Html.TextBoxFor(m => m.MyClubEditModel.Social2, new { @class = "form-control", placeholder="連結2" })
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="d-flex align-items-center">
+                                <span class="flex-shrink-0 me-2">連結3：</span>
+                                @Html.TextBoxFor(m => m.MyClubEditModel.Social3, new { @class = "form-control", placeholder="連結3" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @Html.HiddenFor(m => m.MyClubEditModel.ClubId)
+        @Html.HiddenFor(m => m.MyClubEditModel.LifeClass)
+        @Html.HiddenFor(m => m.MyClubEditModel.ClubClass)
+
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-4">
+                <button type="button" name="submitBtn" class="submit-btn btn btn-primary btn-modern border-0 w-100" onclick="SaveEditData()">儲存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    function SaveEditData() {
+
+        var data = new FormData()
+
+        var ClubId = $('#@Html.IdFor(m => m.MyClubEditModel.ClubId)').val();
+        var Address = $('#@Html.IdFor(m => m.MyClubEditModel.Address)').val();
+        var Tel = $('#@Html.IdFor(m => m.MyClubEditModel.Tel)').val();
+        var EMail = $('#@Html.IdFor(m => m.MyClubEditModel.EMail)').val();
+        var ShortInfo = $('#@Html.IdFor(m => m.MyClubEditModel.ShortInfo)').val();
+        var Social1 = $('#@Html.IdFor(m => m.MyClubEditModel.Social1)').val();
+        var Social2 = $('#@Html.IdFor(m => m.MyClubEditModel.Social2)').val();
+        var Social3 = $('#@Html.IdFor(m => m.MyClubEditModel.Social3)').val();
+
+
+        var Logo = $('#@Html.IdFor(m => m.MyClubEditModel.LogoPath)')[0].files[0];
+        if (typeof Logo !== 'undefined') {
+            var fileExtension = Logo.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("Logo檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.MyClubEditModel.LogoPath)', Logo);
+        }
+
+
+        var ActImg = $('#@Html.IdFor(m => m.MyClubEditModel.ActImgPath)')[0].files[0];
+        if (typeof ActImg !== 'undefined') {
+            var fileExtension = ActImg.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("活動簡圖檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.MyClubEditModel.ActImgPath)', ActImg);
+        }
+
+        if (Address == "") { $.alert("社辦地址不可為空"); return; }
+        if (Tel == "") { $.alert("聯絡電話不可為空"); return; }
+        if (EMail == "") { $.alert("Email不可為空"); return; }
+        if (ShortInfo == "") { $.alert("簡介不可為空"); return; }
+
+
+        data.append('@Html.NameFor(m => m.MyClubEditModel.ClubId)', ClubId);
+        data.append('@Html.NameFor(m => m.MyClubEditModel.Address)', Address);
+        data.append('@Html.NameFor(m => m.MyClubEditModel.Tel)', Tel);
+        data.append('@Html.NameFor(m => m.MyClubEditModel.EMail)', EMail);
+        data.append('@Html.NameFor(m => m.MyClubEditModel.Social1)', Social1);
+        data.append('@Html.NameFor(m => m.MyClubEditModel.Social2)', Social2);
+        data.append('@Html.NameFor(m => m.MyClubEditModel.Social3)', Social3);
+        data.append('@Html.NameFor(m => m.MyClubEditModel.ShortInfo)', ShortInfo);
+
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+    }
+
+</script>
