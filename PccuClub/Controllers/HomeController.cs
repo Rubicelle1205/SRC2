@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebPccuClub.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace WebPccuClub.Controllers
 {
@@ -15,16 +16,21 @@ namespace WebPccuClub.Controllers
 
         public IActionResult Index()
         {
-            return View();
-        }
+            ViewBag.IP = HttpContext.Connection.RemoteIpAddress.ToString() == "::1" ? "127.0.0.1" : HttpContext.Connection.RemoteIpAddress.ToString();
+            
+            ViewBag.LoginID = LoginUser.LoginId;
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+            string strFun = string.Empty;
 
-        public IActionResult Login()
-        {
+            for(int i = 0; i <= LoginUser.UserRoleFun.Count -1; i++)
+            {
+                if(i != LoginUser.UserRoleFun.Count - 1)
+                    strFun += LoginUser.UserRoleFun[i].MenuName + "、";
+                else
+                    strFun += LoginUser.UserRoleFun[i].MenuName;
+            }
+            ViewBag.Fun = strFun;
+
             return View();
         }
 
