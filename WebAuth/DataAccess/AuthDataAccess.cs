@@ -120,6 +120,7 @@ namespace WebAuth.DataAccess
                            where 1 = 1
                              AND R.LoginId = @LoginId 
                              AND SM.BackOrFront = @BackOrFront
+                             AND SM.IsEnable = 1
                         ORDER BY SM.SortOrder";
 
             (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) result = dbAccess.DbaExecuteQuery<FunInfo>(SQL, parameter, false, null);
