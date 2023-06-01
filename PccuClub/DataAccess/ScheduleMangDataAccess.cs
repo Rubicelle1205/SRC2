@@ -98,7 +98,7 @@ AND (@ActHoldType IS NULL OR A.ActHoldType = @ActHoldType)
         /// <summary> 新增資料 </summary>
         public DbExecuteInfo InsertData(ScheduleMangViewModel vm, UserInfo LoginUser)
         {
-
+            DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 

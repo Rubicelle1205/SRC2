@@ -1,0 +1,289 @@
+﻿@model WebPccuClub.Models.AwardMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<head>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubID)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DisplayFor(m => m.EditModel.ClubID)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.SchoolYear)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇學年度", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Organizer)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Organizer, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.AwdActName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.AwdActName, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.AwdName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.AwdDate, new {@class = "form-control", type="date"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.AwdType)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.AwdType, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.AwdName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.AwdName, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            附件<span class="required">*</span><br /><span class="text-xs text-danger font-weight-normal">如:佐證圖檔，可上傳.jpeg,.jpg,.png</span></span>
+                                        </th>
+                                        <td>
+                                            <label class="btn btn-outline-primary mb-0">
+                                                @Html.TextBoxFor(m => m.EditModel.Attachment, new{ @class="filesupload", type="file", style="display:none;", accept=".jpeg,.jpg,.png"})
+                                                <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                            </label>
+                                            @if (!string.IsNullOrEmpty(Model.EditModel.Attachment))
+                                            {
+                                                <span class="text-sm mx-2 text-danger" id="filename">
+                                                    <i class="fa-solid fa-circle-exclamation"></i> 若重新上傳將會覆蓋原始檔案...
+                                                </span>
+                                                <br />
+                                                <a class="text-sm text-muted"
+                                                   href="@Html.DisplayFor(m => m.EditModel.Attachment)"
+                                                   target="_blank"><i class="fa-regular fa-file mr-2"></i>佐證圖檔</a>
+                                            }
+
+
+                                        </td>
+                                    </tr>
+                                    <tr class="table-warning">
+                                        <td colspan="2">
+                                            <span class="text-sm text-danger font-weight-bold">※請按照<a href=@Url.Action("DownloadTemplate") class="text-primary">Excel格式</a>進行修改</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            獲獎名冊<span class="required">*</span>
+                                            <span class="mx-1">
+                                                <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                            </span>
+                                        </th>
+                                        <td>
+                                            <label class="btn btn-outline-primary mb-0">
+                                                <input id="updFile" name="updFile" style="display:none;" class="filesupload" type="file" accept=".xlsx">
+                                                <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                            </label><span class="text-sm mx-2 text-muted" id="filename2">尚未選擇檔案...</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            上傳預覽<span class="required"></span><br /><span class="text-xs text-danger font-weight-normal"></span></span>
+                                        </th>
+                                        <td>
+                                            <div id="excelPreview"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">審核狀態<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.ActVerify ,(List<SelectListItem>)ViewBag.ddlAllActVerify,"請選擇審核狀態", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">備註<span class="required"></span></th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class="form-control", rows="5", placeholder="請輸入備註"})</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        @Html.HiddenFor(m => m.EditModel.AwdID)
+                        @Html.HiddenFor(m => m.EditModel.strGetAwd)
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </form>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+    $(document).ready(function () {
+        $('#updFile').change(function (e) {
+            var file = e.target.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var data = new Uint8Array(e.target.result);
+                var workbook = XLSX.read(data, { type: 'array' });
+
+                var sheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[sheetName];
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                $('#@Html.IdFor(m => m.EditModel.strGetAwd)').val(jsonData);
+                var html = '<table class="table">';
+                for (var i = 0; i < jsonData.length; i++) {
+                    html += '<tr>';
+                    for (var j = 0; j < jsonData[i].length; j++) {
+                        html += '<td>' + jsonData[i][j] + '</td>';
+                    }
+                    html += '</tr>';
+                }
+                html += '</table>';
+
+                $('#excelPreview').html(html);
+            };
+
+            reader.readAsArrayBuffer(file);
+        });
+    });
+
+    $('@Html.NameFor(m => m.EditModel.Attachment)').change(function (e) {
+        var geekss = e.target.files[0].name;
+        $('#filename').text(geekss);
+    });
+
+    $('#updFile').change(function (e) {
+        var geekss = e.target.files[0].name;
+        $('#filename2').text(geekss);
+    });
+
+    function SaveData() {
+
+        var data = new FormData()
+        var AwdID = $('#@Html.IdFor(m => m.EditModel.AwdID)').val();
+        var ClubID = $('#@Html.IdFor(m => m.EditModel.ClubID)').val();
+        var SchoolYear = $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val();
+        var Organizer = $('#@Html.IdFor(m => m.EditModel.Organizer)').val();
+        var AwdActName = $('#@Html.IdFor(m => m.EditModel.AwdActName)').val();
+        var AwdType = $('#@Html.IdFor(m => m.EditModel.AwdType)').val();
+        var AwdDate = $('#@Html.IdFor(m => m.EditModel.AwdDate)').val();
+        var AwdName = $('#@Html.IdFor(m => m.EditModel.AwdName)').val();
+        var ActVerify = $('#@Html.IdFor(m => m.EditModel.ActVerify)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+        var strGetAwd = $('#@Html.IdFor(m => m.EditModel.strGetAwd)').val();
+
+        var Attachment = $('#@Html.IdFor(m => m.EditModel.Attachment)')[0].files[0];
+        if (typeof Attachment !== 'undefined') {
+            var fileExtension = Attachment.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.EditModel.Attachment)', Attachment);
+        }
+
+        var File = $('#updFile')[0].files[0];
+        if (typeof File !== 'undefined') {
+            var fileExtension = File.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'xlsx') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.File)', File);
+        }
+
+        if (ClubID == "") { $.alert("社團代號不可為空白"); return; }
+        if (SchoolYear == "") { $.alert("學年度不可為空白"); return; }
+        if (Organizer == "") { $.alert("主辦單位不可為空白"); return; }
+        if (AwdActName == "") { $.alert("活動名稱不可為空白"); return; }
+        if (AwdType == "") { $.alert("獲獎類別不可為空白"); return; }
+        if (AwdDate == "") { $.alert("獲獎日期不可為空白"); return; }
+        if (AwdName == "") { $.alert("獎項名稱不可為空白"); return; }
+        if (ActVerify == "") { $.alert("審核狀態不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.AwdID)', AwdID);
+        data.append('@Html.NameFor(m => m.EditModel.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.EditModel.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.EditModel.Organizer)', Organizer);
+        data.append('@Html.NameFor(m => m.EditModel.AwdActName)', AwdActName);
+        data.append('@Html.NameFor(m => m.EditModel.AwdType)', AwdType);
+        data.append('@Html.NameFor(m => m.EditModel.AwdDate)', AwdDate);
+        data.append('@Html.NameFor(m => m.EditModel.AwdName)', AwdName);
+        data.append('@Html.NameFor(m => m.EditModel.ActVerify)', ActVerify);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+        data.append('@Html.NameFor(m => m.EditModel.strGetAwd)', strGetAwd);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+    function Reset() {
+        var ClubID = $('#@Html.IdFor(m => m.EditModel.ClubID)').val("");
+        var SchoolYear = $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val("");
+        var Organizer = $('#@Html.IdFor(m => m.EditModel.Organizer)').val("");
+        var AwdActName = $('#@Html.IdFor(m => m.EditModel.AwdActName)').val("");
+        var AwdType = $('#@Html.IdFor(m => m.EditModel.AwdType)').val("");
+        var AwdDate = $('#@Html.IdFor(m => m.EditModel.AwdDate)').val("");
+        var AwdName = $('#@Html.IdFor(m => m.EditModel.AwdName)').val("");
+        var ActVerify = $('#@Html.IdFor(m => m.EditModel.ActVerify)').val("");
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val("");
+        var strGetAwd = $('#@Html.IdFor(m => m.EditModel.strGetAwd)').val("");
+    }
+</script>
