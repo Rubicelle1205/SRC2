@@ -168,7 +168,7 @@ namespace WebPccuClub.DataAccess
 		}
 
 
-		public ClubHandover0101ViewModel GetHandover0101Data(string HoID)
+		public ClubHandover0101ViewModel GetHandover0101Data(string HoID, UserInfo Login)
 		{
 			string CommandText = string.Empty;
 			DataSet ds = new DataSet();
@@ -176,14 +176,17 @@ namespace WebPccuClub.DataAccess
 			DBAParameter parameters = new DBAParameter();
 
 			parameters.Add("@HoID", HoID);
+            parameters.Add("@ClubID", Login.LoginId);
 
 			#region 參數設定
 			#endregion
 
-			CommandText = $@"SELECT DocID, HoID, HoDetailID, ClubID, ClubName, UserName
-                               FROM HandOverDoc01 
+			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.ClubID, A.ClubName, A.UserName
+                               FROM HandOverDoc01 A
+                                LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
                               WHERE 1 = 1
-                                AND HoID = @HoID ";
+                                AND A.HoID = @HoID 
+                                AND B.ClubID = @ClubID";
 
 
 			(DbExecuteInfo info, IEnumerable<ClubHandover0101ViewModel> entitys) dbResult = DbaExecuteQuery<ClubHandover0101ViewModel>(CommandText, parameters, true, DBAccessException);
@@ -199,9 +202,36 @@ namespace WebPccuClub.DataAccess
 
 
 
+		#region 已上傳表單
 
+		public List<ClubHandoverHistroyResultModel> GetHistorySearchResult(ClubHandoverHistroyConditionModel vm, UserInfo LoginUser)
+		{
+			string CommandText = string.Empty;
+			DataSet ds = new DataSet();
 
+			DBAParameter parameters = new DBAParameter();
+			#region 參數設定
 
+			parameters.Add("@ClubId", LoginUser.LoginId);
+			parameters.Add("@SchoolYear", vm.SchoolYear == null ? PublicFun.GetNowSchoolYear() : vm.SchoolYear);
+
+			#endregion
+
+			CommandText = $@"SELECT A.HoID, A.HoDetailID, A.DocNo, C.Text AS DocNoText, B.SchoolYear, A.Created
+                               FROM HandOverDetail A
+                          LEFT JOIN HandOverMain B ON B.HoID = A.HoID
+                          LEFT JOIN Code C ON C.Code = A.DocNo AND C.Type = 'DocNo'
+                              WHERE B.SchoolYear = @SchoolYear";
+
+			(DbExecuteInfo info, IEnumerable<ClubHandoverHistroyResultModel> entitys) dbResult = DbaExecuteQuery<ClubHandoverHistroyResultModel>(CommandText, parameters, true, DBAccessException);
+
+			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+				return dbResult.entitys.ToList();
+
+			return new List<ClubHandoverHistroyResultModel>();
+		}
+
+		#endregion
 
 
 
@@ -225,7 +255,7 @@ namespace WebPccuClub.DataAccess
 			CommandText = $@"SELECT HoID
                               FROM HandOverMain
                              WHERE 1 = 1
-                               AND ClubID = '{ClubID}' AND SchoolYear = '{SchoolYear}'";
+                               AND ClubID = '{ClubID}' AND SchoolYear = '{SchoolYear}' AND HandOverStatus <> '04' ";
 
 
 			(DbExecuteInfo info, IEnumerable<RoleMangEditModel> entitys) dbResult = DbaExecuteQuery<RoleMangEditModel>(CommandText, parameters, true, DBAccessException);
@@ -233,6 +263,21 @@ namespace WebPccuClub.DataAccess
 			DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
 			return ds.Tables[0];
 		}
+
+		public List<SelectListItem> GetSchoolYear()
+		{
+			List<SelectListItem> LstItem = new List<SelectListItem>();
+
+			int NowSchoolYear = int.Parse(PublicFun.GetNowSchoolYear());
+
+			for (int i = NowSchoolYear - 2; i <= NowSchoolYear + 2; i++)
+			{
+				LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
+			}
+
+			return LstItem;
+		}
+
 
 
 		#endregion

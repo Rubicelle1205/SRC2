@@ -12,7 +12,12 @@ namespace WebPccuClub.Models
 
         public List<ClubHandoverCheckModel> CheckModel { get; set; }
 
-        public ClubHandover0101ViewModel Handover0101Model { get; set; }
+
+        public ClubHandoverHistroyConditionModel HistoryConditionModel { get; set; }
+		public List<ClubHandoverHistroyResultModel> HistoryResultModel { get; set; }
+
+
+		public ClubHandover0101ViewModel Handover0101Model { get; set; }
 
     }
 
@@ -36,9 +41,67 @@ namespace WebPccuClub.Models
         public string? HandOverStatus { get; set; }
     }
 
+    public class ClubHandoverHistroyConditionModel
+    {
+		public ClubHandoverHistroyConditionModel()
+		{
+			this.Page = 0;
+			this.PageSize = 10;
+			this.TotalCount = 0;
+		}
+
+		/// <summary> 目前頁數 </summary>
+		public int Page { get; set; }
+
+		/// <summary> 預設每頁顯示筆數 - 依需求更改 </summary>
+		public int PageSize { get; set; }
+
+		/// <summary> 總筆數 </summary>
+		public int TotalCount { get; set; }
+
+		/// <summary>學年度</summary>
+		[DisplayName("學年度")]
+		public string? SchoolYear { get; set; }
+	}
+
+	public class ClubHandoverHistroyResultModel
+	{
+        /// <summary>ID</summary>
+        [DisplayName("ID")]
+        public string? HoID { get; set; }
+
+        /// <summary>ID</summary>
+        [DisplayName("ID")]
+        public string? HoDetailID { get; set; }
+
+        /// <summary>文件編號</summary>
+        [DisplayName("文件編號")]
+        public string? DocNo { get; set; }
+
+        /// <summary>文件名稱</summary>
+        [DisplayName("文件名稱")]
+        public string? DocNoText { get; set; }
+
+        /// <summary>學年度</summary>
+		[DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>建立日期</summary>
+        [DisplayName("建立日期")]
+        public DateTime? Created { get; set; }
+        
+			
+			
+			
+			
+			
+			
+    }
 
 
-    public class ClubHandover0101ViewModel
+
+
+	public class ClubHandover0101ViewModel
     {
 		/// <summary>ID</summary>
 		[DisplayName("ID")]
@@ -60,4 +123,8 @@ namespace WebPccuClub.Models
 		[DisplayName("同意")]
 		public string? Agree { get; set; }
 	}
+
+
+
+
 }
