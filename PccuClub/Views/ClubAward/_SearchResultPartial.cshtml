@@ -1,22 +1,44 @@
-﻿@model WebPccuClub.Models.ClubListViewModel
+﻿@model WebPccuClub.Models.ClubAwardViewModel
 
 @if (Model.ResultModel.Count > 0)
 {
     foreach (var item in Model.ResultModel)
     {
-        <div class="col-lg-3 col-md-6">
-            <a id = "Detail" class="item" href="@Url.Action("Edit", "ClubList", new { id = item.ClubId })">
-                <div class="imgbox">
-                    <div class="imgbox__inner-6-9">
-                        <div class="image" style="background-image: url(@item.LogoPath);"></div>
+        <a href="@Url.Action("Edit", "ClubAward", new { id = item.AwdID })" class="listItem">
+            <div class="textbox">
+                <div class="serNum"><i class="fas fa-medal"></i> @item.AwdType </div>
+                <div class="title">@item.AwdActName @item.AwdName</div>
+                <div class="spec">
+                    <div class="tag">審核狀態：</div>
+                    <div class="content">
+
+                        @if (item.ActVerify == "01")
+                        {
+                            <div class="badge badge-primary">@item.ActVerifyText</div>
+                        }
+                        else if (item.ActVerify == "02")
+                        {
+                            <div class="badge badge-success">@item.ActVerifyText</div>
+                        }
+                        else if (item.ActVerify == "03")
+                        {
+                            <div class="badge badge-secondary">@item.ActVerifyText</div>
+                        }
+                        else if (item.ActVerify == "04")
+                        {
+                            <div class="badge badge-info">@item.ActVerifyText</div>
+                        }
                     </div>
                 </div>
-                <div class="textbox">
-                    <div class="num">@item.ClubId<span class="badge badge-primary badge-sm ms-2">@item.ClubClassText</span></div>
-                    <div class="title">@item.ClubCName</div>
+                <div class="spec">
+                    <div class="tag">獲獎日期：</div>
+                    <div class="content">@item.AwdDate.Value.ToString("yyyy/MM/dd")</div>
                 </div>
-            </a>
-        </div>
+            </div>
+            <div class="icon">
+                查看 <i class="fas fa-chevron-right"></i>
+            </div>
+        </a>
     }
 }
 

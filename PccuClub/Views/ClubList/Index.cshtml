@@ -21,7 +21,7 @@
                             <i class="fas fa-filter text-primary"></i>
                             @Html.DropDownListFor(m => m.ConditionModel.ClubClass,(List<SelectListItem>)ViewBag.ddlClubClass,"請選擇", new {@class = "form-control ms-3"})
                         </div>
-                        <input type="button" style="visibility:hidden;" value="" onclick="GoSearch()">
+                        
                         @Html.HiddenFor(m => m.ConditionModel.Page)
                         @Html.HiddenFor(m => m.ConditionModel.PageSize)
                         @Html.HiddenFor(m => m.ConditionModel.TotalCount)

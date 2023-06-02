@@ -1,0 +1,111 @@
+﻿@model WebPccuClub.Models.ClubAwardViewModel
+
+@{
+    Layout = "_FrontLayout";
+}
+
+@if (null != Model.EditModel)
+{
+    <div class="col-xxl-8">
+        <div class="contentWrapper">
+            <h4 class="pageTitle">@Model.EditModel.AwdActName @Model.EditModel.AwdName</h4>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index")">校外獲獎紀錄</a></li>
+                    <li class="breadcrumb-item active">@Model.EditModel.AwdActName @Model.EditModel.AwdName</li>
+                </ol>
+            </nav>
+            <hr>
+            <div class="mb-4">
+                <a id="Back" href="@Url.Action("Index")"><i class="fas fa-chevron-left"></i> 返回</a>
+            </div>
+
+            <div class="infoWrapper mb-4">
+                <div class="infoItem">
+                    <div class="tag">審核狀態</div>
+                    <div class="content">
+                        @if (Model.EditModel.ActVerify == "01")
+                        {
+                            <div class="badge badge-primary">@Model.EditModel.ActVerifyText</div>
+                        }
+                        else if (Model.EditModel.ActVerify == "02")
+                        {
+                            <div class="badge badge-success">@Model.EditModel.ActVerifyText</div>
+                        }
+                        else if (Model.EditModel.ActVerify == "03")
+                        {
+                            <div class="badge badge-secondary">@Model.EditModel.ActVerifyText</div>
+                        }
+                        else if (Model.EditModel.ActVerify == "04")
+                        {
+                            <div class="badge badge-info">@Model.EditModel.ActVerifyText</div>
+                        }
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">審核備註</div>
+                    <div class="content">@Model.EditModel.Memo</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">申請社團</div>
+                    <div class="content">@Model.EditModel.ClubID</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動名稱</div>
+                    <div class="content">@Model.EditModel.AwdActName</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">獲獎日期</div>
+                    <div class="content">@Model.EditModel.AwdDate.Value.ToString("yyyy/MM/dd")</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">獲獎類別</div>
+                    <div class="content">@Model.EditModel.AwdType</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">獎項名稱</div>
+                    <div class="content">@Model.EditModel.AwdName</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主辦單位</div>
+                    <div class="content">@Model.EditModel.Organizer</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">獲獎證明</div>
+                    <div class="content">
+                        <a href="../@Model.EditModel.Attachment" target="_blank">檔案連結</a>
+                    </div>
+                </div>
+            </div>
+
+            @if (null != Model.DetailModel && Model.DetailModel.Count > 0)
+            {
+                <div class="text-center">
+                    <div class="ribbon-title text-4 font-weight-bold text-center">- 獲獎名冊 -</div>
+                </div>
+                <table class="table table-bordered table-hover table-responsive">
+                    <thead>
+                        <tr style="background-color: #eef3f2;">
+                            <th width="34%">系級</th>
+                            <th width="32%">姓名</th>
+                            <th width="34%">學號</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var item in Model.DetailModel)
+                        {
+                            <tr>
+                                <td>@item.Department</td>
+                                <td>@item.Name</td>
+                                <td>@item.SNO</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                
+            }
+            
+
+        </div>
+    </div>
+}

@@ -1,0 +1,68 @@
+﻿@model WebPccuClub.Models.ClubAwardViewModel
+
+@{
+    Layout = "_FrontLayout";
+}
+
+<div class="col-xxl-8 col-xl-10">
+	
+	@Html.Partial("_FrontRemindWrapper")
+
+	<div class="contentWrapper">
+		<h4 class="pageTitle">校外獲獎紀錄</h4>
+		<hr>
+		<div class="row">
+            <div class="col-md-3">
+                <form method="post" id="SearchForm" enctype="multipart/form-data" action="">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-filter text-primary"></i>
+                        @Html.DropDownListFor(m => m.ConditionModel.SchoolYear,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇", new {@class = "form-control ms-3"})
+
+                    </div>
+                    @Html.HiddenFor(m => m.ConditionModel.Page)
+                    @Html.HiddenFor(m => m.ConditionModel.PageSize)
+                    @Html.HiddenFor(m => m.ConditionModel.TotalCount)
+                </form>
+			</div>
+			<div class="col-md-9">
+				<div class="text-end mb-3">
+					<button class="btn btn-secondary-scale-2 btn-modern border-0" type="button">匯出獲獎名冊</button>
+					<a class="btn btn-primary btn-modern border-0" href="@Url.Action("Create")">新增獲獎紀錄 <i class="fas fa-plus"></i></a>
+				</div>
+			</div>
+		</div>
+
+		<div id="SearchResultList" class="pagelist"></div>
+
+	</div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        GoSearch();
+    });
+
+    function GoSearch() {
+        SendAjax({
+            url: '@Url.Action("GetSearchResult")',
+            data: $("#SearchForm").serialize(),
+            success: function (result) {
+                $('#SearchResultList').html(result);
+            }
+        });
+    }
+
+    $('#@Html.IdFor(m => m.ConditionModel.SchoolYear)').change(function (e) {
+        GoSearch();
+    });
+
+    $('#JumpPergroup').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val(e.target.value);
+        GoSearch();
+    });
+
+    $('#Jumppage').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.Page)").val(e.target.value);
+        GoSearch();
+    });
+</script>

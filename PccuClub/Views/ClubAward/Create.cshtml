@@ -1,0 +1,173 @@
+﻿@model WebPccuClub.Models.ClubAwardViewModel
+
+@{
+    Layout = "_FrontLayout";
+}
+
+
+<div class="col-xxl-8 col-xl-8">
+    <div class="contentWrapper">
+        <h4 class="pageTitle">新增校外獲獎紀錄</h4>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index")">校外獲獎紀錄</a></li>
+                <li class="breadcrumb-item active">新增校外獲獎紀錄</li>
+            </ol>
+        </nav>
+        <hr>
+        <div class="mb-4">
+            <a id="Back" href="@Url.Action("Index")"><i class="fas fa-chevron-left"></i> 返回</a>
+        </div>
+
+        <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
+        <p class="text-center hint"><i class="fas fa-info-circle"></i> 所有校外獲獎資料送出後，將先由行政老師進行審核。</p>
+        <div action="" class="form-box checkthisform" enctype="multipart/form-data" method="post">
+            <div class="text-4 font-weight-bold py-2"><i class="fas fa-tag"></i> 獲獎基本資料</div>
+            <div class="infoWrapper mb-4">
+                <div class="infoItem">
+                    <div class="tag">活動名稱<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.CreateModel.AwdActName, new { @class="form-control", placeholder="活動名稱" })
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">獲獎日期<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.CreateModel.AwdDate, new { @class="form-control", type="date", placeholder="獲獎日期" })
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">獲獎類別<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.CreateModel.AwdType, new { @class="form-control", placeholder="獲獎類別" })
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">獎項名稱<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.CreateModel.AwdName, new { @class="form-control", placeholder="獎項名稱" })
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主辦單位<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.CreateModel.Organizer, new { @class="form-control", placeholder="主辦單位" })
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="text-4 font-weight-bold py-2"><i class="fas fa-tag"></i> 上傳附件</div>
+            <div class="infoWrapper mb-5">
+                <div class="infoItem">
+                    <div class="tag">獲獎名冊<span class="req-star">*</span></div>
+                    <div class="content">
+                        <input id="updFile" type="file" class="form-control w-auto" title="請上傳獲獎名冊" accept=".xlsx">
+                        <div class="fs-90percent red-hint pt-2">僅接受以下格式：.xlsx</div>
+
+                        <div class="hint pt-0">
+                            <i class="fas fa-info-circle"></i> 下載範例檔案：
+                            <a href="@Url.Action("DownloadTemplate")" target="_blank" title="範例下載">範例下載</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">獲獎證明<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.CreateModel.Attachment, new{ @class="filesupload", type="file", accept=".jpeg,.jpg,.png"})
+                        <div class="fs-90percent red-hint pt-2">僅接受以下格式：.jpeg,.jpg,.png</div>
+                    </div>
+                </div>
+            </div>
+
+            @Html.HiddenFor(m => m.CreateModel.SchoolYear)
+
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-4">
+                    <button type="button" class="submit-btn btn btn-primary btn-modern border-0 w-100" onclick="SaveData()">送出審核<i class="icon-check"></i></button>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+
+<script>
+
+    function SaveData() {
+
+        var data = new FormData()
+        var SchoolYear = $('#@Html.IdFor(m => m.CreateModel.SchoolYear)').val();
+        var Organizer = $('#@Html.IdFor(m => m.CreateModel.Organizer)').val();
+        var AwdActName = $('#@Html.IdFor(m => m.CreateModel.AwdActName)').val();
+        var AwdType = $('#@Html.IdFor(m => m.CreateModel.AwdType)').val();
+        var AwdDate = $('#@Html.IdFor(m => m.CreateModel.AwdDate)').val();
+        var AwdName = $('#@Html.IdFor(m => m.CreateModel.AwdName)').val();
+
+        var Attachment = $('#@Html.IdFor(m => m.CreateModel.Attachment)')[0].files[0];
+        if (typeof Attachment !== 'undefined') {
+            var fileExtension = Attachment.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.CreateModel.Attachment)', Attachment);
+        }
+
+        var File = $('#updFile')[0].files[0];
+        if (typeof File !== 'undefined') {
+            var fileExtension = File.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'xlsx') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.File)', File);
+        }
+
+
+        if (Organizer == "") { $.alert("主辦單位不可為空白"); return; }
+        if (AwdActName == "") { $.alert("活動名稱不可為空白"); return; }
+        if (AwdType == "") { $.alert("獲獎類別不可為空白"); return; }
+        if (AwdDate == "") { $.alert("獲獎日期不可為空白"); return; }
+        if (AwdName == "") { $.alert("獎項名稱不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.CreateModel.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.CreateModel.Organizer)', Organizer);
+        data.append('@Html.NameFor(m => m.CreateModel.AwdActName)', AwdActName);
+        data.append('@Html.NameFor(m => m.CreateModel.AwdType)', AwdType);
+        data.append('@Html.NameFor(m => m.CreateModel.AwdDate)', AwdDate);
+        data.append('@Html.NameFor(m => m.CreateModel.AwdName)', AwdName);
+
+
+        SendAjax({
+            url: '@Url.Action("SaveNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+</script>
