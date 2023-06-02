@@ -1,0 +1,55 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+    Layout = "_FrontLayout";
+}
+
+<div class="col-xxl-8 col-xl-8">
+    <div class="contentWrapper">
+        <h4 class="pageTitle">社團負責人改選管理</h4>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index")">交接資料管理</a></li>
+                <li class="breadcrumb-item active">社團負責人改選管理</li>
+            </ol>
+        </nav>
+        <hr>
+        <div class="mb-4">
+            <a href="@Url.Action("Index")"><i class="fas fa-chevron-left"></i> 返回</a>
+        </div>
+        <h4 class="hint"><i class="fas fa-info-circle"></i> 需填寫下列表格，送出表單並印出簽章後，請自行掃描彙整成電子檔案上傳系統</h4>
+
+
+        <div class="handlist mb-4">
+            <div class="item">
+                <span class="num">01</span>
+                <div class="box">
+                    <a href="@Url.Action("HandOver0101")" target="_blank">個人資料告知暨同意書</a>
+                </div>
+            </div>
+            <div class="item">
+                <span class="num">02</span>
+                <div class="box">
+                    <a href="@Url.Action("HandOver0102")" target="_blank">改選會議概要</a>
+                </div>
+            </div>
+            <div class="item">
+                <span class="num">03</span>
+                <div class="box">
+                    <a href="@Url.Action("HandOver0103")" target="_blank">社團負責人資訊</a>
+                </div>
+            </div>
+
+        </div>
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-4 col-8">
+                <a class="btn btn-primary btn-modern border-0 w-100" href="@Url.Action("HandOverFile01")">檔案上傳</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+</script>

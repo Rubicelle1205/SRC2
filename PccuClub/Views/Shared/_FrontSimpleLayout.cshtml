@@ -1,5 +1,32 @@
-﻿@{
+﻿@using PccuClub.WebAuth;
+@using WebPccuClub.Global.Extension;
+@using Microsoft.AspNetCore.Http
 
+@{
+    UserInfo LoginUser = Context.Session.GetObject<UserInfo>("LoginUser");
+
+    string UnitName = string.Empty;
+    string LoginId = string.Empty;
+    string LoginName = string.Empty;
+    string LastLoginDate = string.Empty;
+
+    if (LoginUser != null)
+    {
+        UnitName = LoginUser.UserRole[0].RoleName != null ? LoginUser.UserRole[0].RoleName : "訪客";
+        LoginId = LoginUser.LoginId;
+        LoginName = LoginUser.UserName;
+        LastLoginDate = LoginUser.LastLoginDate.Value.ToString("yyyy/MM/dd HH:mm");
+    }
+    string baseurl = SystemMenu.GetSubUrl();
+    string homeurl = $"{baseurl}/ClubList";
+    string logouturl = $@"{baseurl}/FrontLogin/Logout";
+
+    var router = Context.Request.RouteValues;
+    var path = router["controller"];
+
+    //string sitemap = LoginUser.GetUserSiteMap(path);
+    string headHtml = LoginUser.CreateFrontUserHeadMenu(baseurl, path);
+    string menuHtml = LoginUser.CreateFrontUserMenu(baseurl, path);
 }
 
 
@@ -70,8 +97,78 @@
 </head>
 
 <body>
+    <div class="body mt-0">
 
-    @RenderBody()
+        <header id="header" class="" data-plugin-options="{'stickyScrollUp': true, 'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': false, 'stickyChangeLogo': true, 'stickyStartAt': 42, 'stickyHeaderContainerHeight': 70}">
+            <div class="header-body header-body-bottom-border border-top-0">
+                <div class="header-container container p-static">
+                    <div class="header-row">
+                        <div class="header-column">
+                            <div class="header-row position-relative">
+                                <div class="header-logo">
+                                    <a href="@Url.Action("Index","ClubList")">
+                                        <img src="~/images/front/logo_circle.png" class="img-fluid" alt="" />
+                                    </a>
+                                </div>
+                                <a href="@Url.Action("Index","ClubList")" class="headerTitle">中國文化大學社團資訊系統</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="headerBottom">
+                    <div class="header-container container h-auto">
+                        <div class="header-row">
+                            <div class="header-column justify-content-end">
+                                <div class="header-row">
+                                    <div class="header-nav header-nav-line header-nav-bottom-line header-nav-bottom-line-effect-1">
+                                        <div class="header-nav-main header-nav-main-text-capitalize header-nav-main-square header-nav-main-arrows header-nav-main-dropdown-no-borders header-nav-main-effect-2 header-nav-main-sub-effect-1">
+                                            <nav class="collapse">
+                                                <ul class="nav nav-pills" id="mainNav">
+                                                    @if (LoginUser != null)
+                                                    {
+                                                        @Html.Raw(headHtml)
+                                                        <li>
+                                                            <a class="nav-link" href="@logouturl">
+                                                                登出<i class="fas fa-sign-out-alt ms-1"></i>
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                    <button class="btn header-btn-collapse-nav" data-bs-toggle="collapse"
+                                            data-bs-target=".header-nav-main nav">
+                                        <i class="fas fa-bars"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div role="main" class="main">
+            <div class="container-fluid p-relative py-md-5 py-4">
+                <div class="row justify-content-center">
+
+                    @RenderBody()
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    @Html.Partial("_MsgPartial")
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    @await RenderSectionAsync("Scripts", required: false)
+
+    @Html.Partial("_FrontLoginFooter")
 
 </body>
 

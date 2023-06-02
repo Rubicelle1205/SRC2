@@ -1,0 +1,149 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+    Layout = "_FrontLayout";
+}
+
+<div class="col-xxl-8 col-xl-10">
+	
+	@Html.Partial("_FrontRemindWrapper")
+
+	@if (null != Model.CheckModel && Model.CheckModel.Count > 0)
+	{
+		<div class="contentWrapper">
+			<h4 class="pageTitle">交接資料管理</h4>
+			<hr>
+			<h4 class="hint"><i class="fas fa-info-circle"></i> 需填寫下列表格，送出表單並印出簽章後，請自行掃描彙整成電子檔案上傳系統</h4>
+			<div class="handNavlist my-4">
+				<div class="row">
+					<div class="col-md-4">
+						<div class="item">
+							<div class="num"><i class="far fa-file-alt"></i></div>
+							<div class="topbox position-relative">
+								<h4>社團負責人改選管理</h4>
+								<ul>
+									<li>個人資料告知暨同意書</li>
+									<li>改選會議概要</li>
+									<li>社團負責人資訊</li>
+								</ul>
+							</div>
+							<div class="text-center position-relative">
+								<a class="btn btn-primary w-100" href="@Url.Action("HandOver01")">開始填寫 <i class="fas fa-pen"></i></a>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="item">
+							<div class="num"><i class="far fa-file-alt"></i></div>
+							<div class="topbox position-relative">
+								<h4>交接準備</h4>
+								<ul>
+									<li>交接資料封面</li>
+									<li>社團財產清冊</li>
+									<li>社團收支結算表</li>
+								</ul>
+							</div>
+							<div class="text-center position-relative">
+								<a class="btn btn-primary w-100" href="@Url.Action("HandOver02")">開始填寫 <i class="fas fa-pen"></i></a>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="item">
+							<div class="num"><i class="far fa-file-alt"></i></div>
+							<div class="topbox position-relative">
+								<h4>新任營運資訊</h4>
+								<ul>
+									<li>社團指導老師資訊</li>
+									<li>社團存簿影本及印鑑</li>
+								</ul>
+							</div>
+							<div class="text-center position-relative">
+								<a class="btn btn-primary w-100" href="@Url.Action("HandOver03")">開始填寫 <i class="fas fa-pen"></i></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr class="my-5">
+			<div class="pagelist">
+				<a href="@Url.Action("HandOverHistory")" class="listItem">
+					<div class="textbox ">
+						<div class="title font-weight-bold mb-0">已填寫表單</div>
+						<p class="fs-90percent mb-0">表單填寫紀錄查看/列印</p>
+					</div>
+					<div class="icon"><i class="fas fa-chevron-right"></i></div>
+				</a>
+				<a href="@Url.Action("HandOverFile")" class="listItem">
+					<div class="textbox ">
+						<div class="title font-weight-bold mb-0">已上傳檔案</div>
+						<p class="fs-90percent mb-0">已上傳的交接檔案紀錄</p>
+					</div>
+					<div class="icon"><i class="fas fa-chevron-right"></i></div>
+				</a>
+			</div>
+
+		</div>
+
+	}
+	else
+	{
+		<div class="contentWrapper">
+			<h4 class="pageTitle">交接資料管理</h4>
+			<hr>
+			<h4 class="hint"><i class="fas fa-info-circle"></i>請先送出交接作業申請，待審核老師確認後始可進行交接作業</h4>
+			<div class="handNavlist my-4" style="text-align:center;">
+				<div class="row" style="justify-content:center;">
+					<div class="col-md-4">
+						<div class="item">
+							<div class="num"><i class="far fa-file-alt"></i></div>
+							<div class="topbox position-relative">
+								<h4>交接作業申請</h4>
+							</div>
+							<div class="text-center position-relative">
+								<button type="button" name="submitBtn" class="btn btn-primary w-100" onclick="SaveEditData()">申請</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+
+		</div>
+	}
+
+	
+</div>
+
+<script>
+
+    function SaveEditData() {
+
+        var data = new FormData()
+
+        SendAjax({
+            url: '@Url.Action("SendNewHandOver")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "已送出交接作業申請",
+                        buttons: {
+                            確定: function () {
+                                location.reload();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+    }
+</script>
