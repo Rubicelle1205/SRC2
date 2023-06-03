@@ -767,8 +767,8 @@ namespace WebPccuClub.Controllers
 
                 var dbResult = dbAccess.UpdateFileDetailToNoUse(HoID, "01", LoginUser);
 
-                if (!dbResult.isSuccess)
-                {
+				if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
+				{
                     dbAccess.DbaRollBack();
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "儲存失敗";
@@ -858,7 +858,7 @@ namespace WebPccuClub.Controllers
 
 				var dbResult = dbAccess.UpdateFileDetailToNoUse(HoID, "02", LoginUser);
 
-				if (!dbResult.isSuccess)
+				if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
 				{
 					dbAccess.DbaRollBack();
 					vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
@@ -949,7 +949,7 @@ namespace WebPccuClub.Controllers
 
 				var dbResult = dbAccess.UpdateFileDetailToNoUse(HoID, "03", LoginUser);
 
-				if (!dbResult.isSuccess)
+				if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
 				{
 					dbAccess.DbaRollBack();
 					vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
