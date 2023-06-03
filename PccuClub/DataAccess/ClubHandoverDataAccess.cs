@@ -709,7 +709,92 @@ namespace WebPccuClub.DataAccess
 
 		#endregion
 
+		#region Doc 0206
 
+		public DbExecuteInfo Insert0206(ClubHandoverViewModel vm, UserInfo LoginUser, string HoID, string HoDetailID)
+		{
+			DataSet ds = new DataSet();
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			parameters.Add("@HoID", HoID);
+			parameters.Add("@HoDetailID", HoDetailID);
+			parameters.Add("@SchoolYear", vm.Handover0206Model.SchoolYear);
+			parameters.Add("@ClubID", vm.Handover0206Model.ClubID);
+			parameters.Add("@ClubName", vm.Handover0206Model.ClubName);
+			parameters.Add("@Sheet", vm.Handover0206Model.Sheet);
+			parameters.Add("@InnerFile", vm.Handover0206Model.InnerFile);
+			parameters.Add("@SheetName", vm.Handover0206Model.SheetName);
+			parameters.Add("@InnerFileName", vm.Handover0206Model.InnerFileName);
+			parameters.Add("@LoginId", LoginUser.LoginId);
+			#endregion 參數設定
+
+			string CommendText = $@"INSERT INTO HandOverDoc06
+                                               (HoID, 
+                                                HoDetailID,
+                                                SChoolYear, 
+                                                ClubID, 
+                                                ClubName, 
+                                                Sheet, 
+                                                InnerFile, 
+                                                SheetName, 
+                                                InnerFileName, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         VALUES
+                                               (@HoID, 
+                                                @HoDetailID,
+                                                @SChoolYear, 
+                                                @ClubID, 
+                                                @ClubName, 
+                                                @Sheet, 
+                                                @InnerFile, 
+                                                @SheetName, 
+                                                @InnerFileName, 
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE())";
+
+			ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+			return ExecuteResult;
+		}
+
+
+		public ClubHandover0206ViewModel GetHandover0206Data(string HoID, UserInfo Login)
+		{
+			string CommandText = string.Empty;
+			DataSet ds = new DataSet();
+
+			DBAParameter parameters = new DBAParameter();
+
+			parameters.Add("@HoID", HoID);
+			parameters.Add("@ClubID", Login.LoginId);
+
+			#region 參數設定
+			#endregion
+
+			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.SchoolYear, A.ClubID, A.ClubName, A.Sheet, A.InnerFile, A.SheetName, A.InnerFileName
+                               FROM HandOverDoc06 A
+                          LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
+                              WHERE 1 = 1
+                                AND A.HoID = @HoID 
+                                AND B.ClubID = @ClubID";
+
+
+			(DbExecuteInfo info, IEnumerable<ClubHandover0206ViewModel> entitys) dbResult = DbaExecuteQuery<ClubHandover0206ViewModel>(CommandText, parameters, true, DBAccessException);
+
+			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+				return dbResult.entitys.ToList().FirstOrDefault();
+
+			return null;
+		}
+
+		#endregion
 
 
 

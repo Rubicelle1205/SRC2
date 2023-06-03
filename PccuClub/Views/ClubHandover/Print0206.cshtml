@@ -1,0 +1,55 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+	Layout = "_FrontCleanLayout";
+
+}
+
+<div class="a4 page">
+	<div class="container-fluid">
+		<div class="row justify-content-center">
+			<div class="col-xxl-8">
+				<div class="row justify-content-center">
+					<div class="col-11">
+						<h3 class="text-center text-5 mb-2"><u>@Model.Handover0206Model.SchoolYear</u>學年度收入支出結算表</h3>
+						<table class="table table-bordered">
+							<tbody>
+								<tr>
+									<td width="25%">
+										<label for="">社團代碼：</label>
+									</td>
+									<td width="75%">@Model.Handover0206Model.ClubID</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">社團名稱：</label>
+									</td>
+									<td class="">@Model.Handover0206Model.ClubName</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">收入支出結算表：</label>
+									</td>
+									<td class="">@Model.Handover0206Model.SheetName</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">存簿內頁檔案：</label>
+									</td>
+									<td class="">@Model.Handover0206Model.InnerFileName</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="text-center pt-3">
+			<button class="print-btn btn btn-secondary btn-modern px-5" type="button">列印</button>
+		</div>
+	</div>
+
+</div>
+

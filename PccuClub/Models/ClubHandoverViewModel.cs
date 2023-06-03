@@ -419,7 +419,17 @@ namespace WebPccuClub.Models
 		public string? ClubPropertyName { get; set; }
 		public string? SchoolPropertyName { get; set; }
 	}
-    public class ClubHandover0206ViewModel { }
+    public class ClubHandover0206ViewModel 
+    {
+		public string? SchoolYear { get; set; }
+		public string? ClubID { get; set; }
+		public string? ClubName { get; set; }
+		public string? Sheet { get; set; }
+		public string? InnerFile { get; set; }
+		public string? SheetName { get; set; }
+		public string? InnerFileName { get; set; }
+
+	}
     public class ClubHandover0307ViewModel { }
     public class ClubHandover0308ViewModel { }
     public class ClubHandover0309ViewModel { }
