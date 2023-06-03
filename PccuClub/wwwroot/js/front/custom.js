@@ -624,7 +624,7 @@ $(document).ready(function(){
     }
 
     if($(".target_list").length > 0){
-        $(document).on('click','#add_input_btn',function(){
+        $(document).on('click', '#add_input_btn', function () {
             var addItem = '<div class="item mb-2"><input type="file" class="form-control w-auto" title="請上傳附件檔案" accept=".pdf,.zip,.rar,.7z"><button class="del-btn hidden" type="button"><i class="fas fa-times"></i></button></div>';
             var addItem2 = '<div class="item mb-2"><input type="file" class="form-control w-auto" title="請上傳附件檔案" accept=".docx,.doc,.odt,.pdf"><button class="del-btn hidden" type="button"><i class="fas fa-times"></i></button></div>'
             checkNum()

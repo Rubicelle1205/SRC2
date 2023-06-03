@@ -1,32 +1,53 @@
 ﻿@model WebPccuClub.Models.ClubHandoverViewModel
 
 
-@if (Model.HistoryResultModel.Count > 0)
+@if (Model.FileResultModel.Count > 0)
 {
-    <div class="pagelist pagelist-icon2">
-    @foreach (var item in Model.HistoryResultModel)
-    {
-        <div class="listItem">
-            <div class="textbox">
-                    <div class="title">@item.DocTypeText</div>
-                <div class="spec">
-                    <div class="tag">學年度：</div>
-                    <div class="content">@item.SchoolYear</div>
+    <div class="handoverlist">
+        @foreach (var item in Model.FileResultModel)
+        {
+            <div class="listItem">
+                <div class="item">
+                    <div class="tag">資料分類</div>
+                    <div class="content">@item.HandOverClassText</div>
                 </div>
-                <div class="spec">
-                    <div class="tag">上傳時間：</div>
+
+                <div class="item">
+                    <div class="tag">上傳時間</div>
                     <div class="content">@item.Created.Value.ToString("yyyy/MM/dd")</div>
                 </div>
-            </div>
-                <a href="@Url.Action("HandOver0101", new { id = @item.HoID })" target="_blank" class="icon">
-                編輯 <i class="fas fa-pen"></i>
-            </a>
-            <a href="@Url.Action("Print0101", new { id = @item.HoID })" target="_blank" class="icon">
-                列印 <i class="fas fa-print"></i>
-            </a>
-        </div>
+                <div class="item">
+                    <div class="tag">審核狀態</div>
+                    <div class="content">
+                        <div class="badge badge-primary">@item.ActVerifyText</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="tag">審核備註</div>
+                    <div class="content">
+                        @if (!string.IsNullOrEmpty(item.VerifyMemo))
+                        {
+                            @item.VerifyMemo
+                        }
+                        else
+                        {
+                            <label>無</label>
+                        }
+                    </div>
+                </div>
+                <div class="item doclist">
+                    <div class="content">
 
-    }
+                        @for(int i = 0; i <= item.FileData.Count -1; i++)
+                        {
+                            <div class="mb-1">
+                                <a class="text-decoration-underline" href="@item.FileData[i].FilePath" target="_blank">@string.Format("檔案{0}", i + 1)</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 }
 
@@ -50,18 +71,18 @@
             pEver: "每頁顯示 {{:pever}} 筆 / 共 {{:ptotleever}} 筆",
             pageSelectedHtml: "active",
         },
-        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.HistoryConditionModel.Page)']").val()) + 1,
-        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.HistoryConditionModel.PageSize)']").val()),
+        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.FileConditionModel.Page)']").val()) + 1,
+        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.FileConditionModel.PageSize)']").val()),
 
-    @Model.HistoryConditionModel.TotalCount,
+    @Model.FileConditionModel.TotalCount,
         changePage
     );
 
     function changePage(idx) {
         //動畫
-        $('#SearchForm').find("input[name='@Html.NameFor(m => m.HistoryConditionModel.Page)']").val(idx - 1);
+        $('#SearchForm').find("input[name='@Html.NameFor(m => m.FileConditionModel.Page)']").val(idx - 1);
         //取頁面數
-        $("#@Html.IdFor(m => m.HistoryConditionModel.Page)").val(idx - 1);
+        $("#@Html.IdFor(m => m.FileConditionModel.Page)").val(idx - 1);
 
         GoSearch();
     }

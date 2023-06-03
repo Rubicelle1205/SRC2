@@ -87,8 +87,9 @@ namespace WebPccuClub.Controllers
 			return Json(vmRtn);
 		}
 
+        #region 已填寫表單
 
-		[Log(LogActionChineseName.已填寫表單)]
+        [Log(LogActionChineseName.已填寫表單)]
 		public IActionResult HandOverHistory()
 		{
 			ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
@@ -113,15 +114,57 @@ namespace WebPccuClub.Controllers
 
 			return PartialView("_SearchHistoryResultPartial", vm);
 		}
-		
+
+        #endregion
+
+        #region 已上傳檔案
+
+        [Log(LogActionChineseName.已上傳檔案)]
+        public IActionResult HandOverFile()
+        {
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            vm.FileConditionModel = new ClubHandoverFileConditionModel();
+            vm.FileConditionModel.SchoolYear = PublicFun.GetNowSchoolYear();
+
+            return View(vm);
+        }
+
+        [LogAttribute(LogActionChineseName.查詢)]
+        public IActionResult GetFileSearchResult(ClubHandoverViewModel vm)
+        {
+            vm.FileResultModel = dbAccess.GetFileSearchResult(vm.FileConditionModel, LoginUser).ToList();
+
+            if (vm.FileResultModel.Count > 0)
+            {
+                for (int i = 0; i <= vm.FileResultModel.Count - 1; i++)
+                {
+                    string DetailID = vm.FileResultModel[i].HoDetailID;
+
+                    List<ClubHandoverFileDataModel> LstFileData = dbAccess.GetAllFileData(DetailID);
+
+                    vm.FileResultModel[i].FileData = LstFileData;
+                }
+            }
+
+            #region 分頁
+            vm.FileConditionModel.TotalCount = vm.FileResultModel.Count();
+            int StartRow = vm.FileConditionModel.Page * vm.FileConditionModel.PageSize;
+            vm.FileResultModel = vm.FileResultModel.Skip(StartRow).Take(vm.FileConditionModel.PageSize).ToList();
+            #endregion
+
+            return PartialView("_SearchFileResultPartial", vm);
+        }
+
+        #endregion
+
+        #region 表單撰寫
+
+        #region 0101
 
 
-		#region 表單撰寫
-
-		#region 0101
-
-
-		[Log(LogActionChineseName.社團負責人改選管理)]
+        [Log(LogActionChineseName.社團負責人改選管理)]
 		public IActionResult HandOver01()
 		{
 			return View();
@@ -229,11 +272,6 @@ namespace WebPccuClub.Controllers
             return View();
         }
 
-        [Log(LogActionChineseName.社團負責人改選管理)]
-        public IActionResult HandOverFile01()
-        {
-            return View();
-        }
 
         [Log(LogActionChineseName.交接準備)]
 		public IActionResult HandOver02()
@@ -259,11 +297,7 @@ namespace WebPccuClub.Controllers
             return View();
         }
 
-        [Log(LogActionChineseName.交接準備)]
-        public IActionResult HandOverFile02()
-        {
-            return View();
-        }
+
 
         [Log(LogActionChineseName.新任營運資訊)]
 		public IActionResult HandOver03()
@@ -289,18 +323,118 @@ namespace WebPccuClub.Controllers
             return View();
         }
 
+
+
+        #endregion
+
+        #region 檔案上傳
+
+        [Log(LogActionChineseName.社團負責人改選管理)]
+        public IActionResult HandOverFile01()
+        {
+            DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
+            string HoID = dt.QueryFieldByDT("HoID");
+
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            vm.FileDetailModel = dbAccess.GetFileDetail(HoID, LoginUser, "01");
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.新增儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> SaveFile01(ClubHandoverViewModel vm)
+        {
+            try
+            {
+                DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
+                string HoID = dt.QueryFieldByDT("HoID");
+
+                vm.LstFileEditModel = new List<ClubHandoverFileEditModel>();
+
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("File"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("HandOverClass01", file);
+
+                            ClubHandoverFileEditModel model = new ClubHandoverFileEditModel();
+                            model.FilePath = strFilePath;
+
+                            vm.LstFileEditModel.Add(model);
+                        }
+                    }
+                }
+
+
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.UpdateFileDetailToNoUse(HoID, "01", LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "儲存失敗";
+                    return Json(vmRtn);
+                }
+
+                DataTable dtt = new DataTable();
+
+                dbResult = dbAccess.InsertFileDetail(HoID, "01", LoginUser, out dtt);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "儲存失敗";
+                    return Json(vmRtn);
+                }
+
+                string HoDetailID = dtt.QueryFieldByDT("HoDetailID");
+
+                dbResult = dbAccess.InsertFile01(vm, LoginUser, HoID, HoDetailID);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "儲存失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "新增失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+        [Log(LogActionChineseName.交接準備)]
+        public IActionResult HandOverFile02()
+        {
+            return View();
+        }
+
         [Log(LogActionChineseName.新任營運資訊)]
         public IActionResult HandOverFile03()
         {
             return View();
         }
 
-
-		#endregion
-
+        #endregion
 
 
-		
 
-	}
+    }
 }

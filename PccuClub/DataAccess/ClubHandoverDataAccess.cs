@@ -85,9 +85,9 @@ namespace WebPccuClub.DataAccess
 
 		#endregion
 
-		#region HO 01
+		#region Doc 0101
 
-		public DbExecuteInfo InsertDetail(string HoID, string HandOverClass, string DocNo, UserInfo LoginUser, out DataTable dt)
+		public DbExecuteInfo InsertDetail(string HoID, string HandOverClass, string DocType, UserInfo LoginUser, out DataTable dt)
 		{
 			DataSet ds = new DataSet();
 			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
@@ -96,14 +96,14 @@ namespace WebPccuClub.DataAccess
 			#region 參數設定
 			parameters.Add("@HoID", HoID);
 			parameters.Add("@HandOverClass", HandOverClass);
-			parameters.Add("@DocNo", DocNo);
+			parameters.Add("@DocType", DocType);
 			parameters.Add("@LoginId", LoginUser.LoginId);
 			#endregion 參數設定
 
-			string CommendText = $@"INSERT INTO HandOverDetail
+			string CommendText = $@"INSERT INTO HandOverDocDetail
                                                (HoID, 
                                                 HandOverClass, 
-                                                DocNo,
+                                                DocType,
                                                 Creator, 
                                                 Created, 
                                                 LastModifier, 
@@ -112,7 +112,7 @@ namespace WebPccuClub.DataAccess
                                          VALUES
                                                (@HoID, 
                                                 @HandOverClass, 
-                                                @DocNo,
+                                                @DocType,
                                                 @LoginId, 
                                                 GETDATE(), 
                                                 @LoginId, 
@@ -197,14 +197,140 @@ namespace WebPccuClub.DataAccess
 			return null;
 		}
 
-		#endregion
+        #endregion
+
+        #region File 01
+
+        public DbExecuteInfo InsertFileDetail(string HoID, string HandOverClass, UserInfo LoginUser, out DataTable dt)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@HoID", HoID);
+            parameters.Add("@HandOverClass", HandOverClass);
+            parameters.Add("@ActVerify", "01");
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO HandOverFileDetail
+                                               (HoID, 
+                                                HandOverClass, 
+                                                ActVerify,
+                                                DataEnable,
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         OUTPUT Inserted.HoDetailID
+                                         VALUES
+                                               (@HoID, 
+                                                @HandOverClass, 
+                                                @ActVerify,
+                                                '01',
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE())";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+            dt = ds.Tables[0];
+
+            return ExecuteResult;
+        }
+
+        public DbExecuteInfo InsertFile01(ClubHandoverViewModel vm, UserInfo LoginUser, string HoID, string HoDetailID)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            List<ClubHandoverFileEditModel> dataList = vm.LstFileEditModel;
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO HandOverFile
+                                               (HoID, 
+                                                HoDetailID,
+                                                FilePath, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         VALUES
+                                               ('{HoID}', 
+                                                '{HoDetailID}',
+                                                @FilePath, 
+                                                '{LoginUser.LoginId}', 
+                                                GETDATE(), 
+                                                '{LoginUser.LoginId}', 
+                                                GETDATE())";
+
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+            return ExecuteResult;
+        }
+
+        public ClubHandoverFileDetailModel GetFileDetail(string HoID, UserInfo Login, string HandOverClass)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@HoID", HoID);
+            parameters.Add("@ClubID", Login.LoginId);
+            parameters.Add("@HandOverClass", HandOverClass);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT A.HoDetailID
+                               FROM HandOverFileDetail A
+                                LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
+                              WHERE 1 = 1
+                                AND A.HoID = @HoID 
+                                AND B.ClubID = @ClubID 
+                                AND A.HandOverClass = @HandOverClass 
+                                AND A.DataEnable = '01' ";
 
 
+            (DbExecuteInfo info, IEnumerable<ClubHandoverFileDetailModel> entitys) dbResult = DbaExecuteQuery<ClubHandoverFileDetailModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList().FirstOrDefault();
+
+            return null;
+        }
+
+        public DbExecuteInfo UpdateFileDetailToNoUse(string HoID, string HandOverClass, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@HoID", HoID);
+            parameters.Add("@HandOverClass", HandOverClass);
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"UPDATE HandOverFileDetail 
+                                       SET DataEnable = '02', LastModifier = @LoginId, LastModified = GETDATE()
+                                     WHERE HoID = @HoID AND HandOverClass = @HandOverClass ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        #endregion
 
 
-		#region 已上傳表單
+        #region 已上傳表單
 
-		public List<ClubHandoverHistroyResultModel> GetHistorySearchResult(ClubHandoverHistroyConditionModel vm, UserInfo LoginUser)
+        public List<ClubHandoverHistroyResultModel> GetHistorySearchResult(ClubHandoverHistroyConditionModel vm, UserInfo LoginUser)
 		{
 			string CommandText = string.Empty;
 			DataSet ds = new DataSet();
@@ -217,10 +343,10 @@ namespace WebPccuClub.DataAccess
 
 			#endregion
 
-			CommandText = $@"SELECT A.HoID, A.HoDetailID, A.DocNo, C.Text AS DocNoText, B.SchoolYear, A.Created
-                               FROM HandOverDetail A
+			CommandText = $@"SELECT A.HoID, A.HoDetailID, A.DocType, C.Text AS DocTypeText, B.SchoolYear, A.Created
+                               FROM HandOverDocDetail A
                           LEFT JOIN HandOverMain B ON B.HoID = A.HoID
-                          LEFT JOIN Code C ON C.Code = A.DocNo AND C.Type = 'DocNo'
+                          LEFT JOIN Code C ON C.Code = A.DocType AND C.Type = 'DocType'
                               WHERE B.SchoolYear = @SchoolYear";
 
 			(DbExecuteInfo info, IEnumerable<ClubHandoverHistroyResultModel> entitys) dbResult = DbaExecuteQuery<ClubHandoverHistroyResultModel>(CommandText, parameters, true, DBAccessException);
@@ -231,18 +357,75 @@ namespace WebPccuClub.DataAccess
 			return new List<ClubHandoverHistroyResultModel>();
 		}
 
-		#endregion
+        #endregion
+
+        #region 已上傳檔案
+
+        public List<ClubHandoverFileResultModel> GetFileSearchResult(ClubHandoverFileConditionModel vm, UserInfo LoginUser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+            #region 參數設定
+
+            parameters.Add("@ClubId", LoginUser.LoginId);
+            parameters.Add("@SchoolYear", vm.SchoolYear == null ? PublicFun.GetNowSchoolYear() : vm.SchoolYear);
+
+            #endregion
+
+            CommandText = $@"SELECT A.HoID, A.HoDetailID, A.HandOverClass, C.Text AS HandOverClassText, 
+                                    A.ActVerify, D.Text AS ActVerifyText, A.VerifyMemo, B.SchoolYear, A.Created
+                               FROM HandOverFileDetail A
+                          LEFT JOIN HandOverMain B ON B.HoID = A.HoID
+                          LEFT JOIN Code C ON C.Code = A.HandOverClass AND C.Type = 'HandOverClass'
+                          LEFT JOIN Code D ON D.Code = A.ActVerify AND D.Type = 'ActVerify'
+                              WHERE B.SchoolYear = @SchoolYear
+                                AND A.DataEnable = '01' ";
+
+            (DbExecuteInfo info, IEnumerable<ClubHandoverFileResultModel> entitys) dbResult = DbaExecuteQuery<ClubHandoverFileResultModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ClubHandoverFileResultModel>();
+        }
+
+
+        public List<ClubHandoverFileDataModel> GetAllFileData(string? DetailID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+            #region 參數設定
+
+            parameters.Add("@HoDetailID", DetailID);
+
+            #endregion
+
+            CommandText = $@"SELECT FileID, FilePath
+                               FROM HandOverFile
+                              WHERE HoDetailID = @HoDetailID";
+
+            (DbExecuteInfo info, IEnumerable<ClubHandoverFileDataModel> entitys) dbResult = DbaExecuteQuery<ClubHandoverFileDataModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ClubHandoverFileDataModel>();
+        }
+
+        #endregion
 
 
 
 
 
 
+        #region else
 
-
-		#region else
-
-		public DataTable GetHoID(string ClubID, string SchoolYear)
+        public DataTable GetHoID(string ClubID, string SchoolYear)
 		{
 			string CommandText = string.Empty;
 			DataSet ds = new DataSet();
@@ -280,12 +463,12 @@ namespace WebPccuClub.DataAccess
 
 
 
-		#endregion
+        #endregion
 
 
 
 
 
 
-	}
+    }
 }
