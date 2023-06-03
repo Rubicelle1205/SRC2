@@ -796,6 +796,120 @@ namespace WebPccuClub.DataAccess
 
 		#endregion
 
+		#region Doc 0307
+
+		public DbExecuteInfo Insert0307(ClubHandoverViewModel vm, UserInfo LoginUser, string HoID, string HoDetailID)
+		{
+			DataSet ds = new DataSet();
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			parameters.Add("@HoID", HoID);
+			parameters.Add("@HoDetailID", HoDetailID);
+			parameters.Add("@SchoolYear", vm.Handover0307Model.SchoolYear);
+			parameters.Add("@ClubID", vm.Handover0307Model.ClubID);
+			parameters.Add("@ClubName", vm.Handover0307Model.ClubName);
+			parameters.Add("@Teacher1", vm.Handover0307Model.Teacher1);
+			parameters.Add("@Sex1", vm.Handover0307Model.Sex1);
+			parameters.Add("@Unit1", vm.Handover0307Model.Unit1);
+			parameters.Add("@Position1", vm.Handover0307Model.Position1);
+			parameters.Add("@Mail1", vm.Handover0307Model.Mail1);
+			parameters.Add("@CellPhone1", vm.Handover0307Model.CellPhone1);
+			parameters.Add("@Teacher2", vm.Handover0307Model.Teacher2);
+			parameters.Add("@Sex2", vm.Handover0307Model.Sex2);
+			parameters.Add("@Unit2", vm.Handover0307Model.Unit2);
+			parameters.Add("@Position2", vm.Handover0307Model.Position2);
+			parameters.Add("@Mail2", vm.Handover0307Model.Mail2);
+			parameters.Add("@CellPhone2", vm.Handover0307Model.CellPhone2);
+			parameters.Add("@LoginId", LoginUser.LoginId);
+			#endregion 參數設定
+
+			string CommendText = $@"INSERT INTO HandOverDoc07
+                                               (HoID, 
+                                                HoDetailID,
+                                                SChoolYear, 
+                                                ClubID, 
+                                                ClubName, 
+                                                Teacher1, 
+                                                Sex1, 
+                                                Unit1, 
+                                                Position1, 
+                                                Mail1, 
+                                                CellPhone1, 
+                                                Teacher2, 
+                                                Sex2, 
+                                                Unit2, 
+                                                Position2, 
+                                                Mail2, 
+                                                CellPhone2, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         VALUES
+                                               (@HoID, 
+                                                @HoDetailID,
+                                                @SChoolYear, 
+                                                @ClubID, 
+                                                @ClubName, 
+                                                @Teacher1, 
+                                                @Sex1, 
+                                                @Unit1, 
+                                                @Position1, 
+                                                @Mail1, 
+                                                @CellPhone1, 
+                                                @Teacher2, 
+                                                @Sex2, 
+                                                @Unit2, 
+                                                @Position2, 
+                                                @Mail2, 
+                                                @CellPhone2, 
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE())";
+
+			ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+			return ExecuteResult;
+		}
+
+
+		public ClubHandover0307ViewModel GetHandover0307Data(string HoID, UserInfo Login)
+		{
+			string CommandText = string.Empty;
+			DataSet ds = new DataSet();
+
+			DBAParameter parameters = new DBAParameter();
+
+			parameters.Add("@HoID", HoID);
+			parameters.Add("@ClubID", Login.LoginId);
+
+			#region 參數設定
+			#endregion
+
+			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.SchoolYear, A.ClubID, A.ClubName, 
+                                    A.Teacher1, A.Sex1, C.Text AS SexText1, A.Unit1, A.Position1, A.Mail1, A.CellPhone1, 
+                                    A.Teacher2, A.Sex2, D.Text AS SexText2, A.Unit2, A.Position2, A.Mail2, A.CellPhone2
+                               FROM HandOverDoc07 A
+                          LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
+                          LEFT JOIN Code C ON C.Code = A.Sex1 AND C.Type = 'Sex'
+                          LEFT JOIN Code D ON D.Code = A.Sex2 AND D.Type = 'Sex'
+                              WHERE 1 = 1
+                                AND A.HoID = @HoID 
+                                AND B.ClubID = @ClubID";
+
+
+			(DbExecuteInfo info, IEnumerable<ClubHandover0307ViewModel> entitys) dbResult = DbaExecuteQuery<ClubHandover0307ViewModel>(CommandText, parameters, true, DBAccessException);
+
+			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+				return dbResult.entitys.ToList().FirstOrDefault();
+
+			return null;
+		}
+
+		#endregion
 
 
 
@@ -829,8 +943,7 @@ namespace WebPccuClub.DataAccess
 
 
 
-
-		#region File 01
+		#region File
 
 		public DbExecuteInfo InsertFileDetail(string HoID, string HandOverClass, UserInfo LoginUser, out DataTable dt)
         {
@@ -958,9 +1071,6 @@ namespace WebPccuClub.DataAccess
 
         #endregion
 
-
-
-
         #region 已上傳表單
 
         public List<ClubHandoverHistroyResultModel> GetHistorySearchResult(ClubHandoverHistroyConditionModel vm, UserInfo LoginUser)
@@ -1050,7 +1160,6 @@ namespace WebPccuClub.DataAccess
         }
 
         #endregion
-
 
         #region else
 

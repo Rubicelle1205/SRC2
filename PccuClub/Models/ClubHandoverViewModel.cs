@@ -430,7 +430,28 @@ namespace WebPccuClub.Models
 		public string? InnerFileName { get; set; }
 
 	}
-    public class ClubHandover0307ViewModel { }
+    public class ClubHandover0307ViewModel 
+    {
+		public string? SchoolYear { get; set; }
+		public string? ClubID { get; set; }
+		public string? ClubName { get; set; }
+		public string? Teacher1 { get; set; }
+		public string? Sex1 { get; set; }
+		public string? SexText1 { get; set; }
+		public string? Unit1 { get; set; }
+		public string? Position1 { get; set; }
+		public string? Mail1 { get; set; }
+		public string? CellPhone1 { get; set; }
+		public string? Teacher2 { get; set; }
+		public string? Sex2 { get; set; }
+		public string? SexText2 { get; set; }
+		
+		public string? Unit2 { get; set; }
+		public string? Position2 { get; set; }
+		public string? Mail2 { get; set; }
+		public string? CellPhone2 { get; set; }
+
+}
     public class ClubHandover0308ViewModel { }
     public class ClubHandover0309ViewModel { }
 
