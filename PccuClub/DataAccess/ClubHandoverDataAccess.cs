@@ -579,7 +579,135 @@ namespace WebPccuClub.DataAccess
 
 		#endregion
 
+		#region Doc 0205
 
+		public DbExecuteInfo Insert0205(ClubHandoverViewModel vm, UserInfo LoginUser, string HoID, string HoDetailID)
+		{
+			DataSet ds = new DataSet();
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			parameters.Add("@HoID", HoID);
+			parameters.Add("@HoDetailID", HoDetailID);
+			parameters.Add("@SchoolYear", vm.Handover0205Model.SchoolYear);
+			parameters.Add("@ClubID", vm.Handover0205Model.ClubID);
+			parameters.Add("@ClubName", vm.Handover0205Model.ClubName);
+			parameters.Add("@ActSysAcc", vm.Handover0205Model.ActSysAcc);
+			parameters.Add("@ActSysPwd", vm.Handover0205Model.ActSysPwd);
+			parameters.Add("@ClubWebAcc", vm.Handover0205Model.ClubWebAcc);
+			parameters.Add("@ClubWebPwd", vm.Handover0205Model.ClubWebPwd);
+			parameters.Add("@RPageAcc", vm.Handover0205Model.RPageAcc);
+			parameters.Add("@RPagePwd", vm.Handover0205Model.RPagePwd);
+			parameters.Add("@PassportAcc", vm.Handover0205Model.PassportAcc);
+			parameters.Add("@PassportPwd", vm.Handover0205Model.PassportPwd);
+			parameters.Add("@OneDriveAcc", vm.Handover0205Model.OneDriveAcc);
+			parameters.Add("@OneDrivePwd", vm.Handover0205Model.OneDrivePwd);
+			parameters.Add("@HasSchoolProperty", vm.Handover0205Model.HasSchoolProperty);
+			parameters.Add("@UseRecord", vm.Handover0205Model.UseRecord);
+			parameters.Add("@ClubProperty", vm.Handover0205Model.ClubProperty);
+			parameters.Add("@SchoolProperty", vm.Handover0205Model.SchoolProperty);
+			parameters.Add("@UseRecordName", vm.Handover0205Model.UseRecordName);
+			parameters.Add("@ClubPropertyName", vm.Handover0205Model.ClubPropertyName);
+			parameters.Add("@SchoolPropertyName", vm.Handover0205Model.SchoolPropertyName);
+			parameters.Add("@LoginId", LoginUser.LoginId);
+			#endregion 參數設定
+
+			string CommendText = $@"INSERT INTO HandOverDoc05
+                                               (HoID, 
+                                                HoDetailID,
+                                                SChoolYear, 
+                                                ClubID, 
+                                                ClubName, 
+                                                ActSysAcc, 
+                                                ActSysPwd, 
+                                                ClubWebAcc, 
+                                                ClubWebPwd, 
+                                                RPageAcc, 
+                                                RPagePwd, 
+                                                PassportAcc, 
+                                                PassportPwd, 
+                                                OneDriveAcc, 
+                                                OneDrivePwd, 
+                                                HasSchoolProperty, 
+                                                UseRecord, 
+                                                ClubProperty, 
+                                                SchoolProperty, 
+                                                UseRecordName, 
+                                                ClubPropertyName, 
+                                                SchoolPropertyName, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         VALUES
+                                               (@HoID, 
+                                                @HoDetailID,
+                                                @SChoolYear, 
+                                                @ClubID, 
+                                                @ClubName, 
+                                                @ActSysAcc, 
+                                                @ActSysPwd, 
+                                                @ClubWebAcc, 
+                                                @ClubWebPwd, 
+                                                @RPageAcc, 
+                                                @RPagePwd, 
+                                                @PassportAcc, 
+                                                @PassportPwd, 
+                                                @OneDriveAcc, 
+                                                @OneDrivePwd, 
+                                                @HasSchoolProperty, 
+                                                @UseRecord, 
+                                                @ClubProperty, 
+                                                @SchoolProperty, 
+                                                @UseRecordName, 
+                                                @ClubPropertyName, 
+                                                @SchoolPropertyName,
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE())";
+
+			ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+			return ExecuteResult;
+		}
+
+
+		public ClubHandover0205ViewModel GetHandover0205Data(string HoID, UserInfo Login)
+		{
+			string CommandText = string.Empty;
+			DataSet ds = new DataSet();
+
+			DBAParameter parameters = new DBAParameter();
+
+			parameters.Add("@HoID", HoID);
+			parameters.Add("@ClubID", Login.LoginId);
+
+			#region 參數設定
+			#endregion
+
+			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.SchoolYear, A.ClubID, A.ClubName, 
+                                    A.ActSysAcc, A.ActSysPwd, A.ClubWebAcc, A.ClubWebPwd, A.RPageAcc, A.RPagePwd, 
+                                    A.PassportAcc, A.PassportPwd, A.OneDriveAcc, A.OneDrivePwd, A.HasSchoolProperty, C.Text AS HasSchoolPropertyText, 
+                                    A.UseRecordName, A.ClubPropertyName, A.SchoolPropertyName, A.UseRecord, A.ClubProperty, A.SchoolProperty
+                               FROM HandOverDoc05 A
+                          LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
+                          LEFT JOIN Code C ON C.Code = A.HasSchoolProperty AND C.Type = 'YesOrNo'
+                              WHERE 1 = 1
+                                AND A.HoID = @HoID 
+                                AND B.ClubID = @ClubID";
+
+
+			(DbExecuteInfo info, IEnumerable<ClubHandover0205ViewModel> entitys) dbResult = DbaExecuteQuery<ClubHandover0205ViewModel>(CommandText, parameters, true, DBAccessException);
+
+			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+				return dbResult.entitys.ToList().FirstOrDefault();
+
+			return null;
+		}
+
+		#endregion
 
 
 
@@ -957,7 +1085,6 @@ namespace WebPccuClub.DataAccess
 			return new List<SelectListItem>();
 		}
 
-
 		public List<SelectListItem> GetAllConform()
 		{
 			string CommandText = string.Empty;
@@ -969,6 +1096,26 @@ namespace WebPccuClub.DataAccess
 			#endregion
 
 			CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code WHERE Type = 'Conform'";
+
+			(DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+				return dbResult.entitys.ToList();
+
+			return new List<SelectListItem>();
+		}
+
+		public List<SelectListItem> GetYesOrNo()
+		{
+			string CommandText = string.Empty;
+			DataSet ds = new DataSet();
+
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			#endregion
+
+			CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code WHERE Type = 'YesOrNo'";
 
 			(DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 

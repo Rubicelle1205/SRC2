@@ -394,7 +394,31 @@ namespace WebPccuClub.Models
 		public string? ClubName { get; set; }
 		public string? NameOfClub { get; set; }
 	}
-    public class ClubHandover0205ViewModel { }
+    public class ClubHandover0205ViewModel
+    {
+		public string? SchoolYear { get; set; }
+		public string? ClubID { get; set; }
+		public string? ClubName { get; set; }
+		public string? ActSysAcc { get; set; }
+		public string? ActSysPwd { get; set; }
+		public string? ClubWebAcc { get; set; }
+		public string? ClubWebPwd { get; set; }
+		public string? RPageAcc { get; set; }
+		public string? RPagePwd { get; set; }
+		public string? PassportAcc { get; set; }
+		public string? PassportPwd { get; set; }
+		public string? OneDriveAcc { get; set; }
+		public string? OneDrivePwd { get; set; }
+		public string? HasSchoolProperty { get; set; }
+		public string? HasSchoolPropertyText { get; set; }
+		public string? UseRecord { get; set; }
+		public string? ClubProperty { get; set; }
+		public string? SchoolProperty { get; set; }
+
+		public string? UseRecordName { get; set; }
+		public string? ClubPropertyName { get; set; }
+		public string? SchoolPropertyName { get; set; }
+	}
     public class ClubHandover0206ViewModel { }
     public class ClubHandover0307ViewModel { }
     public class ClubHandover0308ViewModel { }

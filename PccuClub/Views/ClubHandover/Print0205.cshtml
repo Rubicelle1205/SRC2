@@ -1,0 +1,127 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+	Layout = "_FrontCleanLayout";
+
+}
+
+<div class="a4 page">
+	<div class="container-fluid">
+		<div class="row justify-content-center">
+			<div class="col-xxl-8">
+				<div class="row justify-content-center">
+					<div class="col-11">
+						<h3 class="text-center text-5 mb-2"><u>@Model.Handover0205Model.SchoolYear</u>學年度社團財產清冊</h3>
+						<table class="table table-bordered">
+							<tbody>
+								<tr>
+									<td width="25%">
+										<label class="font-weight-6" for="">社團代碼：</label>
+									</td>
+									<td width="75%">@Model.Handover0205Model.ClubID</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label class="font-weight-6" for="">社團名稱：</label>
+									</td>
+									<td class="">@Model.Handover0205Model.ClubName</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label class="font-weight-6" for="">活動報備系統帳號：</label>
+									</td>
+									<td class="">@Model.Handover0205Model.ActSysAcc</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label class="font-weight-6" for="">活動報備系統密碼：</label>
+									</td>
+									<td class="">@Model.Handover0205Model.ActSysPwd</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label class="font-weight-6" for="">社團資訊網帳號：</label>
+									</td>
+									<td class="">@Model.Handover0205Model.ClubWebAcc</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label class="font-weight-6" for="">社團資訊網密碼：</label>
+									</td>
+									<td class="">@Model.Handover0205Model.ClubWebPwd</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label class="font-weight-6" for="">社團RPAGE後臺帳號：</label>
+									</td>
+									<td class="">@Model.Handover0205Model.RPageAcc</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label class="font-weight-6" for="">社團RPAGE後臺密碼：</label>
+									</td>
+									<td class="">@Model.Handover0205Model.RPagePwd</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label class="font-weight-6" for="">全人學習護照帳號：</label>
+									</td>
+									<td class="">@Model.Handover0205Model.PassportAcc</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label class="font-weight-6" for="">全人學習護照密碼：</label>
+									</td>
+									<td class="">@Model.Handover0205Model.PassportPwd</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label class="font-weight-6" for="">雲端OneDrive帳號：</label>
+									</td>
+									<td class="">@Model.Handover0205Model.OneDriveAcc</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label class="font-weight-6" for="">雲端OneDrive密碼：</label>
+									</td>
+									<td class="">@Model.Handover0205Model.OneDrivePwd</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label class="font-weight-6" for="">有無校產：</label>
+									</td>
+									<td class="">@Model.Handover0205Model.HasSchoolPropertyText</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label class="font-weight-6" for="">使用紀錄表：</label>
+									</td>
+									<td class="">@Model.Handover0205Model.UseRecordName</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label class="font-weight-6" for="">社團社產資料上傳：</label>
+									</td>
+									<td class="">@Model.Handover0205Model.ClubPropertyName</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label class="font-weight-6" for="">社團校產資料上傳：</label>
+									</td>
+									<td class="">@Model.Handover0205Model.SchoolPropertyName</td>
+								</tr>
+							</tbody>
+						</table>
+						<div>社團印章、印鑑、學校配發採購物品(如:辦公椅、社團專業器材、醫藥箱...)均須詳實填寫。</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="text-center pt-3">
+			<button class="print-btn btn btn-secondary btn-modern px-5" type="button">列印</button>
+		</div>
+	</div>
+
+</div>
