@@ -1,0 +1,112 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+    Layout = "_FrontLayout";
+}
+
+<div class="col-xxl-8 col-xl-8">
+    <div class="contentWrapper">
+        <h4 class="pageTitle">檔案上傳</h4>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index")">交接資料管理</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("HandOver02")">新任營運資訊</a></li>
+                <li class="breadcrumb-item active">檔案上傳</li>
+            </ol>
+        </nav>
+        <hr>
+        <div class="mb-4">
+            <a class="go-back-btn" href="@Url.Action("HandOver02")"><i class="fas fa-chevron-left"></i> 返回</a>
+        </div>
+        <div action="" class="form-box checkthisform" enctype="multipart/form-data" method="post">
+            <div class=" mb-4">
+                @if (null != Model.FileDetailModel)
+                {
+                    <label class="flex-shrink-0 mb-3" style="color:red">
+                        [新任營運資訊]已有上傳檔案紀錄，若重新上傳檔案將會覆蓋，請確認後再操作
+                    </label>
+                }
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label class="flex-shrink-0 mb-3">檔案上傳</label>
+                        <div class="fs-90percent red-hint pb-2">僅接受以下格式：.pdf、.zip、.rar、.7z、.jpg、.jpeg、.png</div>
+                        <div class="target_list">
+                            <div class="item mb-2">
+                                <input id="File0" type="file" class="form-control w-auto" req="Y" title="請選擇檔案"
+                                       accept=".pdf,.zip,.rar,.7z,.jpg,.jpeg,.png">
+                                <button class="del-btn hidden" type="button"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+
+                        <button id="add_input_btn" class="btn btn-secondary btn-sm mt-3" type="button">新增 <i class="icon-plus"></i></button>
+
+
+                    </div>
+                </div>
+                <div class="row justify-content-center mt-4">
+                    <div class="col-md-4 col-8">
+                        <button type="button" class="submit-btn btn btn-primary border-0 w-100" onclick="SaveData()">上傳</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        for (var i = 0; i <= 8; i++) {
+            var file = $('#File' + i);
+
+            if (file.length > 0 && file.val() !== '') {
+                var File = $('#File' + i)[0].files[0];
+                if (typeof File !== 'undefined') {
+                    var fileExtension = File.name.split('.').pop().toLowerCase();
+
+                    if (fileExtension !== 'pdf' && fileExtension !== 'zip' &&
+                        fileExtension !== 'rar' && fileExtension !== '7z' &&
+                        fileExtension !== 'jpg' && fileExtension !== 'jpeg' &&
+                        fileExtension !== 'png') {
+                        $.alert("檔案類型不符合");
+                        return;
+                    }
+
+                    data.append('@Html.NameFor(m => m.File)', File);
+                }
+            }
+        }
+
+
+        SendAjax({
+            url: '@Url.Action("SaveFile03")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+    }
+
+</script>

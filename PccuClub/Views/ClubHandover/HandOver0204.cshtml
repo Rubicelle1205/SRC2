@@ -1,0 +1,158 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+    Layout = "_FrontSimpleLayout";
+}
+
+<div role="main" class="main">
+			<div class="container p-relative py-md-5 py-4">
+				<div class="row justify-content-center">
+					<div class="col-xxl-8">
+						<div class="printContent">
+							<div class="text-center">
+								<h2 class="text-10">中國文化大學</h2>
+								<h4 class="text-6 font-weight-normal"><u>111</u>學年度改選交接資料表</h3>
+								<div class="row justify-content-center py-5">
+									<div class="col-8">
+										<img src="assets/img/logo_circle.png" alt="">
+									</div>
+								</div>
+							</div>
+
+							<form class="form-box checkthisform" action="" method="post" enctype="application/x-www-form-urlencoded">
+								<div class="row justify-content-center mb-4">
+									<div class="col-md-8">
+										<p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
+
+										<div class="form-item">
+											<label for="">學年度：</label>
+											@Html.TextBoxFor(m => m.Handover0204Model.SchoolYear, new { @class="form-control", @readonly="readonly"})
+										</div>
+										<div class="form-item">
+											<label for="">社團代碼：<span class="req-star">*</span></label>
+											@Html.TextBoxFor(m => m.Handover0204Model.ClubID, new { @class="form-control", placeholder="請填寫社團代碼"})
+										</div>
+										<div class="form-item">
+											<label for="">社團名稱：<span class="req-star">*</span></label>
+											@Html.TextBoxFor(m => m.Handover0204Model.ClubName, new { @class="form-control", placeholder="請填寫社團名稱"})
+										</div>
+										<div class="form-item">
+											<label for="">Name of clubs：<span class="req-star">*</span></label>
+											@Html.TextBoxFor(m => m.Handover0204Model.NameOfClub, new { @class="form-control", placeholder="請填寫Name of clubs"})
+										</div>
+									</div>
+								</div>
+								<table class="table table-bordered text-center mb-2 border-black bg-white">
+									<tbody>
+										<tr>
+											<td style="width: 300px;">
+												110學年度社團<strong>負責人</strong>
+											</td>
+											<td style="width: 300px;">
+												111學年度社團<strong>負責人</strong>
+											</td>
+											<td style="width: 300px;">
+												社團印鑑
+											</td>
+										</tr>
+										<tr>
+											<td style="width: 300px;">
+												<p>&nbsp;</p>
+												<p>&nbsp;</p>
+												<p>&nbsp;</p>
+												<p>&nbsp;</p>
+												<p>年　　月　　日</p>
+											</td>
+											<td style="width: 300px;">
+												<p>&nbsp;</p>
+												<p>&nbsp;</p>
+												<p>&nbsp;</p>
+												<p>&nbsp;</p>
+												<p>年　　月　　日</p>
+											</td>
+											<td style="width: 300px;">
+											</td>
+										</tr>
+										<tr>
+											<td style="width: 300px; padding-left: 0; padding-right: 0;">▲列印後請親筆簽名</td>
+											<td style="width: 300px; padding-left: 0; padding-right: 0;">▲列印後請親筆簽名</td>
+											<td style="width: 300px; padding-left: 0; padding-right: 0;">▲列印後請蓋印社團『印鑑章』</td>
+										</tr>
+									</tbody>
+								</table>
+								<div><strong>註：<br>1. 請線上編輯系列表單印出後進行簽章作業，再掃描統整成電子檔後上傳至系統<br>2. 本改選資料請自行複印放入年度檔案評鑑資料</strong></div>
+								<div class="text-center pt-4">
+									<button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">送出</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+	function SaveData() {
+
+        var data = new FormData()
+
+		var SchoolYear = $('#@Html.IdFor(m => m.Handover0204Model.SchoolYear)').val();
+		var ClubID = $('#@Html.IdFor(m => m.Handover0204Model.ClubID)').val();
+		var ClubName = $('#@Html.IdFor(m => m.Handover0204Model.ClubName)').val();
+		var NameOfClub = $('#@Html.IdFor(m => m.Handover0204Model.NameOfClub)').val();
+		
+		if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
+		if (ClubName == "") { $.alert("社團名稱不可為空白"); return; }
+		if (NameOfClub == "") { $.alert("當事人姓名不可為空白"); return; }
+
+		data.append('@Html.NameFor(m => m.Handover0204Model.SchoolYear)', SchoolYear);
+		data.append('@Html.NameFor(m => m.Handover0204Model.ClubID)', ClubID);
+		data.append('@Html.NameFor(m => m.Handover0204Model.ClubName)', ClubName);
+		data.append('@Html.NameFor(m => m.Handover0204Model.NameOfClub)', NameOfClub);
+
+        SendAjax({
+			url: '@Url.Action("Save0204")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+								var url = '@Url.Action("Print0204")';
+								window.location.href = url;
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+</script>

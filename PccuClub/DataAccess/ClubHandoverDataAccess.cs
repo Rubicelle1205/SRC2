@@ -85,7 +85,6 @@ namespace WebPccuClub.DataAccess
 
         #endregion
 
-
         public DbExecuteInfo InsertDetail(string HoID, string HandOverClass, string DocType, UserInfo LoginUser, out DataTable dt)
         {
             DataSet ds = new DataSet();
@@ -150,8 +149,6 @@ namespace WebPccuClub.DataAccess
 
             return null;
         }
-
-
 
         #region Doc 0101
 
@@ -348,7 +345,7 @@ namespace WebPccuClub.DataAccess
 
         #endregion
 
-        #region 0103
+        #region Doc 0103
 
         public DbExecuteInfo Insert0103(ClubHandoverViewModel vm, UserInfo LoginUser, string HoID, string HoDetailID)
         {
@@ -502,7 +499,85 @@ namespace WebPccuClub.DataAccess
             return null;
         }
 
-        #endregion
+		#endregion
+
+		#region Doc 0204
+
+		public DbExecuteInfo Insert0204(ClubHandoverViewModel vm, UserInfo LoginUser, string HoID, string HoDetailID)
+		{
+			DataSet ds = new DataSet();
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			parameters.Add("@HoID", HoID);
+			parameters.Add("@HoDetailID", HoDetailID);
+			parameters.Add("@SchoolYear", vm.Handover0204Model.SchoolYear);
+			parameters.Add("@ClubID", vm.Handover0204Model.ClubID);
+			parameters.Add("@ClubName", vm.Handover0204Model.ClubName);
+			parameters.Add("@NameOfClub", vm.Handover0204Model.NameOfClub);
+			parameters.Add("@LoginId", LoginUser.LoginId);
+			#endregion 參數設定
+
+			string CommendText = $@"INSERT INTO HandOverDoc04
+                                               (HoID, 
+                                                HoDetailID,
+                                                SchoolYear, 
+                                                ClubID, 
+                                                ClubName, 
+                                                NameOfClub, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         VALUES
+                                               (@HoID, 
+                                                @HoDetailID,
+                                                @SchoolYear, 
+                                                @ClubID, 
+                                                @ClubName, 
+                                                @NameOfClub, 
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE())";
+
+			ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+			return ExecuteResult;
+		}
+
+
+		public ClubHandover0204ViewModel GetHandover0204Data(string HoID, UserInfo Login)
+		{
+			string CommandText = string.Empty;
+			DataSet ds = new DataSet();
+
+			DBAParameter parameters = new DBAParameter();
+
+			parameters.Add("@HoID", HoID);
+			parameters.Add("@ClubID", Login.LoginId);
+
+			#region 參數設定
+			#endregion
+
+			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.ClubID, A.ClubName, A.SchoolYear, A.NameOfClub
+                               FROM HandOverDoc04 A
+                                LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
+                              WHERE 1 = 1
+                                AND A.HoID = @HoID 
+                                AND B.ClubID = @ClubID";
+
+
+			(DbExecuteInfo info, IEnumerable<ClubHandover0204ViewModel> entitys) dbResult = DbaExecuteQuery<ClubHandover0204ViewModel>(CommandText, parameters, true, DBAccessException);
+
+			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+				return dbResult.entitys.ToList().FirstOrDefault();
+
+			return null;
+		}
+
+		#endregion
 
 
 
@@ -542,11 +617,9 @@ namespace WebPccuClub.DataAccess
 
 
 
+		#region File 01
 
-
-        #region File 01
-
-        public DbExecuteInfo InsertFileDetail(string HoID, string HandOverClass, UserInfo LoginUser, out DataTable dt)
+		public DbExecuteInfo InsertFileDetail(string HoID, string HandOverClass, UserInfo LoginUser, out DataTable dt)
         {
             DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
@@ -585,7 +658,7 @@ namespace WebPccuClub.DataAccess
             return ExecuteResult;
         }
 
-        public DbExecuteInfo InsertFile01(ClubHandoverViewModel vm, UserInfo LoginUser, string HoID, string HoDetailID)
+        public DbExecuteInfo InsertFile(ClubHandoverViewModel vm, UserInfo LoginUser, string HoID, string HoDetailID)
         {
             DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();

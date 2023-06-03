@@ -28,12 +28,12 @@ namespace WebPccuClub.Models
         public ClubHandover0101ViewModel Handover0101Model { get; set; }
         public ClubHandover0102ViewModel Handover0102Model { get; set; }
         public ClubHandover0103ViewModel Handover0103Model { get; set; }
-        public ClubHandover0201ViewModel Handover0201Model { get; set; }
-        public ClubHandover0202ViewModel Handover0202Model { get; set; }
-        public ClubHandover0203ViewModel Handover0203Model { get; set; }
-        public ClubHandover0301ViewModel Handover0301Model { get; set; }
-        public ClubHandover0302ViewModel Handover0302Model { get; set; }
-        public ClubHandover0303ViewModel Handover0303Model { get; set; }
+        public ClubHandover0204ViewModel Handover0204Model { get; set; }
+        public ClubHandover0205ViewModel Handover0205Model { get; set; }
+        public ClubHandover0206ViewModel Handover0206Model { get; set; }
+        public ClubHandover0307ViewModel Handover0307Model { get; set; }
+        public ClubHandover0308ViewModel Handover0308Model { get; set; }
+        public ClubHandover0309ViewModel Handover0309Model { get; set; }
 
 
 
@@ -387,12 +387,18 @@ namespace WebPccuClub.Models
 		public string? NoReElectionText { get; set; }
 		public string? NoTwoPositionText { get; set; }
 	}
-    public class ClubHandover0201ViewModel { }
-    public class ClubHandover0202ViewModel { }
-    public class ClubHandover0203ViewModel { }
-    public class ClubHandover0301ViewModel { }
-    public class ClubHandover0302ViewModel { }
-    public class ClubHandover0303ViewModel { }
+    public class ClubHandover0204ViewModel 
+    {
+		public string? SchoolYear { get; set; }
+		public string? ClubID { get; set; }
+		public string? ClubName { get; set; }
+		public string? NameOfClub { get; set; }
+	}
+    public class ClubHandover0205ViewModel { }
+    public class ClubHandover0206ViewModel { }
+    public class ClubHandover0307ViewModel { }
+    public class ClubHandover0308ViewModel { }
+    public class ClubHandover0309ViewModel { }
 
 
 
