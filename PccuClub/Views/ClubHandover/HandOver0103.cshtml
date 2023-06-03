@@ -1,0 +1,402 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+    Layout = "_FrontSimpleLayout";
+}
+
+
+<div role="main" class="main">
+    <div class="container p-relative py-md-5 py-4">
+        <div class="row justify-content-center">
+            <div class="col-xxl-12">
+                <div class="printContent">
+                    <h3 class="text-center text-6"><u>@Html.DisplayFor(m => m.Handover0103Model.SchoolYear)</u>學年度社團負責人資訊</h3>
+                    <form class="form-box checkthisform" action="" method="post" enctype="application/x-www-form-urlencoded">
+                        <div class="row justify-content-center">
+                            <div class="col-md-10">
+                                <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
+                                <table class="table table-bordered border-dark bg-white">
+                                    <tbody>
+                                        <tr>
+                                            <td width="30%" class="">
+                                                <label for="">學年度：</label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0103Model.SchoolYear, new { @class="form-control", @readonly="readonly"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="30%" class="">
+                                                <label for="">社團代碼：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0103Model.ClubID, new { @class="form-control", placeholder="社團代碼"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">社團全名：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0103Model.ClubCName, new { @class="form-control", placeholder="社團名稱"})
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">社團英文名稱：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0103Model.ClubEName, new { @class="form-control", placeholder="社團英文名稱"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">社辦樓館：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.DropDownListFor(m => m.Handover0103Model.ClubBuildID ,(List<SelectListItem>)ViewBag.ddlClubBuild,"請選擇", new {@class = "form-control"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">社辦位置：</label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0103Model.Location, new { @class="form-control", placeholder="社辦位置"})
+                                                <div class="fs-90percent text-gray pt-1">（EX:大恩館B1 聯合社團辦公室）</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">社辦電話：</label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0103Model.Tel, new { @class="form-control", placeholder="社辦電話"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">當選人姓名(中文)：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0103Model.UserCName, new { @class="form-control", placeholder="當選人姓名(中文)"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">當選人姓名(英文)：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0103Model.UserEName, new { @class="form-control", placeholder="當選人姓名(英文)"})
+                                                <div class="fs-90percent text-gray pt-1">請填護照英文姓名，<a href="https://www.boca.gov.tw/sp?xdURL=E2C/c2102-5.asp&amp;CtNode=677" target="_blank">線上查詢</a></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">生理性別：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.DropDownListFor(m => m.Handover0103Model.Sex ,(List<SelectListItem>)ViewBag.ddlSex,"請選擇", new {@class = "form-control"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">入學身分別：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.DropDownListFor(m => m.Handover0103Model.IdentityType ,(List<SelectListItem>)ViewBag.ddldentityType,"請選擇", new {@class = "form-control"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">當選人學號：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0103Model.SNO, new { @class="form-control", placeholder="當選人學號"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">系級(中文)：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0103Model.CDepartment, new { @class="form-control", placeholder="系級(中文)"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">系級(英文)：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0103Model.EDepartment, new { @class="form-control", placeholder="系級(英文)"})
+                                                <div class="fs-90percent text-gray pt-1">學系名稱<a href="http://www.pccu.edu.tw/intl/page/english/academics_01.html" target="_blank">查詢</a></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">新任負責人電子信箱：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0103Model.UserMail, new { @class="form-control", placeholder="新任負責人電子信箱"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">新任負責人行動電話：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0103Model.UserCellphone, new { @class="form-control", placeholder="新任負責人行動電話"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg-gray-blue" colspan="2">
+                                                <label for="">檢核項目</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">成績單：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+
+                                                <div class="fs-90percent text-gray pb-1 text-red">註：成績單請以連同本表以附件檢附，應為正本向學校申請之有效文件。</div>
+                                                @Html.TextBoxFor(m => m.Handover0103Model.Transcript, new { @class="form-control", type="file", accept=".pdf,.jpg,.jpeg,.png"})
+                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.pdf、.jpg、.jpeg、.png</div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">學業總平均成績：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                <div class="d-flex align-items-center">
+                                                    @Html.TextBoxFor(m => m.Handover0103Model.GPA, new { @class="form-control w-auto", placeholder="請填寫學業總平均成績"})
+                                                    <span class="ms-2">分</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">操行總平均成績：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                <div class="d-flex align-items-center">
+                                                    @Html.TextBoxFor(m => m.Handover0103Model.Behavior, new { @class="form-control w-auto", placeholder="請填寫操行總平均成績"})
+                                                    <span class="ms-2">分</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">歷年學業成績總平均60(含)分以上者：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                <div class="warning-box">
+                                                    @Html.DropDownListFor(m => m.Handover0103Model.Score60 ,(List<SelectListItem>)ViewBag.ddlConform,"請選擇", new {@class = "form-control"})
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">歷年操行成績總平均75(含)分以上者：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                <div class="warning-box">
+                                                    @Html.DropDownListFor(m => m.Handover0103Model.Score75 ,(List<SelectListItem>)ViewBag.ddlConform,"請選擇", new {@class = "form-control"})
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">該學生自治組織或社團會員：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                <div class="warning-box">
+                                                    @Html.DropDownListFor(m => m.Handover0103Model.IsMember ,(List<SelectListItem>)ViewBag.ddlConform,"請選擇", new {@class = "form-control"})
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">未曾被學生自治組織或社團除名者：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                <div class="warning-box">
+                                                    @Html.DropDownListFor(m => m.Handover0103Model.NoFire ,(List<SelectListItem>)ViewBag.ddlConform,"請選擇", new {@class = "form-control"})
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">無連選連任：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                <div class="warning-box">
+                                                    @Html.DropDownListFor(m => m.Handover0103Model.NoReElection ,(List<SelectListItem>)ViewBag.ddlConform,"請選擇", new {@class = "form-control"})
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">無同時擔任兩個(含)以上學生自治組織或社團負責人：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                <div class="warning-box">
+                                                        @Html.DropDownListFor(m => m.Handover0103Model.NoTwoPosition ,(List<SelectListItem>)ViewBag.ddlConform,"請選擇", new {@class = "form-control"})
+                                                    </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="text-center pt-4">
+                            <button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">送出</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    function SaveData() {
+
+
+
+
+        var data = new FormData()
+
+        var SchoolYear = $('#@Html.IdFor(m => m.Handover0103Model.SchoolYear)').val();
+        var ClubID = $('#@Html.IdFor(m => m.Handover0103Model.ClubID)').val();
+        var ClubCName = $('#@Html.IdFor(m => m.Handover0103Model.ClubCName)').val();
+        var ClubEName = $('#@Html.IdFor(m => m.Handover0103Model.ClubEName)').val();
+        var Creator = $('#@Html.IdFor(m => m.Handover0103Model.Creator)').val();
+        var Created = $('#@Html.IdFor(m => m.Handover0103Model.Created)').val();
+        var LastModifier = $('#@Html.IdFor(m => m.Handover0103Model.LastModifier)').val();
+        var LastModified = $('#@Html.IdFor(m => m.Handover0103Model.LastModified)').val();
+        var ClubBuildID = $('#@Html.IdFor(m => m.Handover0103Model.ClubBuildID)').val();
+        var Location = $('#@Html.IdFor(m => m.Handover0103Model.Location)').val();
+        var Tel = $('#@Html.IdFor(m => m.Handover0103Model.Tel)').val();
+        var UserCName = $('#@Html.IdFor(m => m.Handover0103Model.UserCName)').val();
+        var UserEName = $('#@Html.IdFor(m => m.Handover0103Model.UserEName)').val();
+        var Sex = $('#@Html.IdFor(m => m.Handover0103Model.Sex)').val();
+        var IdentityType = $('#@Html.IdFor(m => m.Handover0103Model.IdentityType)').val();
+        var SNO = $('#@Html.IdFor(m => m.Handover0103Model.SNO)').val();
+        var CDepartment = $('#@Html.IdFor(m => m.Handover0103Model.CDepartment)').val();
+        var EDepartment = $('#@Html.IdFor(m => m.Handover0103Model.EDepartment)').val();
+        var UserMail = $('#@Html.IdFor(m => m.Handover0103Model.UserMail)').val();
+        var UserCellphone = $('#@Html.IdFor(m => m.Handover0103Model.UserCellphone)').val();
+        var GPA = $('#@Html.IdFor(m => m.Handover0103Model.GPA)').val();
+        var Behavior = $('#@Html.IdFor(m => m.Handover0103Model.Behavior)').val();
+        var Score60 = $('#@Html.IdFor(m => m.Handover0103Model.Score60)').val();
+        var Score75 = $('#@Html.IdFor(m => m.Handover0103Model.Score75)').val();
+        var IsMember = $('#@Html.IdFor(m => m.Handover0103Model.IsMember)').val();
+        var NoFire = $('#@Html.IdFor(m => m.Handover0103Model.NoFire)').val();
+        var NoReElection = $('#@Html.IdFor(m => m.Handover0103Model.NoReElection)').val();
+        var NoTwoPosition = $('#@Html.IdFor(m => m.Handover0103Model.NoTwoPosition)').val();
+
+
+        var Transcript = $('#@Html.IdFor(m => m.Handover0103Model.Transcript)')[0].files[0];
+
+        if (typeof Transcript !== 'undefined') {
+            var fileExtension = Transcript.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'png' && fileExtension !== 'jpeg' && fileExtension !== 'jpg' && fileExtension !== 'pdf') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.Handover0103Model.Transcript)', Transcript);
+        }
+        else {
+            $.alert("成績單不可為空白"); return;
+        }
+
+        if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
+        if (ClubCName == "") { $.alert("社團全名不可為空白"); return; }
+        if (ClubEName == "") { $.alert("社團英文名稱不可為空白"); return; }
+        if (ClubBuildID == "") { $.alert("社辦樓館不可為空白"); return; }
+        if (Location == "") { $.alert("社辦位置不可為空白"); return; }
+        if (Tel == "") { $.alert("社辦電話不可為空白"); return; }
+        if (UserCName == "") { $.alert("當選人姓名(中文)不可為空白"); return; }
+        if (UserEName == "") { $.alert("當選人姓名(英文)不可為空白"); return; }
+        if (Sex == "") { $.alert("生理性別不可為空白"); return; }
+        if (IdentityType == "") { $.alert("入學身分別不可為空白"); return; }
+        if (SNO == "") { $.alert("當選人學號不可為空白"); return; }
+        if (CDepartment == "") { $.alert("系級(中文)不可為空白"); return; }
+        if (EDepartment == "") { $.alert("系級(英文)不可為空白"); return; }
+        if (UserMail == "") { $.alert("新任負責人電子信箱不可為空白"); return; }
+        if (UserCellphone == "") { $.alert("新任負責人行動電話不可為空白"); return; }
+        if (GPA == "") { $.alert("學業總平均成績不可為空白"); return; }
+        if (Behavior == "") { $.alert("操行總平均成績不可為空白"); return; }
+        if (Score60 == "") { $.alert("歷年學業成績總平均60(含)分以上者不可為空白"); return; }
+        if (Score75 == "") { $.alert("歷年操行成績總平均75(含)分以上者不可為空白"); return; }
+        if (IsMember == "") { $.alert("該學生自治組織或社團會員不可為空白"); return; }
+        if (NoFire == "") { $.alert("未曾被學生自治組織或社團除名者不可為空白"); return; }
+        if (NoReElection == "") { $.alert("無連選連任不可為空白"); return; }
+        if (NoTwoPosition == "") { $.alert("無同時擔任兩個(含)以上學生自治組織或社團負責人不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.Handover0103Model.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.Handover0103Model.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.Handover0103Model.ClubCName)', ClubCName);
+        data.append('@Html.NameFor(m => m.Handover0103Model.ClubEName)', ClubEName);
+        data.append('@Html.NameFor(m => m.Handover0103Model.Creator)', Creator);
+        data.append('@Html.NameFor(m => m.Handover0103Model.Created)', Created);
+        data.append('@Html.NameFor(m => m.Handover0103Model.LastModifier)', LastModifier);
+        data.append('@Html.NameFor(m => m.Handover0103Model.LastModified)', LastModified);
+        data.append('@Html.NameFor(m => m.Handover0103Model.ClubBuildID)', ClubBuildID);
+        data.append('@Html.NameFor(m => m.Handover0103Model.Location)', Location);
+        data.append('@Html.NameFor(m => m.Handover0103Model.Tel)', Tel);
+        data.append('@Html.NameFor(m => m.Handover0103Model.UserCName)', UserCName);
+        data.append('@Html.NameFor(m => m.Handover0103Model.UserEName)', UserEName);
+        data.append('@Html.NameFor(m => m.Handover0103Model.Sex)', Sex);
+        data.append('@Html.NameFor(m => m.Handover0103Model.IdentityType)', IdentityType);
+        data.append('@Html.NameFor(m => m.Handover0103Model.SNO)', SNO);
+        data.append('@Html.NameFor(m => m.Handover0103Model.CDepartment)', CDepartment);
+        data.append('@Html.NameFor(m => m.Handover0103Model.EDepartment)', EDepartment);
+        data.append('@Html.NameFor(m => m.Handover0103Model.UserMail)', UserMail);
+        data.append('@Html.NameFor(m => m.Handover0103Model.UserCellphone)', UserCellphone);
+        data.append('@Html.NameFor(m => m.Handover0103Model.GPA)', GPA);
+        data.append('@Html.NameFor(m => m.Handover0103Model.Behavior)', Behavior);
+        data.append('@Html.NameFor(m => m.Handover0103Model.Score60)', Score60);
+        data.append('@Html.NameFor(m => m.Handover0103Model.Score75)', Score75);
+        data.append('@Html.NameFor(m => m.Handover0103Model.IsMember)', IsMember);
+        data.append('@Html.NameFor(m => m.Handover0103Model.NoFire)', NoFire);
+        data.append('@Html.NameFor(m => m.Handover0103Model.NoReElection)', NoReElection);
+        data.append('@Html.NameFor(m => m.Handover0103Model.NoTwoPosition)', NoTwoPosition);
+
+
+        SendAjax({
+            url: '@Url.Action("Save0103")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                var url = '@Url.Action("Print0103")';
+                                window.location.href = url;
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+</script>

@@ -442,12 +442,113 @@ namespace WebPccuClub.Controllers
 
         #region 0103
 
-
-
         [Log(LogActionChineseName.社團負責人改選管理)]
-        public IActionResult HandOver0103()
+        public IActionResult HandOver0103(string id)
         {
-            return View();
+            ViewBag.ddlClubBuild = dbAccess.GetClubBuild();
+			ViewBag.ddlSex = dbAccess.GetAllSex();
+			ViewBag.ddldentityType = dbAccess.GetAllIdentityType();
+			ViewBag.ddlConform = dbAccess.GetAllConform();
+
+			ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            vm.Handover0103Model = new ClubHandover0103ViewModel();
+            vm.Handover0103Model.SchoolYear = PublicFun.GetNowSchoolYear();
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                vm.Handover0102Model = dbAccess.GetHandover0102Data(id, LoginUser);
+            }
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> Save0103(ClubHandoverViewModel vm)
+        {
+            try
+            {
+                DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
+                string HoID = dt.QueryFieldByDT("HoID");
+
+                ClubHandoverViewModel vm2 = new ClubHandoverViewModel();
+                vm2.HandoverDocCheckModel = dbAccess.GetHandoverDocData(HoID, "03");
+
+                if (vm2.HandoverDocCheckModel != null)
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "此表單已存在";
+                    return Json(vmRtn);
+                }
+
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("Handover0103Model.Transcript"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("HandOverClass03", file);
+                            vm.Handover0103Model.TranscriptName = file.FileName;
+                            vm.Handover0103Model.Transcript = strFilePath;
+                        }
+                    }
+                }
+
+
+                dbAccess.DbaInitialTransaction();
+
+                DataTable dtt = new DataTable();
+
+                var dbResult = dbAccess.InsertDetail(HoID, "01", "03", LoginUser, out dtt);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "儲存失敗";
+                    return Json(vmRtn);
+                }
+
+                string HoDetailID = dtt.QueryFieldByDT("HoDetailID");
+
+                dbResult = dbAccess.Insert0103(vm, LoginUser, HoID, HoDetailID);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "儲存失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+        [Log(LogActionChineseName.列印)]
+        public IActionResult Print0103(string id)
+        {
+            DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
+            string HoID = dt.QueryFieldByDT("HoID");
+
+            if (!string.IsNullOrEmpty(id))
+                HoID = id;
+
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            vm.Handover0103Model = dbAccess.GetHandover0103Data(HoID, LoginUser);
+
+            return View(vm);
         }
 
         #endregion

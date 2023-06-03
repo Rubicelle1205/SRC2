@@ -342,7 +342,51 @@ namespace WebPccuClub.Models
 
     #endregion
 
-    public class ClubHandover0103ViewModel { }
+    public class ClubHandover0103ViewModel 
+    {
+		public string? SchoolYear { get; set; }
+		public string? ClubID { get; set; }
+		public string? ClubCName { get; set; }
+		public string? ClubEName { get; set; }
+		public string? Creator { get; set; }
+		public string? Created { get; set; }
+		public string? LastModifier { get; set; }
+		public string? LastModified { get; set; }
+		public string? ClubBuildID { get; set; }
+
+		public string? ClubBuildIDText { get; set; }
+		public string? Location { get; set; }
+		public string? Tel { get; set; }
+		public string? UserCName { get; set; }
+		public string? UserEName { get; set; }
+		public string? Sex { get; set; }
+
+		public string? SexText { get; set; }
+		public string? IdentityType { get; set; }
+		public string? IdentityTypeText { get; set; }
+		public string? SNO { get; set; }
+		public string? CDepartment { get; set; }
+		public string? EDepartment { get; set; }
+		public string? UserMail { get; set; }
+		public string? UserCellphone { get; set; }
+		public string? Transcript { get; set; }
+		public string? TranscriptName { get; set; }
+		public string? GPA { get; set; }
+		public string? Behavior { get; set; }
+		public string? Score60 { get; set; }
+		public string? Score75 { get; set; }
+		public string? IsMember { get; set; }
+		public string? NoFire { get; set; }
+		public string? NoReElection { get; set; }
+		public string? NoTwoPosition { get; set; }
+
+		public string? Score60Text { get; set; }
+		public string? Score75Text { get; set; }
+		public string? IsMemberText { get; set; }
+		public string? NoFireText { get; set; }
+		public string? NoReElectionText { get; set; }
+		public string? NoTwoPositionText { get; set; }
+	}
     public class ClubHandover0201ViewModel { }
     public class ClubHandover0202ViewModel { }
     public class ClubHandover0203ViewModel { }

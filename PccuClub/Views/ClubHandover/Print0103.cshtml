@@ -1,0 +1,180 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+    Layout = "_FrontCleanLayout";
+}
+
+<div class="printPage">
+	<div class="a4 page">
+		<div class="container-fluid">
+			<div class="row justify-content-center">
+				<div class="col-xxl-8">
+					<div class="row justify-content-center">
+						<div class="col-11">
+							<h3 class="text-center text-6"><u>111</u>學年度社團負責人資訊</h3>
+							<table class="table table-bordered">
+								<tbody>
+									<tr>
+										<td width="50%">
+											<label class="font-weight-6" for="">社團代碼：</label>
+										</td>
+										<td width="50%">@Model.Handover0103Model.ClubID</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">社團全名：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.ClubCName</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">社團英文名稱：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.ClubEName</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">社辦樓館：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.ClubBuildIDText</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">社辦位置：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.Location</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">社辦電話：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.Tel</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">當選人姓名(中文)：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.UserCName</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">當選人姓名(英文)：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.UserEName</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">生理性別：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.SexText</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">入學身分別：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.IdentityTypeText</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">當選人學號：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.SNO</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">系級(中文)：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.CDepartment</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">系級(英文)：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.EDepartment</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">新任負責人電子信箱：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.UserMail</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">新任負責人行動電話：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.UserCellphone</td>
+									</tr>
+									<tr>
+										<td class="bg-gray-blue" colspan="2">
+											<label class="font-weight-6" for="">檢核項目</label>
+										</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">成績單：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.TranscriptName</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">學業總平均成績：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.GPA</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">操行總平均成績：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.Behavior</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">歷年學業成績總平均60(含)分以上者：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.Score60Text</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">歷年操行成績總平均75(含)分以上者：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.Score75Text</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">該學生自治組織或社團會員：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.IsMemberText</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">未曾被學生自治組織或社團除名者：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.NoFireText</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">無連選連任：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.NoReElectionText</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">無同時擔任兩個(含)以上學生自治組織或社團負責人：</label>
+										</td>
+										<td class="">@Model.Handover0103Model.NoTwoPositionText</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+			<div class="text-center pt-3">
+				<button class="print-btn btn btn-secondary btn-modern px-5" type="button">列印</button>
+			</div>
+		</div>
+
+	</div>
+</div>

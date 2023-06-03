@@ -348,6 +348,199 @@ namespace WebPccuClub.DataAccess
 
         #endregion
 
+        #region 0103
+
+        public DbExecuteInfo Insert0103(ClubHandoverViewModel vm, UserInfo LoginUser, string HoID, string HoDetailID)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@HoID", HoID);
+            parameters.Add("@HoDetailID", HoDetailID);
+            parameters.Add("@SchoolYear", vm.Handover0103Model.SchoolYear);
+            parameters.Add("@ClubID", vm.Handover0103Model.ClubID);
+			parameters.Add("@ClubCName", vm.Handover0103Model.ClubCName);
+			parameters.Add("@ClubEName", vm.Handover0103Model.ClubEName);
+            parameters.Add("@ClubBuildID", vm.Handover0103Model.ClubBuildID);
+            parameters.Add("@Location", vm.Handover0103Model.Location);
+            parameters.Add("@Tel", vm.Handover0103Model.Tel);
+            parameters.Add("@UserCName", vm.Handover0103Model.UserCName);
+            parameters.Add("@UserEName", vm.Handover0103Model.UserEName);
+            parameters.Add("@Sex", vm.Handover0103Model.Sex);
+            parameters.Add("@IdentityType", vm.Handover0103Model.IdentityType);
+            parameters.Add("@SNO", vm.Handover0103Model.SNO);
+            parameters.Add("@CDepartment", vm.Handover0103Model.CDepartment);
+            parameters.Add("@EDepartment", vm.Handover0103Model.EDepartment);
+            parameters.Add("@UserMail", vm.Handover0103Model.UserMail);
+            parameters.Add("@UserCellphone", vm.Handover0103Model.UserCellphone);
+            parameters.Add("@Transcript", vm.Handover0103Model.Transcript);
+            parameters.Add("@TranscriptName", vm.Handover0103Model.TranscriptName);
+            parameters.Add("@GPA", vm.Handover0103Model.GPA);
+            parameters.Add("@Behavior", vm.Handover0103Model.Behavior);
+            parameters.Add("@Score60", vm.Handover0103Model.Score60);
+            parameters.Add("@Score75", vm.Handover0103Model.Score75);
+            parameters.Add("@IsMember", vm.Handover0103Model.IsMember);
+            parameters.Add("@NoFire", vm.Handover0103Model.NoFire);
+            parameters.Add("@NoReElection", vm.Handover0103Model.NoReElection);
+            parameters.Add("@NoTwoPosition", vm.Handover0103Model.NoTwoPosition);
+
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO HandOverDoc03
+                                               (HoID, 
+                                                HoDetailID, 
+                                                SchoolYear, 
+                                                ClubID, 
+                                                ClubCName, 
+                                                ClubEName, 
+                                                ClubBuildID, 
+                                                Location, 
+                                                Tel, 
+                                                UserCName, 
+                                                UserEName, 
+                                                Sex, 
+                                                IdentityType, 
+                                                SNO, 
+                                                CDepartment, 
+                                                EDepartment, 
+                                                UserMail, 
+                                                UserCellphone, 
+                                                Transcript, 
+                                                TranscriptName, 
+                                                GPA, 
+                                                Behavior, 
+                                                Score60, 
+                                                Score75, 
+                                                IsMember, 
+                                                NoFire, 
+                                                NoReElection, 
+                                                NoTwoPosition, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         VALUES
+                                               (@HoID, 
+                                                @HoDetailID, 
+                                                @SchoolYear, 
+                                                @ClubID, 
+                                                @ClubCName, 
+                                                @ClubEName, 
+                                                @ClubBuildID, 
+                                                @Location, 
+                                                @Tel, 
+                                                @UserCName, 
+                                                @UserEName, 
+                                                @Sex, 
+                                                @IdentityType, 
+                                                @SNO, 
+                                                @CDepartment, 
+                                                @EDepartment, 
+                                                @UserMail, 
+                                                @UserCellphone, 
+                                                @Transcript, 
+                                                @TranscriptName, 
+                                                @GPA, 
+                                                @Behavior, 
+                                                @Score60, 
+                                                @Score75, 
+                                                @IsMember, 
+                                                @NoFire, 
+                                                @NoReElection, 
+                                                @NoTwoPosition, 
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE())";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        public ClubHandover0103ViewModel GetHandover0103Data(string HoID, UserInfo Login)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@HoID", HoID);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.SchoolYear, A.ClubID, A.ClubCName, A.ClubEName, 
+                                    A.ClubBuildID, B.Text AS ClubBuildIDText, A.Location, A.Tel, A.UserCName, A.UserEName, 
+                                    A.Sex, C.Text AS SexText, A.IdentityType, D.Text AS IdentityTypeText,
+                                    A.SNO, A.CDepartment, A.EDepartment, A.UserMail, A.UserCellphone, A.Transcript, A.TranscriptName, 
+		                            A.GPA, A.Behavior, A.Score60, A.Score75, A.IsMember, A.NoFire, A.NoReElection, A.NoTwoPosition,
+                                    E.Text AS Score60Text, F.Text AS Score75Text, G.Text AS IsMemberText, 
+                                    H.Text AS NoFireText, I.Text AS NoReElectionText, J.Text AS NoTwoPositionText
+                               FROM HandOverDoc03 A
+                          LEFT JOIN Code B ON B.Code = A.ClubBuildID AND B.Type = 'ClubBuild'
+                          LEFT JOIN Code C ON C.Code = A.Sex AND C.Type = 'Sex'
+                          LEFT JOIN Code D ON C.Code = A.IdentityType AND D.Type = 'IdentityType'
+                          LEFT JOIN Code E ON E.Code = A.Score60 AND E.Type = 'Conform'
+                          LEFT JOIN Code F ON F.Code = A.Score75 AND F.Type = 'Conform'
+                          LEFT JOIN Code G ON G.Code = A.IsMember AND G.Type = 'Conform'
+                          LEFT JOIN Code H ON H.Code = A.NoFire AND H.Type = 'Conform'
+                          LEFT JOIN Code I ON I.Code = A.NoReElection AND I.Type = 'Conform'
+                          LEFT JOIN Code J ON J.Code = A.NoTwoPosition AND J.Type = 'Conform'
+                              WHERE 1 = 1
+                                AND A.HoID = @HoID ";
+
+
+            (DbExecuteInfo info, IEnumerable<ClubHandover0103ViewModel> entitys) dbResult = DbaExecuteQuery<ClubHandover0103ViewModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList().FirstOrDefault();
+
+            return null;
+        }
+
+        #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -631,7 +824,89 @@ namespace WebPccuClub.DataAccess
             return new List<SelectListItem>();
         }
 
-        #endregion
+		public List<SelectListItem> GetClubBuild()
+		{
+			string CommandText = string.Empty;
+			DataSet ds = new DataSet();
 
-    }
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			#endregion
+
+			CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code WHERE Type = 'ClubBuild'";
+
+			(DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+				return dbResult.entitys.ToList();
+
+			return new List<SelectListItem>();
+		}
+
+		public List<SelectListItem> GetAllSex()
+		{
+			string CommandText = string.Empty;
+			DataSet ds = new DataSet();
+
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			#endregion
+
+			CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code WHERE Type = 'Sex'";
+
+			(DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+				return dbResult.entitys.ToList();
+
+			return new List<SelectListItem>();
+		}
+
+		public List<SelectListItem> GetAllIdentityType()
+		{
+			string CommandText = string.Empty;
+			DataSet ds = new DataSet();
+
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			#endregion
+
+			CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code WHERE Type = 'IdentityType'";
+
+			(DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+				return dbResult.entitys.ToList();
+
+			return new List<SelectListItem>();
+		}
+
+
+		public List<SelectListItem> GetAllConform()
+		{
+			string CommandText = string.Empty;
+			DataSet ds = new DataSet();
+
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			#endregion
+
+			CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code WHERE Type = 'Conform'";
+
+			(DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+				return dbResult.entitys.ToList();
+
+			return new List<SelectListItem>();
+		}
+
+		#endregion
+
+	}
 }
+
