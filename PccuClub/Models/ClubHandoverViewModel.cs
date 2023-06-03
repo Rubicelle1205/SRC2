@@ -23,9 +23,23 @@ namespace WebPccuClub.Models
         public ClubHandoverFileDetailModel FileDetailModel { get; set; }
 
 
+        public ClubHandoverDocCheckModel HandoverDocCheckModel { get; set; }
+
         public ClubHandover0101ViewModel Handover0101Model { get; set; }
+        public ClubHandover0102ViewModel Handover0102Model { get; set; }
+        public ClubHandover0103ViewModel Handover0103Model { get; set; }
+        public ClubHandover0201ViewModel Handover0201Model { get; set; }
+        public ClubHandover0202ViewModel Handover0202Model { get; set; }
+        public ClubHandover0203ViewModel Handover0203Model { get; set; }
+        public ClubHandover0301ViewModel Handover0301Model { get; set; }
+        public ClubHandover0302ViewModel Handover0302Model { get; set; }
+        public ClubHandover0303ViewModel Handover0303Model { get; set; }
+
+
 
     }
+
+    #region 申請
 
     public class ClubHandoverCheckModel
     {
@@ -46,6 +60,10 @@ namespace WebPccuClub.Models
         [DisplayName("型態")]
         public string? HandOverStatus { get; set; }
     }
+
+    #endregion
+
+    #region 已填寫表單
 
     public class ClubHandoverHistroyConditionModel
     {
@@ -104,6 +122,9 @@ namespace WebPccuClub.Models
 
     }
 
+    #endregion
+
+    #region 已上傳檔案
 
     public class ClubHandoverFileConditionModel
     {
@@ -194,7 +215,16 @@ namespace WebPccuClub.Models
         public string? FilePath { get; set; }
     }
 
+    #endregion
 
+    public class ClubHandoverDocCheckModel
+    {
+        /// <summary>ID</summary>
+        [DisplayName("ID")]
+        public string? HoDetailID { get; set; }
+    }
+
+    #region 0101
 
     public class ClubHandover0101ViewModel
     {
@@ -218,6 +248,116 @@ namespace WebPccuClub.Models
 		[DisplayName("同意")]
 		public string? Agree { get; set; }
 	}
+
+    #endregion
+
+    #region 0102
+
+    public class ClubHandover0102ViewModel
+    {
+        /// <summary>ID</summary>
+        [DisplayName("ID")]
+        public string? HoID { get; set; }
+
+        /// <summary>社團ID</summary>
+        [DisplayName("社團ID")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>社團ID</summary>
+        [DisplayName("社團ID")]
+        public string? ClubID { get; set; }
+
+        /// <summary>社團名稱</summary>
+        [DisplayName("社團名稱")]
+        public string? ClubName { get; set; }
+
+        /// <summary>改選形式</summary>
+        [DisplayName("改選形式")]
+        public string? ElectionType { get; set; }
+
+		/// <summary>改選形式</summary>
+		[DisplayName("改選形式")]
+		public string? ElectionTypeText { get; set; }
+
+		/// <summary>改選時間</summary>
+		[DisplayName("改選時間")]
+        public string? ElectionDate { get; set; }
+
+        /// <summary>改選地點</summary>
+        [DisplayName("改選地點")]
+        public string? ElectionPlace { get; set; }
+
+        /// <summary>社團人數</summary>
+        [DisplayName("社團人數")]
+        public string? TotleMan { get; set; }
+
+        /// <summary>應到</summary>
+        [DisplayName("應到")]
+        public string? ShouldMan { get; set; }
+
+        /// <summary>實到</summary>
+        [DisplayName("實到")]
+        public string? RealMan { get; set; }
+
+        /// <summary>請假</summary>
+        [DisplayName("請假")]
+        public string? LeaveMan { get; set; }
+
+        /// <summary>缺席</summary>
+        [DisplayName("缺席")]
+        public string? AbsentMan { get; set; }
+
+        /// <summary>列席師長姓名</summary>
+        [DisplayName("列席師長姓名")]
+        public string? Teacher { get; set; }
+
+        /// <summary>會議主席姓名</summary>
+        [DisplayName("會議主席姓名")]
+        public string? Chairman { get; set; }
+
+        /// <summary>會議記錄姓名</summary>
+        [DisplayName("會議記錄姓名")]
+        public string? Recorder { get; set; }
+
+        /// <summary>新任社長姓名</summary>
+        [DisplayName("新任社長姓名")]
+        public string? NewLeader { get; set; }
+
+        /// <summary>當日會議記錄上傳</summary>
+        [DisplayName("當日會議記錄上傳")]
+        public string? MeetingRecord { get; set; }
+
+        /// <summary>當日會議簽到表上傳</summary>
+        [DisplayName("當日會議簽到表上傳")]
+        public string? MeetingSign { get; set; }
+
+		/// <summary>當日會議記錄上傳</summary>
+		[DisplayName("當日會議記錄上傳")]
+		public string? MeetingRecordName { get; set; }
+
+		/// <summary>當日會議簽到表上傳</summary>
+		[DisplayName("當日會議簽到表上傳")]
+		public string? MeetingSignName { get; set; }
+	}
+
+    #endregion
+
+    public class ClubHandover0103ViewModel { }
+    public class ClubHandover0201ViewModel { }
+    public class ClubHandover0202ViewModel { }
+    public class ClubHandover0203ViewModel { }
+    public class ClubHandover0301ViewModel { }
+    public class ClubHandover0302ViewModel { }
+    public class ClubHandover0303ViewModel { }
+
+
+
+
+
+
+
+
+
 
 
 

@@ -18,10 +18,10 @@
                     <div class="content">@item.Created.Value.ToString("yyyy/MM/dd")</div>
                 </div>
             </div>
-                <a href="@Url.Action("HandOver0101", new { id = @item.HoID })" target="_blank" class="icon">
+                <a href="@Url.Action("HistorySwitch", new { id = @item.HoID, docType = item.DocType })" target="_blank" class="icon">
                 編輯 <i class="fas fa-pen"></i>
             </a>
-            <a href="@Url.Action("Print0101", new { id = @item.HoID })" target="_blank" class="icon">
+                <a href="@Url.Action("PrintSwitch", new { id = @item.HoID, docType = item.DocType })" target="_blank" class="icon">
                 列印 <i class="fas fa-print"></i>
             </a>
         </div>

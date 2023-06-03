@@ -1,0 +1,173 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+    Layout = "_FrontCleanLayout";
+}
+
+<div class="printPage">
+	<div class="a4 page">
+		<div class="container-fluid">
+			<div class="row justify-content-center">
+				<div class="col-xxl-8">
+					<div class="row justify-content-center">
+						<div class="col-11">
+
+							<h3 class="text-center text-6"><u>111</u>學年度改選概要</h3>
+							<table class="table table-bordered mb-2">
+								<tbody>
+									<tr>
+										<td width="30%" class="">
+											<label class="font-weight-6" for="">社團代碼：</label>
+										</td>
+										<td class="">@Model.Handover0102Model.ClubID</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">社團名稱：</label>
+										</td>
+										<td class="">@Model.Handover0102Model.ClubName</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">改選形式：</label>
+										</td>
+										<td class="">@Model.Handover0102Model.ElectionTypeText</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">改選時間：</label>
+										</td>
+										<td class="">@Model.Handover0102Model.ElectionDate</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">改選地點：</label>
+										</td>
+										<td class="">@Model.Handover0102Model.ElectionPlace</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">社團人數：</label>
+										</td>
+										<td class="">@Model.Handover0102Model.TotleMan</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">應到：</label>
+										</td>
+										<td class="">@Model.Handover0102Model.ShouldMan</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">實到：</label>
+										</td>
+										<td class="">@Model.Handover0102Model.RealMan</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">請假：</label>
+										</td>
+										<td class="">@Model.Handover0102Model.LeaveMan</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">缺席：</label>
+										</td>
+										<td class="">@Model.Handover0102Model.AbsentMan</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">列席師長姓名：</label>
+										</td>
+										<td class="">@Model.Handover0102Model.Teacher</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">會議主席姓名：</label>
+										</td>
+										<td class="">@Model.Handover0102Model.Chairman</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">會議記錄姓名：</label>
+										</td>
+										<td class="">@Model.Handover0102Model.Recorder</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">新任社長姓名：</label>
+										</td>
+										<td class="">@Model.Handover0102Model.NewLeader</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">當日會議記錄上傳：</label>
+										</td>
+										<td class="">@Model.Handover0102Model.MeetingRecordName</td>
+									</tr>
+									<tr>
+										<td class="">
+											<label class="font-weight-6" for="">當日會議簽到表上傳：</label>
+										</td>
+										<td class="">@Model.Handover0102Model.MeetingSignName</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="mb-2">請將此表單連同相關附件於規定期限內上傳及繳交，逾期依中國文化大學學生自治組織與社團輔導辦法及社團評鑑要點處分。</div>
+
+							<table class="table table-bordered text-center mb-2">
+								<tbody>
+									<tr>
+										<td style="width: 300px;">
+											<strong>紀錄人</strong>
+										</td>
+										<td style="width: 300px;">
+											<strong>會議主席</strong>
+										</td>
+										<td style="width: 300px;">
+											<strong>專業指導老師</strong>
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 300px;">
+											<p>&nbsp;</p>
+											<p>&nbsp;</p>
+											<p>&nbsp;</p>
+											<p>&nbsp;</p>
+											<p>年　　月　　日</p>
+										</td>
+										<td style="width: 300px;">
+											<p>&nbsp;</p>
+											<p>&nbsp;</p>
+											<p>&nbsp;</p>
+											<p>&nbsp;</p>
+											<p>年　　月　　日</p>
+										</td>
+										<td style="width: 300px;">
+											<p>&nbsp;</p>
+											<p>&nbsp;</p>
+											<p>&nbsp;</p>
+											<p>&nbsp;</p>
+											<p>年　　月　　日</p>
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 300px; padding-left: 0; padding-right: 0;">▲列印後請親筆簽名</td>
+										<td style="width: 300px; padding-left: 0; padding-right: 0;">▲列印後請親筆簽名</td>
+										<td style="width: 300px; padding-left: 0; padding-right: 0;">▲列印後請親筆簽名</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+			<div class="text-center pt-3">
+				<button class="print-btn btn btn-secondary btn-modern px-5" type="button">列印</button>
+			</div>
+		</div>
+
+	</div>
+</div>

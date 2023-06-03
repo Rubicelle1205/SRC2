@@ -1,0 +1,347 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+    Layout = "_FrontSimpleLayout";
+}
+
+<div role="main" class="main">
+    <div class="container p-relative py-md-5 py-4">
+        <div class="row justify-content-center">
+            <div class="col-xxl-10">
+                <div class="printContent">
+                    <h3 class="text-center text-6"><u>111</u>學年度改選概要</h3>
+                    <form class="form-box checkthisform" action="" method="post" enctype="application/x-www-form-urlencoded">
+                        <div class="row justify-content-center">
+                            <div class="col-md-10">
+                                <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
+                                <table class="table table-bordered border-dark bg-white">
+                                    <tbody>
+                                        <tr>
+                                            <td width="30%" class="">
+                                                <label for="">學年度：</label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.SchoolYear, new { @class="form-control", @readonly="readonly"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="30%" class="">
+                                                <label for="">社團代碼：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.ClubID, new { @class="form-control", placeholder="社團代碼"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">社團名稱：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.ClubName, new { @class="form-control", placeholder="社團名稱"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">改選形式：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.DropDownListFor(m => m.Handover0102Model.ElectionType ,(List<SelectListItem>)ViewBag.ddlElectionType,"請選擇改選形式", new {@class = "form-control"})
+                                                <div class="fs-90percent text-gray pt-1">如：三合一選舉、社員大會、改選會議、跑班</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">改選時間：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.ElectionDate, new { @class="form-control", type="date"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">改選地點：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.ElectionPlace, new { @class="form-control", placeholder="改選地點" })
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="bg-gray-blue" colspan="2">
+                                                <label for="">會議出席狀況</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">社團人數：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.TotleMan, new { @class="form-control", placeholder="社團人數" })
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">應到：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.ShouldMan, new { @class="form-control", placeholder="應到" })
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">實到：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.RealMan, new { @class="form-control", placeholder="實到" })
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">請假：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.LeaveMan, new { @class="form-control", placeholder="請假" })
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">缺席：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.AbsentMan, new { @class="form-control", placeholder="缺席" })
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">列席師長姓名：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.Teacher, new { @class="form-control", placeholder="列席師長姓名" })
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">會議主席姓名：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.Chairman, new { @class="form-control", placeholder="會議主席姓名" })
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">會議記錄姓名：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.Recorder, new { @class="form-control", placeholder="會議記錄姓名" })
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">新任社長姓名：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.NewLeader, new { @class="form-control", placeholder="新任社長姓名" })
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">當日會議記錄上傳：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.MeetingRecord, new { @class="form-control", type="file", placeholder="當日會議記錄上傳", accept=".docx,.doc,.odt,.pdf" })
+                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.docx、.doc、.odt、.pdf</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">當日會議簽到表上傳：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.MeetingSign, new { @class="form-control", type="file", placeholder="當日會議簽到表上傳", accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z" })
+                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.pdf、.jpg、.jpeg、.png、.zip、.rar、.7z</div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+
+                                <div class="mb-2">請將此表單連同相關附件於規定期限內上傳及繳交，逾期依中國文化大學學生自治組織與社團輔導辦法及社團評鑑要點處分。</div>
+
+                                <table class="table table-bordered text-center mb-2 border-black bg-white">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width: 300px;">
+                                                <strong>紀錄人</strong>
+                                            </td>
+                                            <td style="width: 300px;">
+                                                <strong>會議主席</strong>
+                                            </td>
+                                            <td style="width: 300px;">
+                                                <strong>專業指導老師</strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 300px;">
+                                                <p>&nbsp;</p>
+                                                <p>&nbsp;</p>
+                                                <p>&nbsp;</p>
+                                                <p>&nbsp;</p>
+                                                <p>年　　月　　日</p>
+                                            </td>
+                                            <td style="width: 300px;">
+                                                <p>&nbsp;</p>
+                                                <p>&nbsp;</p>
+                                                <p>&nbsp;</p>
+                                                <p>&nbsp;</p>
+                                                <p>年　　月　　日</p>
+                                            </td>
+                                            <td style="width: 300px;">
+                                                <p>&nbsp;</p>
+                                                <p>&nbsp;</p>
+                                                <p>&nbsp;</p>
+                                                <p>&nbsp;</p>
+                                                <p>年　　月　　日</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width: 300px; padding-left: 0; padding-right: 0;">▲列印後請親筆簽名</td>
+                                            <td style="width: 300px; padding-left: 0; padding-right: 0;">▲列印後請親筆簽名</td>
+                                            <td style="width: 300px; padding-left: 0; padding-right: 0;">▲列印後請親筆簽名</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="text-center pt-4">
+                            <button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">送出</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var SchoolYear = $('#@Html.IdFor(m => m.Handover0102Model.SchoolYear)').val();
+        var ClubID = $('#@Html.IdFor(m => m.Handover0102Model.ClubID)').val();
+        var ClubName = $('#@Html.IdFor(m => m.Handover0102Model.ClubName)').val();
+        var ElectionType = $('#@Html.IdFor(m => m.Handover0102Model.ElectionType)').val();
+        var ElectionDate = $('#@Html.IdFor(m => m.Handover0102Model.ElectionDate)').val();
+        var ElectionPlace = $('#@Html.IdFor(m => m.Handover0102Model.ElectionPlace)').val();
+        var TotleMan = $('#@Html.IdFor(m => m.Handover0102Model.TotleMan)').val();
+        var ShouldMan = $('#@Html.IdFor(m => m.Handover0102Model.ShouldMan)').val();
+        var RealMan = $('#@Html.IdFor(m => m.Handover0102Model.RealMan)').val();
+        var LeaveMan = $('#@Html.IdFor(m => m.Handover0102Model.LeaveMan)').val();
+        var AbsentMan = $('#@Html.IdFor(m => m.Handover0102Model.AbsentMan)').val();
+        var Teacher = $('#@Html.IdFor(m => m.Handover0102Model.Teacher)').val();
+        var Chairman = $('#@Html.IdFor(m => m.Handover0102Model.Chairman)').val();
+        var Recorder = $('#@Html.IdFor(m => m.Handover0102Model.Recorder)').val();
+        var NewLeader = $('#@Html.IdFor(m => m.Handover0102Model.NewLeader)').val();
+
+        var MeetingRecord = $('#@Html.IdFor(m => m.Handover0102Model.MeetingRecord)')[0].files[0];
+
+        if (typeof MeetingRecord !== 'undefined') {
+            var fileExtension = MeetingRecord.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'docx' && fileExtension !== 'doc' && fileExtension !== 'odt' && fileExtension !== 'pdf') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.Handover0102Model.MeetingRecord)', MeetingRecord);
+        }
+        else {
+            $.alert("會議記錄不可為空白"); return;
+        }
+
+        var MeetingSign = $('#@Html.IdFor(m => m.Handover0102Model.MeetingSign)')[0].files[0];
+
+
+        if (typeof MeetingSign !== 'undefined') {
+            var fileExtension = MeetingSign.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'pdf' && fileExtension !== 'jpg' &&
+                fileExtension !== 'jpeg' && fileExtension !== 'png' &&
+                fileExtension !== 'zip' && fileExtension !== 'rar' &&
+                fileExtension !== '7z') {
+
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.Handover0102Model.MeetingSign)', MeetingSign);
+        }
+        else {
+            $.alert("會議簽到表不可為空白"); return;
+        }
+
+
+        if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
+        if (ClubName == "") { $.alert("社團名稱不可為空白"); return; }
+        if (ElectionType == "") { $.alert("改選形式不可為空白"); return; }
+        if (ElectionDate == "") { $.alert("改選時間不可為空白"); return; }
+        if (ElectionPlace == "") { $.alert("改選地點不可為空白"); return; }
+        if (TotleMan == "") { $.alert("社團人數不可為空白"); return; }
+        if (ShouldMan == "") { $.alert("應到不可為空白"); return; }
+        if (RealMan == "") { $.alert("實到不可為空白"); return; }
+        if (LeaveMan == "") { $.alert("請假不可為空白"); return; }
+        if (AbsentMan == "") { $.alert("缺席不可為空白"); return; }
+        if (Teacher == "") { $.alert("列席師長姓名不可為空白"); return; }
+        if (Chairman == "") { $.alert("會議主席姓名不可為空白"); return; }
+        if (Recorder == "") { $.alert("會議記錄姓名不可為空白"); return; }
+        if (NewLeader == "") { $.alert("新任社長姓名不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.Handover0102Model.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.Handover0102Model.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.Handover0102Model.ClubName)', ClubName);
+        data.append('@Html.NameFor(m => m.Handover0102Model.ElectionType)', ElectionType);
+        data.append('@Html.NameFor(m => m.Handover0102Model.ElectionDate)', ElectionDate);
+        data.append('@Html.NameFor(m => m.Handover0102Model.ElectionPlace)', ElectionPlace);
+        data.append('@Html.NameFor(m => m.Handover0102Model.TotleMan)', TotleMan);
+        data.append('@Html.NameFor(m => m.Handover0102Model.ShouldMan)', ShouldMan);
+        data.append('@Html.NameFor(m => m.Handover0102Model.RealMan)', RealMan);
+        data.append('@Html.NameFor(m => m.Handover0102Model.LeaveMan)', LeaveMan);
+        data.append('@Html.NameFor(m => m.Handover0102Model.AbsentMan)', AbsentMan);
+        data.append('@Html.NameFor(m => m.Handover0102Model.Teacher)', Teacher);
+        data.append('@Html.NameFor(m => m.Handover0102Model.Chairman)', Chairman);
+        data.append('@Html.NameFor(m => m.Handover0102Model.Recorder)', Recorder);
+        data.append('@Html.NameFor(m => m.Handover0102Model.NewLeader)', NewLeader);
+
+        
+
+        SendAjax({
+            url: '@Url.Action("Save0102")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                var url = '@Url.Action("Print0102")';
+                                window.location.href = url;
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+</script>

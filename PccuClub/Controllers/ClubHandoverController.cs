@@ -34,6 +34,8 @@ namespace WebPccuClub.Controllers
             hostingEnvironment = _hostingEnvironment;
         }
 
+        #region 申請
+
         [Log(LogActionChineseName.首頁)]
         public IActionResult Index()
         {
@@ -86,6 +88,8 @@ namespace WebPccuClub.Controllers
 
 			return Json(vmRtn);
 		}
+
+        #endregion
 
         #region 已填寫表單
 
@@ -161,20 +165,80 @@ namespace WebPccuClub.Controllers
 
         #region 表單撰寫
 
-        #region 0101
-
 
         [Log(LogActionChineseName.社團負責人改選管理)]
-		public IActionResult HandOver01()
+        public IActionResult HandOver01()
+        {
+            return View();
+        }
+
+		public IActionResult HistorySwitch(string id, string docType)
 		{
-			return View();
+            switch (docType)
+            {
+                case "01":
+                    return Redirect($"/ClubHandover/HandOver0101?id={id}");
+                case "02":
+                    return Redirect($"/ClubHandover/HandOver0102?id={id}");
+                case "03":
+                    return Redirect($"/ClubHandover/HandOver0103?id={id}");
+                case "04":
+                    return Redirect($"/ClubHandover/HandOver0104?id={id}");
+                case "05":
+                    return Redirect($"/ClubHandover/HandOver0105?id={id}");
+                case "06":
+                    return Redirect($"/ClubHandover/HandOver0106?id={id}");
+                case "07":
+                    return Redirect($"/ClubHandover/HandOver0107?id={id}");
+                case "08":
+                    return Redirect($"/ClubHandover/HandOver0108?id={id}");
+                case "09":
+                    return Redirect($"/ClubHandover/HandOver0109?id={id}");
+                default:
+                    Redirect("Index");
+                    break;
+            }
+
+            return View();
 		}
 
-		[Log(LogActionChineseName.社團負責人改選管理)]
+        public IActionResult PrintSwitch(string id, string docType)
+        {
+            switch (docType)
+            {
+                case "01":
+                    return Redirect($"/ClubHandover/Print0101?id={id}");
+                case "02":
+                    return Redirect($"/ClubHandover/Print0102?id={id}");
+                case "03":
+                    return Redirect($"/ClubHandover/Print0103?id={id}");
+                case "04":
+                    return Redirect($"/ClubHandover/Print0104?id={id}");
+                case "05":
+                    return Redirect($"/ClubHandover/Print0105?id={id}");
+                case "06":
+                    return Redirect($"/ClubHandover/Print0106?id={id}");
+                case "07":
+                    return Redirect($"/ClubHandover/Print0107?id={id}");
+                case "08":
+                    return Redirect($"/ClubHandover/Print0108?id={id}");
+                case "09":
+                    return Redirect($"/ClubHandover/Print0109?id={id}");
+                default:
+                    Redirect("Index");
+                    break;
+            }
+
+            return View();
+        }
+
+        #region 0101
+
+        [Log(LogActionChineseName.社團負責人改選管理)]
 		public IActionResult HandOver0101(string id)
 		{
 			ClubHandoverViewModel vm = new ClubHandoverViewModel();
-			vm.Handover0101Model = new ClubHandover0101ViewModel();
+			vm.Handover0101Model = new ();
 
 			if (!string.IsNullOrEmpty(id))
 			{
@@ -194,9 +258,9 @@ namespace WebPccuClub.Controllers
 				string HoID = dt.QueryFieldByDT("HoID");
 
 				ClubHandoverViewModel vm2 = new ClubHandoverViewModel();
-				vm2.Handover0101Model = dbAccess.GetHandover0101Data(HoID, LoginUser);
+				vm2.HandoverDocCheckModel = dbAccess.GetHandoverDocData(HoID, "01");
 
-                if (vm2.Handover0101Model != null)
+                if (vm2.HandoverDocCheckModel != null)
 				{
 					vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
 					vmRtn.ErrorMsg = "此表單已存在";
@@ -257,20 +321,140 @@ namespace WebPccuClub.Controllers
 			return View(vm);
 		}
 
-
 		#endregion
 
+        #region 0102
+
 		[Log(LogActionChineseName.社團負責人改選管理)]
-        public IActionResult HandOver0102()
+        public IActionResult HandOver0102(string id)
         {
-            return View();
+            ViewBag.ddlElectionType = dbAccess.getAllElectionType();
+
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            vm.Handover0102Model = new ClubHandover0102ViewModel();
+            vm.Handover0102Model.SchoolYear = PublicFun.GetNowSchoolYear();
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                vm.Handover0102Model = dbAccess.GetHandover0102Data(id, LoginUser);
+            }
+
+            return View(vm);
         }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> Save0102(ClubHandoverViewModel vm)
+        {
+            try
+            {
+                DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
+                string HoID = dt.QueryFieldByDT("HoID");
+
+                ClubHandoverViewModel vm2 = new ClubHandoverViewModel();
+                vm2.HandoverDocCheckModel = dbAccess.GetHandoverDocData(HoID, "02");
+
+                if (vm2.HandoverDocCheckModel != null)
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "此表單已存在";
+                    return Json(vmRtn);
+                }
+
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("Handover0102Model.MeetingRecord"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("HandOverClass02", file);
+                            vm.Handover0102Model.MeetingRecordName = file.FileName;
+                            vm.Handover0102Model.MeetingRecord = strFilePath;
+                        }
+                        else if (Request.Form.Files[i].Name.Contains("Handover0102Model.MeetingSign"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("HandOverClass02", file);
+							vm.Handover0102Model.MeetingSignName = file.FileName;
+							vm.Handover0102Model.MeetingSign = strFilePath;
+                        }
+                    }
+                }
+
+
+                dbAccess.DbaInitialTransaction();
+
+                DataTable dtt = new DataTable();
+
+                var dbResult = dbAccess.InsertDetail(HoID, "01", "02", LoginUser, out dtt);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "儲存失敗";
+                    return Json(vmRtn);
+                }
+
+                string HoDetailID = dtt.QueryFieldByDT("HoDetailID");
+
+                dbResult = dbAccess.Insert0102(vm, LoginUser, HoID, HoDetailID);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "儲存失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+        [Log(LogActionChineseName.列印)]
+        public IActionResult Print0102(string id)
+        {
+            DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
+            string HoID = dt.QueryFieldByDT("HoID");
+
+            if (!string.IsNullOrEmpty(id))
+                HoID = id;
+
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            vm.Handover0102Model = dbAccess.GetHandover0102Data(HoID, LoginUser);
+
+            return View(vm);
+        }
+        #endregion
+
+        #region 0103
+
+
 
         [Log(LogActionChineseName.社團負責人改選管理)]
         public IActionResult HandOver0103()
         {
             return View();
         }
+
+        #endregion
+
+
+
+
 
 
         [Log(LogActionChineseName.交接準備)]
@@ -433,8 +617,6 @@ namespace WebPccuClub.Controllers
         }
 
         #endregion
-
-
 
     }
 }

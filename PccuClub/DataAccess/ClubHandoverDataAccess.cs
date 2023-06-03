@@ -83,24 +83,23 @@ namespace WebPccuClub.DataAccess
             return ExecuteResult;
         }
 
-		#endregion
+        #endregion
 
-		#region Doc 0101
 
-		public DbExecuteInfo InsertDetail(string HoID, string HandOverClass, string DocType, UserInfo LoginUser, out DataTable dt)
-		{
-			DataSet ds = new DataSet();
-			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
-			DBAParameter parameters = new DBAParameter();
+        public DbExecuteInfo InsertDetail(string HoID, string HandOverClass, string DocType, UserInfo LoginUser, out DataTable dt)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
 
-			#region 參數設定
-			parameters.Add("@HoID", HoID);
-			parameters.Add("@HandOverClass", HandOverClass);
-			parameters.Add("@DocType", DocType);
-			parameters.Add("@LoginId", LoginUser.LoginId);
-			#endregion 參數設定
+            #region 參數設定
+            parameters.Add("@HoID", HoID);
+            parameters.Add("@HandOverClass", HandOverClass);
+            parameters.Add("@DocType", DocType);
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
 
-			string CommendText = $@"INSERT INTO HandOverDocDetail
+            string CommendText = $@"INSERT INTO HandOverDocDetail
                                                (HoID, 
                                                 HandOverClass, 
                                                 DocType,
@@ -118,13 +117,45 @@ namespace WebPccuClub.DataAccess
                                                 @LoginId, 
                                                 GETDATE())";
 
-			ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
             dt = ds.Tables[0];
 
-			return ExecuteResult;
-		}
+            return ExecuteResult;
+        }
 
-		public DbExecuteInfo Insert0101(ClubHandoverViewModel vm, UserInfo LoginUser, string HoID, string HoDetailID)
+        public ClubHandoverDocCheckModel GetHandoverDocData(string HoID, string DocType)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@HoID", HoID);
+            parameters.Add("@DocType", DocType);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT A.HoDetailID
+                               FROM HandOverDocDetail A
+                              WHERE 1 = 1
+                                AND A.HoID = @HoID 
+                                AND A.DocType = @DocType";
+
+
+            (DbExecuteInfo info, IEnumerable<ClubHandoverDocCheckModel> entitys) dbResult = DbaExecuteQuery<ClubHandoverDocCheckModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList().FirstOrDefault();
+
+            return null;
+        }
+
+
+
+        #region Doc 0101
+
+        public DbExecuteInfo Insert0101(ClubHandoverViewModel vm, UserInfo LoginUser, string HoID, string HoDetailID)
 		{
 			DataSet ds = new DataSet();
 			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
@@ -198,6 +229,127 @@ namespace WebPccuClub.DataAccess
 		}
 
         #endregion
+
+        #region Doc 0102
+
+        public DbExecuteInfo Insert0102(ClubHandoverViewModel vm, UserInfo LoginUser, string HoID, string HoDetailID)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@HoID", HoID);
+            parameters.Add("@HoDetailID", HoDetailID);
+            parameters.Add("@SchoolYear", vm.Handover0102Model.SchoolYear);
+            parameters.Add("@ClubID", vm.Handover0102Model.ClubID);
+            parameters.Add("@ClubName", vm.Handover0102Model.ClubName);
+            parameters.Add("@ElectionType", vm.Handover0102Model.ElectionType);
+            parameters.Add("@ElectionDate", vm.Handover0102Model.ElectionDate);
+            parameters.Add("@ElectionPlace", vm.Handover0102Model.ElectionPlace);
+            parameters.Add("@TotleMan", vm.Handover0102Model.TotleMan);
+            parameters.Add("@ShouldMan", vm.Handover0102Model.ShouldMan);
+            parameters.Add("@RealMan", vm.Handover0102Model.RealMan);
+            parameters.Add("@LeaveMan", vm.Handover0102Model.LeaveMan);
+            parameters.Add("@AbsentMan", vm.Handover0102Model.AbsentMan);
+            parameters.Add("@Teacher", vm.Handover0102Model.Teacher);
+            parameters.Add("@Chairman", vm.Handover0102Model.Chairman);
+            parameters.Add("@Recorder", vm.Handover0102Model.Recorder);
+            parameters.Add("@NewLeader", vm.Handover0102Model.NewLeader);
+            parameters.Add("@MeetingRecord", vm.Handover0102Model.MeetingRecord);
+            parameters.Add("@MeetingSign", vm.Handover0102Model.MeetingSign);
+
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO HandOverDoc02
+                                               (HoID, 
+                                                HoDetailID, 
+                                                SchoolYear, 
+                                                ClubID, 
+                                                ClubName, 
+                                                ElectionType, 
+                                                ElectionDate, 
+                                                ElectionPlace, 
+                                                TotleMan,      
+                                                ShouldMan, 
+                                                RealMan, 
+                                                LeaveMan, 
+                                                AbsentMan, 
+                                                Teacher, 
+                                                Chairman, 
+                                                Recorder, 
+                                                NewLeader, 
+                                                MeetingRecord, 
+                                                MeetingSign, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         VALUES
+                                               (@HoID, 
+                                                @HoDetailID, 
+                                                @SchoolYear, 
+                                                @ClubID, 
+                                                @ClubName, 
+                                                @ElectionType, 
+                                                @ElectionDate, 
+                                                @ElectionPlace, 
+                                                @TotleMan,      
+                                                @ShouldMan, 
+                                                @RealMan, 
+                                                @LeaveMan, 
+                                                @AbsentMan, 
+                                                @Teacher, 
+                                                @Chairman, 
+                                                @Recorder, 
+                                                @NewLeader, 
+                                                @MeetingRecord, 
+                                                @MeetingSign, 
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE())";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+
+        public ClubHandover0102ViewModel GetHandover0102Data(string HoID, UserInfo Login)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@HoID", HoID);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.SchoolYear, A.ClubID, A.ClubName, A.ElectionType, B.Text AS ElectionTypeText, A.ElectionDate, A.ElectionPlace, 
+                                    A.TotleMan, A.ShouldMan, A.RealMan, A.LeaveMan, A.AbsentMan, A.Teacher, A.Chairman, A.Recorder, A.NewLeader, 
+                                    A.MeetingRecord, A.MeetingSign, A.MeetingRecordName, A.MeetingSignName
+                               FROM HandOverDoc02 A
+                          LEFT JOIN Code B ON B.Code = A.ElectionType AND B.Type = 'ElectionType'
+                              WHERE 1 = 1
+                                AND A.HoID = @HoID ";
+
+
+            (DbExecuteInfo info, IEnumerable<ClubHandover0102ViewModel> entitys) dbResult = DbaExecuteQuery<ClubHandover0102ViewModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList().FirstOrDefault();
+
+            return null;
+        }
+
+        #endregion
+
+
+
 
         #region File 01
 
@@ -328,6 +480,8 @@ namespace WebPccuClub.DataAccess
         #endregion
 
 
+
+
         #region 已上傳表單
 
         public List<ClubHandoverHistroyResultModel> GetHistorySearchResult(ClubHandoverHistroyConditionModel vm, UserInfo LoginUser)
@@ -419,10 +573,6 @@ namespace WebPccuClub.DataAccess
         #endregion
 
 
-
-
-
-
         #region else
 
         public DataTable GetHoID(string ClubID, string SchoolYear)
@@ -461,14 +611,27 @@ namespace WebPccuClub.DataAccess
 			return LstItem;
 		}
 
+        public List<SelectListItem> getAllElectionType()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
 
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code WHERE Type = 'ElectionType'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
 
         #endregion
-
-
-
-
-
 
     }
 }
