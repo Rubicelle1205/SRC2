@@ -224,8 +224,6 @@ namespace WebPccuClub.Models
         public string? HoDetailID { get; set; }
     }
 
-    #region 0101
-
     public class ClubHandover0101ViewModel
     {
 		/// <summary>ID</summary>
@@ -252,11 +250,6 @@ namespace WebPccuClub.Models
 
 		
 	}
-
-    #endregion
-
-    #region 0102
-
     public class ClubHandover0102ViewModel
     {
         /// <summary>ID</summary>
@@ -343,9 +336,6 @@ namespace WebPccuClub.Models
 		[DisplayName("當日會議簽到表上傳")]
 		public string? MeetingSignName { get; set; }
 	}
-
-    #endregion
-
     public class ClubHandover0103ViewModel 
     {
 		public string? SchoolYear { get; set; }
@@ -489,17 +479,5 @@ namespace WebPccuClub.Models
 
 		public string? BookCoverName { get; set; } 
 	}
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

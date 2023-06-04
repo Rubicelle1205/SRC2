@@ -1,0 +1,238 @@
+﻿@model WebPccuClub.Models.HandOverFileMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Created)</th>
+                                        <td>@Model.EditModel.Created.Value.ToString("yyyy/MM/dd HH:mm:ss")</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubID)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DisplayFor(m => m.EditModel.ClubID)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubCName)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DisplayFor(m => m.EditModel.ClubCName)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.SchoolYear)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DisplayFor(m => m.EditModel.ClubCName)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            附件<span class="required">*</span>
+                                            <span class="mx-1">
+                                                <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                            </span>
+                                            <br /><span class="text-xs text-danger font-weight-normal">
+                                                可請學生重新上傳，將舊有的檔案蓋過。
+                                                <br/>或透過此處增加檔案。</span>
+                                        </th>
+                                        <td>
+                                            <div class="target_list">
+                                                @if (Model.EditModel.LstFile.Count > 0)
+                                                {
+                                                    for (int i = 0; i <= Model.EditModel.LstFile.Count - 1; i++)
+                                                    {
+                                                        <div class="d-block mb-1 item">
+                                                            <a class="text-sm text-muted"
+                                                                     href="@Model.EditModel.LstFile[i].FilePath" target="_blank">
+                                                                <i class="fa-regular fa-file mr-2"></i>@string.Format("檔案{0}", (i + 1).ToString())
+                                                            </a>
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                            <button id="add_input_btn" class="btn btn-secondary btn-sm mt-3 d-block" type="button">新增 <i class="icon-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">審核狀態<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.ActVerify ,(List<SelectListItem>)ViewBag.ddlAllActVerify,"請選擇審核狀態", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">備註<span class="required"></span></th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.VerifyMemo, new {@class="form-control", rows="5", placeholder="請輸入備註"})</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        @Html.HiddenFor(m => m.EditModel.HoID)
+                        @Html.HiddenFor(m => m.EditModel.HoDetailID)
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </form>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    $('.mx-1').tooltip({ title: "僅接受.docx、.doc、.odt、.pdf檔" });
+
+    $(document).ready(function () {
+        // 多檔上傳
+        if ($(".target_list").length > 0) {
+
+            $(document).on('click', '#add_input_btn', function () {
+
+                var num = checkNum();
+                var addItem = '<div class="d-block mb-1 item">';
+                addItem += '<label class="btn btn-outline-primary mb-0">';
+                addItem += '<input id="File' + num + '" style="display:none;" req class="filesupload" data-title="附件" type="file" name="file' + num + '" value="" accept=".doc,.docx,.odt,.pdf" data-file="">';
+                addItem += '<i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案';
+                addItem += '</label>';
+                addItem += '<span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>';
+                addItem += '<button class="del-btn btn btn-sm btn-outline-secondary" type="button"><i class="fas fa-times"></i> 移除</button>';
+                addItem += '</div>';
+                if ($(".target_list").find("[type='file']").length <= 7) {
+                    $(".target_list").append(addItem);
+                    $(".target_list .del-btn").removeClass("hidden")
+                }
+            })
+
+            $(document).on('click', '.target_list .del-btn', function () {
+                var num = $(".target_list").find("[type='file']").length
+
+                if (confirm("確認清除？") == false) {
+                    return false
+                } else {
+                    if (num >= 2) {
+                        $(this).closest(".item").remove()
+                        $("#add_input_btn").prop("disabled", false)
+                    }
+
+                    if (num <= 2) {
+                        $(".target_list .del-btn").addClass("hidden")
+                    } else {
+                        $(".target_list .del-btn").removeClass("hidden")
+                    }
+                }
+            })
+
+            function checkNum() {
+                var num = $(".target_list").find(".d-block.mb-1.item").length
+                if (num >= 7) {
+                    $("#add_input_btn").prop("disabled", true)
+                } else {
+                    $("#add_input_btn").prop("disabled", false)
+                }
+                return num;
+            }
+        }
+        $(document).on('change', ".filesupload", function (e) {
+            var filename = e.target.files[0].name;
+            $(this).closest('.item').find('.text-muted#filename').text(filename);
+        });
+
+    });
+
+    function SaveData() {
+
+        var data = new FormData()
+        var HoID = $('#@Html.IdFor(m => m.EditModel.HoID)').val();
+        var HoDetailID = $('#@Html.IdFor(m => m.EditModel.HoDetailID)').val();
+        var ActVerify = $('#@Html.IdFor(m => m.EditModel.ActVerify)').val();
+        var VerifyMemo = $('#@Html.IdFor(m => m.EditModel.VerifyMemo)').val();
+
+        for (var i = 0; i <= 7; i++) {
+            var file = $('#File' + i);
+
+            if (file.length > 0 && file.val() !== '') {
+                var File = $('#File' + i)[0].files[0];
+                if (typeof File !== 'undefined') {
+                    var fileExtension = File.name.split('.').pop().toLowerCase();
+
+                    if (fileExtension !== 'docx' && fileExtension !== 'doc' &&
+                        fileExtension !== 'odt' && fileExtension !== 'pdf') {
+                        $.alert("檔案類型不符合");
+                        return;
+                    }
+
+                    data.append('@Html.NameFor(m => m.File)', File);
+                }
+            }
+        }
+
+        if (ActVerify == "") { $.alert("審核狀態不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.HoID)', HoID);
+        data.append('@Html.NameFor(m => m.EditModel.HoDetailID)', HoDetailID);
+        data.append('@Html.NameFor(m => m.EditModel.ActVerify)', ActVerify);
+        data.append('@Html.NameFor(m => m.EditModel.VerifyMemo)', VerifyMemo);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+    }
+
+
+
+</script>
