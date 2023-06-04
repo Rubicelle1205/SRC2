@@ -238,6 +238,8 @@ namespace WebPccuClub.Controllers
 		[Log(LogActionChineseName.社團負責人改選管理)]
 		public IActionResult HandOver0101(string id)
 		{
+			ViewBag.ddlAgree = dbAccess.getAllAgree();
+
 			ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0101Model = new ();
 

@@ -164,6 +164,7 @@ namespace WebPccuClub.DataAccess
 			parameters.Add("@ClubID", vm.Handover0101Model.ClubID);
 			parameters.Add("@ClubName", vm.Handover0101Model.ClubName);
 			parameters.Add("@UserName", vm.Handover0101Model.UserName);
+			parameters.Add("@Agree", vm.Handover0101Model.Agree);
 			parameters.Add("@LoginId", LoginUser.LoginId);
 			#endregion 參數設定
 
@@ -184,7 +185,7 @@ namespace WebPccuClub.DataAccess
                                                 @ClubID, 
                                                 @ClubName, 
                                                 @UserName, 
-                                                '01',
+                                                @Agree,
                                                 @LoginId, 
                                                 GETDATE(), 
                                                 @LoginId, 
@@ -209,9 +210,10 @@ namespace WebPccuClub.DataAccess
 			#region 參數設定
 			#endregion
 
-			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.ClubID, A.ClubName, A.UserName
+			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.ClubID, A.ClubName, A.UserName, A.Agree, C.Text AS AgreeText
                                FROM HandOverDoc01 A
                                 LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
+                                LEFT JOIN Code C ON C.Code = A.Agree AND C.Type = 'Agree'
                               WHERE 1 = 1
                                 AND A.HoID = @HoID 
                                 AND B.ClubID = @ClubID";
@@ -1407,7 +1409,27 @@ namespace WebPccuClub.DataAccess
 			return LstItem;
 		}
 
-        public List<SelectListItem> getAllElectionType()
+		public List<SelectListItem> getAllAgree()
+		{
+			string CommandText = string.Empty;
+			DataSet ds = new DataSet();
+
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			#endregion
+
+			CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code WHERE Type = 'Agree' AND Code = '01'";
+
+			(DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+				return dbResult.entitys.ToList();
+
+			return new List<SelectListItem>();
+		}
+
+		public List<SelectListItem> getAllElectionType()
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();

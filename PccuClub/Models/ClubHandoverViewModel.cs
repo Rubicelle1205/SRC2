@@ -247,6 +247,10 @@ namespace WebPccuClub.Models
 		/// <summary>同意</summary>
 		[DisplayName("同意")]
 		public string? Agree { get; set; }
+
+		public string? AgreeText { get; set; }
+
+		
 	}
 
     #endregion

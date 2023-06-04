@@ -77,10 +77,7 @@
 								<div class="form-item">
 									<label for="">是否同意此告知聲明：<span class="req-star">*</span></label>
 									<div class="warning-box">
-										<div class="form-check form-check-inline">
-											<input type="radio" id="Agree" name="Agree" class="form-check-input" value="同意">
-											<label class="form-check-label" for="Agree">同意</label>
-										</div>
+										@Html.DropDownListFor(m => m.Handover0101Model.Agree ,(List<SelectListItem>)ViewBag.ddlAgree,"請選擇", new {@class = "form-control"})
 									</div>
 								</div>
 								<hr>
@@ -109,17 +106,18 @@
 		var ClubID = $('#@Html.IdFor(m => m.Handover0101Model.ClubID)').val();
 		var ClubName = $('#@Html.IdFor(m => m.Handover0101Model.ClubName)').val();
 		var UserName = $('#@Html.IdFor(m => m.Handover0101Model.UserName)').val();
-		var Agree = $('#Agree:checked').val();
+		var Agree = $('#@Html.IdFor(m => m.Handover0101Model.Agree)').val();
 
 
 		if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
 		if (ClubName == "") { $.alert("社團名稱不可為空白"); return; }
 		if (UserName == "") { $.alert("當事人姓名不可為空白"); return; }
-		if (typeof Agree === 'undefined') { $.alert("需同意告知聲明"); return; }
+		if (Agree == "") { $.alert("需同意告知聲明"); return; }
 
 		data.append('@Html.NameFor(m => m.Handover0101Model.ClubID)', ClubID);
 		data.append('@Html.NameFor(m => m.Handover0101Model.ClubName)', ClubName);
 		data.append('@Html.NameFor(m => m.Handover0101Model.UserName)', UserName);
+		data.append('@Html.NameFor(m => m.Handover0101Model.Agree)', Agree);
 
         SendAjax({
 			url: '@Url.Action("Save0101")',
