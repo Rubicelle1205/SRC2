@@ -1,0 +1,154 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+    Layout = "_FrontCleanLayout";
+
+}
+
+<div class="a4 page">
+	<div class="container-fluid">
+		<div class="row justify-content-center">
+			<div class="col-xxl-8">
+				<div class="row justify-content-center">
+					<div class="col-11">
+						<h3 class="text-center text-5 mb-2"><u>@Model.Handover0308Model.SchoolYear</u>學年度<u>系學會</u>類<br>社團專業指導老師應聘同意書</h3>
+						<table class="table table-bordered border-dark bg-white">
+							<tbody>
+								<tr>
+									<td width="35%">
+										<label for="">社團代碼：<span class="req-star">(必填)</span></label>
+									</td>
+									<td width="65%">@Model.Handover0308Model.ClubID</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">社團名稱：<span class="req-star">(必填)</span></label>
+									</td>
+									<td class="">@Model.Handover0308Model.ClubName</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">專業指導老師服務單位：<span class="req-star">(必填)</span></label>
+									</td>
+									<td class="">@Model.Handover0308Model.Unit</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">專業指導老師電子信箱：<span class="req-star">(必填)</span></label>
+									</td>
+									<td class="">@Model.Handover0308Model.Mail</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">專業指導老師手機電話：</label>
+									</td>
+									<td class="">@Model.Handover0308Model.CellPhone</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">專業指導老師通訊電話：<span class="req-star">(必填)</span></label>
+									</td>
+									<td class="">@Model.Handover0308Model.Tel</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">專業指導老師服務單位職稱：</label>
+									</td>
+									<td class="">@Model.Handover0308Model.Position</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">專業指導老師姓名：</label>
+									</td>
+									<td class="">@Model.Handover0308Model.Teacher</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">專業指導老師生理性別：</label>
+									</td>
+									<td class="">@Model.Handover0308Model.SexText</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="pt-2">
+							<table class="table table-bordered border-dark bg-white border-thick">
+								<tbody>
+									<tr>
+										<td>
+											<h4 class="text-4-5 mb-0"><strong>說明：系學會專業指導老師原則上以該系系主任擔任，如系主任因工作繁忙，不克擔任，請系主任簽請其他具講師以上資格之專任老師擔任，並於下列空白欄位處註明。</strong></h4>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<div class="mb-2"><span style="font-size:1.25em;"><span style="font-family:微軟正黑體;">茲請本系<u style="font-size: 16px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</u>老師擔任本系系學會專業指導老師一職</span></span></div>
+
+											<div style="text-align: right;"><span style="font-size:1.25em;">系主任：<u style="font-size: 16px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</u>（請親簽）</span></div>
+
+											<div style="text-align: right;">
+												<span style="font-size:1.25em;">
+													年&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+													&nbsp; &nbsp;月&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+													&nbsp;日
+												</span>
+											</div>
+
+										</td>
+									</tr>
+								</tbody>
+							</table>
+
+							<div><span style="font-family:微軟正黑體;"><span style="font-size:16px;"></span></span></div>
+
+							<div>
+								<span style="font-size:16px;"></span><br>
+								<span style="font-size:1.125em;">
+									<strong>□</strong>本人同意擔任該社團專業指導老師一職，並已詳閱本校個人資料保護網站參閱個人資料收集使用聲明(網址
+									<span>
+										<u>
+											<a href="http://pims.pccu.edu.tw"
+											   target="_blank">http://pims.pccu.edu.tw</a>&nbsp;
+										</u>
+									</span>)
+									同意中國文化大學學生事務處課外活動組於《個人資料保護法》之規定下，於其社團業務範圍內，得蒐集、處理、應用本人資料，並得依據本人提供之個人資料與本人聯絡，本表單因社團記錄保存用途，紙本個資保存年限為10年、電子化個資保存年限為業務存續期間。
+								</span>
+							</div>
+
+							<div>
+								<span style="font-size:1.125em;">
+									<span style="font-family:微軟正黑體;">
+										<span style="color: rgb(93, 93, 93);"></span>
+									</span>
+								</span>
+							</div>
+
+							<div><span style="font-size:1.125em;"><span style="font-family:微軟正黑體;"></span></span></div>
+
+							<div style="text-align: right;">&nbsp;</div>
+
+							<div style="text-align: right;">
+								<span style="font-size:1.25em;">
+									專業指導老師：<u>
+										&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+										&nbsp;&nbsp;
+									</u>（請親簽）&nbsp; &nbsp;
+								</span>
+							</div>
+
+							<div style="text-align: right;"><span style="font-size:1.25em;"> &nbsp; &nbsp; &nbsp; &nbsp; 年&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;月&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 日&nbsp; &nbsp;</span></div>
+
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="text-center pt-3">
+			<button class="print-btn btn btn-secondary btn-modern px-5" type="button">列印</button>
+		</div>
+	</div>
+
+</div>
+
+

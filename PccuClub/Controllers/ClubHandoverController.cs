@@ -898,7 +898,6 @@ namespace WebPccuClub.Controllers
 
 		#endregion
 
-
 		#region 03
 
 		[Log(LogActionChineseName.新任營運資訊)]
@@ -1001,18 +1000,106 @@ namespace WebPccuClub.Controllers
 			return View(vm);
 		}
 
-		#endregion
+        #endregion
 
-		#endregion
-
-
-
+        #region 0308
 
         [Log(LogActionChineseName.新任營運資訊)]
-        public IActionResult HandOver0308()
+        public IActionResult HandOver0308(string id)
         {
-            return View();
+            ViewBag.ddlSex = dbAccess.GetAllSex();
+
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            vm.Handover0308Model = new ClubHandover0308ViewModel();
+            vm.Handover0308Model.SchoolYear = PublicFun.GetNowSchoolYear();
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                vm.Handover0308Model = dbAccess.GetHandover0308Data(id, LoginUser);
+            }
+
+            return View(vm);
         }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public IActionResult Save0308(ClubHandoverViewModel vm)
+        {
+            try
+            {
+                DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
+                string HoID = dt.QueryFieldByDT("HoID");
+
+                ClubHandoverViewModel vm2 = new ClubHandoverViewModel();
+                vm2.HandoverDocCheckModel = dbAccess.GetHandoverDocData(HoID, "08");
+
+                if (vm2.HandoverDocCheckModel != null)
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "此表單已存在";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaInitialTransaction();
+
+                DataTable dtt = new DataTable();
+
+                var dbResult = dbAccess.InsertDetail(HoID, "03", "08", LoginUser, out dtt);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "儲存失敗";
+                    return Json(vmRtn);
+                }
+
+                string HoDetailID = dtt.QueryFieldByDT("HoDetailID");
+
+                dbResult = dbAccess.Insert0308(vm, LoginUser, HoID, HoDetailID);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "儲存失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+        [Log(LogActionChineseName.列印)]
+        public IActionResult Print0308(string id)
+        {
+            DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
+            string HoID = dt.QueryFieldByDT("HoID");
+
+            if (!string.IsNullOrEmpty(id))
+                HoID = id;
+
+
+
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            vm.Handover0308Model = dbAccess.GetHandover0308Data(HoID, LoginUser);
+
+            return View(vm);
+        }
+
+        #endregion
+
+        #endregion
+
 
         [Log(LogActionChineseName.新任營運資訊)]
         public IActionResult HandOver0309()

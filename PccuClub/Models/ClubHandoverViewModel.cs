@@ -452,7 +452,20 @@ namespace WebPccuClub.Models
 		public string? CellPhone2 { get; set; }
 
 }
-    public class ClubHandover0308ViewModel { }
+    public class ClubHandover0308ViewModel
+    {
+        public string? SchoolYear { get; set; }
+        public string? ClubID { get; set; }
+        public string? ClubName { get; set; }
+        public string? Teacher { get; set; }
+        public string? Sex { get; set; }
+        public string? SexText { get; set; }
+        public string? Unit { get; set; }
+        public string? Position { get; set; }
+        public string? Tel { get; set; }
+        public string? Mail { get; set; }
+        public string? CellPhone { get; set; }
+    }
     public class ClubHandover0309ViewModel { }
 
 
