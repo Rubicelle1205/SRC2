@@ -96,6 +96,11 @@ AND (ActTypeID = @ActTypeID) ";
             return null;
         }
 
+
+
+
+        #region 新增
+
         /// <summary> 新增資料 </summary>
         public DbExecuteInfo InsertData(ActListMangViewModel vm, UserInfo LoginUser)
         {
@@ -130,6 +135,52 @@ AND (ActTypeID = @ActTypeID) ";
 
             return ExecuteResult;
         }
+
+        public DbExecuteInfo InsertMain(ActListMangViewModel vm, UserInfo LoginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            //parameters.Add("@ActTypeName", vm.CreateModel.ActTypeName);
+            //parameters.Add("@Memo", vm.CreateModel.Memo);
+            parameters.Add("@Memo", vm.CreateModel.Buildid);
+
+
+
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO ActListMang
+                                               (ActTypeName
+                                               ,Memo
+                                               ,Creator
+                                               ,Created
+                                               ,LastModifier
+                                               ,LastModified
+                                               ,ModifiedReason)
+                                         VALUES
+                                               (@ActTypeName
+                                               ,@Memo
+                                               ,@LoginId
+                                               ,GETDATE()
+                                               ,@LoginId
+                                               ,GETDATE()
+                                               ,NULL)";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+        #endregion
+
+
+
+
+
+
+
 
         /// <summary> 修改資料 </summary>
         public DbExecuteInfo UpdateData(ActListMangViewModel vm, UserInfo LoginUser)
@@ -209,7 +260,7 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
 
 
 
-
+        #region 其他
 
         public List<ActListMangPlaceUsedModel> GetPlaceUsedData(string Date)
         {
@@ -266,23 +317,155 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
             return new List<ActListMangTodayActModel1>();
         }
 
+        public List<SelectListItem> GetBuild()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
 
+            DBAParameter parameters = new DBAParameter();
 
+            #region 參數設定
+            #endregion
 
+            CommandText = @"SELECT BuildID AS VALUE, BuildName AS TEXT FROM BuildMang";
 
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
 
+            return new List<SelectListItem>();
+        }
 
+        public List<SelectListItem> GetPlace(string PlaceSource, string Buildid)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
 
+            DBAParameter parameters = new DBAParameter();
 
+            #region 參數設定
+            parameters.Add("@Buildid", Buildid);
 
+            #endregion
 
+            if (PlaceSource == "01")
+                CommandText = @"SELECT PlaceID AS VALUE, PlaceName AS TEXT FROM PlaceSchoolMang WHERE Buildid = @Buildid";
+            else
+                CommandText = @"SELECT PlaceID AS VALUE, PlaceName AS TEXT FROM PlaceSchoolElseMang WHERE Buildid = @Buildid";
 
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
 
+            return new List<SelectListItem>();
+        }
 
+        public List<ActListMangPlaceDataModel> GetPlaceData(string PlaceSource, string PlaceId)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
 
+            DBAParameter parameters = new DBAParameter();
 
+            #region 參數設定
+            parameters.Add("@PlaceId", PlaceId);
+
+            #endregion
+
+            if (PlaceSource == "01")
+            {
+                CommandText = @"SELECT A.PlaceID, A.PlaceName, A.Capacity, A.PlaceEquip, A.PlaceStatus, B.Text AS PlaceStatusText, A.Memo, 
+                                       A.Normal_STime, A.Normal_ETime, A.Holiday_STime, A.Holiday_ETime
+                                  FROM PlaceSchoolMang A
+                             LEFT JOIN Code B ON B.Code = A.PlaceStatus AND B.Type = 'PlaceStatus'
+                                 WHERE A.PlaceId = @PlaceId";
+            }
+
+            else
+            {
+                CommandText = @"SELECT A.PlaceID, A.PlaceName, A.Memo
+                                  FROM PlaceSchoolElseMang A
+                                 WHERE A.PlaceId = @PlaceId";
+            }
+
+            (DbExecuteInfo info, IEnumerable<ActListMangPlaceDataModel> entitys) dbResult = DbaExecuteQuery<ActListMangPlaceDataModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ActListMangPlaceDataModel>();
+        }
+
+        public bool ChkPlaceSchoolCanUse(ActListMangViewModel vm)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            bool IsHoliday = false;
+            string CommendText = string.Empty;
+
+            string PlaceSource = vm.RundownModel.PlaceSource;
+            string dayOfWeek = DateTime.Parse(vm.RundownModel.Date).ToString("dddd");
+
+            if (dayOfWeek == "星期六" || dayOfWeek == "星期日")
+            {
+                IsHoliday = true;
+            }
+
+            #region 參數設定
+            parameters.Add("@PlaceID", vm.RundownModel.PlaceID);
+            parameters.Add("@Date", vm.RundownModel.Date);
+            parameters.Add("@STime", vm.RundownModel.STime);
+            parameters.Add("@ETime", vm.RundownModel.ETime);
+            parameters.Add("@PlaceStatus", "01");   //可借用
+
+            #endregion
+
+            if (PlaceSource == "01")
+            {
+                CommendText = $@"SELECT * 
+                                   FROM PlaceSchoolMang
+                                  WHERE PlaceID = @PlaceID 
+                                    AND PlaceStatus = @PlaceStatus 
+{(IsHoliday ? "AND Holiday_STime <= @STime AND @ETime < Holiday_ETime": "AND Normal_STime <= @STime AND @ETime < Normal_ETime")} 
+";
+            }
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            return ds.Tables[0].Rows.Count > 0;
+        }
+
+        public bool ChkHasAct(ActListMangViewModel vm)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommandText = string.Empty;
+
+            parameters.Add("@PlaceSource", vm.RundownModel.PlaceID);
+            parameters.Add("@Date", vm.RundownModel.Date);
+            parameters.Add("@STime", vm.RundownModel.STime);
+            parameters.Add("@ETime", vm.RundownModel.ETime);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT *
+                               FROM ActMain A
+                          LEFT JOIN ClubMang B ON B.ClubID = A.BrrowClubID 
+						  LEFT JOIN ActDetail C ON C.ActID = A.ActID
+                              WHERE A.SDate < @Date AND @Date <= A.EDate 
+                                AND A.PlaceID = @PlaceSource ";
+           
+            ExecuteResult = DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            return !(ds.Tables[0].Rows.Count > 0);
+        }
 
         #region 取得預設資料
 
@@ -496,156 +679,14 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
 
         #endregion
 
-        public List<SelectListItem> GetBuild()
-        {
-            string CommandText = string.Empty;
-            DataSet ds = new DataSet();
-
-            DBAParameter parameters = new DBAParameter();
-
-            #region 參數設定
-            #endregion
-
-            CommandText = @"SELECT BuildID AS VALUE, BuildName AS TEXT FROM BuildMang";
-
-            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
-
-            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
-                return dbResult.entitys.ToList();
-
-            return new List<SelectListItem>();
-        }
 
 
-        public List<SelectListItem> GetPlace(string PlaceSource, string Buildid)
-        {
-            string CommandText = string.Empty;
-            DataSet ds = new DataSet();
-
-            DBAParameter parameters = new DBAParameter();
-
-            #region 參數設定
-            parameters.Add("@Buildid", Buildid);
-
-            #endregion
-
-            if (PlaceSource == "01")
-                CommandText = @"SELECT PlaceID AS VALUE, PlaceName AS TEXT FROM PlaceSchoolMang WHERE Buildid = @Buildid";
-            else
-                CommandText = @"SELECT PlaceID AS VALUE, PlaceName AS TEXT FROM PlaceSchoolElseMang WHERE Buildid = @Buildid";
-
-            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
-
-            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
-                return dbResult.entitys.ToList();
-
-            return new List<SelectListItem>();
-        }
-
-        public List<ActListMangPlaceDataModel> GetPlaceData(string PlaceSource, string PlaceId)
-        {
-            string CommandText = string.Empty;
-            DataSet ds = new DataSet();
-
-            DBAParameter parameters = new DBAParameter();
-
-            #region 參數設定
-            parameters.Add("@PlaceId", PlaceId);
-
-            #endregion
-
-            if (PlaceSource == "01")
-            {
-                CommandText = @"SELECT A.PlaceID, A.PlaceName, A.Capacity, A.PlaceEquip, A.PlaceStatus, B.Text AS PlaceStatusText, A.Memo, 
-                                       A.Normal_STime, A.Normal_ETime, A.Holiday_STime, A.Holiday_ETime
-                                  FROM PlaceSchoolMang A
-                             LEFT JOIN Code B ON B.Code = A.PlaceStatus AND B.Type = 'PlaceStatus'
-                                 WHERE A.PlaceId = @PlaceId";
-            }
-
-            else
-            {
-                CommandText = @"SELECT A.PlaceID, A.PlaceName, A.Memo
-                                  FROM PlaceSchoolElseMang A
-                                 WHERE A.PlaceId = @PlaceId";
-            }
-
-            (DbExecuteInfo info, IEnumerable<ActListMangPlaceDataModel> entitys) dbResult = DbaExecuteQuery<ActListMangPlaceDataModel>(CommandText, parameters, true, DBAccessException);
-
-            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
-                return dbResult.entitys.ToList();
-
-            return new List<ActListMangPlaceDataModel>();
-        }
 
 
-        public bool ChkPlaceSchoolCanUse(ActListMangViewModel vm)
-        {
-            DataSet ds = new DataSet();
-            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
-            DBAParameter parameters = new DBAParameter();
 
-            bool IsHoliday = false;
-            string CommendText = string.Empty;
 
-            string PlaceSource = vm.RundownModel.PlaceSource;
-            string dayOfWeek = DateTime.Parse(vm.RundownModel.Date).ToString("dddd");
 
-            if (dayOfWeek == "星期六" || dayOfWeek == "星期日")
-            {
-                IsHoliday = true;
-            }
+        #endregion
 
-            #region 參數設定
-            parameters.Add("@PlaceID", vm.RundownModel.PlaceID);
-            parameters.Add("@Date", vm.RundownModel.Date);
-            parameters.Add("@STime", vm.RundownModel.STime);
-            parameters.Add("@ETime", vm.RundownModel.ETime);
-            parameters.Add("@PlaceStatus", "01");   //可借用
-
-            #endregion
-
-            if (PlaceSource == "01")
-            {
-                CommendText = $@"SELECT * 
-                                   FROM PlaceSchoolMang
-                                  WHERE PlaceID = @PlaceID 
-                                    AND PlaceStatus = @PlaceStatus 
-{(IsHoliday ? "AND Holiday_STime <= @STime AND @ETime < Holiday_ETime": "AND Normal_STime <= @STime AND @ETime < Normal_ETime")} 
-";
-            }
-
-            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
-
-            return ds.Tables[0].Rows.Count > 0;
-        }
-
-        public bool ChkHasAct(ActListMangViewModel vm)
-        {
-            DataSet ds = new DataSet();
-            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
-            DBAParameter parameters = new DBAParameter();
-
-            string CommandText = string.Empty;
-
-            parameters.Add("@PlaceSource", vm.RundownModel.PlaceID);
-            parameters.Add("@Date", vm.RundownModel.Date);
-            parameters.Add("@STime", vm.RundownModel.STime);
-            parameters.Add("@ETime", vm.RundownModel.ETime);
-
-            #region 參數設定
-            #endregion
-
-            CommandText = $@"SELECT *
-                               FROM ActMain A
-                          LEFT JOIN ClubMang B ON B.ClubID = A.BrrowClubID 
-						  LEFT JOIN ActDetail C ON C.ActID = A.ActID
-                              WHERE A.SDate < @Date AND @Date <= A.EDate 
-                                AND A.PlaceID = @PlaceSource ";
-           
-            ExecuteResult = DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
-
-            return !(ds.Tables[0].Rows.Count > 0);
-        }
     }
 }

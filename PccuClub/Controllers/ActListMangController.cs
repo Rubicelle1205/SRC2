@@ -20,6 +20,7 @@ namespace WebPccuClub.Controllers
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
         ActListMangDataAccess dbAccess = new ActListMangDataAccess();
+        UploadUtil upload = new UploadUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
@@ -79,6 +80,8 @@ namespace WebPccuClub.Controllers
             vm.ExcelModel = new ActListMangExcelResultModel();
             return View(vm);
         }
+
+
 
 
         [LogAttribute(LogActionChineseName.查詢)]
@@ -153,15 +156,82 @@ namespace WebPccuClub.Controllers
 
         }
 
+
+
+
+
         [Log(LogActionChineseName.新增儲存)]
         [ValidateInput(false)]
-        public IActionResult SaveNewData(ActListMangViewModel vm)
+        public async Task<IActionResult> SaveNewData(ActListMangViewModel vm)
         {
             try
             {
+
+                vm.CreateModel.LstFile = new List<ActListMangFileModel>();
+
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("File"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("HandOverClass01", file);
+
+                            ActListMangFileModel model = new ActListMangFileModel();
+                            model.FilePath = strFilePath;
+
+                            vm.CreateModel.LstFile.Add(model);
+                        }
+                        else if(Request.Form.Files[i].Name.Contains("CreateModel.ActProposal"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("ActProposal", file);
+                            
+                            vm.CreateModel.ActProposal = strFilePath;
+                        }
+                    }
+                }
+
                 dbAccess.DbaInitialTransaction();
 
+                //新增Main
                 var dbResult = dbAccess.InsertData(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                //新增Detail
+                dbResult = dbAccess.InsertData(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                //FileOutSide
+                dbResult = dbAccess.InsertData(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                //Files
+                dbResult = dbAccess.InsertData(vm, LoginUser);
 
                 if (!dbResult.isSuccess)
                 {
@@ -246,6 +316,12 @@ namespace WebPccuClub.Controllers
         }
 
 
+
+
+
+
+        #region Jquery用
+
         [ValidateInput(false)]
         public IActionResult ChkRundown(ActListMangViewModel vm)
         {
@@ -278,34 +354,40 @@ namespace WebPccuClub.Controllers
             }
 
             //判斷是否重複增加，先拿出舊的資料
-            List<ActListMangRundownModel> LstRundown = new List<ActListMangRundownModel>();
-
-            string[] arr = vm.RundownModel.strRundown.Split("|");
-
-            for (int i = 0; i <= arr.Length - 1; i++)
+            if (!string.IsNullOrEmpty(vm.RundownModel.strRundown))
             {
-                ActListMangRundownModel model = new ActListMangRundownModel();
-                model.PlaceSource = arr[0];
-                model.Date = arr[1];
-                model.STime = arr[2];
-                model.ETime = arr[3];
-                model.PlaceID = arr[4];
+                List<ActListMangRundownModel> LstRundown = new List<ActListMangRundownModel>();
 
-                LstRundown.Add(model);
+                string[] arr = vm.RundownModel.strRundown.Split("|");
+
+                for (int i = 0; i <= arr.Length - 1; i++)
+                {
+                    string[] arr2 = vm.RundownModel.strRundown.Split(",");
+
+                    ActListMangRundownModel model = new ActListMangRundownModel();
+                    model.PlaceSource = arr2[0];
+                    model.Date = arr2[1];
+                    model.STime = arr2[2];
+                    model.ETime = arr2[3];
+                    model.PlaceID = arr2[4];
+                    model.PlaceText = arr2[5];
+
+                    LstRundown.Add(model);
+                }
+
+
+                CanUse = LstRundown.Where(m => m.STime == vm.RundownModel.STime && m.ETime == vm.RundownModel.ETime).ToList().Count > 0;
+
+                if (!CanUse)
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "場地重複增加";
+                    return Json(vmRtn);
+                }
             }
 
-            CanUse = LstRundown.Where(m => m.STime == vm.RundownModel.STime && m.ETime == vm.RundownModel.ETime).ToList().Count > 0;
-
-            if (!CanUse)
-            {
-                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                vmRtn.ErrorMsg = "該場地目前不可使用";
-                return Json(vmRtn);
-            }
-
-            return PartialView("_PlaceTrPartial", vm);
+            return Json(vmRtn);
         }
-
 
         [ValidateInput(false)]
         public IActionResult GetUsedByDate(string SelectedDate)
@@ -330,31 +412,6 @@ namespace WebPccuClub.Controllers
 
             return PartialView("_PlaceTodayActPartial", vm);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         [Log(LogActionChineseName.取得樓館選單)]
         [ValidateInput(false)]
@@ -410,6 +467,7 @@ namespace WebPccuClub.Controllers
             return PartialView("_PlaceDataPartial", vm);
         }
 
+        #endregion
 
     }
 }

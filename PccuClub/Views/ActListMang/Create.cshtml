@@ -43,27 +43,13 @@
                             <tr>
                                 <th width="15%">@Html.LabelFor(m => m.CreateModel.StaticOrDynamic)<span class="required">*</span></th>
                                 <td>
-                                        @for (int i = 0; i <= LstStaticOrDynamic.Count - 1; i++)
-                                        {
-                                        <div class="icheck-primary d-inline">
-                                                @Html.RadioButtonFor(m => m.CreateModel.StaticOrDynamic, LstStaticOrDynamic[i].Value, new { @id = string.Format("act_type{0}", i) })
-                                            <label for="@string.Format("act_type{0}", i)">@LstStaticOrDynamic[i].Text</label>
-
-                                        </div>
-                                        }
+                                        @Html.DropDownListFor(m => m.CreateModel.StaticOrDynamic ,(List<SelectListItem>)ViewBag.ddlStaticOrDynamic,"請選擇", new {@class = "form-control"})
                                 </td>
                             </tr>
                             <tr>
                                 <th width="15%">活動地點<span class="required">*</span></th>
                                 <td>
-                                        @for (int i = 0; i <= LstActInOrOut.Count - 1; i++)
-                                        {
-                                        <div class="icheck-primary d-inline">
-                                                @Html.RadioButtonFor(m => m.CreateModel.ActInOrOut, LstActInOrOut[i].Value, new { @id = string.Format("act_loc{0}", i) })
-                                            <label for="@string.Format("act_loc{0}", i)">@LstActInOrOut[i].Text</label>
-
-                                        </div>
-                                        }
+                                        @Html.DropDownListFor(m => m.CreateModel.ActInOrOut ,(List<SelectListItem>)ViewBag.ddlActInOrOut,"請選擇", new {@class = "form-control"})
                                 </td>
                             </tr>
                             <tr>
@@ -73,61 +59,29 @@
                             <tr>
                                 <th width="15%">活動性質<span class="required">*</span></th>
                                 <td>
-                                    <div id="divActType" class="row p-2">
-                                            @foreach (SelectListItem item in LstActType)
-                                            {
-                                            <div class="col-md-3 custom-control custom-checkbox">
-                                                <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                       type="checkbox" id="@string.Format("ActType_{0}", item.Value)" value="@item.Value">
-                                                <label class="custom-control-label" for="@string.Format("ActType_{0}", item.Value)">@item.Text</label>
-                                            </div>
-                                            }
-                                    </div>
+                                        @Html.DropDownListFor(m => m.CreateModel.ActType ,(List<SelectListItem>)ViewBag.ddlActType,"請選擇", new {@class = "form-control"})
                                 </td>
                             </tr>
                             <tr>
                                 <th width="15%">使用資訊設備<span class="required">*</span></th>
                                 <td>
-                                        @foreach (SelectListItem item in LstUseITEquip)
-                                        {
-                                        <div class="icheck-primary d-inline">
-                                                @Html.RadioButtonFor(m => m.CreateModel.UseITEquip, item.Value, new { @id = string.Format("UseITEquip_{0}", item.Value) })
-                                            <label for=@string.Format("UseITEquip_{0}", item.Value)>@item.Text</label>
-
-                                        </div>
-                                        }
+                                        @Html.DropDownListFor(m => m.CreateModel.UseITEquip ,(List<SelectListItem>)ViewBag.ddlUseITEquip,"請選擇", new {@class = "form-control"})
                                 </td>
                             </tr>
                             <tr>
                                 <th width="15%">活動簡介<span class="required">*</span></th>
-                                <td>@Html.TextAreaFor(m => m.CreateModel.Memo, new {@class="form-control", rows="5", placeholder = "請輸入活動簡介"})</td>
+                                <td>@Html.TextAreaFor(m => m.CreateModel.ActShortDesc, new {@class="form-control", rows="5", placeholder = "請輸入活動簡介"})</td>
                             </tr>
                             <tr>
                                 <th width="15%">聯合國SDGs永續發展目標<span class="required">*</span></th>
                                 <td>
-                                    <div id="divSDGs" class="row p-2">
-                                            @foreach (SelectListItem item in LstSDGs)
-                                            {
-                                            <div class="col-md-3 custom-control custom-checkbox">
-                                                <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                       type="checkbox" id="@string.Format("SDGs_{0}", item.Value)" value="@item.Value">
-                                                <label class="custom-control-label" for="@string.Format("SDGs_{0}", item.Value)">@item.Text</label>
-                                            </div>
-                                            }
-                                    </div>
+                                        @Html.DropDownListFor(m => m.CreateModel.SDGs ,(List<SelectListItem>)ViewBag.ddlSDGs,"請選擇", new {@class = "form-control"})
                                 </td>
                             </tr>
                             <tr>
                                 <th width="15%">是否申請全人學習護照<span class="required"></span></th>
                                 <td>
-                                        @foreach (SelectListItem item in LstPassport)
-                                        {
-                                        <div class="icheck-primary d-inline">
-                                                @Html.RadioButtonFor(m => m.CreateModel.PassPort, item.Value, new { @id = string.Format("Passport_{0}", item.Value) })
-                                            <label for=@string.Format("Passport_{0}", item.Value)>@item.Text</label>
-
-                                        </div>
-                                        }
+                                        @Html.DropDownListFor(m => m.CreateModel.PassPort ,(List<SelectListItem>)ViewBag.ddlPassport,"請選擇", new {@class = "form-control"})
                                 </td>
                             </tr>
                             </tbody>
@@ -147,7 +101,7 @@
                                     選擇日期<span class="required"></span><br /><span class="text-xs text-danger font-weight-normal"></span>
                                 </th>
                                 <td>
-                                    @Html.TextBoxFor(m => m.CreateModel.ActDate, new { @type="date", @class="form-control"})
+                                        @Html.TextBoxFor(m => m.CreateModel.ActDate, new { @type="date", @class="form-control"})
 
                                     <div id="usedTable"></div>
                                 </td>
@@ -238,7 +192,7 @@
                                 </th>
                                 <td>
                                     <label class="btn btn-outline-primary mb-0">
-                                        <input id="ActProposal" name="ActProposal" type="file" class="filesupload" style="display:none;" accept=".doc,.docx,.odt,.pdf" />
+                                            @Html.TextBoxFor(m => m.CreateModel.ActProposal, new {@style="display:none;", type="file", accept=".doc,.docx,.odt,.pdf"})
                                         <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
                                     </label>
                                     <span class="text-sm mx-2 text-muted" id="ActProposalfilename">尚未選擇檔案...</span>
@@ -316,7 +270,7 @@
 
                                         <div class="d-block mb-1 item">
                                             <label class="btn btn-outline-primary mb-0">
-                                                <input id="ActOutSideFile_1" name="ActOutSideFile_1" type="file" class="filesupload" style="display:none;" accept=".doc,.docx,.odt,.pdf" />
+                                                <input id="File0" name="File0" type="file" class="filesupload" style="display:none;" accept=".doc,.docx,.odt,.pdf" />
                                                 <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
                                             </label>
                                             <span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
@@ -360,10 +314,11 @@
                         </table>
                     </div>
                     @Html.HiddenFor(m => m.CreateModel.strRundown)
+                    <input type="hidden" id="hidChk" />
                     <!-- /.card-body -->
                     <div class="card-footer d-flex justify-content-end">
                         <button id="Reset" type="reset" class="mx-1 btn btn-outline-dark">重設</button>
-                        <button id="btnOK" type="button" class="btn btn-success">儲存</button>
+                        <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
                     </div>
                 </div>
                 <!-- /.card -->
@@ -384,7 +339,7 @@
             var SelectedDate = $(this).val()
             $("#selected_date").removeClass("hidden").children("span").text(SelectedDate)
 
-            
+
             SendAjax({
                 url: '@Url.Action("GetUsedByDate")',
                 data: { 'SelectedDate': SelectedDate },
@@ -409,14 +364,14 @@
             var currentCheckbox = $(this);
             $("#divActType .custom-control-input").not(currentCheckbox).prop("checked", false);
         });
-        
+
 
         $("[id ^= 'PlaceSource_']").on('change', function () {
 
             if ($("#@Html.IdFor(m => m.CreateModel.strRundown)").val() != "") {
 
                 var ok = confirm('切換會清除目前行程，是否繼續？');
-                
+
                 if (ok) {
                     $('#myTable tbody tr').remove();
                     $("#@Html.IdFor(m => m.CreateModel.strRundown)").val("");
@@ -476,17 +431,16 @@
         var data = new FormData();
 
         var strRundown = $("#@Html.IdFor(m => m.CreateModel.strRundown)").val();
-        
+
         data.append('@Html.NameFor(m => m.RundownModel.PlaceSource)', PlaceSource);
         data.append('@Html.NameFor(m => m.RundownModel.Date)', $date);
         data.append('@Html.NameFor(m => m.RundownModel.STime)', start_hour);
         data.append('@Html.NameFor(m => m.RundownModel.ETime)', end_hour);
         data.append('@Html.NameFor(m => m.RundownModel.PlaceID)', place);
+        data.append('@Html.NameFor(m => m.RundownModel.PlaceText)', placetext);
         data.append('@Html.NameFor(m => m.RundownModel.strRundown)', strRundown);
 
-
-
-
+        $("#hidChk").val(1);
         SendAjax({
             url: '@Url.Action("ChkRundown")',
             data: data,
@@ -494,7 +448,7 @@
             contentType: false,
             success: function (result) {
                 if (result.errorCode == 0) {
-                    $("#event_des").append(result)
+                    $("#hidChk").val(result.errorCode);
                 }
                 else { $.alert(result.errorMsg); }
             },
@@ -502,6 +456,10 @@
                 $.alert(result.errorMsg);
             }
         });
+
+
+        alert($("#hidChk"));
+
 
         // 產生tr物件
         var eventHtml = '<tr class="dateItem">\n';
@@ -526,7 +484,7 @@
                 tbplace = place;
             }
 
-            var row = PlaceSource + "," + $date + "," + start_hour + "," + end_hour + "," + tbplace;
+            var row = PlaceSource + "," + $date + "," + start_hour + "," + end_hour + "," + place + "," + placetext;
 
             // 拼接字符串
             if (strRundown !== "") {
@@ -537,6 +495,7 @@
 
 
         $("#@Html.IdFor(m => m.CreateModel.strRundown)").val(strRundown);
+
     }
 
 
@@ -578,9 +537,65 @@
             }
         });
 
-        
+
     }
 
+    $(document).ready(function () {
+        // 多檔上傳
+        if ($(".target_list").length > 0) {
+
+            $(document).on('click', '#add_input_btn', function () {
+
+                var num = checkNum();
+                var addItem = '<div class="d-block mb-1 item">';
+                addItem += '<label class="btn btn-outline-primary mb-0">';
+                addItem += '<input id="File' + num + '" style="display:none;" req class="filesupload" data-title="附件" type="file" name="file' + num + '" value="" accept=".doc,.docx,.odt,.pdf" data-file="">';
+                addItem += '<i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案';
+                addItem += '</label>';
+                addItem += '<span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>';
+                addItem += '<button class="del-btn btn btn-sm btn-outline-secondary" type="button"><i class="fas fa-times"></i> 移除</button>';
+                addItem += '</div>';
+                if ($(".target_list").find("[type='file']").length <= 7) {
+                    $(".target_list").append(addItem);
+                    $(".target_list .del-btn").removeClass("hidden")
+                }
+            })
+
+            $(document).on('click', '.target_list .del-btn', function () {
+                var num = $(".target_list").find("[type='file']").length
+
+                if (confirm("確認清除？") == false) {
+                    return false
+                } else {
+                    if (num >= 2) {
+                        $(this).closest(".item").remove()
+                        $("#add_input_btn").prop("disabled", false)
+                    }
+
+                    if (num <= 2) {
+                        $(".target_list .del-btn").addClass("hidden")
+                    } else {
+                        $(".target_list .del-btn").removeClass("hidden")
+                    }
+                }
+            })
+
+            function checkNum() {
+                var num = $(".target_list").find(".d-block.mb-1.item").length
+                if (num >= 7) {
+                    $("#add_input_btn").prop("disabled", true)
+                } else {
+                    $("#add_input_btn").prop("disabled", false)
+                }
+                return num;
+            }
+        }
+        $(document).on('change', ".filesupload", function (e) {
+            var filename = e.target.files[0].name;
+            $(this).closest('.item').find('.text-muted#filename').text(filename);
+        });
+
+    });
 
 
 
@@ -594,65 +609,112 @@
 
 
 
-
-    $('#ActProposal').change(function (e) {
+    $('#@Html.IdFor(m => m.CreateModel.ActProposal)').change(function (e) {
         var geekss = e.target.files[0].name;
         $('#ActProposalfilename').text(geekss);
     });
 
 
-    $(document).on('click', '#add_input_btn', function () {
-
-        var num = checkNum();
-        var addItem = '<div class="d-block mb-1 item">';
-        addItem += '<label class="btn btn-outline-primary mb-0">';
-        addItem += '<input id="ActOutSideFile_' + num + ' name="ActOutSideFile_' + num + '" type="file" class="filesupload" style="display:none;" accept=".doc,.docx,.odt,.pdf" />';
-        //addItem += '<input style="display:none;" req class="filesupload" data-title="附件" type="file" name="file' + num + '" value="" accept=".doc,.docx,.odt,.pdf" data-file="">';
-        addItem += '<i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案';
-        addItem += '</label>';
-        addItem += '<span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>';
-        addItem += '<button class="del-btn btn btn-sm btn-outline-secondary" type="button"><i class="fas fa-times"></i> 移除</button>';
-        addItem += '</div>';
-        if ($(".target_list").find("[type='file']").length <= 7) {
-            $(".target_list").append(addItem);
-            $(".target_list .del-btn").removeClass("hidden")
-        }
-    })
-
-    $(document).on('click', '.target_list .del-btn', function () {
-        var num = $(".target_list").find("[type='file']").length
-
-        if (confirm("確認清除？") == false) {
-            return false
-        } else {
-            if (num >= 2) {
-                $(this).closest(".item").remove()
-                $("#add_input_btn").prop("disabled", false)
-            }
-
-            if (num <= 2) {
-                $(".target_list .del-btn").addClass("hidden")
-            } else {
-                $(".target_list .del-btn").removeClass("hidden")
-            }
-        }
-    })
-
-    function checkNum() {
-        var num = $(".target_list").find("[type='file']").length
-        if (num >= 7) {
-            $("#add_input_btn").prop("disabled", true)
-        } else {
-            $("#add_input_btn").prop("disabled", false)
-        }
-        return num;
-    }
-
 
     function SaveData() {
 
+        var PlaceSource = $("[id ^= 'PlaceSource_']:checked").val()
+
         var data = new FormData()
 
+        var ClubId = $('#@Html.IdFor(m => m.CreateModel.ClubId)').val();
+        var SchoolYear = $('#@Html.IdFor(m => m.CreateModel.SchoolYear)').val();
+        var ActName = $('#@Html.IdFor(m => m.CreateModel.ActName)').val();
+        var StaticOrDynamic = $('#@Html.IdFor(m => m.CreateModel.StaticOrDynamic)').val();
+        var ActInOrOut = $('#@Html.IdFor(m => m.CreateModel.ActInOrOut)').val();
+        var Capacity = $('#@Html.IdFor(m => m.CreateModel.Capacity)').val();
+        var ActType = $('#@Html.IdFor(m => m.CreateModel.ActType)').val();
+        var UseITEquip = $('#@Html.IdFor(m => m.CreateModel.UseITEquip)').val();
+        var ActShortDesc = $('#@Html.IdFor(m => m.CreateModel.ActShortDesc)').val();
+        var SDGs = $('#@Html.IdFor(m => m.CreateModel.SDGs)').val();
+        var PassPort = $('#@Html.IdFor(m => m.CreateModel.PassPort)').val();
+
+        var strRundown = $('#@Html.IdFor(m => m.CreateModel.strRundown)').val();
+
+
+        var ActProposal = $('#@Html.IdFor(m => m.CreateModel.ActProposal)')[0].files[0];
+
+        if (typeof ActProposal !== 'undefined') {
+            var fileExtension = ActProposal.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'pdf' && fileExtension !== 'odt') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.CreateModel.ActProposal)', ActProposal);
+        }
+        else {
+            $.alert("活動企劃書不可為空白"); return;
+        }
+
+
+
+        var LeaderName = $('#@Html.IdFor(m => m.CreateModel.LeaderName)').val();
+        var LeaderPhone = $('#@Html.IdFor(m => m.CreateModel.LeaderPhone)').val();
+        var LeaderTel = $('#@Html.IdFor(m => m.CreateModel.LeaderTel)').val();
+
+        var ManagerName = $('#@Html.IdFor(m => m.CreateModel.ManagerName)').val();
+        var ManagerPhone = $('#@Html.IdFor(m => m.CreateModel.ManagerPhone)').val();
+        var ManagerTel = $('#@Html.IdFor(m => m.CreateModel.ManagerTel)').val();
+
+
+        if (PlaceSource = "03") {
+            for (var i = 0; i <= 8; i++) {
+                var file = $('#File' + i);
+
+                if (file.length > 0 && file.val() !== '') {
+                    var File = $('#File' + i)[0].files[0];
+                    if (typeof File !== 'undefined') {
+                        var fileExtension = File.name.split('.').pop().toLowerCase();
+
+                        if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'pdf' && fileExtension !== 'odt') {
+                            $.alert("檔案類型不符合");
+                            return;
+                        }
+
+                        data.append('@Html.NameFor(m => m.File)', File);
+                    }
+                }
+            }
+        }
+
+        var ActVerify = $('#@Html.IdFor(m => m.CreateModel.ActVerify)').val();
+        var ActVerifyMemo = $('#@Html.IdFor(m => m.CreateModel.ActVerifyMemo)').val();
+
+
+
+
+
+
+
+
+
+        data.append('@Html.NameFor(m => m.CreateModel.ClubId)', ClubId);
+        data.append('@Html.NameFor(m => m.CreateModel.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.CreateModel.ActName)', ActName);
+        data.append('@Html.NameFor(m => m.CreateModel.StaticOrDynamic)', StaticOrDynamic);
+        data.append('@Html.NameFor(m => m.CreateModel.ActInOrOut)', ActInOrOut);
+        data.append('@Html.NameFor(m => m.CreateModel.Capacity)', Capacity);
+        data.append('@Html.NameFor(m => m.CreateModel.ActType)', ActType);
+        data.append('@Html.NameFor(m => m.CreateModel.UseITEquip)', UseITEquip);
+        data.append('@Html.NameFor(m => m.CreateModel.ActShortDesc)', ActShortDesc);
+        data.append('@Html.NameFor(m => m.CreateModel.SDGs)', SDGs);
+        data.append('@Html.NameFor(m => m.CreateModel.PassPort)', PassPort);
+        data.append('@Html.NameFor(m => m.CreateModel.strRundown)', strRundown);
+        data.append('@Html.NameFor(m => m.CreateModel.LeaderName)', LeaderName);
+        data.append('@Html.NameFor(m => m.CreateModel.LeaderPhone)', LeaderPhone);
+        data.append('@Html.NameFor(m => m.CreateModel.LeaderTel)', LeaderTel);
+        data.append('@Html.NameFor(m => m.CreateModel.ManagerName)', ManagerName);
+        data.append('@Html.NameFor(m => m.CreateModel.ManagerPhone)', ManagerPhone);
+        data.append('@Html.NameFor(m => m.CreateModel.ManagerTel)', ManagerTel);
+        data.append('@Html.NameFor(m => m.CreateModel.ActVerify)', ActVerify);
+        data.append('@Html.NameFor(m => m.CreateModel.ActVerifyMemo)', ActVerifyMemo);
 
         SendAjax({
             url: '@Url.Action("SaveNewData")',

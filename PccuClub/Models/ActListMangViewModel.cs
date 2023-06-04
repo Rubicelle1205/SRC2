@@ -136,6 +136,7 @@ namespace WebPccuClub.Models
         public string? STime { get; set; }
         public string? ETime { get; set; }
         public string? PlaceID { get; set; }
+        public string? PlaceText { get; set; }
         public string? strRundown { get; set; }
 
     }
@@ -158,10 +159,18 @@ namespace WebPccuClub.Models
 
     #region 建立
 
+    public class ActListMangFileModel
+    {
+        /// <summary>文件</summary>
+        [DisplayName("文件")]
+        public string? FilePath { get; set; }
+    }
 
     public class ActListMangCreateModel
     {
         public List<AllPlaceUsedStatus> LstAllPlaceUseStatus = new List<AllPlaceUsedStatus>();
+
+        public List<ActListMangFileModel> LstFile = new List<ActListMangFileModel>();
 
         public string? strRundown { get; set; }
 
@@ -201,7 +210,7 @@ namespace WebPccuClub.Models
 
         /// <summary>活動簡介</summary>
         [DisplayName("活動簡介")]
-        public string? Memo { get; set; }
+        public string? ActShortDesc { get; set; }
 
         /// <summary>聯合國SDGs永續發展目標</summary>
         [DisplayName("聯合國SDGs永續發展目標")]

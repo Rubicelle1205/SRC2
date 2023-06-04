@@ -4,3 +4,10 @@
 
 }
 
+
+<tr class="dateItem">
+    <th>@Model.RundownModel.Date</th>
+    <td>@string.Format("{0}:00", @Model.RundownModel.STime)~@string.Format("{0}:00", @Model.RundownModel.ETime)</td>
+    <td>@@Model.RundownModel.PlaceID</td>
+    <td><button class="del-btn-d btn" type="button">移除 <i class="fas fa-times"></i></button></td>
+</tr>

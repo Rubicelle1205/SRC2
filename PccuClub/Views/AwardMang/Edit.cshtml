@@ -150,6 +150,12 @@
 
 <script>
     $(document).ready(function () {
+
+        $(document).on('change', ".filesupload", function (e) {
+            var filename = e.target.files[0].name;
+            $(this).closest('.item').find('.text-muted#filename').text(filename);
+        });
+
         $('#updFile').change(function (e) {
             var file = e.target.files[0];
             var reader = new FileReader();
