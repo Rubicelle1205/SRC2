@@ -630,6 +630,8 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
 
             parameters.Add("@PlaceSource", vm.RundownModel.PlaceID);
             parameters.Add("@Date", vm.RundownModel.Date);
+            parameters.Add("@STime", vm.RundownModel.STime);
+            parameters.Add("@ETime", vm.RundownModel.ETime);
 
             #region 參數設定
             #endregion
