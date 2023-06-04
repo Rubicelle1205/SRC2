@@ -8,6 +8,7 @@ using WebPccuClub.Global;
 using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Diagnostics;
 
 namespace WebPccuClub.DataAccess
 {
@@ -37,7 +38,7 @@ namespace WebPccuClub.DataAccess
             #endregion
 
             CommandText = $@"
-                            SELECT A.ActID, A.ActName, B.SchoolYear, A.ActVerify, C.Text AS ActVerifyText, A.SDate, A.EDate, 
+                            SELECT A.ActID, B.ActName, B.SchoolYear, A.ActVerify, C.Text AS ActVerifyText, A.SDate, A.EDate, 
                                    A.BuildId, A.PlaceID, A.PlaceName, A.SDate, A.EDate, A.Created,
                          CASE WHEN A.ActVerify = '05' THEN C.Text + '(' + A.Creator + ')'
                                END ClubName
@@ -205,6 +206,82 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
 
             return new List<ActListMangResultModel>();
         }
+
+
+
+
+
+        public List<ActListMangPlaceUsedModel> GetPlaceUsedData(string Date)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+
+            parameters.Add("@Date", Date);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT PlaceName, STime, ETime
+                               FROM ActMain
+                              WHERE SDate < @Date AND @Date <= EDate ";
+
+
+            (DbExecuteInfo info, IEnumerable<ActListMangPlaceUsedModel> entitys) dbResult = DbaExecuteQuery<ActListMangPlaceUsedModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ActListMangPlaceUsedModel>();
+        }
+
+        public List<ActListMangTodayActModel1> GetTodayAct(string PlaceSource, string Date)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@PlaceSource", PlaceSource);
+            parameters.Add("@Date", Date);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT C.ActName, A.STime, A.ETime, A.BrrowClubID, CASE WHEN B.ClubCName IS NULL THEN '學務處' ELSE B.ClubCName END BrrowClubName
+                               FROM ActMain A
+                          LEFT JOIN ClubMang B ON B.ClubID = A.BrrowClubID 
+						  LEFT JOIN ActDetail C ON C.ActID = A.ActID
+                              WHERE A.SDate < @Date AND @Date <= A.EDate 
+                                AND A.PlaceID = @PlaceSource ";
+
+
+            (DbExecuteInfo info, IEnumerable<ActListMangTodayActModel1> entitys) dbResult = DbaExecuteQuery<ActListMangTodayActModel1>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ActListMangTodayActModel1>();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         #region 取得預設資料
@@ -418,6 +495,7 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
         #region 取得樓館資料
 
         #endregion
+
         public List<SelectListItem> GetBuild()
         {
             string CommandText = string.Empty;
@@ -500,5 +578,72 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
             return new List<ActListMangPlaceDataModel>();
         }
 
+
+        public bool ChkPlaceSchoolCanUse(ActListMangViewModel vm)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            bool IsHoliday = false;
+            string CommendText = string.Empty;
+
+            string PlaceSource = vm.RundownModel.PlaceSource;
+            string dayOfWeek = DateTime.Parse(vm.RundownModel.Date).ToString("dddd");
+
+            if (dayOfWeek == "星期六" || dayOfWeek == "星期日")
+            {
+                IsHoliday = true;
+            }
+
+            #region 參數設定
+            parameters.Add("@PlaceID", vm.RundownModel.PlaceID);
+            parameters.Add("@Date", vm.RundownModel.Date);
+            parameters.Add("@STime", vm.RundownModel.STime);
+            parameters.Add("@ETime", vm.RundownModel.ETime);
+            parameters.Add("@PlaceStatus", "01");   //可借用
+
+            #endregion
+
+            if (PlaceSource == "01")
+            {
+                CommendText = $@"SELECT * 
+                                   FROM PlaceSchoolMang
+                                  WHERE PlaceID = @PlaceID 
+                                    AND PlaceStatus = @PlaceStatus 
+{(IsHoliday ? "AND Holiday_STime <= @STime AND @ETime < Holiday_ETime": "AND Normal_STime <= @STime AND @ETime < Normal_ETime")} 
+";
+            }
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            return ds.Tables[0].Rows.Count > 0;
+        }
+
+        public bool ChkHasAct(ActListMangViewModel vm)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommandText = string.Empty;
+
+            parameters.Add("@PlaceSource", vm.RundownModel.PlaceID);
+            parameters.Add("@Date", vm.RundownModel.Date);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT *
+                               FROM ActMain A
+                          LEFT JOIN ClubMang B ON B.ClubID = A.BrrowClubID 
+						  LEFT JOIN ActDetail C ON C.ActID = A.ActID
+                              WHERE A.SDate < @Date AND @Date <= A.EDate 
+                                AND A.PlaceID = @PlaceSource ";
+           
+            ExecuteResult = DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            return !(ds.Tables[0].Rows.Count > 0);
+        }
     }
 }

@@ -1,0 +1,33 @@
+﻿@model WebPccuClub.Models.ActListMangViewModel
+
+@{
+
+}
+
+
+<p class="mb-0 py-2 hint">
+    <i class="fas fa-caret-down"></i> 該日期已使用教室
+    <i class="fas fa-caret-down"></i>
+</p>
+@if (Model.LstPlaceUsedModel.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">教室名稱</th>
+                <th scope="col">開始時間</th>
+                <th scope="col">結束時間</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.LstPlaceUsedModel)
+            {
+                <tr>
+                    <th>@item.PlaceName</th>
+                    <td>@string.Format("{0}:00", item.STime)</td>
+                    <td>@string.Format("{0}:00", item.ETime)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

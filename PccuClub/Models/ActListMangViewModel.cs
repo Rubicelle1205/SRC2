@@ -11,16 +11,27 @@ namespace WebPccuClub.Models
         public IFormFile? File { get; set; }
 
         public ActListMangConditionModel ConditionModel { get; set; }
-
         public List<ActListMangResultModel> ResultModel { get; set; }
 
         public ActListMangCreateModel CreateModel { get; set; }
+
+        //public ActListMangGetPlaceModel GetPlaceModel { get; set; }
+
+        public List<ActListMangPlaceUsedModel> LstPlaceUsedModel { get; set; }
+
+        public List<ActListMangTodayActModel1> LstTodayActModel { get; set; }
+
+        public ActListMangRundownModel RundownModel { get; set; }
+
+
+
+
+
 
         public ActListMangEditModel EditModel { get; set; }
 
         public ActListMangExcelResultModel ExcelModel { get; set; }
 
-        public ActListMangActMainModel ActMain { get; set; }
 
         public List<ActListMangPlaceDataModel> PlaceDataModel { get; set; }
     }
@@ -113,35 +124,47 @@ namespace WebPccuClub.Models
         public DateTime? Created { get; set; }
     }
 
-    public class ActListMangExcelResultModel
+
+
+
+
+
+    public class ActListMangRundownModel
     {
-        /// <summary>學年度</summary>
-        [DisplayName("學年度")]
-        public string? SchoolYear { get; set; }
+        public string? PlaceSource { get; set; }
+        public string? Date { get; set; }
+        public string? STime { get; set; }
+        public string? ETime { get; set; }
+        public string? PlaceID { get; set; }
+        public string? strRundown { get; set; }
 
-        /// <summary>審核狀態</summary>
-        [DisplayName("審核狀態")]
-        public string? ActVerifyText { get; set; }
-
-        /// <summary>活動編號</summary>
-        [DisplayName("活動編號")]
-        public string? ActId { get; set; }
-
-        /// <summary>單位名稱</summary>
-        [DisplayName("單位名稱")]
-        public string? ClubName { get; set; }
-
-        /// <summary>活動名稱</summary>
-        [DisplayName("活動名稱")]
-        public string? ActName { get; set; }
-
-        [DisplayName("建立時間")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm:ss}")]
-        public DateTime? LastModified { get; set; }
     }
+
+    public class ActListMangPlaceUsedModel
+    { 
+        public string? PlaceName { get; set; }
+        public string? STime { get; set; }
+        public string? ETime { get; set; }
+    }
+
+    public class ActListMangTodayActModel1
+    {
+        public string? ActName { get; set; }
+        public string? BrrowClubID { get; set; }
+        public string? BrrowClubName { get; set; }
+        public string? STime { get; set; }
+        public string? ETime { get; set; }
+    }
+
+    #region 建立
+
 
     public class ActListMangCreateModel
     {
+        public List<AllPlaceUsedStatus> LstAllPlaceUseStatus = new List<AllPlaceUsedStatus>();
+
+        public string? strRundown { get; set; }
+
         #region Section1
 
         /// <summary>社團代號</summary>
@@ -194,7 +217,7 @@ namespace WebPccuClub.Models
 
         /// <summary>選擇日期</summary>
         [DisplayName("選擇日期")]
-        public string? Date { get; set; }
+        public string? ActDate { get; set; }
 
         /// <summary>開始時間</summary>
         [DisplayName("開始時間")]
@@ -272,14 +295,92 @@ namespace WebPccuClub.Models
 
     }
 
+    public class AllPlaceUsedStatus
+    { 
+        public string? PlaceID { get; set; }
+        public string? PlaceName { get; set; }
+        public string? STime { get; set; }
+        public string? ETime { get; set; }
+    }
+
+    public class PlaceOPENStatus
+    {
+        /// <summary>場地代號</summary>
+        [DisplayName("場地代號")]
+        public string? PlaceId { get; set; }
+
+        /// <summary>場地名稱</summary>
+        [DisplayName("場地名稱")]
+        public string? PlaceName { get; set; }
+
+        /// <summary>可使用人數</summary>
+        [DisplayName("可使用人數")]
+        public string? Capacity { get; set; }
+
+        /// <summary>已配置資訊器材</summary>
+        [DisplayName("已配置資訊器材")]
+        public string? PlaceEquip { get; set; }
+
+        /// <summary>場地狀態</summary>
+        [DisplayName("場地狀態")]
+        public string? PlaceStatus { get; set; }
+
+        /// <summary>場地狀態</summary>
+        [DisplayName("場地狀態")]
+        public string? PlaceStatusText { get; set; }
+
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
+        public string? Memo { get; set; }
+
+        /// <summary>平日開放時間</summary>
+        [DisplayName("平日開放時間")]
+        public string? Normal_STime { get; set; }
+
+        /// <summary>平日開放時間</summary>
+        [DisplayName("平日開放時間")]
+        public string? Normal_ETime { get; set; }
+
+        /// <summary>假日開放時間</summary>
+        [DisplayName("假日開放時間")]
+        public string? Holiday_STime { get; set; }
+
+        /// <summary>假日開放時間</summary>
+        [DisplayName("假日開放時間")]
+        public string? Holiday_ETime { get; set; }
+    }
+
+    public class PlaceRunDown
+    { 
+        public string? ActName { get; set; }
+        public string? ClubID { get; set; }
+        public string? STime { get; set; }
+        public string? ETime { get; set; } 
+    }
+
+    #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public class ActListMangEditModel
     {
         
-    }
-
-    public class ActListMangActMainModel
-    {
-
     }
 
     public class ActListMangPlaceDataModel
@@ -327,5 +428,33 @@ namespace WebPccuClub.Models
         /// <summary>假日開放時間</summary>
         [DisplayName("假日開放時間")]
         public string? Holiday_ETime { get; set; }
+    }
+
+
+    public class ActListMangExcelResultModel
+    {
+        /// <summary>學年度</summary>
+        [DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>審核狀態</summary>
+        [DisplayName("審核狀態")]
+        public string? ActVerifyText { get; set; }
+
+        /// <summary>活動編號</summary>
+        [DisplayName("活動編號")]
+        public string? ActId { get; set; }
+
+        /// <summary>單位名稱</summary>
+        [DisplayName("單位名稱")]
+        public string? ClubName { get; set; }
+
+        /// <summary>活動名稱</summary>
+        [DisplayName("活動名稱")]
+        public string? ActName { get; set; }
+
+        [DisplayName("建立時間")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm:ss}")]
+        public DateTime? LastModified { get; set; }
     }
 }

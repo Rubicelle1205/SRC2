@@ -73,7 +73,7 @@
                             <tr>
                                 <th width="15%">活動性質<span class="required">*</span></th>
                                 <td>
-                                    <div class="row p-2">
+                                    <div id="divActType" class="row p-2">
                                             @foreach (SelectListItem item in LstActType)
                                             {
                                             <div class="col-md-3 custom-control custom-checkbox">
@@ -147,7 +147,7 @@
                                     選擇日期<span class="required"></span><br /><span class="text-xs text-danger font-weight-normal"></span>
                                 </th>
                                 <td>
-                                    <input type="date" class="form-control" id="@Html.IdFor(m => m.CreateModel.Date)" name="@Html.NameFor(m => m.CreateModel.Date)">
+                                    @Html.TextBoxFor(m => m.CreateModel.ActDate, new { @type="date", @class="form-control"})
 
                                     <div id="usedTable"></div>
                                 </td>
@@ -164,7 +164,7 @@
                                         }
 
                                     <div id="class_input_box"></div>
-
+                                    <div id="brrowTable"></div>
                                 </td>
                             </tr>
                             <tr>
@@ -201,7 +201,7 @@
                                 <th width="15%">已加入行程<span class="required"></span></th>
                                 <td>
                                     <!--<p class="text-center mb-0">尚未加入行程</p>-->
-                                    <table class="table">
+                                    <table id="myTable" class="table">
                                         <thead>
                                             <tr>
                                                 <th scope="col">日期</th>
@@ -359,6 +359,7 @@
                             </tbody>
                         </table>
                     </div>
+                    @Html.HiddenFor(m => m.CreateModel.strRundown)
                     <!-- /.card-body -->
                     <div class="card-footer d-flex justify-content-end">
                         <button id="Reset" type="reset" class="mx-1 btn btn-outline-dark">重設</button>
@@ -379,9 +380,24 @@
 <script>
 
     $(document).ready(function () {
-        $(document).on('change', '#@Html.IdFor(m => m.CreateModel.Date)', function () {
-            var $val = $(this).val()
-            $("#selected_date").removeClass("hidden").children("span").text($val)
+        $(document).on('change', '#@Html.IdFor(m => m.CreateModel.ActDate)', function () {
+            var SelectedDate = $(this).val()
+            $("#selected_date").removeClass("hidden").children("span").text(SelectedDate)
+
+            
+            SendAjax({
+                url: '@Url.Action("GetUsedByDate")',
+                data: { 'SelectedDate': SelectedDate },
+                success: function (result) {
+                    $("#usedTable").html(result);
+                },
+                error: function (response) {
+                    $.alert(result.errorMsg);
+                }
+            });
+
+            GetBrrowStatus();
+
         });
 
         $("#divSDGs .custom-control-input").click(function () {
@@ -389,32 +405,96 @@
             $("#divSDGs .custom-control-input").not(currentCheckbox).prop("checked", false);
         });
 
+        $("#divActType .custom-control-input").click(function () {
+            var currentCheckbox = $(this);
+            $("#divActType .custom-control-input").not(currentCheckbox).prop("checked", false);
+        });
+        
+
         $("[id ^= 'PlaceSource_']").on('change', function () {
-            InitBuildSelect($("[id ^= 'PlaceSource_']:checked").val());
+
+            if ($("#@Html.IdFor(m => m.CreateModel.strRundown)").val() != "") {
+
+                var ok = confirm('切換會清除目前行程，是否繼續？');
+                
+                if (ok) {
+                    $('#myTable tbody tr').remove();
+                    $("#@Html.IdFor(m => m.CreateModel.strRundown)").val("");
+
+                    InitBuildSelect($("[id ^= 'PlaceSource_']:checked").val());
+                }
+            }
+            else {
+                $('#myTable tbody tr').remove();
+                $("#@Html.IdFor(m => m.CreateModel.strRundown)").val("");
+
+                InitBuildSelect($("[id ^= 'PlaceSource_']:checked").val());
+            }
         });
     });
 
-    function SaveData() {
+    $(document).on('click', '.dateItem .del-btn-d', function () {
+        if (confirm("確認移除？") == false) {
+            return false
+        } else {
+            $(this).closest(".dateItem").remove()
+        }
+    })
 
-        var data = new FormData()
+    function Reset() {
+        $('#filename').html("尚未選擇檔案...");
+    }
+
+
+
+    function addRundown() {
+
+        var PlaceSource = $("[id ^= 'PlaceSource_']:checked").val()
+        var $date = $('#@Html.IdFor(m => m.CreateModel.ActDate)').val();
+        var start_hour = $('#@Html.IdFor(m => m.CreateModel.STime)').val();
+        var end_hour = $('#@Html.IdFor(m => m.CreateModel.ETime)').val();
+
+        var place;
+        var placetext;
+        if (PlaceSource == "01" || PlaceSource == "02") {
+            place = $('#@Html.IdFor(m => m.CreateModel.PlaceId) option:selected').val();
+            placetext = $('#@Html.IdFor(m => m.CreateModel.PlaceId) option:selected').text();
+        } else {
+            place = $('#@Html.IdFor(m => m.CreateModel.PlaceName)').val();
+            placetext = $('#@Html.IdFor(m => m.CreateModel.PlaceName)').val();
+        }
+
+
+        if ($date == "") { $.alert("請選擇日期"); return false; }
+        if (start_hour == "") { $.alert("請選擇開始時間"); return false; }
+        if (end_hour == "") { $.alert("請選擇結束時間"); return false; }
+        if (place == "" || place == undefined) { $.alert("請輸入場地名稱"); return false; }
+
+
+
+
+        var data = new FormData();
+
+        var strRundown = $("#@Html.IdFor(m => m.CreateModel.strRundown)").val();
+        
+        data.append('@Html.NameFor(m => m.RundownModel.PlaceSource)', PlaceSource);
+        data.append('@Html.NameFor(m => m.RundownModel.Date)', $date);
+        data.append('@Html.NameFor(m => m.RundownModel.STime)', start_hour);
+        data.append('@Html.NameFor(m => m.RundownModel.ETime)', end_hour);
+        data.append('@Html.NameFor(m => m.RundownModel.PlaceID)', place);
+        data.append('@Html.NameFor(m => m.RundownModel.strRundown)', strRundown);
+
+
 
 
         SendAjax({
-            url: '@Url.Action("SaveNewData")',
+            url: '@Url.Action("ChkRundown")',
             data: data,
             processData: false,
             contentType: false,
             success: function (result) {
                 if (result.errorCode == 0) {
-                    $.confirm({
-                        title: "",
-                        content: "新增成功",
-                        buttons: {
-                            確定: function () {
-                                Reset();
-                            },
-                        }
-                    });
+                    $("#event_des").append(result)
                 }
                 else { $.alert(result.errorMsg); }
             },
@@ -422,41 +502,41 @@
                 $.alert(result.errorMsg);
             }
         });
-    }
-
-    function Reset() {
-        $('#filename').html("尚未選擇檔案...");
-    }
-
-    function addRundown() {
-
-        var PlaceSource = $("[id ^= 'PlaceSource_']:checked").val()
-        var $date = $('#@Html.IdFor(m => m.CreateModel.Date)').val();
-        var start_hour = $('#@Html.IdFor(m => m.CreateModel.STime)').val();
-        var end_hour = $('#@Html.IdFor(m => m.CreateModel.ETime)').val();
-
-        var place;
-        if (PlaceSource == "01" || PlaceSource == "02") {
-            place = $('#@Html.IdFor(m => m.CreateModel.PlaceId) option:selected').text();
-        } else {
-            place = $('#@Html.IdFor(m => m.CreateModel.PlaceName)').val();
-        }
-
-
-        if ($date == "") { $.alert("請選擇日期"); return false; }
-        if (start_hour == "") { $.alert("請選擇開始時間"); return false; }
-        if (end_hour == "") { $.alert("請選擇結束時間"); return false; }
-        if (place == "") { $.alert("請輸入場地名稱"); return false; }
-
 
         // 產生tr物件
         var eventHtml = '<tr class="dateItem">\n';
         eventHtml += '<th>' + $date + '</th>\n';
         eventHtml += '<td>' + start_hour + ':00' + '~' + end_hour + ':00' + '</td>\n';
-        eventHtml += '<td>' + place + '</td>\n';
-        eventHtml += '<td><button class="del-btn btn" type="button">移除 <i class="fas fa-times"></i></button></td>\n';
+        eventHtml += '<td>' + placetext + '</td>\n';
+        eventHtml += '<td><button class="del-btn-d btn" type="button">移除 <i class="fas fa-times"></i></button></td>\n';
         eventHtml += '</tr>\n';
+
         $("#event_des").append(eventHtml)
+
+
+        var strRundown = "";
+
+        $('#myTable tbody tr').each(function () {
+            var tbday = $(this).find('td:eq(0)').text();
+            var tbstartDate = $(this).find('td:eq(1)').text();
+            var tbendDate = $(this).find('td:eq(2)').text();
+            var tbplace = $(this).find('td:eq(3)').text();
+
+            if (PlaceSource == "01" || PlaceSource == "02") {
+                tbplace = place;
+            }
+
+            var row = PlaceSource + "," + $date + "," + start_hour + "," + end_hour + "," + tbplace;
+
+            // 拼接字符串
+            if (strRundown !== "") {
+                strRundown += "|";
+            }
+            strRundown += row;
+        });
+
+
+        $("#@Html.IdFor(m => m.CreateModel.strRundown)").val(strRundown);
     }
 
 
@@ -471,6 +551,8 @@
             }
         });
 
+        $("#brrowTable").html("");
+
         if (PlaceSource != "03") {
             $("#step4").hide().removeClass("show");
         }
@@ -479,10 +561,45 @@
         }
     }
 
+    function GetBrrowStatus() {
+        var PlaceSource = $("#@Html.IdFor(m => m.CreateModel.PlaceId)").val();
+        var SelectedDate = $("#@Html.IdFor(m => m.CreateModel.ActDate)").val();
+
+        $("#brrowTable").html("");
+
+        SendAjax({
+            url: '@Url.Action("GetTodayAct")',
+            data: { 'PlaceSource': PlaceSource, 'SelectedDate': SelectedDate },
+            success: function (result) {
+                $("#brrowTable").html(result);
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+        
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     $('#ActProposal').change(function (e) {
         var geekss = e.target.files[0].name;
         $('#ActProposalfilename').text(geekss);
     });
+
 
     $(document).on('click', '#add_input_btn', function () {
 
@@ -531,4 +648,34 @@
         return num;
     }
 
+
+    function SaveData() {
+
+        var data = new FormData()
+
+
+        SendAjax({
+            url: '@Url.Action("SaveNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                Reset();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
 </script>

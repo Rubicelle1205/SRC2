@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MathNet.Numerics.Distributions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
@@ -244,6 +245,117 @@ namespace WebPccuClub.Controllers
             return Json(vmRtn);
         }
 
+
+        [ValidateInput(false)]
+        public IActionResult ChkRundown(ActListMangViewModel vm)
+        {
+            bool CanUse = true;
+
+            //先判斷是否在開放時間  PlaceSource (01:校內, 02:校內其他, 03:校外
+            if (vm.RundownModel.PlaceSource == "01")
+            {
+                CanUse = dbAccess.ChkPlaceSchoolCanUse(vm);
+
+                if (!CanUse)
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "該場地目前不可使用";
+                    return Json(vmRtn);
+                }
+            }
+
+            //再查看選擇的時間是否已有活動
+            if (vm.RundownModel.PlaceSource == "01")
+            {
+                CanUse = dbAccess.ChkHasAct(vm);
+
+                if (!CanUse)
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "該場地目前已被使用";
+                    return Json(vmRtn);
+                }
+            }
+
+            //判斷是否重複增加，先拿出舊的資料
+            List<ActListMangRundownModel> LstRundown = new List<ActListMangRundownModel>();
+
+            string[] arr = vm.RundownModel.strRundown.Split("|");
+
+            for (int i = 0; i <= arr.Length - 1; i++)
+            {
+                ActListMangRundownModel model = new ActListMangRundownModel();
+                model.PlaceSource = arr[0];
+                model.Date = arr[1];
+                model.STime = arr[2];
+                model.ETime = arr[3];
+                model.PlaceID = arr[4];
+
+                LstRundown.Add(model);
+            }
+
+            CanUse = LstRundown.Where(m => m.STime == vm.RundownModel.STime && m.ETime == vm.RundownModel.ETime).ToList().Count > 0;
+
+            if (!CanUse)
+            {
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "該場地目前不可使用";
+                return Json(vmRtn);
+            }
+
+            return PartialView("_PlaceTrPartial", vm);
+        }
+
+
+        [ValidateInput(false)]
+        public IActionResult GetUsedByDate(string SelectedDate)
+        {
+            ActListMangViewModel vm = new ActListMangViewModel();
+            vm.LstPlaceUsedModel = dbAccess.GetPlaceUsedData(SelectedDate);
+
+            return PartialView("_PlaceUsedPartial", vm);
+        }
+
+        public IActionResult GetTodayAct(string PlaceSource, string SelectedDate)
+        {
+            ActListMangViewModel vm = new ActListMangViewModel();
+
+            if (string.IsNullOrEmpty(PlaceSource) || string.IsNullOrEmpty(SelectedDate))
+            {
+                return PartialView("_PlaceTodayActPartial", vm);
+            }
+
+            vm.LstTodayActModel = dbAccess.GetTodayAct(PlaceSource, SelectedDate);
+
+
+            return PartialView("_PlaceTodayActPartial", vm);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         [Log(LogActionChineseName.取得樓館選單)]
         [ValidateInput(false)]
         public IActionResult InitBuildSelect(string PlaceSource)
@@ -257,7 +369,7 @@ namespace WebPccuClub.Controllers
             vm.CreateModel = new ActListMangCreateModel();
             vm.CreateModel.PlaceSource = PlaceSource;
 
-            return PartialView("_PlaceResultPartial", vm);
+            return PartialView("_PlaceDataPartial", vm);
         }
 
         [Log(LogActionChineseName.取得場地選單)]
@@ -274,7 +386,7 @@ namespace WebPccuClub.Controllers
             vm.CreateModel.Buildid = Buildid;
 
 
-            return PartialView("_PlaceResultPartial", vm);
+            return PartialView("_PlaceDataPartial", vm);
         }
 
         [Log(LogActionChineseName.取得場地資料)]
@@ -293,20 +405,11 @@ namespace WebPccuClub.Controllers
 
             vm.PlaceDataModel = dbAccess.GetPlaceData(PlaceSource, PlaceId);
 
-            return PartialView("_PlaceResultPartial", vm);
+
+
+            return PartialView("_PlaceDataPartial", vm);
         }
 
-        public IActionResult DownloadTemplate()
-        {
-            string FileName = "活動性質項目_template.xlsx";
-
-            string filePath = Path.Combine(hostingEnvironment.ContentRootPath, "Template", FileName);
-
-            byte[] fileContents = System.IO.File.ReadAllBytes(filePath);
-
-            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName);
-
-        }
 
     }
 }

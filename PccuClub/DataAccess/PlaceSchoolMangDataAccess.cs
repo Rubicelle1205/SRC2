@@ -251,7 +251,6 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             parameters.Add("@PlaceID", vm.BatchAddActModel.PlaceID);
             parameters.Add("@PlaceName", vm.BatchAddActModel.PlaceName);
             parameters.Add("@BuildId", vm.BatchAddActModel.BuildId);
-            parameters.Add("@Reason", vm.BatchAddActModel.Reason);
             parameters.Add("@BorrowType", vm.BatchAddActModel.BorrowType);
             parameters.Add("@SDate", vm.BatchAddActModel.SDate);
             parameters.Add("@EDate", vm.BatchAddActModel.EDate);
@@ -263,10 +262,10 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             #endregion 參數設定
 
             string CommendText = $@"INSERT INTO ActMain
-                                               (ActName 
-                                                ,BuildId 
+                                               (BuildId 
                                                 ,PlaceID 
                                                 ,PlaceName 
+                                                ,BrrowClubID
                                                 ,CreateSource 
                                                 ,BorrowType 
                                                 ,SDate 
@@ -283,10 +282,10 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
                                                 ,ModifiedReason )
                                          OUTPUT Inserted.ActID
                                          VALUES
-                                               (@Reason 
-                                                ,@BuildId 
+                                               (@BuildId 
                                                 ,@PlaceID 
                                                 ,@PlaceName 
+                                                ,@LoginId
                                                 ,'01' 
                                                 ,@BorrowType 
                                                 ,@SDate 
