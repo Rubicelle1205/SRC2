@@ -1,0 +1,210 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+    Layout = "_FrontCleanLayout";
+
+}
+<div class="a4 page">
+	<div class="container-fluid">
+		<div class="row justify-content-center">
+			<div class="col-xxl-8">
+				<div class="row justify-content-center">
+					<div class="col-11">
+						<h3 class="text-center text-6"><u>@Model.Handover0309Model.SchoolYear</u>學年度當社團存簿影本及印鑑</h3>
+
+						<table class="table table-bordered border-dark bg-white">
+							<tbody>
+								<tr>
+									<td width="25%">
+										<label for="">社團代碼：<span class="req-star">(必填)</span></label>
+									</td>
+									<td width="75%">@Model.Handover0309Model.ClubID</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">社團名稱：<span class="req-star">(必填)</span></label>
+									</td>
+									<td class="">@Model.Handover0309Model.ClubName</td>
+								</tr>
+								<tr>
+									<td class="bg-gray-blue" colspan="2">
+										<label for="">社團郵局存簿</label>
+									</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">保管人姓名：<span class="req-star">(必填)</span></label>
+									</td>
+									<td class="">@Model.Handover0309Model.BookManName</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">保管人系級：<span class="req-star">(必填)</span></label>
+									</td>
+									<td class="">@Model.Handover0309Model.BookManDepartment</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">保管人學號：<span class="req-star">(必填)</span></label>
+									</td>
+									<td class="">@Model.Handover0309Model.BookManSNO</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">保管人職稱：<span class="req-star">(必填)</span></label>
+									</td>
+									<td class="">@Model.Handover0309Model.BookManPosition</td>
+								</tr>
+								<tr>
+									<td class="bg-gray-blue" colspan="2">
+										<label for="">社團印鑑</label>
+									</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">保管人姓名：<span class="req-star">(必填)</span></label>
+									</td>
+									<td class="">@Model.Handover0309Model.SealManName</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">保管人系級：<span class="req-star">(必填)</span></label>
+									</td>
+									<td class="">@Model.Handover0309Model.SealManDepartment</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">保管人學號：<span class="req-star">(必填)</span></label>
+									</td>
+									<td class="">@Model.Handover0309Model.SealManSNO</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">保管人職稱：<span class="req-star">(必填)</span></label>
+									</td>
+									<td class="">@Model.Handover0309Model.SealManPosition</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">存簿號碼：<span class="req-star">(必填)</span></label>
+									</td>
+									<td class="">@Model.Handover0309Model.BookNo</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">存簿戶名：<span class="req-star">(必填)</span></label>
+									</td>
+									<td class="">@Model.Handover0309Model.BookName</td>
+								</tr>
+								<tr>
+									<td class="">
+										<label for="">存簿封面上傳：<span class="req-star">(必填)</span></label>
+									</td>
+									<td class="">@Model.Handover0309Model.BookCoverName</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="my-3">
+
+							<div class="line-height-7 mb-3" style="font-size:1em;">
+								□本人已詳閱本校個人資料保護網站參閱個人資料收集使用聲明(網址
+								http://pims.pccu.edu.tw
+								)同意中國文化大學學生事務處課外活動組於《個人資料保護法》之規定下，於其社團業務範圍內，得蒐集、處理、應用本人資料，並得依據本人提供之個人資料與本人聯絡，本表單因社團記錄保存用途，紙本個資保存年限為10年、電子化個資保存年限為業務存續期間。
+							</div>
+
+							<div style="text-align: right;">
+								<span style="font-size:1.125em;">
+									存簿保管人簽名：<u style="font-size: 16px;">
+										&nbsp;
+										&nbsp; &nbsp;&nbsp;
+										&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+										&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+									</u>
+								</span>
+							</div>
+
+							<div style="text-align: right;">
+								<span style="font-size:1.125em;">
+									年&nbsp;
+									&nbsp; &nbsp; &nbsp; 月&nbsp; &nbsp; &nbsp; &nbsp; 日
+								</span>
+							</div>
+
+							<br>
+
+							<div class="line-height-7 mb-3" style="font-size:1em;">
+								□本人已詳閱本校個人資料保護網站參閱個人資料收集使用聲明(網址 http://pims.pccu.edu.tw )
+								同意中國文化大學學生事務處課外活動組於《個人資料保護法》之規定下，於其社團業務範圍內，得蒐集、處理、應用本人資料，並得依據本人提供之個人資料與本人聯絡，本表單因社團記錄保存用途，紙本個資保存年限為10年、電子化個資保存年限為業務存續期間。
+							</div>
+
+							<div style="text-align: right; font-size:1.125em;">
+								印鑑保管人簽名：<u style="font-size: 16px;">
+									&nbsp; &nbsp;
+									&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+									&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+								</u>
+							</div>
+
+							<div style="text-align: right; font-size:1.125em;">
+								年&nbsp; &nbsp; &nbsp; &nbsp; 月&nbsp; &nbsp; &nbsp;
+								&nbsp; 日
+							</div>
+
+						</div>
+						<table class="table table-bordered border-black bg-white">
+							<tbody>
+								<tr>
+									<td style="text-align: center; width: 300px;"><span style="font-size:1em;">社團帳戶用印鑑章&nbsp;</span></td>
+									<td style="text-align: center; width: 300px;"><span style="font-size:1em;">社團一般事務用印章</span></td>
+									<td style="text-align: center; width: 300px;">
+										<span style="font-size:1em;">社團其他章戳&nbsp; (無則免)</span>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="1" rowspan="3">
+										<p><span style="font-family:微軟正黑體;"></span></p>
+
+										<p>&nbsp;</p>
+
+										<p>&nbsp;</p>
+
+										<p>&nbsp;</p>
+										<p>&nbsp;</p>
+
+										<p>&nbsp;</p>
+
+
+									</td>
+									<td rowspan="3">
+										<p>&nbsp;</p>
+
+										<p>&nbsp;</p>
+									</td>
+									<td colspan="3" rowspan="3">
+										<p>&nbsp;</p>
+
+										<p>&nbsp;</p>
+
+										<p>&nbsp;</p>
+										<p>&nbsp;</p>
+
+										<p>&nbsp;</p>
+
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="book-block"><span>＜存簿封面影本浮貼處＞</span></div>
+						<div class="mb-3">註:此存簿帳戶權限當學年度該社團使用。</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="text-center pt-3">
+			<button class="print-btn btn btn-secondary btn-modern px-5" type="button">列印</button>
+		</div>
+	</div>
+
+</div>

@@ -1006,7 +1006,122 @@ namespace WebPccuClub.DataAccess
             return null;
         }
 
-        #endregion
+		#endregion
+
+		#region Doc 0309
+
+		public DbExecuteInfo Insert0309(ClubHandoverViewModel vm, UserInfo LoginUser, string HoID, string HoDetailID)
+		{
+			DataSet ds = new DataSet();
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			parameters.Add("@HoID", HoID);
+			parameters.Add("@HoDetailID", HoDetailID);
+			parameters.Add("@SchoolYear", vm.Handover0309Model.SchoolYear);
+			parameters.Add("@ClubID", vm.Handover0309Model.ClubID);
+			parameters.Add("@ClubName", vm.Handover0309Model.ClubName);
+			parameters.Add("@BookManName", vm.Handover0309Model.BookManName);
+			parameters.Add("@BookManDepartment", vm.Handover0309Model.BookManDepartment);
+			parameters.Add("@BookManPosition", vm.Handover0309Model.BookManPosition);
+			parameters.Add("@BookManSNO", vm.Handover0309Model.BookManSNO);
+			parameters.Add("@SealManName", vm.Handover0309Model.SealManName);
+			parameters.Add("@SealManDepartment", vm.Handover0309Model.SealManDepartment);
+			parameters.Add("@SealManPosition", vm.Handover0309Model.SealManPosition);
+			parameters.Add("@SealManSNO", vm.Handover0309Model.SealManSNO);
+			parameters.Add("@BookName", vm.Handover0309Model.BookName);
+			parameters.Add("@BookNo", vm.Handover0309Model.BookNo);
+			parameters.Add("@BookCover", vm.Handover0309Model.BookCover);
+			parameters.Add("@BookCoverName", vm.Handover0309Model.BookCoverName);
+
+			parameters.Add("@LoginId", LoginUser.LoginId);
+			#endregion 參數設定
+
+			string CommendText = $@"INSERT INTO HandOverDoc09
+                                               (HoID, 
+                                                HoDetailID,
+                                                SChoolYear, 
+                                                ClubID, 
+                                                ClubName, 
+                                                BookManName, 
+                                                BookManDepartment, 
+                                                BookManPosition, 
+                                                BookManSNO, 
+                                                SealManName, 
+                                                SealManDepartment, 
+                                                SealManPosition, 
+                                                SealManSNO, 
+                                                BookName, 
+                                                BookNo, 
+                                                BookCover, 
+                                                BookCoverName, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         VALUES
+                                               (@HoID, 
+                                                @HoDetailID,
+                                                @SChoolYear, 
+                                                @ClubID, 
+                                                @ClubName, 
+                                                @BookManName, 
+                                                @BookManDepartment, 
+                                                @BookManPosition, 
+                                                @BookManSNO, 
+                                                @SealManName, 
+                                                @SealManDepartment, 
+                                                @SealManPosition, 
+                                                @SealManSNO, 
+                                                @BookName, 
+                                                @BookNo, 
+                                                @BookCover, 
+                                                @BookCoverName,
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE())";
+
+			ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+			return ExecuteResult;
+		}
+
+
+		public ClubHandover0309ViewModel GetHandover0309Data(string HoID, UserInfo Login)
+		{
+			string CommandText = string.Empty;
+			DataSet ds = new DataSet();
+
+			DBAParameter parameters = new DBAParameter();
+
+			parameters.Add("@HoID", HoID);
+			parameters.Add("@ClubID", Login.LoginId);
+
+			#region 參數設定
+			#endregion
+
+			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.SchoolYear, A.ClubID, A.ClubName, 
+                                    A.BookManName, A.BookManDepartment, A.BookManPosition, A.BookManSNO, 
+                                    A.SealManName, A.SealManDepartment, A.SealManPosition, A.SealManSNO, 
+                                    A.BookName, A.BookNo, A.BookCover, A.BookCoverName
+                               FROM HandOverDoc09 A
+                          LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
+                              WHERE 1 = 1
+                                AND A.HoID = @HoID 
+                                AND B.ClubID = @ClubID";
+
+
+			(DbExecuteInfo info, IEnumerable<ClubHandover0309ViewModel> entitys) dbResult = DbaExecuteQuery<ClubHandover0309ViewModel>(CommandText, parameters, true, DBAccessException);
+
+			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+				return dbResult.entitys.ToList().FirstOrDefault();
+
+			return null;
+		}
+
+		#endregion
 
 
 
@@ -1036,11 +1151,9 @@ namespace WebPccuClub.DataAccess
 
 
 
+		#region File
 
-
-        #region File
-
-        public DbExecuteInfo InsertFileDetail(string HoID, string HandOverClass, UserInfo LoginUser, out DataTable dt)
+		public DbExecuteInfo InsertFileDetail(string HoID, string HandOverClass, UserInfo LoginUser, out DataTable dt)
         {
             DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();

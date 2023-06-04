@@ -1,0 +1,347 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+    Layout = "_FrontSimpleLayout";
+}
+
+<div role="main" class="main">
+	<div class="container p-relative py-md-5 py-4">
+		<div class="row justify-content-center">
+			<div class="col-xxl-12">
+				<div class="printContent">
+					<h3 class="text-center text-6"><u>@Html.DisplayFor(m => m.Handover0309Model.SchoolYear)</u>學年度當社團存簿影本及印鑑</h3>
+					<form class="form-box checkthisform" action="" method="post" enctype="application/x-www-form-urlencoded">
+						<div class="row justify-content-center">
+							<div class="col-md-10">
+								<p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
+								<table class="table table-bordered border-dark bg-white">
+									<tbody>
+										<tr>
+											<td width="25%" class="">
+												<label for="">學年度：</label>
+											</td>
+											<td class="">
+												@Html.TextBoxFor(m => m.Handover0309Model.SchoolYear, new { @class="form-control", @readonly="readonly"})
+											</td>
+										</tr>
+										<tr>
+											<td width="25%">
+												<label for="">社團代碼：<span class="req-star">*</span></label>
+											</td>
+											<td width="75%">
+												@Html.TextBoxFor(m => m.Handover0309Model.ClubID, new { @class="form-control", placeholder="請填寫社團代碼"})
+											</td>
+										</tr>
+										<tr>
+											<td class="">
+												<label for="">社團名稱：<span class="req-star">*</span></label>
+											</td>
+											<td class="">
+												@Html.TextBoxFor(m => m.Handover0309Model.ClubName, new { @class="form-control", placeholder="請填寫社團名稱"})
+											</td>
+										</tr>
+										<tr>
+											<td class="bg-gray-blue" colspan="2">
+												<label for="">社團郵局存簿</label>
+											</td>
+										</tr>
+										<tr>
+											<td class="">
+												<label for="">保管人姓名：<span class="req-star">*</span></label>
+											</td>
+											<td class="">
+												@Html.TextBoxFor(m => m.Handover0309Model.BookManName, new { @class="form-control", placeholder="請填寫保管人姓名"})
+											</td>
+										</tr>
+										<tr>
+											<td class="">
+												<label for="">保管人系級：<span class="req-star">*</span></label>
+											</td>
+											<td class="">
+												@Html.TextBoxFor(m => m.Handover0309Model.BookManDepartment, new { @class="form-control", placeholder="請填寫保管人系級"})
+											</td>
+										</tr>
+										<tr>
+											<td class="">
+												<label for="">保管人學號：<span class="req-star">*</span></label>
+											</td>
+											<td class="">
+												@Html.TextBoxFor(m => m.Handover0309Model.BookManSNO, new { @class="form-control", placeholder="請填寫保管人學號"})
+											</td>
+										</tr>
+										<tr>
+											<td class="">
+												<label for="">保管人職稱：<span class="req-star">*</span></label>
+											</td>
+											<td class="">
+												@Html.TextBoxFor(m => m.Handover0309Model.BookManPosition, new { @class="form-control", placeholder="請填寫保管人職稱"})
+											</td>
+										</tr>
+										<tr>
+											<td class="bg-gray-blue" colspan="2">
+												<label for="">社團印鑑</label>
+											</td>
+										</tr>
+										<tr>
+											<td class="">
+												<label for="">保管人姓名：<span class="req-star">*</span></label>
+											</td>
+											<td class="">
+												@Html.TextBoxFor(m => m.Handover0309Model.SealManName, new { @class="form-control", placeholder="請填寫保管人姓名"})
+											</td>
+										</tr>
+										<tr>
+											<td class="">
+												<label for="">保管人系級：<span class="req-star">*</span></label>
+											</td>
+											<td class="">
+												@Html.TextBoxFor(m => m.Handover0309Model.SealManDepartment, new { @class="form-control", placeholder="請填寫保管人系級"})
+											</td>
+										</tr>
+										<tr>
+											<td class="">
+												<label for="">保管人學號：<span class="req-star">*</span></label>
+											</td>
+											<td class="">
+												@Html.TextBoxFor(m => m.Handover0309Model.SealManSNO, new { @class="form-control", placeholder="請填寫保管人學號"})
+											</td>
+										</tr>
+										<tr>
+											<td class="">
+												<label for="">保管人職稱：<span class="req-star">*</span></label>
+											</td>
+											<td class="">
+												@Html.TextBoxFor(m => m.Handover0309Model.SealManPosition, new { @class="form-control", placeholder="請填寫保管人職稱"})
+											</td>
+										</tr>
+										<tr>
+											<td class="">
+												<label for="">存簿號碼：<span class="req-star">*</span></label>
+											</td>
+											<td class="">
+												@Html.TextBoxFor(m => m.Handover0309Model.BookNo, new { @class="form-control", placeholder="請填寫存簿號碼"})
+											</td>
+										</tr>
+										<tr>
+											<td class="">
+												<label for="">存簿戶名：<span class="req-star">*</span></label>
+											</td>
+											<td class="">
+												@Html.TextBoxFor(m => m.Handover0309Model.BookName, new { @class="form-control", placeholder="請填寫存簿戶名"})
+											</td>
+										</tr>
+										<tr>
+											<td class="">
+												<label for="">存簿封面上傳：<span class="req-star">*</span></label>
+											</td>
+											<td class="">
+												@Html.TextBoxFor(m => m.Handover0309Model.BookCover, new { @class="form-control", type="file", placeholder="請上傳存簿封面", accept=".jpg,.jpeg,.png," })
+												<div class="fs-90percent red-hint pt-2">僅接受以下格式：.jpg、.jpeg、.png</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<div class="my-3">
+
+									<div class="line-height-7 mb-3" style="font-size:1em;">
+										□本人已詳閱本校個人資料保護網站參閱個人資料收集使用聲明(網址
+										http://pims.pccu.edu.tw
+										)同意中國文化大學學生事務處課外活動組於《個人資料保護法》之規定下，於其社團業務範圍內，得蒐集、處理、應用本人資料，並得依據本人提供之個人資料與本人聯絡，本表單因社團記錄保存用途，紙本個資保存年限為10年、電子化個資保存年限為業務存續期間。
+									</div>
+
+									<div style="text-align: right;">
+										<span style="font-size:1.125em;">
+											存簿保管人簽名：<u style="font-size: 16px;">
+												&nbsp;
+												&nbsp; &nbsp;&nbsp;
+												&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+												&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+											</u>
+										</span>
+									</div>
+
+									<div style="text-align: right;">
+										<span style="font-size:1.125em;">
+											年&nbsp;
+											&nbsp; &nbsp; &nbsp; 月&nbsp; &nbsp; &nbsp; &nbsp; 日
+										</span>
+									</div>
+
+									<br>
+
+									<div class="line-height-7 mb-3" style="font-size:1em;">
+										□本人已詳閱本校個人資料保護網站參閱個人資料收集使用聲明(網址 http://pims.pccu.edu.tw )
+										同意中國文化大學學生事務處課外活動組於《個人資料保護法》之規定下，於其社團業務範圍內，得蒐集、處理、應用本人資料，並得依據本人提供之個人資料與本人聯絡，本表單因社團記錄保存用途，紙本個資保存年限為10年、電子化個資保存年限為業務存續期間。
+									</div>
+
+									<div style="text-align: right; font-size:1.125em;">
+										印鑑保管人簽名：<u style="font-size: 16px;">
+											&nbsp; &nbsp;
+											&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+											&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+										</u>
+									</div>
+
+									<div style="text-align: right; font-size:1.125em;">
+										年&nbsp; &nbsp; &nbsp; &nbsp; 月&nbsp; &nbsp; &nbsp;
+										&nbsp; 日
+									</div>
+
+								</div>
+								<table class="table table-bordered border-black bg-white">
+									<tbody>
+										<tr>
+											<td style="text-align: center; width: 300px;">
+												<span style="font-size:1em;">社團帳戶用印鑑章&nbsp;</span>
+											</td>
+											<td style="text-align: center; width: 300px;"><span style="font-size:1em;">社團一般事務用印章</span></td>
+											<td style="text-align: center; width: 300px;">
+												<span style="font-size:1em;">
+													社團其他章戳&nbsp;
+													(無則免)
+												</span>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="1" rowspan="3">
+												<p><span style="font-family:微軟正黑體;"></span></p>
+
+												<p>&nbsp;</p>
+
+												<p>&nbsp;</p>
+
+												<p>&nbsp;</p>
+												<p>&nbsp;</p>
+
+												<p>&nbsp;</p>
+
+
+											</td>
+											<td rowspan="3">
+												<p>&nbsp;</p>
+
+												<p>&nbsp;</p>
+											</td>
+											<td colspan="3" rowspan="3">
+												<p>&nbsp;</p>
+
+												<p>&nbsp;</p>
+
+												<p>&nbsp;</p>
+												<p>&nbsp;</p>
+
+												<p>&nbsp;</p>
+
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<div class="book-block"><span>＜存簿封面影本浮貼處＞</span></div>
+								<div class="mb-3">註:此存簿帳戶權限當學年度該社團使用。</div>
+							</div>
+						</div>
+
+						<div class="text-center pt-4">
+							<button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">送出</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var SchoolYear = $('#@Html.IdFor(m => m.Handover0309Model.SchoolYear)').val();
+        var ClubID = $('#@Html.IdFor(m => m.Handover0309Model.ClubID)').val();
+        var ClubName = $('#@Html.IdFor(m => m.Handover0309Model.ClubName)').val();
+		var BookManName = $('#@Html.IdFor(m => m.Handover0309Model.BookManName)').val();
+		var BookManDepartment = $('#@Html.IdFor(m => m.Handover0309Model.BookManDepartment)').val();
+		var BookManPosition = $('#@Html.IdFor(m => m.Handover0309Model.BookManPosition)').val();
+		var BookManSNO = $('#@Html.IdFor(m => m.Handover0309Model.BookManSNO)').val();
+		var SealManName = $('#@Html.IdFor(m => m.Handover0309Model.SealManName)').val();
+		var SealManDepartment = $('#@Html.IdFor(m => m.Handover0309Model.SealManDepartment)').val();
+		var SealManPosition = $('#@Html.IdFor(m => m.Handover0309Model.SealManPosition)').val();
+		var SealManSNO = $('#@Html.IdFor(m => m.Handover0309Model.SealManSNO)').val();
+		var BookName = $('#@Html.IdFor(m => m.Handover0309Model.BookName)').val();
+		var BookNo = $('#@Html.IdFor(m => m.Handover0309Model.BookNo)').val();
+
+
+
+		var BookCover = $('#@Html.IdFor(m => m.Handover0309Model.BookCover)')[0].files[0];
+
+		if (typeof BookCover !== 'undefined') {
+			var fileExtension = BookCover.name.split('.').pop().toLowerCase();
+
+			if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+			data.append('@Html.NameFor(m => m.Handover0309Model.BookCover)', BookCover);
+        }
+		else {
+			$.alert("存簿封面上傳不可為空白"); return;
+		}
+
+
+        if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
+        if (ClubName == "") { $.alert("社團名稱不可為空白"); return; }
+		if (BookManName == "") { $.alert("社團郵局存簿保管人姓名不可為空白"); return; }
+		if (BookManDepartment == "") { $.alert("社團郵局存簿保管人系級不可為空白"); return; }
+		if (BookManPosition == "") { $.alert("社團郵局存簿保管人學號不可為空白"); return; }
+		if (BookManSNO == "") { $.alert("社團郵局存簿保管人職稱不可為空白"); return; }
+		if (SealManName == "") { $.alert("社團印鑑存簿保管人姓名不可為空白"); return; }
+		if (SealManDepartment == "") { $.alert("社團印鑑存簿保管人系級不可為空白"); return; }
+		if (SealManPosition == "") { $.alert("社團印鑑存簿保管人學號不可為空白"); return; }
+		if (SealManSNO == "") { $.alert("社團印鑑存簿保管人職稱不可為空白"); return; }
+		if (BookName == "") { $.alert("存簿號碼不可為空白"); return; }
+		if (BookNo == "") { $.alert("存簿戶名不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.Handover0309Model.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.Handover0309Model.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.Handover0309Model.ClubName)', ClubName);
+        
+		data.append('@Html.NameFor(m => m.Handover0309Model.BookManName)', BookManName);
+		data.append('@Html.NameFor(m => m.Handover0309Model.BookManDepartment)', BookManDepartment);
+		data.append('@Html.NameFor(m => m.Handover0309Model.BookManPosition)', BookManPosition);
+		data.append('@Html.NameFor(m => m.Handover0309Model.BookManSNO)', BookManSNO);
+		data.append('@Html.NameFor(m => m.Handover0309Model.SealManName)', SealManName);
+		data.append('@Html.NameFor(m => m.Handover0309Model.SealManDepartment)', SealManDepartment);
+		data.append('@Html.NameFor(m => m.Handover0309Model.SealManPosition)', SealManPosition);
+		data.append('@Html.NameFor(m => m.Handover0309Model.SealManSNO)', SealManSNO);
+		data.append('@Html.NameFor(m => m.Handover0309Model.BookName)', BookName);
+		data.append('@Html.NameFor(m => m.Handover0309Model.BookNo)', BookNo);
+
+        SendAjax({
+            url: '@Url.Action("Save0309")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                var url = '@Url.Action("Print0309")';
+                                window.location.href = url;
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+</script>

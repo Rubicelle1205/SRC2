@@ -466,7 +466,25 @@ namespace WebPccuClub.Models
         public string? Mail { get; set; }
         public string? CellPhone { get; set; }
     }
-    public class ClubHandover0309ViewModel { }
+    public class ClubHandover0309ViewModel 
+    {
+		public string? SchoolYear { get; set; }
+		public string? ClubID { get; set; }
+		public string? ClubName { get; set; }
+		public string? BookManName { get; set; }
+		public string? BookManDepartment { get; set; }
+		public string? BookManPosition { get; set; }
+		public string? BookManSNO { get; set; }
+		public string? SealManName { get; set; }
+		public string? SealManDepartment { get; set; }
+		public string? SealManPosition { get; set; }
+		public string? SealManSNO { get; set; }
+		public string? BookName { get; set; }
+		public string? BookNo { get; set; }
+		public string? BookCover { get; set; }
+
+		public string? BookCoverName { get; set; } 
+	}
 
 
 

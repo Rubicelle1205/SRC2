@@ -198,12 +198,12 @@
 
         if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
         if (ClubName == "") { $.alert("社團名稱不可為空白"); return; }
-        if (Teacher == "") { $.alert("專業指導老師(1)姓名不可為空白"); return; }
-        if (Sex == "") { $.alert("專業指導老師(1)生理性別不可為空白"); return; }
-        if (Unit == "") { $.alert("專業指導老師(1)服務單位不可為空白"); return; }
-        if (Position == "") { $.alert("專業指導老師(1)服務單位職稱不可為空白"); return; }
-        if (Mail == "") { $.alert("專業指導老師(1)電子信箱不可為空白"); return; }
-        if (CellPhone == "") { $.alert("專業指導老師(1)手機電話不可為空白"); return; }
+        if (Teacher == "") { $.alert("專業指導老師姓名不可為空白"); return; }
+        if (Sex == "") { $.alert("專業指導老師生理性別不可為空白"); return; }
+        if (Unit == "") { $.alert("專業指導老師服務單位不可為空白"); return; }
+        if (Position == "") { $.alert("專業指導老師服務單位職稱不可為空白"); return; }
+        if (Mail == "") { $.alert("專業指導老師電子信箱不可為空白"); return; }
+        if (CellPhone == "") { $.alert("專業指導老師手機電話不可為空白"); return; }
 
         data.append('@Html.NameFor(m => m.Handover0308Model.SchoolYear)', SchoolYear);
         data.append('@Html.NameFor(m => m.Handover0308Model.ClubID)', ClubID);
