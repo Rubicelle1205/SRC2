@@ -89,11 +89,70 @@ namespace WebPccuClub.Controllers
 			return Json(vmRtn);
 		}
 
-        #endregion
+		#endregion
 
-        #region 已填寫表單
+		[ValidateInput(false)]
+		public IActionResult PassToNewLeader(ClubHandoverViewModel vm)
+		{
+			try
+			{
+				dbAccess.DbaInitialTransaction();
 
-        [Log(LogActionChineseName.已填寫表單)]
+				vm.CheckModel = dbAccess.GetCheckData(LoginUser.LoginId, true);
+
+				if (vm.CheckModel != null && vm.CheckModel.Count > 0)
+				{
+					string SchoolYear = vm.CheckModel[0].SchoolYear;
+
+					//先取得交接的學生學號
+					string NewLeaderSNO = dbAccess.GetNewLeader(LoginUser.LoginId, SchoolYear);
+
+					if (!string.IsNullOrEmpty(NewLeaderSNO))
+					{
+						//更新ClubUser
+						var dbResult = dbAccess.UpdateUserClub(LoginUser.LoginId, NewLeaderSNO);
+
+						if (!dbResult.isSuccess)
+						{
+							dbAccess.DbaRollBack();
+							vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+							vmRtn.ErrorMsg = "更新失敗";
+							return Json(vmRtn);
+						}
+					}
+					else {
+						dbAccess.DbaRollBack();
+						vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+						vmRtn.ErrorMsg = "查無交接學生學號";
+						return Json(vmRtn);
+					}
+				}
+				else
+				{
+					dbAccess.DbaRollBack();
+					vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+					vmRtn.ErrorMsg = "查無申請單";
+					return Json(vmRtn);
+				}
+
+				dbAccess.DbaCommit();
+			}
+			catch (Exception ex)
+			{
+				dbAccess.DbaRollBack();
+				vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+				vmRtn.ErrorMsg = "更新失敗" + ex.Message;
+				return Json(vmRtn);
+			}
+
+			return Json(vmRtn);
+		}
+
+
+
+		#region 已填寫表單
+
+		[Log(LogActionChineseName.已填寫表單)]
 		public IActionResult HandOverHistory()
 		{
 			ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();

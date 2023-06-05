@@ -83,9 +83,64 @@ namespace WebPccuClub.DataAccess
             return ExecuteResult;
         }
 
-        #endregion
+		#endregion
 
-        public DbExecuteInfo InsertDetail(string HoID, string HandOverClass, string DocType, UserInfo LoginUser, out DataTable dt)
+		#region 交接作業
+
+		public string GetNewLeader(string LoginId, string? schoolYear)
+		{
+			DataSet ds = new DataSet();
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			parameters.Add("@SchoolYear", schoolYear);
+			parameters.Add("@LoginId", LoginId);
+			#endregion 參數設定
+
+			string CommendText = $@"SELECT SNO
+                                      FROM HandOverDoc03 
+                                     WHERE SchoolYear = @SchoolYear AND ClubID = @LoginId";
+
+			ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            if (ExecuteResult.isSuccess)
+            {
+                return ds.Tables[0].QueryFieldByDT("SNO");
+            }
+
+			return null;
+		}
+
+		public DbExecuteInfo UpdateUserClub(string ClubID, string NewSNO)
+		{
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+
+			string CommendText = string.Empty;
+
+			#region 參數設定
+			parameters.Add("@ClubId", ClubID);
+			parameters.Add("@FUserId", NewSNO);
+			#endregion 參數設定
+
+			CommendText = $@"DELETE ClubUser WHERE ClubId = @ClubId";
+
+			ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+			if (ExecuteResult.isSuccess)
+			{
+				CommendText = $@"INSERT INTO ClubUser (ClubId, FUserID) VALUES (@ClubId, @FUserId) ";
+
+				ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+			}
+
+			return ExecuteResult;
+		}
+
+		#endregion
+
+		public DbExecuteInfo InsertDetail(string HoID, string HandOverClass, string DocType, UserInfo LoginUser, out DataTable dt)
         {
             DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();

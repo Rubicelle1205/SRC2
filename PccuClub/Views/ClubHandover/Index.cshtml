@@ -58,6 +58,7 @@
 									<li>社團存簿影本及印鑑</li>
 								</ul>
 							</div>
+
 							<div class="text-center position-relative">
 								<a class="btn btn-primary w-100" href="@Url.Action("HandOver03")">開始填寫 <i class="fas fa-pen"></i></a>
 							</div>
@@ -82,7 +83,9 @@
 					<div class="icon"><i class="fas fa-chevron-right"></i></div>
 				</a>
 			</div>
-
+			<div class="text-center position-relative">
+				<button type="button" name="submitBtn" class="btn btn-primary w-100" onclick="SendApply()">交接給新社長</button>
+			</div>
 		</div>
 
 	}
@@ -146,4 +149,57 @@
         });
 
     }
+
+
+	function SendApply(){
+	
+		var data = new FormData()
+
+		$.confirm({
+			title: '',
+			content: '確認交接嗎?!',
+			buttons: {
+				確定: function () {
+					SendAjax({
+						url: '@Url.Action("PassToNewLeader")',
+						data: data,
+						processData: false,
+						contentType: false,
+						success: function (result) {
+							if (result.errorCode == 0) {
+								$.confirm({
+									title: "",
+									content: "交接成功",
+									buttons: {
+										確定: function () {
+											location.reload();
+										},
+									}
+								});
+							}
+							else { $.alert(result.errorMsg); }
+						},
+						error: function (response) {
+							$.alert(result.errorMsg);
+						}
+					});
+				},
+				取消: function () {
+					$.alert('Canceled!');
+				}
+			}
+		});
+
+
+
+
+
+
+	}
+
+
+
+
+
+
 </script>
