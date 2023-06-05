@@ -1,0 +1,330 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <div method="post" id="form" enctype="multipart/form-data" action="">
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">建立時間</th>
+                                        <td>@Model.Handover0103Model.Created.Value.ToString("yyyy/MM/dd HH:mm:ss"))</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">更新時間</th>
+                                        <td>@Model.Handover0103Model.LastModified.Value.ToString("yyyy/MM/dd HH:mm:ss"))</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">社團代號<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0205Model.ClubID, new { @class="form-control", placeholder="請填寫社團代碼"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">學年度<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.Handover0102Model.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">社團名稱<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0205Model.ClubName, new { @class="form-control", placeholder="請填寫社團名稱"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">活動報備系統帳號<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0205Model.ActSysAcc, new { @class="form-control", placeholder="請填寫活動報備系統帳號"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">活動報備系統密碼<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0205Model.ActSysAcc, new { @class="form-control", placeholder="請填寫活動報備系統密碼"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">社團資訊網帳號<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0205Model.ClubWebAcc, new { @class="form-control", placeholder="請填寫社團資訊網帳號"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">社團資訊網密碼<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0205Model.ClubWebPwd, new { @class="form-control", placeholder="請填寫社團資訊網密碼"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">社團RPAGE後臺帳號<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0205Model.RPageAcc, new { @class="form-control", placeholder="請填寫社團RPAGE後臺帳號"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">社團RPAGE後臺密碼<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0205Model.RPagePwd, new { @class="form-control", placeholder="請填寫社團RPAGE後臺密碼"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">全人學習護照帳號<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0205Model.PassportAcc, new { @class="form-control", placeholder="請填寫全人學習護照帳號"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">全人學習護照密碼<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0205Model.PassportPwd, new { @class="form-control", placeholder="請填寫全人學習護照密碼"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">雲端OneDrive帳號<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0205Model.OneDriveAcc, new { @class="form-control", placeholder="請填寫雲端OneDrive帳號"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">雲端OneDrive密碼<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0205Model.OneDrivePwd, new { @class="form-control", placeholder="請填寫雲端OneDrive密碼"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">有無校產<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.Handover0205Model.HasSchoolProperty ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            使用紀錄表<span class="required"></span><span class="mx-1"
+                                                                                     data-toggle="tooltip"
+                                                                                     data-bs-placement="top"
+                                                                                     title=""
+                                                                                     data-original-title="無限制檔案類型">
+                                                <i class="fa-regular fa-circle-question"
+                                                   aria-hidden="true"></i>
+                                            </span>
+                                        </th>
+                                        <td>
+                                            <label class="btn btn-outline-primary mb-0">
+                                                @Html.TextBoxFor(m => m.Handover0205Model.UseRecord, new { @style="display:none;", @class="form-control", type="file", accept=".docx,.doc,.odt,.pdf"})
+                                                </i> 上傳檔案
+                                            </label>
+                                            <span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            社團社產資料<span class="required">*</span><span class="mx-1"
+                                                                                       data-toggle="tooltip"
+                                                                                       data-bs-placement="top"
+                                                                                       title=""
+                                                                                       data-original-title="無限制檔案類型">
+                                                <i class="fa-regular fa-circle-question"
+                                                   aria-hidden="true"></i>
+                                            </span>
+                                        </th>
+                                        <td>
+                                            <label class="btn btn-outline-primary mb-0">
+                                                @Html.TextBoxFor(m => m.Handover0205Model.ClubProperty, new { @style="display:none;", @class="form-control", type="file", accept=".docx,.doc,.odt,.pdf"})
+                                                </i> 上傳檔案
+                                            </label>
+                                            <!-- 若有檔案時 -->
+                                            <span class="text-sm mx-2 text-danger" id="filename">
+                                                <i class="fa-solid fa-circle-exclamation"></i> 若重新上傳將會覆蓋原始檔案...
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            社團校產資料<span class="required"></span><span class="mx-1"
+                                                                                      data-toggle="tooltip"
+                                                                                      data-bs-placement="top"
+                                                                                      title=""
+                                                                                      data-original-title="無限制檔案類型">
+                                                <i class="fa-regular fa-circle-question"
+                                                   aria-hidden="true"></i>
+                                            </span>
+                                        </th>
+                                        <td>
+                                            <label class="btn btn-outline-primary mb-0">
+
+                                                @Html.TextBoxFor(m => m.Handover0205Model.ClubProperty, new { @style="display:none;", @class="form-control", type="file", accept=".docx,.doc,.odt,.pdf"})
+
+                                                </i> 上傳檔案
+                                            </label>
+                                            <span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        @Html.HiddenFor(m => m.Handover0205Model.HoID)
+                        @Html.HiddenFor(m => m.Handover0205Model.IsEdit)
+                        @Html.HiddenFor(m => m.Handover0205Model.HoDetailID)
+
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+
+<script>
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var HoID = $('#@Html.IdFor(m => m.Handover0205Model.HoID)').val();
+        var IsEdit = $('#@Html.IdFor(m => m.Handover0205Model.IsEdit)').val();
+        var HoDetailID = $('#@Html.IdFor(m => m.Handover0205Model.HoDetailID)').val();
+
+        var SchoolYear = $('#@Html.IdFor(m => m.Handover0205Model.SchoolYear)').val();
+        var ClubID = $('#@Html.IdFor(m => m.Handover0205Model.ClubID)').val();
+        var ClubName = $('#@Html.IdFor(m => m.Handover0205Model.ClubName)').val();
+        var ActSysAcc = $('#@Html.IdFor(m => m.Handover0205Model.ActSysAcc)').val();
+        var ActSysPwd = $('#@Html.IdFor(m => m.Handover0205Model.ActSysPwd)').val();
+        var ClubWebAcc = $('#@Html.IdFor(m => m.Handover0205Model.ClubWebAcc)').val();
+        var ClubWebPwd = $('#@Html.IdFor(m => m.Handover0205Model.ClubWebPwd)').val();
+        var RPageAcc = $('#@Html.IdFor(m => m.Handover0205Model.RPageAcc)').val();
+        var RPagePwd = $('#@Html.IdFor(m => m.Handover0205Model.RPagePwd)').val();
+        var PassportAcc = $('#@Html.IdFor(m => m.Handover0205Model.PassportAcc)').val();
+        var PassportPwd = $('#@Html.IdFor(m => m.Handover0205Model.PassportPwd)').val();
+        var OneDriveAcc = $('#@Html.IdFor(m => m.Handover0205Model.OneDriveAcc)').val();
+        var OneDrivePwd = $('#@Html.IdFor(m => m.Handover0205Model.OneDrivePwd)').val();
+        var HasSchoolProperty = $('#@Html.IdFor(m => m.Handover0205Model.HasSchoolProperty)').val();
+
+
+        var UseRecord = $('#@Html.IdFor(m => m.Handover0205Model.UseRecord)')[0].files[0];
+
+        if (typeof UseRecord !== 'undefined') {
+            var fileExtension = UseRecord.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'odt' && fileExtension !== 'pdf') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.Handover0205Model.UseRecord)', UseRecord);
+        }
+
+        var SchoolProperty = $('#@Html.IdFor(m => m.Handover0205Model.SchoolProperty)')[0].files[0];
+
+        if (typeof SchoolProperty !== 'undefined') {
+            var fileExtension = SchoolProperty.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'odt' && fileExtension !== 'pdf') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.Handover0205Model.SchoolProperty)', SchoolProperty);
+        }
+
+        var ClubProperty = $('#@Html.IdFor(m => m.Handover0205Model.ClubProperty)')[0].files[0];
+
+        if (typeof ClubProperty !== 'undefined') {
+            var fileExtension = ClubProperty.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'odt' && fileExtension !== 'pdf') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.Handover0205Model.ClubProperty)', ClubProperty);
+        }
+
+        var HoID = $('#@Html.IdFor(m => m.Handover0205Model.HoID)').val();
+        var IsEdit = $('#@Html.IdFor(m => m.Handover0205Model.IsEdit)').val();
+        var HoDetailID = $('#@Html.IdFor(m => m.Handover0205Model.HoDetailID)').val();
+
+        if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
+        if (ClubName == "") { $.alert("社團名稱不可為空白"); return; }
+        if (ActSysAcc == "") { $.alert("活動報備系統帳號不可為空白"); return; }
+        if (ActSysPwd == "") { $.alert("活動報備系統密碼不可為空白"); return; }
+        if (ClubWebAcc == "") { $.alert("社團資訊網帳號不可為空白"); return; }
+        if (ClubWebPwd == "") { $.alert("社團資訊網密碼不可為空白"); return; }
+        if (RPageAcc == "") { $.alert("社團RPAGE後臺帳號不可為空白"); return; }
+        if (RPagePwd == "") { $.alert("社團RPAGE後臺密碼不可為空白"); return; }
+        if (PassportAcc == "") { $.alert("全人學習護照帳號不可為空白"); return; }
+        if (PassportPwd == "") { $.alert("全人學習護照密碼不可為空白"); return; }
+        if (OneDriveAcc == "") { $.alert("雲端OneDrive帳號不可為空白"); return; }
+        if (OneDrivePwd == "") { $.alert("雲端OneDrive密碼不可為空白"); return; }
+        if (HasSchoolProperty == "") { $.alert("有無校產不可為空白"); return; }
+
+
+        data.append('@Html.NameFor(m => m.Handover0205Model.HoID)', HoID);
+        data.append('@Html.NameFor(m => m.Handover0205Model.IsEdit)', IsEdit);
+        data.append('@Html.NameFor(m => m.Handover0205Model.HoDetailID)', HoDetailID);
+
+        data.append('@Html.NameFor(m => m.Handover0205Model.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.Handover0205Model.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.Handover0205Model.ClubName)', ClubName);
+        data.append('@Html.NameFor(m => m.Handover0205Model.ActSysAcc)', ActSysAcc);
+        data.append('@Html.NameFor(m => m.Handover0205Model.ActSysPwd)', ActSysPwd);
+        data.append('@Html.NameFor(m => m.Handover0205Model.ClubWebAcc)', ClubWebAcc);
+        data.append('@Html.NameFor(m => m.Handover0205Model.ClubWebPwd)', ClubWebPwd);
+        data.append('@Html.NameFor(m => m.Handover0205Model.RPageAcc)', RPageAcc);
+        data.append('@Html.NameFor(m => m.Handover0205Model.RPagePwd)', RPagePwd);
+        data.append('@Html.NameFor(m => m.Handover0205Model.PassportAcc)', PassportAcc);
+        data.append('@Html.NameFor(m => m.Handover0205Model.PassportPwd)', PassportPwd);
+        data.append('@Html.NameFor(m => m.Handover0205Model.OneDriveAcc)', OneDriveAcc);
+        data.append('@Html.NameFor(m => m.Handover0205Model.OneDrivePwd)', OneDrivePwd);
+        data.append('@Html.NameFor(m => m.Handover0205Model.HasSchoolProperty)', HasSchoolProperty);
+
+
+        SendAjax({
+            url: '@Url.Action("Save0205")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "儲存成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+    }
+</script>

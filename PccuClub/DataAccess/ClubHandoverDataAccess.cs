@@ -171,6 +171,7 @@ namespace WebPccuClub.DataAccess
 			string CommendText = $@"INSERT INTO HandOverDoc01
                                                (HoID, 
                                                 HoDetailID,
+                                                SchoolYear,
                                                 ClubID, 
                                                 ClubName, 
                                                 UserName, 
@@ -180,7 +181,8 @@ namespace WebPccuClub.DataAccess
                                                 LastModifier, 
                                                 LastModified)
                                          VALUES
-                                               (@HoID, 
+                                               (@SchoolYear,
+                                                @HoID, 
                                                 @HoDetailID,
                                                 @ClubID, 
                                                 @ClubName, 
@@ -206,7 +208,8 @@ namespace WebPccuClub.DataAccess
 			parameters.Add("@HoID", vm.Handover0101Model.HoID);
 			parameters.Add("@HoDetailID", vm.Handover0101Model.HoDetailID);
 			parameters.Add("@ClubID", vm.Handover0101Model.ClubID);
-			parameters.Add("@ClubName", vm.Handover0101Model.ClubName);
+            parameters.Add("@SchoolYear", vm.Handover0101Model.SchoolYear);
+            parameters.Add("@ClubName", vm.Handover0101Model.ClubName);
 			parameters.Add("@UserName", vm.Handover0101Model.UserName);
 			parameters.Add("@Agree", vm.Handover0101Model.Agree);
 			parameters.Add("@LoginId", LoginUser.LoginId);
@@ -215,7 +218,8 @@ namespace WebPccuClub.DataAccess
 
 
 			string CommendText = $@"UPDATE HandOverDoc01 
-                                       SET ClubID =@ClubID, 
+                                       SET SchoolYear = @SchoolYear,
+                                           ClubID =@ClubID, 
                                            ClubName =@ClubName, 
                                            UserName =@UserName, 
                                            Agree=@Agree, 
@@ -241,7 +245,7 @@ namespace WebPccuClub.DataAccess
 			#region 參數設定
 			#endregion
 
-			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.ClubID, A.ClubName, A.UserName, A.Agree, C.Text AS AgreeText
+			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.SchoolYear, A.ClubID, A.ClubName, A.UserName, A.Agree, C.Text AS AgreeText, A.Created, A.LastModified
                                FROM HandOverDoc01 A
                                 LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
                                 LEFT JOIN Code C ON C.Code = A.Agree AND C.Type = 'Agree'
@@ -422,7 +426,7 @@ namespace WebPccuClub.DataAccess
 
             CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.SchoolYear, A.ClubID, A.ClubName, A.ElectionType, B.Text AS ElectionTypeText, A.ElectionDate, A.ElectionPlace, 
                                     A.TotleMan, A.ShouldMan, A.RealMan, A.LeaveMan, A.AbsentMan, A.Teacher, A.Chairman, A.Recorder, A.NewLeader, 
-                                    A.MeetingRecord, A.MeetingSign, A.MeetingRecordName, A.MeetingSignName
+                                    A.MeetingRecord, A.MeetingSign, A.MeetingRecordName, A.MeetingSignName, A.Created, A.LastModified
                                FROM HandOverDoc02 A
                           LEFT JOIN Code B ON B.Code = A.ElectionType AND B.Type = 'ElectionType'
                               WHERE 1 = 1
@@ -645,7 +649,7 @@ namespace WebPccuClub.DataAccess
                                     A.SNO, A.CDepartment, A.EDepartment, A.UserMail, A.UserCellphone, A.Transcript, A.TranscriptName, 
 		                            A.GPA, A.Behavior, A.Score60, A.Score75, A.IsMember, A.NoFire, A.NoReElection, A.NoTwoPosition,
                                     E.Text AS Score60Text, F.Text AS Score75Text, G.Text AS IsMemberText, 
-                                    H.Text AS NoFireText, I.Text AS NoReElectionText, J.Text AS NoTwoPositionText
+                                    H.Text AS NoFireText, I.Text AS NoReElectionText, J.Text AS NoTwoPositionText, A.Created, A.LastModified
                                FROM HandOverDoc03 A
                           LEFT JOIN Code B ON B.Code = A.ClubBuildID AND B.Type = 'ClubBuild'
                           LEFT JOIN Code C ON C.Code = A.Sex AND C.Type = 'Sex'
@@ -760,7 +764,7 @@ namespace WebPccuClub.DataAccess
 			#region 參數設定
 			#endregion
 
-			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.ClubID, A.ClubName, A.SchoolYear, A.NameOfClub
+			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.ClubID, A.ClubName, A.SchoolYear, A.NameOfClub, A.Created, A.LastModified
                                FROM HandOverDoc04 A
                                 LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
                               WHERE 1 = 1
@@ -950,7 +954,7 @@ namespace WebPccuClub.DataAccess
 			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.SchoolYear, A.ClubID, A.ClubName, 
                                     A.ActSysAcc, A.ActSysPwd, A.ClubWebAcc, A.ClubWebPwd, A.RPageAcc, A.RPagePwd, 
                                     A.PassportAcc, A.PassportPwd, A.OneDriveAcc, A.OneDrivePwd, A.HasSchoolProperty, C.Text AS HasSchoolPropertyText, 
-                                    A.UseRecordName, A.ClubPropertyName, A.SchoolPropertyName, A.UseRecord, A.ClubProperty, A.SchoolProperty
+                                    A.UseRecordName, A.ClubPropertyName, A.SchoolPropertyName, A.UseRecord, A.ClubProperty, A.SchoolProperty, A.Created, A.LastModified
                                FROM HandOverDoc05 A
                           LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
                           LEFT JOIN Code C ON C.Code = A.HasSchoolProperty AND C.Type = 'YesOrNo'
@@ -1074,7 +1078,7 @@ namespace WebPccuClub.DataAccess
 			#region 參數設定
 			#endregion
 
-			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.SchoolYear, A.ClubID, A.ClubName, A.Sheet, A.InnerFile, A.SheetName, A.InnerFileName
+			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.SchoolYear, A.ClubID, A.ClubName, A.Sheet, A.InnerFile, A.SheetName, A.InnerFileName, A.Created, A.LastModified
                                FROM HandOverDoc06 A
                           LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
                               WHERE 1 = 1
@@ -1237,7 +1241,7 @@ namespace WebPccuClub.DataAccess
 
 			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.SchoolYear, A.ClubID, A.ClubName, 
                                     A.Teacher1, A.Sex1, C.Text AS SexText1, A.Unit1, A.Position1, A.Mail1, A.CellPhone1, 
-                                    A.Teacher2, A.Sex2, D.Text AS SexText2, A.Unit2, A.Position2, A.Mail2, A.CellPhone2
+                                    A.Teacher2, A.Sex2, D.Text AS SexText2, A.Unit2, A.Position2, A.Mail2, A.CellPhone2, A.Created, A.LastModified
                                FROM HandOverDoc07 A
                           LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
                           LEFT JOIN Code C ON C.Code = A.Sex1 AND C.Type = 'Sex'
@@ -1374,7 +1378,7 @@ namespace WebPccuClub.DataAccess
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.SchoolYear, A.ClubID, A.ClubName, A.Teacher, A.Sex, C.Text AS SexText, A.Unit, A.Position, A.Mail, A.Tel, A.CellPhone
+            CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.SchoolYear, A.ClubID, A.ClubName, A.Teacher, A.Sex, C.Text AS SexText, A.Unit, A.Position, A.Mail, A.Tel, A.CellPhone, A.Created, A.LastModified
                                FROM HandOverDoc08 A
                           LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
                           LEFT JOIN Code C ON C.Code = A.Sex AND C.Type = 'Sex'
@@ -1541,7 +1545,7 @@ namespace WebPccuClub.DataAccess
 			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.SchoolYear, A.ClubID, A.ClubName, 
                                     A.BookManName, A.BookManDepartment, A.BookManPosition, A.BookManSNO, 
                                     A.SealManName, A.SealManDepartment, A.SealManPosition, A.SealManSNO, 
-                                    A.BookName, A.BookNo, A.BookCover, A.BookCoverName
+                                    A.BookName, A.BookNo, A.BookCover, A.BookCoverName, A.Created, A.LastModified
                                FROM HandOverDoc09 A
                           LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
                               WHERE 1 = 1
@@ -1557,34 +1561,6 @@ namespace WebPccuClub.DataAccess
 		}
 
 		#endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 		#region File
 

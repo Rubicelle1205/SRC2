@@ -1,0 +1,264 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <div method="post" id="form" enctype="multipart/form-data" action="">
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">建立時間</th>
+                                        <td>@Model.Handover0309Model.Created.Value.ToString("yyyy/MM/dd HH:mm:ss"))</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">更新時間</th>
+                                        <td>@Model.Handover0309Model.LastModified.Value.ToString("yyyy/MM/dd HH:mm:ss"))</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">社團代號<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0309Model.ClubID, new { @class="form-control", placeholder="請填寫社團代碼"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">學年度<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.Handover0309Model.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">社團名稱<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0309Model.ClubName, new { @class="form-control", placeholder="請填寫社團名稱"})
+                                        </td>
+                                    </tr>
+                                <td colspan="2" class="table-secondary font-weight-bold">社團郵局存簿</td>
+                                <tr>
+                                    <th width="15%">存簿號碼<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0309Model.BookNo, new { @class="form-control", placeholder="請填寫存簿號碼"})
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">存簿戶名<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0309Model.BookName, new { @class="form-control", placeholder="請填寫存簿戶名"})
+
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th width="15%">
+                                        存簿封面<span class="required">*</span><span class="mx-1"
+                                                                                 data-toggle="tooltip"
+                                                                                 data-bs-placement="top"
+                                                                                 title=""
+                                                                                 data-original-title="無限制檔案類型">
+                                            <i class="fa-regular fa-circle-question"
+                                               aria-hidden="true"></i>
+                                        </span>
+                                    </th>
+                                    <td>
+                                        <label class="btn btn-outline-primary mb-0">
+                                                @Html.TextBoxFor(m => m.Handover0309Model.BookCover, new { @style="display:none;", @class="form-control", type="file", placeholder="請上傳存簿封面", accept=".jpg,.jpeg,.png," })
+                                            <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                        </label>
+                                        <span class="text-sm mx-2 text-danger" id="filename">
+                                            <i class="fa-solid fa-circle-exclamation"></i> 若重新上傳將會覆蓋原始檔案...
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">保管人姓名<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0309Model.BookManName, new { @class="form-control", placeholder="請填寫保管人姓名"})
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">保管人系級<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0309Model.BookManDepartment, new { @class="form-control", placeholder="請填寫保管人系級"})
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">保管人學號<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0309Model.BookManSNO, new { @class="form-control", placeholder="請填寫保管人學號"})
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">保管人職稱<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0309Model.BookManPosition, new { @class="form-control", placeholder="請填寫保管人職稱"})
+                                    </td>
+                                </tr>
+                                <td colspan="2" class="table-secondary font-weight-bold">社團印鑑</td>
+                                <tr>
+                                    <th width="15%">保管人姓名<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0309Model.SealManName, new { @class="form-control", placeholder="請填寫保管人姓名"})
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">保管人系級<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0309Model.SealManDepartment, new { @class="form-control", placeholder="請填寫保管人系級"})
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">保管人學號<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0309Model.SealManSNO, new { @class="form-control", placeholder="請填寫保管人學號"})
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">保管人職稱<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0309Model.SealManPosition, new { @class="form-control", placeholder="請填寫保管人職稱"})
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        @Html.HiddenFor(m => m.Handover0309Model.HoID)
+                        @Html.HiddenFor(m => m.Handover0309Model.IsEdit)
+                        @Html.HiddenFor(m => m.Handover0309Model.HoDetailID)
+
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+
+<script>
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var HoID = $('#@Html.IdFor(m => m.Handover0309Model.HoID)').val();
+        var IsEdit = $('#@Html.IdFor(m => m.Handover0309Model.IsEdit)').val();
+        var HoDetailID = $('#@Html.IdFor(m => m.Handover0309Model.HoDetailID)').val();
+
+        var SchoolYear = $('#@Html.IdFor(m => m.Handover0309Model.SchoolYear)').val();
+        var ClubID = $('#@Html.IdFor(m => m.Handover0309Model.ClubID)').val();
+        var ClubName = $('#@Html.IdFor(m => m.Handover0309Model.ClubName)').val();
+        var BookManName = $('#@Html.IdFor(m => m.Handover0309Model.BookManName)').val();
+        var BookManDepartment = $('#@Html.IdFor(m => m.Handover0309Model.BookManDepartment)').val();
+        var BookManPosition = $('#@Html.IdFor(m => m.Handover0309Model.BookManPosition)').val();
+        var BookManSNO = $('#@Html.IdFor(m => m.Handover0309Model.BookManSNO)').val();
+        var SealManName = $('#@Html.IdFor(m => m.Handover0309Model.SealManName)').val();
+        var SealManDepartment = $('#@Html.IdFor(m => m.Handover0309Model.SealManDepartment)').val();
+        var SealManPosition = $('#@Html.IdFor(m => m.Handover0309Model.SealManPosition)').val();
+        var SealManSNO = $('#@Html.IdFor(m => m.Handover0309Model.SealManSNO)').val();
+        var BookName = $('#@Html.IdFor(m => m.Handover0309Model.BookName)').val();
+        var BookNo = $('#@Html.IdFor(m => m.Handover0309Model.BookNo)').val();
+
+
+
+        var BookCover = $('#@Html.IdFor(m => m.Handover0309Model.BookCover)')[0].files[0];
+
+        if (typeof BookCover !== 'undefined') {
+            var fileExtension = BookCover.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.Handover0309Model.BookCover)', BookCover);
+        }
+        else {
+            $.alert("存簿封面上傳不可為空白"); return;
+        }
+
+
+
+        if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
+        if (ClubName == "") { $.alert("社團名稱不可為空白"); return; }
+        if (BookManName == "") { $.alert("社團郵局存簿保管人姓名不可為空白"); return; }
+        if (BookManDepartment == "") { $.alert("社團郵局存簿保管人系級不可為空白"); return; }
+        if (BookManPosition == "") { $.alert("社團郵局存簿保管人學號不可為空白"); return; }
+        if (BookManSNO == "") { $.alert("社團郵局存簿保管人職稱不可為空白"); return; }
+        if (SealManName == "") { $.alert("社團印鑑存簿保管人姓名不可為空白"); return; }
+        if (SealManDepartment == "") { $.alert("社團印鑑存簿保管人系級不可為空白"); return; }
+        if (SealManPosition == "") { $.alert("社團印鑑存簿保管人學號不可為空白"); return; }
+        if (SealManSNO == "") { $.alert("社團印鑑存簿保管人職稱不可為空白"); return; }
+        if (BookName == "") { $.alert("存簿號碼不可為空白"); return; }
+        if (BookNo == "") { $.alert("存簿戶名不可為空白"); return; }
+
+
+        data.append('@Html.NameFor(m => m.Handover0309Model.HoID)', HoID);
+        data.append('@Html.NameFor(m => m.Handover0309Model.IsEdit)', IsEdit);
+        data.append('@Html.NameFor(m => m.Handover0309Model.HoDetailID)', HoDetailID);
+
+        data.append('@Html.NameFor(m => m.Handover0309Model.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.Handover0309Model.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.Handover0309Model.ClubName)', ClubName);
+
+        data.append('@Html.NameFor(m => m.Handover0309Model.BookManName)', BookManName);
+        data.append('@Html.NameFor(m => m.Handover0309Model.BookManDepartment)', BookManDepartment);
+        data.append('@Html.NameFor(m => m.Handover0309Model.BookManPosition)', BookManPosition);
+        data.append('@Html.NameFor(m => m.Handover0309Model.BookManSNO)', BookManSNO);
+        data.append('@Html.NameFor(m => m.Handover0309Model.SealManName)', SealManName);
+        data.append('@Html.NameFor(m => m.Handover0309Model.SealManDepartment)', SealManDepartment);
+        data.append('@Html.NameFor(m => m.Handover0309Model.SealManPosition)', SealManPosition);
+        data.append('@Html.NameFor(m => m.Handover0309Model.SealManSNO)', SealManSNO);
+        data.append('@Html.NameFor(m => m.Handover0309Model.BookName)', BookName);
+        data.append('@Html.NameFor(m => m.Handover0309Model.BookNo)', BookNo);
+
+        SendAjax({
+            url: '@Url.Action("Save0309")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "儲存成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+    }
+</script>

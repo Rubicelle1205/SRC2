@@ -1,0 +1,134 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <div method="post" id="form" enctype="multipart/form-data" action="">
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">建立時間</th>
+                                        <td>@Model.Handover0103Model.Created.Value.ToString("yyyy/MM/dd HH:mm:ss"))</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">更新時間</th>
+                                        <td>@Model.Handover0103Model.LastModified.Value.ToString("yyyy/MM/dd HH:mm:ss"))</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">社團代號<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0204Model.ClubID, new { @class="form-control", placeholder="請填寫社團代碼"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">學年度<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.Handover0204Model.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">社團中文名稱<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0204Model.ClubName, new { @class="form-control", placeholder="請填寫社團名稱"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">社團英文名稱<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0204Model.NameOfClub, new { @class="form-control", placeholder="請填寫Name of clubs"})
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        
+                        @Html.HiddenFor(m => m.Handover0204Model.HoID)
+                        @Html.HiddenFor(m => m.Handover0204Model.IsEdit)
+                        @Html.HiddenFor(m => m.Handover0204Model.HoDetailID)
+
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+
+<script>
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var HoID = $('#@Html.IdFor(m => m.Handover0204Model.HoID)').val();
+        var IsEdit = $('#@Html.IdFor(m => m.Handover0204Model.IsEdit)').val();
+        var HoDetailID = $('#@Html.IdFor(m => m.Handover0204Model.HoDetailID)').val();
+
+        var SchoolYear = $('#@Html.IdFor(m => m.Handover0204Model.SchoolYear)').val();
+        var ClubID = $('#@Html.IdFor(m => m.Handover0204Model.ClubID)').val();
+        var ClubName = $('#@Html.IdFor(m => m.Handover0204Model.ClubName)').val();
+        var NameOfClub = $('#@Html.IdFor(m => m.Handover0204Model.NameOfClub)').val();
+
+        if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
+        if (ClubName == "") { $.alert("社團名稱不可為空白"); return; }
+        if (NameOfClub == "") { $.alert("當事人姓名不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.Handover0204Model.HoID)', HoID);
+        data.append('@Html.NameFor(m => m.Handover0204Model.IsEdit)', IsEdit);
+        data.append('@Html.NameFor(m => m.Handover0204Model.HoDetailID)', HoDetailID);
+
+        data.append('@Html.NameFor(m => m.Handover0204Model.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.Handover0204Model.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.Handover0204Model.ClubName)', ClubName);
+        data.append('@Html.NameFor(m => m.Handover0204Model.NameOfClub)', NameOfClub);
+
+
+        SendAjax({
+            url: '@Url.Action("Save0204")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "儲存成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+    }
+</script>

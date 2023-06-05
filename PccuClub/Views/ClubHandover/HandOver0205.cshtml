@@ -191,9 +191,9 @@
 
         var data = new FormData()
 
-        @Html.HiddenFor(m => m.Handover0205Model.HoID)
-@Html.HiddenFor(m => m.Handover0205Model.IsEdit)
-@Html.HiddenFor(m => m.Handover0205Model.HoDetailID)
+        var HoID = $('#@Html.IdFor(m => m.Handover0205Model.HoID)').val();
+        var IsEdit = $('#@Html.IdFor(m => m.Handover0205Model.IsEdit)').val();
+        var HoDetailID = $('#@Html.IdFor(m => m.Handover0205Model.HoDetailID)').val();
 
         var SchoolYear = $('#@Html.IdFor(m => m.Handover0205Model.SchoolYear)').val();
         var ClubID = $('#@Html.IdFor(m => m.Handover0205Model.ClubID)').val();
@@ -251,8 +251,8 @@
         }
 
         var HoID = $('#@Html.IdFor(m => m.Handover0205Model.HoID)').val();
-var IsEdit = $('#@Html.IdFor(m => m.Handover0205Model.IsEdit)').val();
-var HoDetailID = $('#@Html.IdFor(m => m.Handover0205Model.HoDetailID)').val();
+        var IsEdit = $('#@Html.IdFor(m => m.Handover0205Model.IsEdit)').val();
+        var HoDetailID = $('#@Html.IdFor(m => m.Handover0205Model.HoDetailID)').val();
 
         if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
         if (ClubName == "") { $.alert("社團名稱不可為空白"); return; }
@@ -270,8 +270,8 @@ var HoDetailID = $('#@Html.IdFor(m => m.Handover0205Model.HoDetailID)').val();
 
 
         data.append('@Html.NameFor(m => m.Handover0205Model.HoID)', HoID);
-data.append('@Html.NameFor(m => m.Handover0205Model.IsEdit)', IsEdit);
-data.append('@Html.NameFor(m => m.Handover0205Model.HoDetailID)', HoDetailID);
+        data.append('@Html.NameFor(m => m.Handover0205Model.IsEdit)', IsEdit);
+        data.append('@Html.NameFor(m => m.Handover0205Model.HoDetailID)', HoDetailID);
 
         data.append('@Html.NameFor(m => m.Handover0205Model.SchoolYear)', SchoolYear);
         data.append('@Html.NameFor(m => m.Handover0205Model.ClubID)', ClubID);

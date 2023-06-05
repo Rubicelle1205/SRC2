@@ -1,0 +1,149 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <div method="post" id="form" enctype="multipart/form-data" action="">
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <!--修改時才顯示 (start)-->
+                                    <tr>
+                                        <th width="15%">建立時間</th>
+                                        <td>@Model.Handover0101Model.Created.Value.ToString("yyyy/MM/dd HH:mm:ss"))</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">更新時間</th>
+                                        <td>@Model.Handover0101Model.LastModified.Value.ToString("yyyy/MM/dd HH:mm:ss"))</td>
+                                    </tr>
+                                    <!--修改時才顯示 (end)-->
+                                    <tr>
+                                        <th width="15%">社團代號<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0101Model.ClubID, new { @class="form-control", placeholder="社團代碼"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">學年度<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.Handover0101Model.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">社團名稱<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0101Model.ClubName, new { @class="form-control", placeholder="社團名稱"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">當事人姓名<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0101Model.UserName, new { @class="form-control", placeholder="當事人姓名"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">是否同意告知聲明<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.Handover0101Model.Agree ,(List<SelectListItem>)ViewBag.ddlAgree,"請選擇", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        @Html.HiddenFor(m => m.Handover0101Model.HoID)
+                        @Html.HiddenFor(m => m.Handover0101Model.IsEdit)
+                        @Html.HiddenFor(m => m.Handover0101Model.HoDetailID)
+                        <!-- /.card-body -->
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    function SaveData() {
+
+        var data = new FormData()
+        var HoID = $('#@Html.IdFor(m => m.Handover0101Model.HoID)').val();
+        var IsEdit = $('#@Html.IdFor(m => m.Handover0101Model.IsEdit)').val();
+        var HoDetailID = $('#@Html.IdFor(m => m.Handover0101Model.HoDetailID)').val();
+        var SchoolYear = $('#@Html.IdFor(m => m.Handover0101Model.SchoolYear)').val();
+        var ClubID = $('#@Html.IdFor(m => m.Handover0101Model.ClubID)').val();
+        var ClubName = $('#@Html.IdFor(m => m.Handover0101Model.ClubName)').val();
+        var UserName = $('#@Html.IdFor(m => m.Handover0101Model.UserName)').val();
+        var Agree = $('#@Html.IdFor(m => m.Handover0101Model.Agree)').val();
+        var IsEdit = $('#@Html.IdFor(m => m.Handover0101Model.IsEdit)').val();
+        
+        if (SchoolYear == "") { $.alert("學年度不可為空白"); return; }
+        if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
+        if (ClubName == "") { $.alert("社團名稱不可為空白"); return; }
+        if (UserName == "") { $.alert("當事人姓名不可為空白"); return; }
+        if (Agree == "") { $.alert("需同意告知聲明"); return; }
+
+        data.append('@Html.NameFor(m => m.Handover0101Model.HoID)', HoID);
+        data.append('@Html.NameFor(m => m.Handover0101Model.IsEdit)', IsEdit);
+        data.append('@Html.NameFor(m => m.Handover0101Model.HoDetailID)', HoDetailID);
+        data.append('@Html.NameFor(m => m.Handover0101Model.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.Handover0101Model.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.Handover0101Model.ClubName)', ClubName);
+        data.append('@Html.NameFor(m => m.Handover0101Model.UserName)', UserName);
+        data.append('@Html.NameFor(m => m.Handover0101Model.Agree)', Agree);
+
+        SendAjax({
+            url: '@Url.Action("Save0101")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "儲存成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+    }
+
+    function Reset() {
+        $('#@Html.IdFor(m => m.Handover0101Model.ClubID)').val("");
+        $('#@Html.IdFor(m => m.Handover0101Model.ClubName)').val("");
+        $('#@Html.IdFor(m => m.Handover0101Model.UserName)').val("");
+        $('#@Html.IdFor(m => m.Handover0101Model.Agree)').val("");
+    }
+
+</script>

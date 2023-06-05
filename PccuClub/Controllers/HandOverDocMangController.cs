@@ -119,11 +119,14 @@ namespace WebPccuClub.Controllers
             return View();
         }
 
+        #region 0101
+
 
         [Log(LogActionChineseName.社團負責人改選管理)]
         public IActionResult HandOver0101(string id)
         {
             ViewBag.ddlAgree = dbAccess.getAllAgree();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
 
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0101Model = new ClubHandover0101ViewModel();
@@ -136,9 +139,537 @@ namespace WebPccuClub.Controllers
             return View(vm);
         }
 
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> Save0101(ClubHandoverViewModel vm)
+        {
+            try
+            {
+                var dbResult = ClubdbAccess.Update0101(vm, LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        ClubdbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "儲存失敗";
+                        return Json(vmRtn);
+                    }
+                    ClubdbAccess.DbaCommit();
+                    return Json(vmRtn);
+            }
+            catch (Exception ex)
+            {
+                ClubdbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+        }
+
+        #endregion
+
+        #region 0102
 
 
+        [Log(LogActionChineseName.社團負責人改選管理)]
+        public IActionResult HandOver0102(string id)
+        {
+            ViewBag.ddlElectionType = dbAccess.getAllElectionType();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
 
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            vm.Handover0102Model = new ClubHandover0102ViewModel();
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                vm.Handover0102Model = ClubdbAccess.GetHandover0102Data(id, LoginUser);
+            }
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> Save0102(ClubHandoverViewModel vm)
+        {
+            try
+            {
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("Handover0102Model.MeetingRecord"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("HandOverClass02", file);
+                            vm.Handover0102Model.MeetingRecordName = file.FileName;
+                            vm.Handover0102Model.MeetingRecord = strFilePath;
+                        }
+                        else if (Request.Form.Files[i].Name.Contains("Handover0102Model.MeetingSign"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("HandOverClass02", file);
+                            vm.Handover0102Model.MeetingSignName = file.FileName;
+                            vm.Handover0102Model.MeetingSign = strFilePath;
+                        }
+                    }
+                }
+
+                var dbResult = ClubdbAccess.Update0102(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    ClubdbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "儲存失敗";
+                    return Json(vmRtn);
+                }
+                ClubdbAccess.DbaCommit();
+                return Json(vmRtn);
+            }
+            catch (Exception ex)
+            {
+                ClubdbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+        }
+
+        #endregion
+
+        #region 0103
+
+
+        [Log(LogActionChineseName.社團負責人改選管理)]
+        public IActionResult HandOver0103(string id)
+        {
+            ViewBag.ddlClubBuild = dbAccess.GetClubBuild();
+            ViewBag.ddlSex = dbAccess.GetAllSex();
+            ViewBag.ddldentityType = dbAccess.GetAllIdentityType();
+            ViewBag.ddlConform = dbAccess.GetAllConform();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            vm.Handover0103Model = new ClubHandover0103ViewModel();
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                vm.Handover0103Model = ClubdbAccess.GetHandover0103Data(id, LoginUser);
+            }
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> Save0103(ClubHandoverViewModel vm)
+        {
+            try
+            {
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("Handover0103Model.Transcript"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("HandOverClass03", file);
+                            vm.Handover0103Model.TranscriptName = file.FileName;
+                            vm.Handover0103Model.Transcript = strFilePath;
+                        }
+                    }
+                }
+
+                var dbResult = ClubdbAccess.Update0103(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    ClubdbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "儲存失敗";
+                    return Json(vmRtn);
+                }
+                ClubdbAccess.DbaCommit();
+                return Json(vmRtn);
+            }
+            catch (Exception ex)
+            {
+                ClubdbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+        }
+
+        #endregion
+
+        #region 0204
+
+
+        [Log(LogActionChineseName.社團負責人改選管理)]
+        public IActionResult HandOver0204(string id)
+        {
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            vm.Handover0204Model = new ClubHandover0204ViewModel();
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                vm.Handover0204Model = ClubdbAccess.GetHandover0204Data(id, LoginUser);
+            }
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> Save0204(ClubHandoverViewModel vm)
+        {
+            try
+            {
+
+                var dbResult = ClubdbAccess.Update0204(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    ClubdbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "儲存失敗";
+                    return Json(vmRtn);
+                }
+                ClubdbAccess.DbaCommit();
+                return Json(vmRtn);
+            }
+            catch (Exception ex)
+            {
+                ClubdbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+        }
+
+        #endregion
+
+        #region 0205
+
+
+        [Log(LogActionChineseName.社團負責人改選管理)]
+        public IActionResult HandOver025(string id)
+        {
+            ViewBag.ddlYesOrNo = dbAccess.GetYesOrNo();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            vm.Handover0205Model = new ClubHandover0205ViewModel();
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                vm.Handover0205Model = ClubdbAccess.GetHandover0205Data(id, LoginUser);
+            }
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> Save0205(ClubHandoverViewModel vm)
+        {
+            try
+            {
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("Handover0205Model.UseRecord"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("HandOverClass05", file);
+                            vm.Handover0205Model.UseRecordName = file.FileName;
+                            vm.Handover0205Model.UseRecord = strFilePath;
+                        }
+                        else if (Request.Form.Files[i].Name.Contains("Handover0205Model.SchoolProperty"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("HandOverClass05", file);
+                            vm.Handover0205Model.SchoolPropertyName = file.FileName;
+                            vm.Handover0205Model.SchoolProperty = strFilePath;
+                        }
+                        else if (Request.Form.Files[i].Name.Contains("Handover0205Model.ClubProperty"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("HandOverClass05", file);
+                            vm.Handover0205Model.ClubPropertyName = file.FileName;
+                            vm.Handover0205Model.ClubProperty = strFilePath;
+                        }
+                    }
+                }
+
+                var dbResult = ClubdbAccess.Update0205(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    ClubdbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "儲存失敗";
+                    return Json(vmRtn);
+                }
+                ClubdbAccess.DbaCommit();
+                return Json(vmRtn);
+            }
+            catch (Exception ex)
+            {
+                ClubdbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+        }
+
+        #endregion
+
+        #region 0206
+
+
+        [Log(LogActionChineseName.社團負責人改選管理)]
+        public IActionResult HandOver0206(string id)
+        {
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            vm.Handover0206Model = new ClubHandover0206ViewModel();
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                vm.Handover0206Model = ClubdbAccess.GetHandover0206Data(id, LoginUser);
+            }
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> Save0206(ClubHandoverViewModel vm)
+        {
+            try
+            {
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("Handover0206Model.Sheet"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("HandOverClass06", file);
+                            vm.Handover0206Model.SheetName = file.FileName;
+                            vm.Handover0206Model.Sheet = strFilePath;
+                        }
+                        else if (Request.Form.Files[i].Name.Contains("Handover0206Model.InnerFile"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("HandOverClass06", file);
+                            vm.Handover0206Model.InnerFileName = file.FileName;
+                            vm.Handover0206Model.InnerFile = strFilePath;
+                        }
+                    }
+                }
+
+                var dbResult = ClubdbAccess.Update0206(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    ClubdbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "儲存失敗";
+                    return Json(vmRtn);
+                }
+                ClubdbAccess.DbaCommit();
+                return Json(vmRtn);
+            }
+            catch (Exception ex)
+            {
+                ClubdbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+        }
+
+        #endregion
+
+        #region 0307
+
+
+        [Log(LogActionChineseName.社團負責人改選管理)]
+        public IActionResult HandOver0307(string id)
+        {
+            ViewBag.ddlSex = dbAccess.GetAllSex();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            vm.Handover0307Model = new ClubHandover0307ViewModel();
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                vm.Handover0307Model = ClubdbAccess.GetHandover0307Data(id, LoginUser);
+            }
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> Save0307(ClubHandoverViewModel vm)
+        {
+            try
+            {
+
+                var dbResult = ClubdbAccess.Update0307(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    ClubdbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "儲存失敗";
+                    return Json(vmRtn);
+                }
+                ClubdbAccess.DbaCommit();
+                return Json(vmRtn);
+            }
+            catch (Exception ex)
+            {
+                ClubdbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+        }
+
+        #endregion
+
+        #region 0308
+
+
+        [Log(LogActionChineseName.社團負責人改選管理)]
+        public IActionResult HandOver0308(string id)
+        {
+            ViewBag.ddlSex = dbAccess.GetAllSex();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            vm.Handover0308Model = new ClubHandover0308ViewModel();
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                vm.Handover0308Model = ClubdbAccess.GetHandover0308Data(id, LoginUser);
+            }
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> Save0308(ClubHandoverViewModel vm)
+        {
+            try
+            {
+
+                var dbResult = ClubdbAccess.Update0308(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    ClubdbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "儲存失敗";
+                    return Json(vmRtn);
+                }
+                ClubdbAccess.DbaCommit();
+                return Json(vmRtn);
+            }
+            catch (Exception ex)
+            {
+                ClubdbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+        }
+
+        #endregion
+
+        #region 0309
+
+
+        [Log(LogActionChineseName.社團負責人改選管理)]
+        public IActionResult HandOver0309(string id)
+        {
+            ViewBag.ddlSex = dbAccess.GetAllSex();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            vm.Handover0309Model = new ClubHandover0309ViewModel();
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                vm.Handover0309Model = ClubdbAccess.GetHandover0309Data(id, LoginUser);
+            }
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> Save0309(ClubHandoverViewModel vm)
+        {
+            try
+            {
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("Handover0309Model.BookCover"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("HandOverClass09", file);
+                            vm.Handover0309Model.BookCoverName = file.FileName;
+                            vm.Handover0309Model.BookCover = strFilePath;
+                        }
+                    }
+                }
+
+                var dbResult = ClubdbAccess.Update0309(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    ClubdbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "儲存失敗";
+                    return Json(vmRtn);
+                }
+                ClubdbAccess.DbaCommit();
+                return Json(vmRtn);
+            }
+            catch (Exception ex)
+            {
+                ClubdbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+        }
+
+        #endregion
 
     }
 }

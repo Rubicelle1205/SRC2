@@ -261,7 +261,9 @@ namespace WebPccuClub.Controllers
 				DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
 				string HoID = dt.QueryFieldByDT("HoID");
 
-				var dbResult = new DbExecuteInfo();
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = new DbExecuteInfo();
 				if (vm.Handover0101Model.IsEdit == "1")
 				{
 					dbResult = dbAccess.Update0101(vm, LoginUser);
@@ -276,8 +278,6 @@ namespace WebPccuClub.Controllers
 					dbAccess.DbaCommit();
 					return Json(vmRtn);
 				}
-
-				dbAccess.DbaInitialTransaction();
 
 				DataTable dtt = new DataTable();
 
@@ -361,22 +361,6 @@ namespace WebPccuClub.Controllers
                 DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
                 string HoID = dt.QueryFieldByDT("HoID");
 
-                var dbResult = new DbExecuteInfo();
-                if (vm.Handover0102Model.IsEdit == "1")
-                {
-                    dbResult = dbAccess.Update0102(vm, LoginUser);
-
-                    if (!dbResult.isSuccess)
-                    {
-                        dbAccess.DbaRollBack();
-                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        vmRtn.ErrorMsg = "儲存失敗";
-                        return Json(vmRtn);
-                    }
-                    dbAccess.DbaCommit();
-                    return Json(vmRtn);
-                }
-
                 if (Request.Form.Files.Count > 0)
                 {
                     for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
@@ -400,8 +384,23 @@ namespace WebPccuClub.Controllers
                     }
                 }
 
-
                 dbAccess.DbaInitialTransaction();
+
+                var dbResult = new DbExecuteInfo();
+                if (vm.Handover0102Model.IsEdit == "1")
+                {
+                    dbResult = dbAccess.Update0102(vm, LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "儲存失敗";
+                        return Json(vmRtn);
+                    }
+                    dbAccess.DbaCommit();
+                    return Json(vmRtn);
+                }
 
                 DataTable dtt = new DataTable();
 
@@ -488,6 +487,24 @@ namespace WebPccuClub.Controllers
                 DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
                 string HoID = dt.QueryFieldByDT("HoID");
 
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("Handover0103Model.Transcript"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("HandOverClass03", file);
+                            vm.Handover0103Model.TranscriptName = file.FileName;
+                            vm.Handover0103Model.Transcript = strFilePath;
+                        }
+                    }
+                }
+
+                dbAccess.DbaInitialTransaction();
+
+
                 var dbResult = new DbExecuteInfo();
                 if (vm.Handover0103Model.IsEdit == "1")
                 {
@@ -504,23 +521,6 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
-                if (Request.Form.Files.Count > 0)
-                {
-                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
-                    {
-                        if (Request.Form.Files[i].Name.Contains("Handover0103Model.Transcript"))
-                        {
-                            var file = Request.Form.Files[i];
-
-                            string strFilePath = await upload.UploadFileAsync("HandOverClass03", file);
-                            vm.Handover0103Model.TranscriptName = file.FileName;
-                            vm.Handover0103Model.Transcript = strFilePath;
-                        }
-                    }
-                }
-
-
-                dbAccess.DbaInitialTransaction();
 
                 DataTable dtt = new DataTable();
 
@@ -613,6 +613,8 @@ namespace WebPccuClub.Controllers
 				DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
 				string HoID = dt.QueryFieldByDT("HoID");
 
+                dbAccess.DbaInitialTransaction();
+
                 var dbResult = new DbExecuteInfo();
                 if (vm.Handover0204Model.IsEdit == "1")
                 {
@@ -628,8 +630,6 @@ namespace WebPccuClub.Controllers
                     dbAccess.DbaCommit();
                     return Json(vmRtn);
                 }
-
-                dbAccess.DbaInitialTransaction();
 
 				DataTable dtt = new DataTable();
 
@@ -714,22 +714,6 @@ namespace WebPccuClub.Controllers
 				DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
 				string HoID = dt.QueryFieldByDT("HoID");
 
-                var dbResult = new DbExecuteInfo();
-                if (vm.Handover0205Model.IsEdit == "1")
-                {
-                    dbResult = dbAccess.Update0205(vm, LoginUser);
-
-                    if (!dbResult.isSuccess)
-                    {
-                        dbAccess.DbaRollBack();
-                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        vmRtn.ErrorMsg = "儲存失敗";
-                        return Json(vmRtn);
-                    }
-                    dbAccess.DbaCommit();
-                    return Json(vmRtn);
-                }
-
                 if (Request.Form.Files.Count > 0)
 				{
 					for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
@@ -763,7 +747,23 @@ namespace WebPccuClub.Controllers
 
 				dbAccess.DbaInitialTransaction();
 
-				DataTable dtt = new DataTable();
+                var dbResult = new DbExecuteInfo();
+                if (vm.Handover0205Model.IsEdit == "1")
+                {
+                    dbResult = dbAccess.Update0205(vm, LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "儲存失敗";
+                        return Json(vmRtn);
+                    }
+                    dbAccess.DbaCommit();
+                    return Json(vmRtn);
+                }
+
+                DataTable dtt = new DataTable();
 
 				dbResult = dbAccess.InsertDetail(HoID, "02", "05", LoginUser, out dtt);
 
@@ -844,21 +844,6 @@ namespace WebPccuClub.Controllers
 				DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
 				string HoID = dt.QueryFieldByDT("HoID");
 
-                var dbResult = new DbExecuteInfo();
-                if (vm.Handover0206Model.IsEdit == "1")
-                {
-                    dbResult = dbAccess.Update0206(vm, LoginUser);
-
-                    if (!dbResult.isSuccess)
-                    {
-                        dbAccess.DbaRollBack();
-                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        vmRtn.ErrorMsg = "儲存失敗";
-                        return Json(vmRtn);
-                    }
-                    dbAccess.DbaCommit();
-                    return Json(vmRtn);
-                }
 
                 if (Request.Form.Files.Count > 0)
 				{
@@ -885,7 +870,23 @@ namespace WebPccuClub.Controllers
 
 				dbAccess.DbaInitialTransaction();
 
-				DataTable dtt = new DataTable();
+                var dbResult = new DbExecuteInfo();
+                if (vm.Handover0206Model.IsEdit == "1")
+                {
+                    dbResult = dbAccess.Update0206(vm, LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "儲存失敗";
+                        return Json(vmRtn);
+                    }
+                    dbAccess.DbaCommit();
+                    return Json(vmRtn);
+                }
+
+                DataTable dtt = new DataTable();
 
 				dbResult = dbAccess.InsertDetail(HoID, "02", "06", LoginUser, out dtt);
 
@@ -978,7 +979,10 @@ namespace WebPccuClub.Controllers
 				DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
 				string HoID = dt.QueryFieldByDT("HoID");
 
-				var dbResult = new DbExecuteInfo();
+
+				dbAccess.DbaInitialTransaction();
+
+                var dbResult = new DbExecuteInfo();
                 if (vm.Handover0307Model.IsEdit == "1")
                 {
                     dbResult = dbAccess.Update0307(vm, LoginUser);
@@ -994,9 +998,8 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
-				dbAccess.DbaInitialTransaction();
 
-				DataTable dtt = new DataTable();
+                DataTable dtt = new DataTable();
 
 				dbResult = dbAccess.InsertDetail(HoID, "03", "07", LoginUser, out dtt);
 
@@ -1081,6 +1084,8 @@ namespace WebPccuClub.Controllers
                 DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
                 string HoID = dt.QueryFieldByDT("HoID");
 
+                dbAccess.DbaInitialTransaction();
+
                 var dbResult = new DbExecuteInfo();
                 if (vm.Handover0308Model.IsEdit == "1")
                 {
@@ -1096,8 +1101,6 @@ namespace WebPccuClub.Controllers
                     dbAccess.DbaCommit();
                     return Json(vmRtn);
                 }
-
-                dbAccess.DbaInitialTransaction();
 
                 DataTable dtt = new DataTable();
 
@@ -1184,22 +1187,6 @@ namespace WebPccuClub.Controllers
 				DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
 				string HoID = dt.QueryFieldByDT("HoID");
 
-                var dbResult = new DbExecuteInfo();
-                if (vm.Handover0309Model.IsEdit == "1")
-                {
-                    dbResult = dbAccess.Update0309(vm, LoginUser);
-
-                    if (!dbResult.isSuccess)
-                    {
-                        dbAccess.DbaRollBack();
-                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        vmRtn.ErrorMsg = "儲存失敗";
-                        return Json(vmRtn);
-                    }
-                    dbAccess.DbaCommit();
-                    return Json(vmRtn);
-                }
-
                 if (Request.Form.Files.Count > 0)
 				{
 					for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
@@ -1217,7 +1204,23 @@ namespace WebPccuClub.Controllers
 
 				dbAccess.DbaInitialTransaction();
 
-				DataTable dtt = new DataTable();
+                var dbResult = new DbExecuteInfo();
+                if (vm.Handover0309Model.IsEdit == "1")
+                {
+                    dbResult = dbAccess.Update0309(vm, LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "儲存失敗";
+                        return Json(vmRtn);
+                    }
+                    dbAccess.DbaCommit();
+                    return Json(vmRtn);
+                }
+
+                DataTable dtt = new DataTable();
 
 				dbResult = dbAccess.InsertDetail(HoID, "03", "09", LoginUser, out dtt);
 

@@ -1,0 +1,330 @@
+﻿@model WebPccuClub.Models.ClubHandoverViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <div method="post" id="form" enctype="multipart/form-data" action="">
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <!--修改時才顯示 (start)-->
+                                    <tr>
+                                        <th width="15%">建立時間</th>
+                                        <td>@Model.Handover0102Model.Created.Value.ToString("yyyy/MM/dd HH:mm:ss"))</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">更新時間</th>
+                                        <td>@Model.Handover0102Model.LastModified.Value.ToString("yyyy/MM/dd HH:mm:ss"))</td>
+                                    </tr>
+                                    <!--修改時才顯示 (end)-->
+                                    <tr>
+                                        <th width="15%">社團代號<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0102Model.ClubID, new { @class="form-control", placeholder="社團代碼"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">學年度<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.Handover0102Model.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">社團名稱<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0102Model.ClubName, new { @class="form-control", placeholder="社團名稱"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            改選形式<span class="required">*</span><br /><span class="text-xs text-danger font-weight-normal"></span>
+                                        </th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.Handover0102Model.ElectionType ,(List<SelectListItem>)ViewBag.ddlElectionType,"請選擇改選形式", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">改選時間<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0102Model.ElectionDate, new { @class="form-control", type="date"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            改選地點<span class="required">*</span><br /><span class="text-xs text-danger font-weight-normal">若參加「三合一選舉」改選社團 ，請填寫實際開票地點</span>
+                                        </th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Handover0102Model.ElectionPlace, new { @class="form-control", placeholder="改選地點" })
+                                        </td>
+                                    </tr>
+                                <td colspan="2" class="table-secondary font-weight-bold">會議出席狀況</td>
+                                <tr>
+                                    <th width="15%">社團人數<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0102Model.TotleMan, new { @class="form-control", placeholder="社團人數" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">應到人數<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0102Model.ShouldMan, new { @class="form-control", placeholder="應到" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">實到人數<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0102Model.RealMan, new { @class="form-control", placeholder="實到" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">請假人數<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0102Model.LeaveMan, new { @class="form-control", placeholder="請假" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">缺席人數<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0102Model.AbsentMan, new { @class="form-control", placeholder="缺席" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">列席師長姓名<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0102Model.Teacher, new { @class="form-control", placeholder="列席師長姓名" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">會議主席姓名<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0102Model.Chairman, new { @class="form-control", placeholder="會議主席姓名" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">會議記錄姓名<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0102Model.Recorder, new { @class="form-control", placeholder="會議記錄姓名" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">新任社長姓名<span class="required">*</span></th>
+                                    <td>
+                                            @Html.TextBoxFor(m => m.Handover0102Model.NewLeader, new { @class="form-control", placeholder="新任社長姓名" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">
+                                        當日會議記錄<span class="required">*</span><span class="mx-1"
+                                                                                   data-toggle="tooltip"
+                                                                                   data-bs-placement="top"
+                                                                                   title=""
+                                                                                   data-original-title="僅接受.docx、.doc、.odt、.pdf檔">
+                                            <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                        </span>
+                                    </th>
+                                    <td>
+                                        <label class="btn btn-outline-primary mb-0">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.MeetingRecord, new { @style="display:none;", @class="form-control",  type="file", placeholder="當日會議記錄上傳", accept=".docx,.doc,.odt,.pdf" })
+                                            <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                        </label><span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="15%">
+                                        當日會議簽到表<span class="required">*</span><span class="mx-1"
+                                                                                    data-toggle="tooltip"
+                                                                                    data-bs-placement="top"
+                                                                                    title=""
+                                                                                    data-original-title="僅接受.docx、.doc、.odt、.pdf、.jpg、.jpeg、.png、.zip、.7z檔僅接受.docx、.doc、.odt、.pdf、.jpg、.jpeg、.png、.zip、.7z檔">
+                                            <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                        </span>
+                                    </th>
+                                    <td>
+                                        <label class="btn btn-outline-primary mb-0">
+                                                @Html.TextBoxFor(m => m.Handover0102Model.MeetingSign, new { @style="display:none;", @class="form-control", @display="none", type="file", placeholder="當日會議簽到表上傳", accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z" })
+                                            <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                        </label><span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        @Html.HiddenFor(m => m.Handover0102Model.HoID)
+                        @Html.HiddenFor(m => m.Handover0102Model.IsEdit)
+                        @Html.HiddenFor(m => m.Handover0102Model.HoDetailID)
+
+
+                        <!-- /.card-body -->
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+
+<script>
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var HoID = $('#@Html.IdFor(m => m.Handover0102Model.HoID)').val();
+        var IsEdit = $('#@Html.IdFor(m => m.Handover0102Model.IsEdit)').val();
+        var HoDetailID = $('#@Html.IdFor(m => m.Handover0102Model.HoDetailID)').val();
+
+        var SchoolYear = $('#@Html.IdFor(m => m.Handover0102Model.SchoolYear)').val();
+        var ClubID = $('#@Html.IdFor(m => m.Handover0102Model.ClubID)').val();
+        var ClubName = $('#@Html.IdFor(m => m.Handover0102Model.ClubName)').val();
+        var ElectionType = $('#@Html.IdFor(m => m.Handover0102Model.ElectionType)').val();
+        var ElectionDate = $('#@Html.IdFor(m => m.Handover0102Model.ElectionDate)').val();
+        var ElectionPlace = $('#@Html.IdFor(m => m.Handover0102Model.ElectionPlace)').val();
+        var TotleMan = $('#@Html.IdFor(m => m.Handover0102Model.TotleMan)').val();
+        var ShouldMan = $('#@Html.IdFor(m => m.Handover0102Model.ShouldMan)').val();
+        var RealMan = $('#@Html.IdFor(m => m.Handover0102Model.RealMan)').val();
+        var LeaveMan = $('#@Html.IdFor(m => m.Handover0102Model.LeaveMan)').val();
+        var AbsentMan = $('#@Html.IdFor(m => m.Handover0102Model.AbsentMan)').val();
+        var Teacher = $('#@Html.IdFor(m => m.Handover0102Model.Teacher)').val();
+        var Chairman = $('#@Html.IdFor(m => m.Handover0102Model.Chairman)').val();
+        var Recorder = $('#@Html.IdFor(m => m.Handover0102Model.Recorder)').val();
+        var NewLeader = $('#@Html.IdFor(m => m.Handover0102Model.NewLeader)').val();
+
+        var MeetingRecord = $('#@Html.IdFor(m => m.Handover0102Model.MeetingRecord)')[0].files[0];
+
+        if (typeof MeetingRecord !== 'undefined') {
+            var fileExtension = MeetingRecord.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'docx' && fileExtension !== 'doc' && fileExtension !== 'odt' && fileExtension !== 'pdf') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.Handover0102Model.MeetingRecord)', MeetingRecord);
+        }
+        else {
+            $.alert("會議記錄不可為空白"); return;
+        }
+
+        var MeetingSign = $('#@Html.IdFor(m => m.Handover0102Model.MeetingSign)')[0].files[0];
+
+
+        if (typeof MeetingSign !== 'undefined') {
+            var fileExtension = MeetingSign.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'pdf' && fileExtension !== 'jpg' &&
+                fileExtension !== 'jpeg' && fileExtension !== 'png' &&
+                fileExtension !== 'zip' && fileExtension !== 'rar' &&
+                fileExtension !== '7z') {
+
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.Handover0102Model.MeetingSign)', MeetingSign);
+        }
+        else {
+            $.alert("會議簽到表不可為空白"); return;
+        }
+
+
+        if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
+        if (ClubName == "") { $.alert("社團名稱不可為空白"); return; }
+        if (ElectionType == "") { $.alert("改選形式不可為空白"); return; }
+        if (ElectionDate == "") { $.alert("改選時間不可為空白"); return; }
+        if (ElectionPlace == "") { $.alert("改選地點不可為空白"); return; }
+        if (TotleMan == "") { $.alert("社團人數不可為空白"); return; }
+        if (ShouldMan == "") { $.alert("應到不可為空白"); return; }
+        if (RealMan == "") { $.alert("實到不可為空白"); return; }
+        if (LeaveMan == "") { $.alert("請假不可為空白"); return; }
+        if (AbsentMan == "") { $.alert("缺席不可為空白"); return; }
+        if (Teacher == "") { $.alert("列席師長姓名不可為空白"); return; }
+        if (Chairman == "") { $.alert("會議主席姓名不可為空白"); return; }
+        if (Recorder == "") { $.alert("會議記錄姓名不可為空白"); return; }
+        if (NewLeader == "") { $.alert("新任社長姓名不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.Handover0102Model.HoID)', HoID);
+        data.append('@Html.NameFor(m => m.Handover0102Model.IsEdit)', IsEdit);
+        data.append('@Html.NameFor(m => m.Handover0102Model.HoDetailID)', HoDetailID);
+
+        data.append('@Html.NameFor(m => m.Handover0102Model.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.Handover0102Model.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.Handover0102Model.ClubName)', ClubName);
+        data.append('@Html.NameFor(m => m.Handover0102Model.ElectionType)', ElectionType);
+        data.append('@Html.NameFor(m => m.Handover0102Model.ElectionDate)', ElectionDate);
+        data.append('@Html.NameFor(m => m.Handover0102Model.ElectionPlace)', ElectionPlace);
+        data.append('@Html.NameFor(m => m.Handover0102Model.TotleMan)', TotleMan);
+        data.append('@Html.NameFor(m => m.Handover0102Model.ShouldMan)', ShouldMan);
+        data.append('@Html.NameFor(m => m.Handover0102Model.RealMan)', RealMan);
+        data.append('@Html.NameFor(m => m.Handover0102Model.LeaveMan)', LeaveMan);
+        data.append('@Html.NameFor(m => m.Handover0102Model.AbsentMan)', AbsentMan);
+        data.append('@Html.NameFor(m => m.Handover0102Model.Teacher)', Teacher);
+        data.append('@Html.NameFor(m => m.Handover0102Model.Chairman)', Chairman);
+        data.append('@Html.NameFor(m => m.Handover0102Model.Recorder)', Recorder);
+        data.append('@Html.NameFor(m => m.Handover0102Model.NewLeader)', NewLeader);
+
+        SendAjax({
+            url: '@Url.Action("Save0102")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "儲存成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+    }
+
+    function Reset() {
+        $('#@Html.IdFor(m => m.Handover0102Model.SchoolYear)').val("");
+        $('#@Html.IdFor(m => m.Handover0102Model.ClubID)').val("");
+        $('#@Html.IdFor(m => m.Handover0102Model.ClubName)').val("");
+        $('#@Html.IdFor(m => m.Handover0102Model.ElectionType)').val("");
+        $('#@Html.IdFor(m => m.Handover0102Model.ElectionDate)').val("");
+        $('#@Html.IdFor(m => m.Handover0102Model.ElectionPlace)').val("");
+        $('#@Html.IdFor(m => m.Handover0102Model.TotleMan)').val("");
+        $('#@Html.IdFor(m => m.Handover0102Model.ShouldMan)').val("");
+        $('#@Html.IdFor(m => m.Handover0102Model.RealMan)').val("");
+        $('#@Html.IdFor(m => m.Handover0102Model.LeaveMan)').val("");
+        $('#@Html.IdFor(m => m.Handover0102Model.AbsentMan)').val("");
+        $('#@Html.IdFor(m => m.Handover0102Model.Teacher)').val("");
+        $('#@Html.IdFor(m => m.Handover0102Model.Chairman)').val("");
+        $('#@Html.IdFor(m => m.Handover0102Model.Recorder)').val("");
+        $('#@Html.IdFor(m => m.Handover0102Model.NewLeader)').val("");
+    }
+
+</script>

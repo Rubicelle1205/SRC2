@@ -61,7 +61,10 @@
                         <div class="row justify-content-center py-5">
                             <div class="col-md-8">
                                 <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
-
+                                <div class="form-item">
+                                    <label for="">學年度：<span class="req-star">*</span></label>
+                                    @Html.TextBoxFor(m => m.Handover0101Model.SchoolYear, new { @class="form-control", @readonly="readonly"})
+                                </div>
                                 <div class="form-item">
                                     <label for="">社團代碼：<span class="req-star">*</span></label>
                                     @Html.TextBoxFor(m => m.Handover0101Model.ClubID, new { @class="form-control", placeholder="社團代碼"})
@@ -115,6 +118,7 @@
         var HoID = $('#@Html.IdFor(m => m.Handover0101Model.HoID)').val();
         var IsEdit = $('#@Html.IdFor(m => m.Handover0101Model.IsEdit)').val();
         var HoDetailID = $('#@Html.IdFor(m => m.Handover0101Model.HoDetailID)').val();
+        var SchoolYear = $('#@Html.IdFor(m => m.Handover0101Model.SchoolYear)').val();
         var ClubID = $('#@Html.IdFor(m => m.Handover0101Model.ClubID)').val();
         var ClubName = $('#@Html.IdFor(m => m.Handover0101Model.ClubName)').val();
         var UserName = $('#@Html.IdFor(m => m.Handover0101Model.UserName)').val();
@@ -129,6 +133,7 @@
         data.append('@Html.NameFor(m => m.Handover0101Model.HoID)', HoID);
         data.append('@Html.NameFor(m => m.Handover0101Model.IsEdit)', IsEdit);
         data.append('@Html.NameFor(m => m.Handover0101Model.HoDetailID)', HoDetailID);
+        data.append('@Html.NameFor(m => m.Handover0101Model.SchoolYear)', SchoolYear);
         data.append('@Html.NameFor(m => m.Handover0101Model.ClubID)', ClubID);
         data.append('@Html.NameFor(m => m.Handover0101Model.ClubName)', ClubName);
         data.append('@Html.NameFor(m => m.Handover0101Model.UserName)', UserName);

@@ -236,8 +236,12 @@ namespace WebPccuClub.Models
 		[DisplayName("ID")]
 		public string? HoDetailID { get; set; }
 
-		/// <summary>社團ID</summary>
-		[DisplayName("社團ID")]
+        /// <summary>學年度</summary>
+		[DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>社團ID</summary>
+        [DisplayName("社團ID")]
 		public string? ClubID { get; set; }
 
 		/// <summary>社團名稱</summary>
@@ -254,8 +258,12 @@ namespace WebPccuClub.Models
 
 		public string? AgreeText { get; set; }
 
-		
-	}
+        public DateTime? Created { get; set; }
+        public DateTime? LastModified { get; set; }
+
+
+
+    }
     public class ClubHandover0102ViewModel
     {
         public string? IsEdit { get; set; } = "0";
@@ -347,7 +355,10 @@ namespace WebPccuClub.Models
 		/// <summary>當日會議簽到表上傳</summary>
 		[DisplayName("當日會議簽到表上傳")]
 		public string? MeetingSignName { get; set; }
-	}
+
+        public DateTime? Created { get; set; }
+        public DateTime? LastModified { get; set; }
+    }
     public class ClubHandover0103ViewModel 
     {
         public string? IsEdit { get; set; } = "0";
@@ -365,9 +376,9 @@ namespace WebPccuClub.Models
 		public string? ClubCName { get; set; }
 		public string? ClubEName { get; set; }
 		public string? Creator { get; set; }
-		public string? Created { get; set; }
+		public DateTime? Created { get; set; }
 		public string? LastModifier { get; set; }
-		public string? LastModified { get; set; }
+		public DateTime? LastModified { get; set; }
 		public string? ClubBuildID { get; set; }
 
 		public string? ClubBuildIDText { get; set; }
@@ -418,7 +429,9 @@ namespace WebPccuClub.Models
 		public string? ClubID { get; set; }
 		public string? ClubName { get; set; }
 		public string? NameOfClub { get; set; }
-	}
+        public DateTime? Created { get; set; }
+        public DateTime? LastModified { get; set; }
+    }
     public class ClubHandover0205ViewModel
     {
         public string? IsEdit { get; set; } = "0";
@@ -451,7 +464,10 @@ namespace WebPccuClub.Models
 		public string? UseRecordName { get; set; }
 		public string? ClubPropertyName { get; set; }
 		public string? SchoolPropertyName { get; set; }
-	}
+
+        public DateTime? Created { get; set; }
+        public DateTime? LastModified { get; set; }
+    }
     public class ClubHandover0206ViewModel 
     {
         public string? IsEdit { get; set; } = "0";
@@ -470,7 +486,10 @@ namespace WebPccuClub.Models
 		public string? SheetName { get; set; }
 		public string? InnerFileName { get; set; }
 
-	}
+        public DateTime? Created { get; set; }
+        public DateTime? LastModified { get; set; }
+
+    }
     public class ClubHandover0307ViewModel 
     {
         public string? IsEdit { get; set; } = "0";
@@ -500,7 +519,10 @@ namespace WebPccuClub.Models
 		public string? Mail2 { get; set; }
 		public string? CellPhone2 { get; set; }
 
-}
+        public DateTime? Created { get; set; }
+        public DateTime? LastModified { get; set; }
+
+    }
     public class ClubHandover0308ViewModel
     {
 		
@@ -523,6 +545,9 @@ namespace WebPccuClub.Models
         public string? Tel { get; set; }
         public string? Mail { get; set; }
         public string? CellPhone { get; set; }
+
+        public DateTime? Created { get; set; }
+        public DateTime? LastModified { get; set; }
     }
     public class ClubHandover0309ViewModel 
     {
@@ -549,7 +574,10 @@ namespace WebPccuClub.Models
 		public string? BookNo { get; set; }
 		public string? BookCover { get; set; }
 
-		public string? BookCoverName { get; set; } 
-	}
+		public string? BookCoverName { get; set; }
+
+        public DateTime? Created { get; set; }
+        public DateTime? LastModified { get; set; }
+    }
 
 }
