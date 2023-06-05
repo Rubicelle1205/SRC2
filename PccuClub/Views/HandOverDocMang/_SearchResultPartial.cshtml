@@ -1,38 +1,40 @@
 ﻿@model WebPccuClub.Models.HandOverDocMangViewModel
 
 
-    <!-- /.card-header -->
-    <div class="card-body table-responsive p-0">
-        <table class="table table-bordered table-hover text-nowrap">
-            <thead>
-                <tr class="text-center">
-                <th width="20%">社團代號
+<!-- /.card-header -->
+<div class="card-body table-responsive p-0">
+    <table class="table table-bordered table-hover text-nowrap">
+        <thead>
+            <tr class="text-center">
+                <th width="20%">
+                    社團代號
                     <br />
                     <span class="text-sm text-secondary">學年度</span>
                 </th>
                 <th width="20%">社團名稱</th>
                 <th width="20%">表單類型</th>
                 <th width="20%">建立時間</th>
-                    <th width="20%">功能</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.ResultModel.Count > 0)
-                { 
-                    foreach (var item in Model.ResultModel)
-                    {
+                <th width="20%">功能</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.ResultModel.Count > 0)
+            {
+                foreach (var item in Model.ResultModel)
+                {
                     <tr>
-                        <td class="text-center text-sm">@item.ClubID
-                        <br/>
+                        <td class="text-center text-sm">
+                            @item.ClubID
+                            <br />
                             <span class="text-muted">
                                 @item.SchoolYear
-                                </span>
+                            </span>
                         </td>
                         <td class="text-center text-sm">@item.ClubCName</td>
                         <td class="text-center text-sm">
                             @item.DocTypeText
                         </td>
-                        
+
                         @if (item.Created.HasValue)
                         {
                             <td class="text-center text-sm">
@@ -43,31 +45,33 @@
                         {
                             <td class="text-center text-sm"></td>
                         }
-                        
+
                         <td class="text-center text-sm">
-                            @using (Html.BeginForm(string.Format("{0}{1}", item.HandOverClass, item.DocType), "HandOverDocMang", new { id = item.HoDetailID }, FormMethod.Post, false, new { style = "display: inline-flex; vertical-align: bottom;" }))
-                            {
-                                <button type="submit" value="@item.HoDetailID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
-                            }
+
+
+                            <a href="@Url.Action("HistorySwitch", new { id = @item.HoID, docType = item.DocType })" class="mx-1 btn btn-sm btn-outline-primary">查看</a>
+
+                            <a href="@Url.Action("PrintSwitch", "ClubHandover", new { id = @item.HoID, docType = item.DocType })" target="_blank" class="mx-1 btn btn-sm btn-outline-dark">列印</a>
 
                             <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel('@string.Format("{0}|{1}",item.HoDetailID, item.DocType)');">刪除</a>
+                            
                             <br><span class="text-sm text-secondary"> </span>
                         </td>
                     </tr>
-                    }
                 }
-                else
-                {
-                    <td colspan="10">查無資料</td>
-                }
-            </tbody>
-        </table>
-    </div>
+            }
+            else
+            {
+            <td colspan="10">查無資料</td>
+            }
+        </tbody>
+    </table>
+</div>
 
 <div class="card-footer clearfix">
     <div class="pagination justify-content-end" id="SearchResultListPagination"></div>
 </div>
-    <!-- /.card-body -->
+<!-- /.card-body -->
 
 <script>
     $("#SearchResultListPagination").solventoPageBar(
@@ -122,6 +126,6 @@
             }
         });
     }
-    
+
 
 </script>

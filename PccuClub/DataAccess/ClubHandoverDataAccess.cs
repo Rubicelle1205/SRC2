@@ -246,8 +246,7 @@ namespace WebPccuClub.DataAccess
                                 LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
                                 LEFT JOIN Code C ON C.Code = A.Agree AND C.Type = 'Agree'
                               WHERE 1 = 1
-                                AND A.HoID = @HoID 
-                                AND B.ClubID = @ClubID";
+                                AND A.HoID = @HoID ";
 
 
 			(DbExecuteInfo info, IEnumerable<ClubHandover0101ViewModel> entitys) dbResult = DbaExecuteQuery<ClubHandover0101ViewModel>(CommandText, parameters, true, DBAccessException);
@@ -288,6 +287,8 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@NewLeader", vm.Handover0102Model.NewLeader);
             parameters.Add("@MeetingRecord", vm.Handover0102Model.MeetingRecord);
             parameters.Add("@MeetingSign", vm.Handover0102Model.MeetingSign);
+            parameters.Add("@MeetingRecordName", vm.Handover0102Model.MeetingRecordName);
+            parameters.Add("@MeetingSignName", vm.Handover0102Model.MeetingSignName);
 
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
@@ -312,6 +313,8 @@ namespace WebPccuClub.DataAccess
                                                 NewLeader, 
                                                 MeetingRecord, 
                                                 MeetingSign, 
+                                                MeetingRecordName, 
+                                                MeetingSignName, 
                                                 Creator, 
                                                 Created, 
                                                 LastModifier, 
@@ -336,6 +339,8 @@ namespace WebPccuClub.DataAccess
                                                 @NewLeader, 
                                                 @MeetingRecord, 
                                                 @MeetingSign, 
+                                                @MeetingRecordName, 
+                                                @MeetingSignName, 
                                                 @LoginId, 
                                                 GETDATE(), 
                                                 @LoginId, 
@@ -759,8 +764,7 @@ namespace WebPccuClub.DataAccess
                                FROM HandOverDoc04 A
                                 LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
                               WHERE 1 = 1
-                                AND A.HoID = @HoID 
-                                AND B.ClubID = @ClubID";
+                                AND A.HoID = @HoID ";
 
 
 			(DbExecuteInfo info, IEnumerable<ClubHandover0204ViewModel> entitys) dbResult = DbaExecuteQuery<ClubHandover0204ViewModel>(CommandText, parameters, true, DBAccessException);
@@ -951,8 +955,7 @@ namespace WebPccuClub.DataAccess
                           LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
                           LEFT JOIN Code C ON C.Code = A.HasSchoolProperty AND C.Type = 'YesOrNo'
                               WHERE 1 = 1
-                                AND A.HoID = @HoID 
-                                AND B.ClubID = @ClubID";
+                                AND A.HoID = @HoID ";
 
 
 			(DbExecuteInfo info, IEnumerable<ClubHandover0205ViewModel> entitys) dbResult = DbaExecuteQuery<ClubHandover0205ViewModel>(CommandText, parameters, true, DBAccessException);
@@ -1075,8 +1078,7 @@ namespace WebPccuClub.DataAccess
                                FROM HandOverDoc06 A
                           LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
                               WHERE 1 = 1
-                                AND A.HoID = @HoID 
-                                AND B.ClubID = @ClubID";
+                                AND A.HoID = @HoID ";
 
 
 			(DbExecuteInfo info, IEnumerable<ClubHandover0206ViewModel> entitys) dbResult = DbaExecuteQuery<ClubHandover0206ViewModel>(CommandText, parameters, true, DBAccessException);
@@ -1241,8 +1243,7 @@ namespace WebPccuClub.DataAccess
                           LEFT JOIN Code C ON C.Code = A.Sex1 AND C.Type = 'Sex'
                           LEFT JOIN Code D ON D.Code = A.Sex2 AND D.Type = 'Sex'
                               WHERE 1 = 1
-                                AND A.HoID = @HoID 
-                                AND B.ClubID = @ClubID";
+                                AND A.HoID = @HoID ";
 
 
 			(DbExecuteInfo info, IEnumerable<ClubHandover0307ViewModel> entitys) dbResult = DbaExecuteQuery<ClubHandover0307ViewModel>(CommandText, parameters, true, DBAccessException);
@@ -1378,8 +1379,7 @@ namespace WebPccuClub.DataAccess
                           LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
                           LEFT JOIN Code C ON C.Code = A.Sex AND C.Type = 'Sex'
                               WHERE 1 = 1
-                                AND A.HoID = @HoID 
-                                AND B.ClubID = @ClubID";
+                                AND A.HoID = @HoID ";
 
 
             (DbExecuteInfo info, IEnumerable<ClubHandover0308ViewModel> entitys) dbResult = DbaExecuteQuery<ClubHandover0308ViewModel>(CommandText, parameters, true, DBAccessException);
@@ -1545,8 +1545,7 @@ namespace WebPccuClub.DataAccess
                                FROM HandOverDoc09 A
                           LEFT JOIN HandOVerMain B ON B.HoID = A.HoID
                               WHERE 1 = 1
-                                AND A.HoID = @HoID 
-                                AND B.ClubID = @ClubID";
+                                AND A.HoID = @HoID ";
 
 
 			(DbExecuteInfo info, IEnumerable<ClubHandover0309ViewModel> entitys) dbResult = DbaExecuteQuery<ClubHandover0309ViewModel>(CommandText, parameters, true, DBAccessException);

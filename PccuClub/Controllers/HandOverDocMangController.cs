@@ -24,6 +24,7 @@ namespace WebPccuClub.Controllers
         PublicFun PublicFun = new PublicFun();
         ReturnViewModel vmRtn = new ReturnViewModel();
         HandOverDocMangDataAccess dbAccess = new HandOverDocMangDataAccess();
+        ClubHandoverDataAccess ClubdbAccess = new ClubHandoverDataAccess();
         UploadUtil upload = new UploadUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
@@ -87,5 +88,57 @@ namespace WebPccuClub.Controllers
 
             return Json(vmRtn);
         }
+
+        public IActionResult HistorySwitch(string id, string docType)
+        {
+            switch (docType)
+            {
+                case "01":
+                    return Redirect($"/HandOverDocMang/HandOver0101?id={id}");
+                case "02":
+                    return Redirect($"/HandOverDocMang/HandOver0102?id={id}");
+                case "03":
+                    return Redirect($"/HandOverDocMang/HandOver0103?id={id}");
+                case "04":
+                    return Redirect($"/HandOverDocMang/HandOver0204?id={id}");
+                case "05":
+                    return Redirect($"/HandOverDocMang/HandOver0205?id={id}");
+                case "06":
+                    return Redirect($"/HandOverDocMang/HandOver0206?id={id}");
+                case "07":
+                    return Redirect($"/HandOverDocMang/HandOver0307?id={id}");
+                case "08":
+                    return Redirect($"/HandOverDocMang/HandOver0308?id={id}");
+                case "09":
+                    return Redirect($"/HandOverDocMang/HandOver0309?id={id}");
+                default:
+                    Redirect("Index");
+                    break;
+            }
+
+            return View();
+        }
+
+
+        [Log(LogActionChineseName.社團負責人改選管理)]
+        public IActionResult HandOver0101(string id)
+        {
+            ViewBag.ddlAgree = dbAccess.getAllAgree();
+
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            vm.Handover0101Model = new ClubHandover0101ViewModel();
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                vm.Handover0101Model = ClubdbAccess.GetHandover0101Data(id, LoginUser);
+            }
+
+            return View(vm);
+        }
+
+
+
+
+
     }
 }
