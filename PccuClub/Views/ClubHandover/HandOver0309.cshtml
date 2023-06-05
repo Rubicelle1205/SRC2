@@ -241,8 +241,20 @@
 							</div>
 						</div>
 
+						@Html.HiddenFor(m => m.Handover0309Model.HoID)
+@Html.HiddenFor(m => m.Handover0309Model.IsEdit)
+@Html.HiddenFor(m => m.Handover0309Model.HoDetailID)
+
 						<div class="text-center pt-4">
-							<button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">送出</button>
+							@if (Model.Handover0309Model.IsEdit == "1")
+							{
+								<button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">儲存</button>
+							}
+							else
+							{
+								<button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">送出</button>
+							}
+
 						</div>
 					</form>
 				</div>
@@ -256,6 +268,10 @@
     function SaveData() {
 
         var data = new FormData()
+
+		var HoID = $('#@Html.IdFor(m => m.Handover0309Model.HoID)').val();
+var IsEdit = $('#@Html.IdFor(m => m.Handover0309Model.IsEdit)').val();
+var HoDetailID = $('#@Html.IdFor(m => m.Handover0309Model.HoDetailID)').val();
 
         var SchoolYear = $('#@Html.IdFor(m => m.Handover0309Model.SchoolYear)').val();
         var ClubID = $('#@Html.IdFor(m => m.Handover0309Model.ClubID)').val();
@@ -290,6 +306,7 @@
 		}
 
 
+
         if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
         if (ClubName == "") { $.alert("社團名稱不可為空白"); return; }
 		if (BookManName == "") { $.alert("社團郵局存簿保管人姓名不可為空白"); return; }
@@ -302,6 +319,11 @@
 		if (SealManSNO == "") { $.alert("社團印鑑存簿保管人職稱不可為空白"); return; }
 		if (BookName == "") { $.alert("存簿號碼不可為空白"); return; }
 		if (BookNo == "") { $.alert("存簿戶名不可為空白"); return; }
+
+		
+		data.append('@Html.NameFor(m => m.Handover0309Model.HoID)', HoID);
+		data.append('@Html.NameFor(m => m.Handover0309Model.IsEdit)', IsEdit);
+		data.append('@Html.NameFor(m => m.Handover0309Model.HoDetailID)', HoDetailID);
 
         data.append('@Html.NameFor(m => m.Handover0309Model.SchoolYear)', SchoolYear);
         data.append('@Html.NameFor(m => m.Handover0309Model.ClubID)', ClubID);
@@ -318,30 +340,58 @@
 		data.append('@Html.NameFor(m => m.Handover0309Model.BookName)', BookName);
 		data.append('@Html.NameFor(m => m.Handover0309Model.BookNo)', BookNo);
 
-        SendAjax({
-            url: '@Url.Action("Save0309")',
-            data: data,
-            processData: false,
-            contentType: false,
-            success: function (result) {
-                if (result.errorCode == 0) {
-                    $.confirm({
-                        title: "",
-                        content: "新增成功",
-                        buttons: {
-                            確定: function () {
-                                var url = '@Url.Action("Print0309")';
-                                window.location.href = url;
-                            },
-                        }
-                    });
-                }
-                else { $.alert(result.errorMsg); }
-            },
-            error: function (response) {
-                $.alert(result.errorMsg);
-            }
-        });
+		if (IsEdit == "1") {
+			SendAjax({
+				url: '@Url.Action("Save0309")',
+				data: data,
+				processData: false,
+				contentType: false,
+				success: function (result) {
+					if (result.errorCode == 0) {
+						$.confirm({
+							title: "",
+							content: "儲存成功",
+							buttons: {
+								確定: function () {
+									var url = '@Url.Action("Print0309")';
+									window.location.href = url;
+								},
+							}
+						});
+					}
+					else { $.alert(result.errorMsg); }
+				},
+				error: function (response) {
+					$.alert(result.errorMsg);
+				}
+			});
+		}
+		else {
+			SendAjax({
+				url: '@Url.Action("Save0309")',
+				data: data,
+				processData: false,
+				contentType: false,
+				success: function (result) {
+					if (result.errorCode == 0) {
+						$.confirm({
+							title: "",
+							content: "新增成功",
+							buttons: {
+								確定: function () {
+									var url = '@Url.Action("Print0309")';
+									window.location.href = url;
+								},
+							}
+						});
+					}
+					else { $.alert(result.errorMsg); }
+				},
+				error: function (response) {
+					$.alert(result.errorMsg);
+				}
+			});
+		}
     }
 
 </script>

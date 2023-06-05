@@ -5,259 +5,330 @@
 }
 
 <div role="main" class="main">
-			<div class="container p-relative py-md-5 py-4">
-				<div class="row justify-content-center">
-					<div class="col-xxl-12">
-						<div class="printContent">
-					<h3 class="text-center text-6"><u>@Html.DisplayFor(m => m.Handover0307Model.SchoolYear)</u>學年度<u>一般社團</u>類<br>社團專業指導老師應聘同意書</h3>
-							<form class="form-box checkthisform" action="" method="post" enctype="application/x-www-form-urlencoded">
-								<div class="row justify-content-center">
-									<div class="col-md-10">
-										<p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
-										<table class="table table-bordered border-dark bg-white">
-											<tbody>
-												<tr>
-													<td width="35%" class="">
-														<label for="">學年度：</label>
-													</td>
-													<td class="">
-												@Html.TextBoxFor(m => m.Handover0307Model.SchoolYear, new { @class="form-control", @readonly="readonly"})
-													</td>
-												</tr>
-												<tr>
-													<td width="35%">
-														<label for="">社團代碼：<span class="req-star">*</span></label>
-													</td>
-													<td width="65%">
-												@Html.TextBoxFor(m => m.Handover0307Model.ClubID, new { @class="form-control", placeholder="請填寫社團代碼"})
-													</td>
-												</tr>
-												<tr>
-													<td class="">
-														<label for="">社團名稱：<span class="req-star">*</span></label>
-													</td>
-													<td class="">
-												@Html.TextBoxFor(m => m.Handover0307Model.ClubName, new { @class="form-control", placeholder="請填寫社團名稱"})
-													</td>
-												</tr>
-												<tr>
-													<td class="">
-														<label for="">專業指導老師(1)姓名：<span class="req-star">*</span></label>
-													</td>
-													<td class="">
-												@Html.TextBoxFor(m => m.Handover0307Model.Teacher1, new { @class="form-control", placeholder="請填寫專業指導老師(1)姓名"})
-													</td>
-												</tr>
-												<tr>
-													<td class="">
-														<label for="">專業指導老師(1)生理性別：<span class="req-star">*</span></label>
-													</td>
-													<td class="">
-														@Html.DropDownListFor(m => m.Handover0307Model.Sex1 ,(List<SelectListItem>)ViewBag.ddlSex,"請選擇", new {@class = "form-control"})
-													</td>
-												</tr>
-												<tr>
-													<td class="">
-														<label for="">專業指導老師(1)服務單位：<span class="req-star">*</span></label>
-													</td>
-													<td class="">
-														@Html.TextBoxFor(m => m.Handover0307Model.Unit1, new { @class="form-control", placeholder="請填寫專業指導老師(1)服務單位"})
-													</td>
-												</tr>
-												<tr>
-													<td class="">
-														<label for="">專業指導老師(1)服務單位職稱：<span class="req-star">*</span></label>
-													</td>
-													<td class="">
-														@Html.TextBoxFor(m => m.Handover0307Model.Position1, new { @class="form-control", placeholder="請填寫專業指導老師(1)服務單位職稱"})
-													</td>
-												</tr>
-												<tr>
-													<td class="">
-														<label for="">專業指導老師(1)電子信箱：<span class="req-star">*</span></label>
-													</td>
-													<td class="">
-														@Html.TextBoxFor(m => m.Handover0307Model.Mail1, new { @class="form-control", placeholder="請填寫專業指導老師(1)電子信箱"})
-													</td>
-												</tr>
-												<tr>
-													<td class="">
-														<label for="">專業指導老師(1)手機電話：</label>
-													</td>
-													<td class="">
-														@Html.TextBoxFor(m => m.Handover0307Model.CellPhone1, new { @class="form-control", placeholder="請填寫專業指導老師(1)手機電話"})
-													</td>
-												</tr>
-												<tr>
-													<td class="">
-														<label for="">專業指導老師(2)姓名：</label>
-													</td>
-													<td class="">
-												@Html.TextBoxFor(m => m.Handover0307Model.Teacher2, new { @class="form-control", placeholder="請填寫專業指導老師(2)姓名"})
-													</td>
-												</tr>
-												<tr>
-													<td class="">
-														<label for="">專業指導老師(2)生理性別：</label>
-													</td>
-													<td class="">
-														@Html.DropDownListFor(m => m.Handover0307Model.Sex2 ,(List<SelectListItem>)ViewBag.ddlSex,"請選擇", new {@class = "form-control"})
-													</td>
-												</tr>
-												<tr>
-													<td class="">
-														<label for="">專業指導老師(2)服務單位：</label>
-													</td>
-													<td class="">
-												@Html.TextBoxFor(m => m.Handover0307Model.Unit2, new { @class="form-control", placeholder="請填寫專業指導老師(2)服務單位"})
-													</td>
-												</tr>
-												<tr>
-													<td class="">
-														<label for="">專業指導老師(2)服務單位職稱：</label>
-													</td>
-													<td class="">
-												@Html.TextBoxFor(m => m.Handover0307Model.Position2, new { @class="form-control", placeholder="請填寫專業指導老師(2)服務單位職稱"})
-													</td>
-												</tr>
-												<tr>
-													<td class="">
-														<label for="">專業指導老師(2)電子信箱：</label>
-													</td>
-													<td class="">
-												@Html.TextBoxFor(m => m.Handover0307Model.Mail2, new { @class="form-control", placeholder="請填寫專業指導老師(2)電子信箱"})
-													</td>
-												</tr>
-												<tr>
-													<td class="">
-														<label for="">專業指導老師(2)手機電話：</label>
-													</td>
-													<td class="">
-												@Html.TextBoxFor(m => m.Handover0307Model.CellPhone2, new { @class="form-control", placeholder="請填寫專業指導老師(2)手機電話"})
-													</td>
-												</tr>
-											</tbody>
-										</table>
-										<div class="my-3">
+    <div class="container p-relative py-md-5 py-4">
+        <div class="row justify-content-center">
+            <div class="col-xxl-12">
+                <div class="printContent">
+                    <h3 class="text-center text-6"><u>@Html.DisplayFor(m => m.Handover0307Model.SchoolYear)</u>學年度<u>一般社團</u>類<br>社團專業指導老師應聘同意書</h3>
+                    <form class="form-box checkthisform" action="" method="post" enctype="application/x-www-form-urlencoded">
+                        <div class="row justify-content-center">
+                            <div class="col-md-10">
+                                <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
+                                <table class="table table-bordered border-dark bg-white">
+                                    <tbody>
+                                        <tr>
+                                            <td width="35%" class="">
+                                                <label for="">學年度：</label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0307Model.SchoolYear, new { @class="form-control", @readonly="readonly"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="35%">
+                                                <label for="">社團代碼：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td width="65%">
+                                                @Html.TextBoxFor(m => m.Handover0307Model.ClubID, new { @class="form-control", placeholder="請填寫社團代碼"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">社團名稱：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0307Model.ClubName, new { @class="form-control", placeholder="請填寫社團名稱"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">專業指導老師(1)姓名：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0307Model.Teacher1, new { @class="form-control", placeholder="請填寫專業指導老師(1)姓名"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">專業指導老師(1)生理性別：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.DropDownListFor(m => m.Handover0307Model.Sex1 ,(List<SelectListItem>)ViewBag.ddlSex,"請選擇", new {@class = "form-control"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">專業指導老師(1)服務單位：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0307Model.Unit1, new { @class="form-control", placeholder="請填寫專業指導老師(1)服務單位"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">專業指導老師(1)服務單位職稱：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0307Model.Position1, new { @class="form-control", placeholder="請填寫專業指導老師(1)服務單位職稱"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">專業指導老師(1)電子信箱：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0307Model.Mail1, new { @class="form-control", placeholder="請填寫專業指導老師(1)電子信箱"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">專業指導老師(1)手機電話：</label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0307Model.CellPhone1, new { @class="form-control", placeholder="請填寫專業指導老師(1)手機電話"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">專業指導老師(2)姓名：</label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0307Model.Teacher2, new { @class="form-control", placeholder="請填寫專業指導老師(2)姓名"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">專業指導老師(2)生理性別：</label>
+                                            </td>
+                                            <td class="">
+                                                @Html.DropDownListFor(m => m.Handover0307Model.Sex2 ,(List<SelectListItem>)ViewBag.ddlSex,"請選擇", new {@class = "form-control"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">專業指導老師(2)服務單位：</label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0307Model.Unit2, new { @class="form-control", placeholder="請填寫專業指導老師(2)服務單位"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">專業指導老師(2)服務單位職稱：</label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0307Model.Position2, new { @class="form-control", placeholder="請填寫專業指導老師(2)服務單位職稱"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">專業指導老師(2)電子信箱：</label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0307Model.Mail2, new { @class="form-control", placeholder="請填寫專業指導老師(2)電子信箱"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">專業指導老師(2)手機電話：</label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0307Model.CellPhone2, new { @class="form-control", placeholder="請填寫專業指導老師(2)手機電話"})
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="my-3">
 
-											<div class="line-height-4" style="font-size:0.755em;">□本人同意擔任該社團專業指導老師一職，並已詳閱本校個人資料保護網站參閱個人資料收集使用聲明(網址
-												<span><u><a href="http://pims.pccu.edu.tw"
-															target="_blank">http://pims.pccu.edu.tw</a>&nbsp;</u></span>)同意中國文化大學學生事務處課外活動組於《個人資料保護法》之規定下，於其社團業務範圍內，得蒐集、處理、應用本人資料，並得依據本人提供之個人資料與本人聯絡，本表單因社團記錄保存用途，紙本個資保存年限為10年、電子化個資保存年限為業務存續期間。
-											</div>
+                                    <div class="line-height-4" style="font-size:0.755em;">
+                                        □本人同意擔任該社團專業指導老師一職，並已詳閱本校個人資料保護網站參閱個人資料收集使用聲明(網址
+                                        <span>
+                                            <u>
+                                                <a href="http://pims.pccu.edu.tw"
+                                                   target="_blank">http://pims.pccu.edu.tw</a>&nbsp;
+                                            </u>
+                                        </span>)同意中國文化大學學生事務處課外活動組於《個人資料保護法》之規定下，於其社團業務範圍內，得蒐集、處理、應用本人資料，並得依據本人提供之個人資料與本人聯絡，本表單因社團記錄保存用途，紙本個資保存年限為10年、電子化個資保存年限為業務存續期間。
+                                    </div>
 
-											<div style="text-align: right;"><span style="font-size:1.125em;">專業指導老師(1)：<u
-														style="font-size: 16px;">&nbsp; &nbsp; &nbsp;&nbsp;
-														&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-														&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</u>（請親簽）</span></div>
+                                    <div style="text-align: right;">
+                                        <span style="font-size:1.125em;">
+                                            專業指導老師(1)：<u style="font-size: 16px;">
+                                                &nbsp; &nbsp; &nbsp;&nbsp;
+                                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            </u>（請親簽）
+                                        </span>
+                                    </div>
 
-											<div style="text-align: right;"><span style="font-size:1.125em;">年&nbsp;
-													&nbsp; &nbsp; &nbsp; 月&nbsp; &nbsp; &nbsp; &nbsp; 日</span></div>
+                                    <div style="text-align: right;">
+                                        <span style="font-size:1.125em;">
+                                            年&nbsp;
+                                            &nbsp; &nbsp; &nbsp; 月&nbsp; &nbsp; &nbsp; &nbsp; 日
+                                        </span>
+                                    </div>
 
-											<br>
+                                    <br>
 
-											<div class="line-height-4" style="font-size:0.755em;">
-												□本人同意擔任該社團專業指導老師一職，並已詳閱本校個人資料保護網站參閱個人資料收集使用聲明(網址&nbsp;<span><u><a href="http://pims.pccu.edu.tw"
-															target="_blank">http://pims.pccu.edu.tw</a>&nbsp;</u></span>)同意中國文化大學學生事務處課外活動組於《個人資料保護法》之規定下，於其社團業務範圍內，得蒐集、處理、應用本人資料，並得依據本人提供之個人資料與本人聯絡，本表單因社團記錄保存用途，紙本個資保存年限為10年、電子化個資保存年限為業務存續期間。
-											</div>
+                                    <div class="line-height-4" style="font-size:0.755em;">
+                                        □本人同意擔任該社團專業指導老師一職，並已詳閱本校個人資料保護網站參閱個人資料收集使用聲明(網址&nbsp;<span>
+                                            <u>
+                                                <a href="http://pims.pccu.edu.tw"
+                                                   target="_blank">http://pims.pccu.edu.tw</a>&nbsp;
+                                            </u>
+                                        </span>)同意中國文化大學學生事務處課外活動組於《個人資料保護法》之規定下，於其社團業務範圍內，得蒐集、處理、應用本人資料，並得依據本人提供之個人資料與本人聯絡，本表單因社團記錄保存用途，紙本個資保存年限為10年、電子化個資保存年限為業務存續期間。
+                                    </div>
 
-											<div style="text-align: right; font-size:1.125em;">專業指導老師(2)：<u style="font-size: 16px;">&nbsp; &nbsp;
-													&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-													&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</u>（請親簽）</div>
+                                    <div style="text-align: right; font-size:1.125em;">
+                                        專業指導老師(2)：<u style="font-size: 16px;">
+                                            &nbsp; &nbsp;
+                                            &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                        </u>（請親簽）
+                                    </div>
 
-											<div style="text-align: right; font-size:1.125em;">年&nbsp; &nbsp; &nbsp; &nbsp; 月&nbsp; &nbsp; &nbsp;
-												&nbsp; 日</div>
-											<br>
-											<div class="line-height-4" style="font-size:0.755em;">
-												*一般社團得聘請至多兩名社團專業指導老師，系學會得聘任一名專業指導老師（以系主任為原則）。校內專業指導老師得申請行政服務紀錄，外聘專業指導老師經教育部「各教育場域不適任人員通報及查詢系統」比對合於任用規定者，得申請專業指導費每人每學年5,000元指導費。<br>&nbsp;
-											</div>
+                                    <div style="text-align: right; font-size:1.125em;">
+                                        年&nbsp; &nbsp; &nbsp; &nbsp; 月&nbsp; &nbsp; &nbsp;
+                                        &nbsp; 日
+                                    </div>
+                                    <br>
+                                    <div class="line-height-4" style="font-size:0.755em;">
+                                        *一般社團得聘請至多兩名社團專業指導老師，系學會得聘任一名專業指導老師（以系主任為原則）。校內專業指導老師得申請行政服務紀錄，外聘專業指導老師經教育部「各教育場域不適任人員通報及查詢系統」比對合於任用規定者，得申請專業指導費每人每學年5,000元指導費。<br>&nbsp;
+                                    </div>
 
-										</div>
-									</div>
-								</div>
-								
-								<div class="text-center pt-4">
-							<button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">送出</button>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @Html.HiddenFor(m => m.Handover0307Model.HoID)
+                        @Html.HiddenFor(m => m.Handover0307Model.IsEdit)
+                        @Html.HiddenFor(m => m.Handover0307Model.HoDetailID)
+
+                        <div class="text-center pt-4">
+                            @if (Model.Handover0307Model.IsEdit == "1")
+                            {
+                                <button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">儲存</button>
+                            }
+                            else
+                            {
+                                <button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">送出</button>
+                            }
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script>
 
-	function SaveData() {
+    function SaveData() {
 
         var data = new FormData()
 
-		var SchoolYear = $('#@Html.IdFor(m => m.Handover0307Model.SchoolYear)').val();
-		var ClubID = $('#@Html.IdFor(m => m.Handover0307Model.ClubID)').val();
-		var ClubName = $('#@Html.IdFor(m => m.Handover0307Model.ClubName)').val();
-		var Teacher1 = $('#@Html.IdFor(m => m.Handover0307Model.Teacher1)').val();
-		var Sex1 = $('#@Html.IdFor(m => m.Handover0307Model.Sex1)').val();
-		var Unit1 = $('#@Html.IdFor(m => m.Handover0307Model.Unit1)').val();
-		var Position1 = $('#@Html.IdFor(m => m.Handover0307Model.Position1)').val();
-		var Mail1 = $('#@Html.IdFor(m => m.Handover0307Model.Mail1)').val();
-		var CellPhone1 = $('#@Html.IdFor(m => m.Handover0307Model.CellPhone1)').val();
-		var Teacher2 = $('#@Html.IdFor(m => m.Handover0307Model.Teacher2)').val();
-		var Sex2 = $('#@Html.IdFor(m => m.Handover0307Model.Sex2)').val();
-		var Unit2 = $('#@Html.IdFor(m => m.Handover0307Model.Unit2)').val();
-		var Position2 = $('#@Html.IdFor(m => m.Handover0307Model.Position2)').val();
-		var Mail2 = $('#@Html.IdFor(m => m.Handover0307Model.Mail2)').val();
-		var CellPhone2 = $('#@Html.IdFor(m => m.Handover0307Model.CellPhone2)').val();
+        var HoID = $('#@Html.IdFor(m => m.Handover0307Model.HoID)').val();
+        var IsEdit = $('#@Html.IdFor(m => m.Handover0307Model.IsEdit)').val();
+        var HoDetailID = $('#@Html.IdFor(m => m.Handover0307Model.HoDetailID)').val();
 
-		if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
-		if (ClubName == "") { $.alert("社團名稱不可為空白"); return; }
-		if (Teacher1 == "") { $.alert("專業指導老師(1)姓名不可為空白"); return; }
-		if (Sex1 == "") { $.alert("專業指導老師(1)生理性別不可為空白"); return; }
-		if (Unit1 == "") { $.alert("專業指導老師(1)服務單位不可為空白"); return; }
-		if (Position1 == "") { $.alert("專業指導老師(1)服務單位職稱不可為空白"); return; }
-		if (Mail1 == "") { $.alert("專業指導老師(1)電子信箱不可為空白"); return; }
-		if (CellPhone1 == "") { $.alert("專業指導老師(1)手機電話不可為空白"); return; }
+        var SchoolYear = $('#@Html.IdFor(m => m.Handover0307Model.SchoolYear)').val();
+        var ClubID = $('#@Html.IdFor(m => m.Handover0307Model.ClubID)').val();
+        var ClubName = $('#@Html.IdFor(m => m.Handover0307Model.ClubName)').val();
+        var Teacher1 = $('#@Html.IdFor(m => m.Handover0307Model.Teacher1)').val();
+        var Sex1 = $('#@Html.IdFor(m => m.Handover0307Model.Sex1)').val();
+        var Unit1 = $('#@Html.IdFor(m => m.Handover0307Model.Unit1)').val();
+        var Position1 = $('#@Html.IdFor(m => m.Handover0307Model.Position1)').val();
+        var Mail1 = $('#@Html.IdFor(m => m.Handover0307Model.Mail1)').val();
+        var CellPhone1 = $('#@Html.IdFor(m => m.Handover0307Model.CellPhone1)').val();
+        var Teacher2 = $('#@Html.IdFor(m => m.Handover0307Model.Teacher2)').val();
+        var Sex2 = $('#@Html.IdFor(m => m.Handover0307Model.Sex2)').val();
+        var Unit2 = $('#@Html.IdFor(m => m.Handover0307Model.Unit2)').val();
+        var Position2 = $('#@Html.IdFor(m => m.Handover0307Model.Position2)').val();
+        var Mail2 = $('#@Html.IdFor(m => m.Handover0307Model.Mail2)').val();
+        var CellPhone2 = $('#@Html.IdFor(m => m.Handover0307Model.CellPhone2)').val();
 
-		data.append('@Html.NameFor(m => m.Handover0307Model.SchoolYear)', SchoolYear);
-		data.append('@Html.NameFor(m => m.Handover0307Model.ClubID)', ClubID);
-		data.append('@Html.NameFor(m => m.Handover0307Model.ClubName)', ClubName);
-		data.append('@Html.NameFor(m => m.Handover0307Model.Teacher1)', Teacher1);
-		data.append('@Html.NameFor(m => m.Handover0307Model.Sex1)', Sex1);
-		data.append('@Html.NameFor(m => m.Handover0307Model.Unit1)', Unit1);
-		data.append('@Html.NameFor(m => m.Handover0307Model.Position1)', Position1);
-		data.append('@Html.NameFor(m => m.Handover0307Model.Mail1)', Mail1);
-		data.append('@Html.NameFor(m => m.Handover0307Model.CellPhone1)', CellPhone1);
-		data.append('@Html.NameFor(m => m.Handover0307Model.Teacher2)', Teacher2);
-		data.append('@Html.NameFor(m => m.Handover0307Model.Sex2)', Sex2);
-		data.append('@Html.NameFor(m => m.Handover0307Model.Unit2)', Unit2);
-		data.append('@Html.NameFor(m => m.Handover0307Model.Position2)', Position2);
-		data.append('@Html.NameFor(m => m.Handover0307Model.Mail2)', Mail2);
-		data.append('@Html.NameFor(m => m.Handover0307Model.CellPhone2)', CellPhone2);
+        if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
+        if (ClubName == "") { $.alert("社團名稱不可為空白"); return; }
+        if (Teacher1 == "") { $.alert("專業指導老師(1)姓名不可為空白"); return; }
+        if (Sex1 == "") { $.alert("專業指導老師(1)生理性別不可為空白"); return; }
+        if (Unit1 == "") { $.alert("專業指導老師(1)服務單位不可為空白"); return; }
+        if (Position1 == "") { $.alert("專業指導老師(1)服務單位職稱不可為空白"); return; }
+        if (Mail1 == "") { $.alert("專業指導老師(1)電子信箱不可為空白"); return; }
+        if (CellPhone1 == "") { $.alert("專業指導老師(1)手機電話不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.Handover0307Model.HoID)', HoID);
+        data.append('@Html.NameFor(m => m.Handover0307Model.IsEdit)', IsEdit);
+        data.append('@Html.NameFor(m => m.Handover0307Model.HoDetailID)', HoDetailID);
+
+        data.append('@Html.NameFor(m => m.Handover0307Model.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.Handover0307Model.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.Handover0307Model.ClubName)', ClubName);
+        data.append('@Html.NameFor(m => m.Handover0307Model.Teacher1)', Teacher1);
+        data.append('@Html.NameFor(m => m.Handover0307Model.Sex1)', Sex1);
+        data.append('@Html.NameFor(m => m.Handover0307Model.Unit1)', Unit1);
+        data.append('@Html.NameFor(m => m.Handover0307Model.Position1)', Position1);
+        data.append('@Html.NameFor(m => m.Handover0307Model.Mail1)', Mail1);
+        data.append('@Html.NameFor(m => m.Handover0307Model.CellPhone1)', CellPhone1);
+        data.append('@Html.NameFor(m => m.Handover0307Model.Teacher2)', Teacher2);
+        data.append('@Html.NameFor(m => m.Handover0307Model.Sex2)', Sex2);
+        data.append('@Html.NameFor(m => m.Handover0307Model.Unit2)', Unit2);
+        data.append('@Html.NameFor(m => m.Handover0307Model.Position2)', Position2);
+        data.append('@Html.NameFor(m => m.Handover0307Model.Mail2)', Mail2);
+        data.append('@Html.NameFor(m => m.Handover0307Model.CellPhone2)', CellPhone2);
 
 
-        SendAjax({
-			url: '@Url.Action("Save0307")',
-            data: data,
-            processData: false,
-            contentType: false,
-            success: function (result) {
-                if (result.errorCode == 0) {
-                    $.confirm({
-                        title: "",
-                        content: "新增成功",
-                        buttons: {
-                            確定: function () {
-								var url = '@Url.Action("Print0307")';
-								window.location.href = url;
-                            },
-                        }
-                    });
+        if (IsEdit == "1") {
+            SendAjax({
+                url: '@Url.Action("Save0307")',
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.errorCode == 0) {
+                        $.confirm({
+                            title: "",
+                            content: "儲存成功",
+                            buttons: {
+                                確定: function () {
+                                    var url = '@Url.Action("Print0307")';
+                                    window.location.href = url;
+                                },
+                            }
+                        });
+                    }
+                    else { $.alert(result.errorMsg); }
+                },
+                error: function (response) {
+                    $.alert(result.errorMsg);
                 }
-                else { $.alert(result.errorMsg); }
-            },
-            error: function (response) {
-                $.alert(result.errorMsg);
-            }
-        });
+            });
+        }
+        else {
+            SendAjax({
+                url: '@Url.Action("Save0307")',
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.errorCode == 0) {
+                        $.confirm({
+                            title: "",
+                            content: "新增成功",
+                            buttons: {
+                                確定: function () {
+                                    var url = '@Url.Action("Print0307")';
+                                    window.location.href = url;
+                                },
+                            }
+                        });
+                    }
+                    else { $.alert(result.errorMsg); }
+                },
+                error: function (response) {
+                    $.alert(result.errorMsg);
+                }
+            });
+        }
     }
 
 </script>

@@ -196,6 +196,37 @@ namespace WebPccuClub.DataAccess
 			return ExecuteResult;
 		}
 
+		public DbExecuteInfo Update0101(ClubHandoverViewModel vm, UserInfo LoginUser)
+		{
+			DataSet ds = new DataSet();
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			parameters.Add("@HoID", vm.Handover0101Model.HoID);
+			parameters.Add("@HoDetailID", vm.Handover0101Model.HoDetailID);
+			parameters.Add("@ClubID", vm.Handover0101Model.ClubID);
+			parameters.Add("@ClubName", vm.Handover0101Model.ClubName);
+			parameters.Add("@UserName", vm.Handover0101Model.UserName);
+			parameters.Add("@Agree", vm.Handover0101Model.Agree);
+			parameters.Add("@LoginId", LoginUser.LoginId);
+			#endregion 參數設定
+
+
+
+			string CommendText = $@"UPDATE HandOverDoc01 
+                                       SET ClubID =@ClubID, 
+                                           ClubName =@ClubName, 
+                                           UserName =@UserName, 
+                                           Agree=@Agree, 
+                                           LastModifier =@LoginId, 
+                                           LastModified= GETDATE()
+                                     WHERE HoID =@HoID AND HoDetailID=@HoDetailID";
+
+			ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+			return ExecuteResult;
+		}
 
 		public ClubHandover0101ViewModel GetHandover0101Data(string HoID, UserInfo Login)
 		{
@@ -315,8 +346,64 @@ namespace WebPccuClub.DataAccess
             return ExecuteResult;
         }
 
+		public DbExecuteInfo Update0102(ClubHandoverViewModel vm, UserInfo LoginUser)
+		{
+			DataSet ds = new DataSet();
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
 
-        public ClubHandover0102ViewModel GetHandover0102Data(string HoID, UserInfo Login)
+			#region 參數設定
+			parameters.Add("@HoID", vm.Handover0102Model.HoID);
+			parameters.Add("@HoDetailID", vm.Handover0102Model.HoDetailID);
+			parameters.Add("@SchoolYear", vm.Handover0102Model.SchoolYear);
+			parameters.Add("@ClubID", vm.Handover0102Model.ClubID);
+			parameters.Add("@ClubName", vm.Handover0102Model.ClubName);
+			parameters.Add("@ElectionType", vm.Handover0102Model.ElectionType);
+			parameters.Add("@ElectionDate", vm.Handover0102Model.ElectionDate);
+			parameters.Add("@ElectionPlace", vm.Handover0102Model.ElectionPlace);
+			parameters.Add("@TotleMan", vm.Handover0102Model.TotleMan);
+			parameters.Add("@ShouldMan", vm.Handover0102Model.ShouldMan);
+			parameters.Add("@RealMan", vm.Handover0102Model.RealMan);
+			parameters.Add("@LeaveMan", vm.Handover0102Model.LeaveMan);
+			parameters.Add("@AbsentMan", vm.Handover0102Model.AbsentMan);
+			parameters.Add("@Teacher", vm.Handover0102Model.Teacher);
+			parameters.Add("@Chairman", vm.Handover0102Model.Chairman);
+			parameters.Add("@Recorder", vm.Handover0102Model.Recorder);
+			parameters.Add("@NewLeader", vm.Handover0102Model.NewLeader);
+			parameters.Add("@MeetingRecord", vm.Handover0102Model.MeetingRecord);
+			parameters.Add("@MeetingSign", vm.Handover0102Model.MeetingSign);
+
+			parameters.Add("@LoginId", LoginUser.LoginId);
+			#endregion 參數設定
+
+            string CommendText = $@"UPDATE HandOverDoc02 
+                                       SET SchoolYear =@SchoolYear,  
+                                           ClubID =@ClubID,  
+                                           ClubName =@ClubName,  
+                                           ElectionType =@ElectionType,  
+                                           ElectionDate =@ElectionDate,  
+                                           ElectionPlace =@ElectionPlace,  
+                                           TotleMan =@TotleMan,   
+                                           ShouldMan =@ShouldMan,  
+                                           RealMan =@RealMan,  
+                                           LeaveMan =@LeaveMan,  
+                                           AbsentMan =@AbsentMan,  
+                                           Teacher =@Teacher,  
+                                           Chairman =@Chairman,  
+                                           Recorder =@Recorder,  
+                                           NewLeader =@NewLeader,  
+                                           MeetingRecord =@MeetingRecord,  
+                                           MeetingSign =@MeetingSign,  
+                                           LastModifier =@LoginId,
+                                           LastModified=GETDATE()
+                                     WHERE HoID =@HoID AND HoDetailID=@HoDetailID";
+
+			ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+			return ExecuteResult;
+		}
+
+		public ClubHandover0102ViewModel GetHandover0102Data(string HoID, UserInfo Login)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -460,6 +547,81 @@ namespace WebPccuClub.DataAccess
             return ExecuteResult;
         }
 
+        public DbExecuteInfo Update0103(ClubHandoverViewModel vm, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@HoID", vm.Handover0103Model.HoID);
+            parameters.Add("@HoDetailID", vm.Handover0103Model.HoDetailID);
+            parameters.Add("@SchoolYear", vm.Handover0103Model.SchoolYear);
+            parameters.Add("@ClubID", vm.Handover0103Model.ClubID);
+            parameters.Add("@ClubCName", vm.Handover0103Model.ClubCName);
+            parameters.Add("@ClubEName", vm.Handover0103Model.ClubEName);
+            parameters.Add("@ClubBuildID", vm.Handover0103Model.ClubBuildID);
+            parameters.Add("@Location", vm.Handover0103Model.Location);
+            parameters.Add("@Tel", vm.Handover0103Model.Tel);
+            parameters.Add("@UserCName", vm.Handover0103Model.UserCName);
+            parameters.Add("@UserEName", vm.Handover0103Model.UserEName);
+            parameters.Add("@Sex", vm.Handover0103Model.Sex);
+            parameters.Add("@IdentityType", vm.Handover0103Model.IdentityType);
+            parameters.Add("@SNO", vm.Handover0103Model.SNO);
+            parameters.Add("@CDepartment", vm.Handover0103Model.CDepartment);
+            parameters.Add("@EDepartment", vm.Handover0103Model.EDepartment);
+            parameters.Add("@UserMail", vm.Handover0103Model.UserMail);
+            parameters.Add("@UserCellphone", vm.Handover0103Model.UserCellphone);
+            parameters.Add("@Transcript", vm.Handover0103Model.Transcript);
+            parameters.Add("@TranscriptName", vm.Handover0103Model.TranscriptName);
+            parameters.Add("@GPA", vm.Handover0103Model.GPA);
+            parameters.Add("@Behavior", vm.Handover0103Model.Behavior);
+            parameters.Add("@Score60", vm.Handover0103Model.Score60);
+            parameters.Add("@Score75", vm.Handover0103Model.Score75);
+            parameters.Add("@IsMember", vm.Handover0103Model.IsMember);
+            parameters.Add("@NoFire", vm.Handover0103Model.NoFire);
+            parameters.Add("@NoReElection", vm.Handover0103Model.NoReElection);
+            parameters.Add("@NoTwoPosition", vm.Handover0103Model.NoTwoPosition);
+
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"UPDATE HandOverDoc03 
+                                       SET SchoolYear =@SchoolYear,  
+                                           ClubID =@ClubID,  
+                                           ClubCName =@ClubCName,  
+                                           ClubEName =@ClubEName,  
+                                           ClubBuildID =@ClubBuildID,  
+                                           Location =@Location,  
+                                           Tel =@Tel,  
+                                           UserCName =@UserCName,  
+                                           UserEName =@UserEName,  
+                                           Sex =@Sex,  
+                                           IdentityType =@IdentityType,  
+                                           SNO =@SNO,  
+                                           CDepartment =@CDepartment,  
+                                           EDepartment =@EDepartment,  
+                                           UserMail =@UserMail,  
+                                           UserCellphone =@UserCellphone,  
+                                           Transcript =@Transcript,  
+                                           TranscriptName =@TranscriptName,  
+                                           GPA =@GPA,  
+                                           Behavior =@Behavior,  
+                                           Score60 =@Score60,  
+                                           Score75 =@Score75,  
+                                           IsMember =@IsMember,  
+                                           NoFire =@NoFire,  
+                                           NoReElection =@NoReElection,  
+                                           NoTwoPosition =@NoTwoPosition, 
+                                           LastModifier =@LoginId,
+                                           LastModified=GETDATE()
+                                     WHERE HoID =@HoID AND HoDetailID=@HoDetailID";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            return ExecuteResult;
+        }
+
         public ClubHandover0103ViewModel GetHandover0103Data(string HoID, UserInfo Login)
         {
             string CommandText = string.Empty;
@@ -549,8 +711,38 @@ namespace WebPccuClub.DataAccess
 			return ExecuteResult;
 		}
 
+        public DbExecuteInfo Update0204(ClubHandoverViewModel vm, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
 
-		public ClubHandover0204ViewModel GetHandover0204Data(string HoID, UserInfo Login)
+            #region 參數設定
+            parameters.Add("@HoID", vm.Handover0204Model.HoID);
+            parameters.Add("@HoDetailID", vm.Handover0204Model.HoDetailID);
+            parameters.Add("@SchoolYear", vm.Handover0204Model.SchoolYear);
+            parameters.Add("@ClubID", vm.Handover0204Model.ClubID);
+            parameters.Add("@ClubName", vm.Handover0204Model.ClubName);
+            parameters.Add("@NameOfClub", vm.Handover0204Model.NameOfClub);
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+
+            string CommendText = $@"UPDATE HandOverDoc04
+                                       SET SchoolYear=@SchoolYear, 
+                                           ClubID=@ClubID, 
+                                           ClubName=@ClubName, 
+                                           NameOfClub=@NameOfClub, 
+                                           LastModifier=@LoginId, 
+                                           LastModified=GETDATE()
+                                     WHERE HoID =@HoID AND HoDetailID=@HoDetailID";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        public ClubHandover0204ViewModel GetHandover0204Data(string HoID, UserInfo Login)
 		{
 			string CommandText = string.Empty;
 			DataSet ds = new DataSet();
@@ -675,8 +867,70 @@ namespace WebPccuClub.DataAccess
 			return ExecuteResult;
 		}
 
+        public DbExecuteInfo Update0205(ClubHandoverViewModel vm, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
 
-		public ClubHandover0205ViewModel GetHandover0205Data(string HoID, UserInfo Login)
+            #region 參數設定
+            parameters.Add("@HoID", vm.Handover0205Model.HoID);
+            parameters.Add("@HoDetailID", vm.Handover0205Model.HoDetailID);
+            parameters.Add("@SchoolYear", vm.Handover0205Model.SchoolYear);
+            parameters.Add("@ClubID", vm.Handover0205Model.ClubID);
+            parameters.Add("@ClubName", vm.Handover0205Model.ClubName);
+            parameters.Add("@ActSysAcc", vm.Handover0205Model.ActSysAcc);
+            parameters.Add("@ActSysPwd", vm.Handover0205Model.ActSysPwd);
+            parameters.Add("@ClubWebAcc", vm.Handover0205Model.ClubWebAcc);
+            parameters.Add("@ClubWebPwd", vm.Handover0205Model.ClubWebPwd);
+            parameters.Add("@RPageAcc", vm.Handover0205Model.RPageAcc);
+            parameters.Add("@RPagePwd", vm.Handover0205Model.RPagePwd);
+            parameters.Add("@PassportAcc", vm.Handover0205Model.PassportAcc);
+            parameters.Add("@PassportPwd", vm.Handover0205Model.PassportPwd);
+            parameters.Add("@OneDriveAcc", vm.Handover0205Model.OneDriveAcc);
+            parameters.Add("@OneDrivePwd", vm.Handover0205Model.OneDrivePwd);
+            parameters.Add("@HasSchoolProperty", vm.Handover0205Model.HasSchoolProperty);
+            parameters.Add("@UseRecord", vm.Handover0205Model.UseRecord);
+            parameters.Add("@ClubProperty", vm.Handover0205Model.ClubProperty);
+            parameters.Add("@SchoolProperty", vm.Handover0205Model.SchoolProperty);
+            parameters.Add("@UseRecordName", vm.Handover0205Model.UseRecordName);
+            parameters.Add("@ClubPropertyName", vm.Handover0205Model.ClubPropertyName);
+            parameters.Add("@SchoolPropertyName", vm.Handover0205Model.SchoolPropertyName);
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+
+            string CommendText = $@"UPDATE HandOverDoc05 
+                                       SET SChoolYear=@SChoolYear, 
+                                           ClubID=@ClubID, 
+                                           ClubName=@ClubName, 
+                                           ActSysAcc=@ActSysAcc, 
+                                           ActSysPwd=@ActSysPwd, 
+                                           ClubWebAcc=@ClubWebAcc, 
+                                           ClubWebPwd=@ClubWebPwd, 
+                                           RPageAcc=@RPageAcc, 
+                                           RPagePwd=@RPagePwd, 
+                                           PassportAcc=@PassportAcc, 
+                                           PassportPwd=@PassportPwd, 
+                                           OneDriveAcc=@OneDriveAcc, 
+                                           OneDrivePwd=@OneDrivePwd, 
+                                           HasSchoolProperty=@HasSchoolProperty, 
+                                           UseRecord=@UseRecord, 
+                                           ClubProperty=@ClubProperty, 
+                                           SchoolProperty=@SchoolProperty, 
+                                           UseRecordName=@UseRecordName, 
+                                           ClubPropertyName=@ClubPropertyName, 
+                                           SchoolPropertyName=@SchoolPropertyName, 
+                                           LastModifier=@LoginId,
+                                           LastModified=GETDATE()
+                                     WHERE HoID =@HoID AND HoDetailID=@HoDetailID";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        public ClubHandover0205ViewModel GetHandover0205Data(string HoID, UserInfo Login)
 		{
 			string CommandText = string.Empty;
 			DataSet ds = new DataSet();
@@ -766,8 +1020,45 @@ namespace WebPccuClub.DataAccess
 			return ExecuteResult;
 		}
 
+        public DbExecuteInfo Update0206(ClubHandoverViewModel vm, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
 
-		public ClubHandover0206ViewModel GetHandover0206Data(string HoID, UserInfo Login)
+            #region 參數設定
+            parameters.Add("@HoID", vm.Handover0206Model.HoID);
+            parameters.Add("@HoDetailID", vm.Handover0206Model.HoDetailID);
+            parameters.Add("@SchoolYear", vm.Handover0206Model.SchoolYear);
+            parameters.Add("@ClubID", vm.Handover0206Model.ClubID);
+            parameters.Add("@ClubName", vm.Handover0206Model.ClubName);
+            parameters.Add("@Sheet", vm.Handover0206Model.Sheet);
+            parameters.Add("@InnerFile", vm.Handover0206Model.InnerFile);
+            parameters.Add("@SheetName", vm.Handover0206Model.SheetName);
+            parameters.Add("@InnerFileName", vm.Handover0206Model.InnerFileName);
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"UPDATE HandOverDoc06 
+                                       SET SChoolYear=@SChoolYear, 
+                                           ClubID=@ClubID, 
+                                           ClubName=@ClubName, 
+                                           Sheet=@Sheet, 
+                                           InnerFile=@InnerFile, 
+                                           SheetName=@SheetName, 
+                                           InnerFileName=@InnerFileName, 
+                                           LastModifier=@LoginId,  
+                                           LastModified= GETDATE()
+                                     WHERE HoID =@HoID AND HoDetailID=@HoDetailID";
+
+
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        public ClubHandover0206ViewModel GetHandover0206Data(string HoID, UserInfo Login)
 		{
 			string CommandText = string.Empty;
 			DataSet ds = new DataSet();
@@ -877,8 +1168,59 @@ namespace WebPccuClub.DataAccess
 			return ExecuteResult;
 		}
 
+        public DbExecuteInfo Update0307(ClubHandoverViewModel vm, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
 
-		public ClubHandover0307ViewModel GetHandover0307Data(string HoID, UserInfo Login)
+            #region 參數設定
+            parameters.Add("@HoID", vm.Handover0307Model.HoID);
+            parameters.Add("@HoDetailID", vm.Handover0307Model.HoDetailID);
+            parameters.Add("@SchoolYear", vm.Handover0307Model.SchoolYear);
+            parameters.Add("@ClubID", vm.Handover0307Model.ClubID);
+            parameters.Add("@ClubName", vm.Handover0307Model.ClubName);
+            parameters.Add("@Teacher1", vm.Handover0307Model.Teacher1);
+            parameters.Add("@Sex1", vm.Handover0307Model.Sex1);
+            parameters.Add("@Unit1", vm.Handover0307Model.Unit1);
+            parameters.Add("@Position1", vm.Handover0307Model.Position1);
+            parameters.Add("@Mail1", vm.Handover0307Model.Mail1);
+            parameters.Add("@CellPhone1", vm.Handover0307Model.CellPhone1);
+            parameters.Add("@Teacher2", vm.Handover0307Model.Teacher2);
+            parameters.Add("@Sex2", vm.Handover0307Model.Sex2);
+            parameters.Add("@Unit2", vm.Handover0307Model.Unit2);
+            parameters.Add("@Position2", vm.Handover0307Model.Position2);
+            parameters.Add("@Mail2", vm.Handover0307Model.Mail2);
+            parameters.Add("@CellPhone2", vm.Handover0307Model.CellPhone2);
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"UPDATE HandOverDoc07 
+                                       SET SChoolYear=@SChoolYear, 
+                                           ClubID=@ClubID, 
+                                           ClubName=@ClubName, 
+                                           Teacher1=@Teacher1, 
+                                           Sex1=@Sex1, 
+                                           Unit1=@Unit1, 
+                                           Position1=@Position1, 
+                                           Mail1=@Mail1, 
+                                           CellPhone1=@CellPhone1, 
+                                           Teacher2=@Teacher2, 
+                                           Sex2=@Sex2, 
+                                           Unit2=@Unit2, 
+                                           Position2=@Position2, 
+                                           Mail2=@Mail2, 
+                                           CellPhone2=@CellPhone2, 
+                                           LastModifier=@LoginId, 
+                                           LastModified= GETDATE()
+                                     WHERE HoID =@HoID AND HoDetailID=@HoDetailID";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        public ClubHandover0307ViewModel GetHandover0307Data(string HoID, UserInfo Login)
 		{
 			string CommandText = string.Empty;
 			DataSet ds = new DataSet();
@@ -977,7 +1319,47 @@ namespace WebPccuClub.DataAccess
             return ExecuteResult;
         }
 
+        public DbExecuteInfo Update0308(ClubHandoverViewModel vm, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
 
+            #region 參數設定
+            parameters.Add("@HoID", vm.Handover0308Model.HoID);
+            parameters.Add("@HoDetailID", vm.Handover0308Model.HoDetailID);
+            parameters.Add("@SchoolYear", vm.Handover0308Model.SchoolYear);
+            parameters.Add("@ClubID", vm.Handover0308Model.ClubID);
+            parameters.Add("@ClubName", vm.Handover0308Model.ClubName);
+            parameters.Add("@Teacher", vm.Handover0308Model.Teacher);
+            parameters.Add("@Sex", vm.Handover0308Model.Sex);
+            parameters.Add("@Unit", vm.Handover0308Model.Unit);
+            parameters.Add("@Position", vm.Handover0308Model.Position);
+            parameters.Add("@Mail", vm.Handover0308Model.Mail);
+            parameters.Add("@Tel", vm.Handover0308Model.Tel);
+            parameters.Add("@CellPhone", vm.Handover0308Model.CellPhone);
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"UPDATE HandOverDoc08 
+                                       SET SChoolYear=@SChoolYear, 
+                                           ClubID=@ClubID, 
+                                           ClubName=@ClubName, 
+                                           Teacher=@Teacher, 
+                                           Sex=@Sex, 
+                                           Unit=@Unit, 
+                                           Position=@Position, 
+                                           Mail=@Mail, 
+                                           Tel=@Tel, 
+                                           CellPhone=@CellPhone, 
+                                           LastModifier=@LoginId, 
+                                           LastModified= GETDATE()
+                                     WHERE HoID =@HoID AND HoDetailID=@HoDetailID";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            return ExecuteResult;
+        }
         public ClubHandover0308ViewModel GetHandover0308Data(string HoID, UserInfo Login)
         {
             string CommandText = string.Empty;
@@ -1090,8 +1472,60 @@ namespace WebPccuClub.DataAccess
 			return ExecuteResult;
 		}
 
+        public DbExecuteInfo Update0309(ClubHandoverViewModel vm, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
 
-		public ClubHandover0309ViewModel GetHandover0309Data(string HoID, UserInfo Login)
+            #region 參數設定
+            parameters.Add("@HoID", vm.Handover0309Model.HoID);
+            parameters.Add("@HoDetailID", vm.Handover0309Model.HoDetailID);
+            parameters.Add("@SchoolYear", vm.Handover0309Model.SchoolYear);
+            parameters.Add("@ClubID", vm.Handover0309Model.ClubID);
+            parameters.Add("@ClubName", vm.Handover0309Model.ClubName);
+            parameters.Add("@BookManName", vm.Handover0309Model.BookManName);
+            parameters.Add("@BookManDepartment", vm.Handover0309Model.BookManDepartment);
+            parameters.Add("@BookManPosition", vm.Handover0309Model.BookManPosition);
+            parameters.Add("@BookManSNO", vm.Handover0309Model.BookManSNO);
+            parameters.Add("@SealManName", vm.Handover0309Model.SealManName);
+            parameters.Add("@SealManDepartment", vm.Handover0309Model.SealManDepartment);
+            parameters.Add("@SealManPosition", vm.Handover0309Model.SealManPosition);
+            parameters.Add("@SealManSNO", vm.Handover0309Model.SealManSNO);
+            parameters.Add("@BookName", vm.Handover0309Model.BookName);
+            parameters.Add("@BookNo", vm.Handover0309Model.BookNo);
+            parameters.Add("@BookCover", vm.Handover0309Model.BookCover);
+            parameters.Add("@BookCoverName", vm.Handover0309Model.BookCoverName);
+
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"UPDATE HandOverDoc09
+                                       SET SChoolYear=@SChoolYear, 
+                                            ClubID=@ClubID, 
+                                            ClubName=@ClubName, 
+                                            BookManName=@BookManName, 
+                                            BookManDepartment=@BookManDepartment, 
+                                            BookManPosition=@BookManPosition, 
+                                            BookManSNO=@BookManSNO, 
+                                            SealManName=@SealManName, 
+                                            SealManDepartment=@SealManDepartment, 
+                                            SealManPosition=@SealManPosition, 
+                                            SealManSNO=@SealManSNO, 
+                                            BookName=@BookName, 
+                                            BookNo=@BookNo, 
+                                            BookCover=@BookCover, 
+                                            BookCoverName=@BookCoverName, 
+                                            LastModifier=@LastModifier, 
+                                            LastModified)=@LastModified), 
+                                      WHERE HoID =@HoID AND HoDetailID=@HoDetailID";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        public ClubHandover0309ViewModel GetHandover0309Data(string HoID, UserInfo Login)
 		{
 			string CommandText = string.Empty;
 			DataSet ds = new DataSet();

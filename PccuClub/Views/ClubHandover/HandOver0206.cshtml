@@ -6,157 +6,204 @@
 
 
 <div role="main" class="main">
-	<div class="container p-relative py-md-5 py-4">
-		<div class="row justify-content-center">
-			<div class="col-xxl-12">
-				<div class="printContent">
-					<h3 class="text-center text-6"><u>@Html.DisplayFor(m => m.Handover0206Model.SchoolYear)</u>學年度收入支出結算表</h3>
-					<form class="form-box checkthisform" action="" method="post" enctype="application/x-www-form-urlencoded">
-						<div class="row justify-content-center">
-							<div class="col-md-10">
-								<p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
-								<table class="table table-bordered border-dark bg-white">
-									<tbody>
-										<tr>
-											<td width="25%" class="">
-												<label for="">學年度：</label>
-											</td>
-											<td class="">
-												@Html.TextBoxFor(m => m.Handover0206Model.SchoolYear, new { @class="form-control", @readonly="readonly"})
-											</td>
-										</tr>
-										<tr>
-											<td width="25%">
-												<label for="">社團代碼：<span class="req-star">*</span></label>
-											</td>
-											<td width="75%">
-												@Html.TextBoxFor(m => m.Handover0206Model.ClubID, new { @class="form-control", placeholder="請填寫社團代碼"})
-											</td>
-										</tr>
-										<tr>
-											<td class="">
-												<label for="">社團名稱：<span class="req-star">*</span></label>
-											</td>
-											<td class="">
-												@Html.TextBoxFor(m => m.Handover0206Model.ClubName, new { @class="form-control", placeholder="請填寫社團名稱"})
-											</td>
-										</tr>
-										<tr>
-											<td class="">
-												<label for="">收入支出結算表：<span class="req-star">*</span></label>
-											</td>
-											<td class="">
-												@Html.TextBoxFor(m => m.Handover0206Model.Sheet, new { @class="form-control", type="file", placeholder="收入支出結算表", accept=".docx,.doc,.odt,.pdf" })
-												<div class="fs-90percent red-hint pt-2">僅接受以下格式：.docx、.doc、.odt、.pdf</div>
-												<div class="fs-90percent text-gray pt-1">(<a href="https://clubs.pccu.edu.tw/p/405-1279-40600,c13269.php?Lang=zh-tw" target="_blank" title="使用紀錄">範例下載</a>)，<span class="text-red">紙本請同時以附件檢附。</span></div>
-											</td>
-										</tr>
-										<tr>
-											<td class="">
-												<label for="">存簿內頁檔案：<span class="req-star">*</span></label>
-											</td>
-											<td class="">
-												@Html.TextBoxFor(m => m.Handover0206Model.InnerFile, new { @class="form-control", type="file", placeholder="請上傳存簿內頁檔案", accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z" })
-												<div class="fs-90percent red-hint pt-2">僅接受以下格式：.pdf、.jpg、.jpeg、.png、.zip、.rar、.7z</div>
-												<div class="fs-90percent text-gray pt-1">請上傳清晰掃描<span class="text-red">圖檔</span>，<span class="text-red">紙本請同時以附件檢附。</span></div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
+    <div class="container p-relative py-md-5 py-4">
+        <div class="row justify-content-center">
+            <div class="col-xxl-12">
+                <div class="printContent">
+                    <h3 class="text-center text-6"><u>@Html.DisplayFor(m => m.Handover0206Model.SchoolYear)</u>學年度收入支出結算表</h3>
+                    <form class="form-box checkthisform" action="" method="post" enctype="application/x-www-form-urlencoded">
+                        <div class="row justify-content-center">
+                            <div class="col-md-10">
+                                <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
+                                <table class="table table-bordered border-dark bg-white">
+                                    <tbody>
+                                        <tr>
+                                            <td width="25%" class="">
+                                                <label for="">學年度：</label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0206Model.SchoolYear, new { @class="form-control", @readonly="readonly"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="25%">
+                                                <label for="">社團代碼：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td width="75%">
+                                                @Html.TextBoxFor(m => m.Handover0206Model.ClubID, new { @class="form-control", placeholder="請填寫社團代碼"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">社團名稱：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0206Model.ClubName, new { @class="form-control", placeholder="請填寫社團名稱"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">收入支出結算表：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0206Model.Sheet, new { @class="form-control", type="file", placeholder="收入支出結算表", accept=".docx,.doc,.odt,.pdf" })
+                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.docx、.doc、.odt、.pdf</div>
+                                                <div class="fs-90percent text-gray pt-1">(<a href="https://clubs.pccu.edu.tw/p/405-1279-40600,c13269.php?Lang=zh-tw" target="_blank" title="使用紀錄">範例下載</a>)，<span class="text-red">紙本請同時以附件檢附。</span></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="">
+                                                <label for="">存簿內頁檔案：<span class="req-star">*</span></label>
+                                            </td>
+                                            <td class="">
+                                                @Html.TextBoxFor(m => m.Handover0206Model.InnerFile, new { @class="form-control", type="file", placeholder="請上傳存簿內頁檔案", accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z" })
+                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.pdf、.jpg、.jpeg、.png、.zip、.rar、.7z</div>
+                                                <div class="fs-90percent text-gray pt-1">請上傳清晰掃描<span class="text-red">圖檔</span>，<span class="text-red">紙本請同時以附件檢附。</span></div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 
-						<div class="text-center pt-4">
-							<button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">送出</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+                        @Html.HiddenFor(m => m.Handover0206Model.HoID)
+                        @Html.HiddenFor(m => m.Handover0206Model.IsEdit)
+                        @Html.HiddenFor(m => m.Handover0206Model.HoDetailID)
+
+                        <div class="text-center pt-4">
+                            @if (Model.Handover0206Model.IsEdit == "1")
+                            {
+                                <button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">儲存</button>
+                            }
+                            else
+                            {
+                                <button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">送出</button>
+                            }
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
 <script>
 
-	function SaveData() {
+    function SaveData() {
 
         var data = new FormData()
 
-		var SchoolYear = $('#@Html.IdFor(m => m.Handover0206Model.SchoolYear)').val();
-		var ClubID = $('#@Html.IdFor(m => m.Handover0206Model.ClubID)').val();
-		var ClubName = $('#@Html.IdFor(m => m.Handover0206Model.ClubName)').val();
+        var HoID = $('#@Html.IdFor(m => m.Handover0206Model.HoID)').val();
+        var IsEdit = $('#@Html.IdFor(m => m.Handover0206Model.IsEdit)').val();
+        var HoDetailID = $('#@Html.IdFor(m => m.Handover0206Model.HoDetailID)').val();
+
+        var SchoolYear = $('#@Html.IdFor(m => m.Handover0206Model.SchoolYear)').val();
+        var ClubID = $('#@Html.IdFor(m => m.Handover0206Model.ClubID)').val();
+        var ClubName = $('#@Html.IdFor(m => m.Handover0206Model.ClubName)').val();
 
 
-		var Sheet = $('#@Html.IdFor(m => m.Handover0206Model.Sheet)')[0].files[0];
+        var Sheet = $('#@Html.IdFor(m => m.Handover0206Model.Sheet)')[0].files[0];
 
-		if (typeof Sheet !== 'undefined') {
-			var fileExtension = Sheet.name.split('.').pop().toLowerCase();
+        if (typeof Sheet !== 'undefined') {
+            var fileExtension = Sheet.name.split('.').pop().toLowerCase();
 
             if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'odt' && fileExtension !== 'pdf') {
                 $.alert("檔案類型不符合");
                 return;
             }
 
-			data.append('@Html.NameFor(m => m.Handover0206Model.Sheet)', Sheet);
+            data.append('@Html.NameFor(m => m.Handover0206Model.Sheet)', Sheet);
         }
-		else {
-			$.alert("收入支出結算表不可為空白"); return;
-		}
+        else {
+            $.alert("收入支出結算表不可為空白"); return;
+        }
 
-		var InnerFile = $('#@Html.IdFor(m => m.Handover0206Model.InnerFile)')[0].files[0];
+        var InnerFile = $('#@Html.IdFor(m => m.Handover0206Model.InnerFile)')[0].files[0];
 
-		if (typeof InnerFile !== 'undefined') {
-			var fileExtension = InnerFile.name.split('.').pop().toLowerCase();
+        if (typeof InnerFile !== 'undefined') {
+            var fileExtension = InnerFile.name.split('.').pop().toLowerCase();
 
-			if (fileExtension !== 'pdf' && fileExtension !== 'jpg' &&
-				fileExtension !== 'jpeg' && fileExtension !== 'png' &&
-				fileExtension !== 'zip' && fileExtension !== 'rar' &&
-				fileExtension !== '7z') {
+            if (fileExtension !== 'pdf' && fileExtension !== 'jpg' &&
+                fileExtension !== 'jpeg' && fileExtension !== 'png' &&
+                fileExtension !== 'zip' && fileExtension !== 'rar' &&
+                fileExtension !== '7z') {
                 $.alert("檔案類型不符合");
                 return;
             }
 
-			data.append('@Html.NameFor(m => m.Handover0206Model.InnerFile)', InnerFile);
+            data.append('@Html.NameFor(m => m.Handover0206Model.InnerFile)', InnerFile);
         }
-		else {
-			$.alert("存簿內頁檔案不可為空白"); return;
-		}
+        else {
+            $.alert("存簿內頁檔案不可為空白"); return;
+        }
 
 
-		if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
-		if (ClubName == "") { $.alert("社團名稱不可為空白"); return; }
+        if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
+        if (ClubName == "") { $.alert("社團名稱不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.Handover0206Model.HoID)', HoID);
+        data.append('@Html.NameFor(m => m.Handover0206Model.IsEdit)', IsEdit);
+        data.append('@Html.NameFor(m => m.Handover0206Model.HoDetailID)', HoDetailID);
+
+        data.append('@Html.NameFor(m => m.Handover0206Model.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.Handover0206Model.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.Handover0206Model.ClubName)', ClubName);
 
 
-		data.append('@Html.NameFor(m => m.Handover0206Model.SchoolYear)', SchoolYear);
-		data.append('@Html.NameFor(m => m.Handover0206Model.ClubID)', ClubID);
-		data.append('@Html.NameFor(m => m.Handover0206Model.ClubName)', ClubName);
 
-
-        SendAjax({
-			url: '@Url.Action("Save0206")',
-            data: data,
-            processData: false,
-            contentType: false,
-            success: function (result) {
-                if (result.errorCode == 0) {
-                    $.confirm({
-                        title: "",
-                        content: "新增成功",
-                        buttons: {
-                            確定: function () {
-								var url = '@Url.Action("Print0206")';
-								window.location.href = url;
-                            },
-                        }
-                    });
+        if (IsEdit == "1") {
+            SendAjax({
+                url: '@Url.Action("Save0206")',
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.errorCode == 0) {
+                        $.confirm({
+                            title: "",
+                            content: "儲存成功",
+                            buttons: {
+                                確定: function () {
+                                    var url = '@Url.Action("Print0206")';
+                                    window.location.href = url;
+                                },
+                            }
+                        });
+                    }
+                    else { $.alert(result.errorMsg); }
+                },
+                error: function (response) {
+                    $.alert(result.errorMsg);
                 }
-                else { $.alert(result.errorMsg); }
-            },
-            error: function (response) {
-                $.alert(result.errorMsg);
-            }
-        });
+            });
+        }
+        else {
+            SendAjax({
+                url: '@Url.Action("Save0206")',
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.errorCode == 0) {
+                        $.confirm({
+                            title: "",
+                            content: "新增成功",
+                            buttons: {
+                                確定: function () {
+                                    var url = '@Url.Action("Print0206")';
+                                    window.location.href = url;
+                                },
+                            }
+                        });
+                    }
+                    else { $.alert(result.errorMsg); }
+                },
+                error: function (response) {
+                    $.alert(result.errorMsg);
+                }
+            });
+        }
     }
 
 </script>

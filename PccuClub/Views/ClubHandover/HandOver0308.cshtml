@@ -162,6 +162,7 @@
                                         </span>
                                     </div>
 
+
                                     <div style="text-align: right;"><span style="font-size:1.25em;"> &nbsp; &nbsp; &nbsp; &nbsp; 年&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;月&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 日&nbsp; &nbsp;</span></div>
 
 
@@ -169,8 +170,20 @@
                             </div>
                         </div>
 
+
+                        @Html.HiddenFor(m => m.Handover0308Model.HoID)
+                        @Html.HiddenFor(m => m.Handover0308Model.IsEdit)
+                        @Html.HiddenFor(m => m.Handover0308Model.HoDetailID)
+
                         <div class="text-center pt-4">
-                            <button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">送出</button>
+                            @if (Model.Handover0308Model.IsEdit == "1")
+                            {
+                                <button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">儲存</button>
+                            }
+                            else
+                            {
+                                <button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">送出</button>
+                            }
                         </div>
                     </form>
                 </div>
@@ -184,6 +197,10 @@
     function SaveData() {
 
         var data = new FormData()
+
+        var HoID = $('#@Html.IdFor(m => m.Handover0308Model.HoID)').val();
+        var IsEdit = $('#@Html.IdFor(m => m.Handover0308Model.IsEdit)').val();
+        var HoDetailID = $('#@Html.IdFor(m => m.Handover0308Model.HoDetailID)').val();
 
         var SchoolYear = $('#@Html.IdFor(m => m.Handover0308Model.SchoolYear)').val();
         var ClubID = $('#@Html.IdFor(m => m.Handover0308Model.ClubID)').val();
@@ -205,6 +222,10 @@
         if (Mail == "") { $.alert("專業指導老師電子信箱不可為空白"); return; }
         if (CellPhone == "") { $.alert("專業指導老師手機電話不可為空白"); return; }
 
+        data.append('@Html.NameFor(m => m.Handover0308Model.HoID)', HoID);
+        data.append('@Html.NameFor(m => m.Handover0308Model.IsEdit)', IsEdit);
+        data.append('@Html.NameFor(m => m.Handover0308Model.HoDetailID)', HoDetailID);
+
         data.append('@Html.NameFor(m => m.Handover0308Model.SchoolYear)', SchoolYear);
         data.append('@Html.NameFor(m => m.Handover0308Model.ClubID)', ClubID);
         data.append('@Html.NameFor(m => m.Handover0308Model.ClubName)', ClubName);
@@ -217,30 +238,59 @@
         data.append('@Html.NameFor(m => m.Handover0308Model.CellPhone)', CellPhone);
 
 
-        SendAjax({
-            url: '@Url.Action("Save0308")',
-            data: data,
-            processData: false,
-            contentType: false,
-            success: function (result) {
-                if (result.errorCode == 0) {
-                    $.confirm({
-                        title: "",
-                        content: "新增成功",
-                        buttons: {
-                            確定: function () {
-                                var url = '@Url.Action("Print0308")';
-                                window.location.href = url;
-                            },
-                        }
-                    });
+
+        if (IsEdit == "1") {
+            SendAjax({
+                url: '@Url.Action("Save0308")',
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.errorCode == 0) {
+                        $.confirm({
+                            title: "",
+                            content: "儲存成功",
+                            buttons: {
+                                確定: function () {
+                                    var url = '@Url.Action("Print0308")';
+                                    window.location.href = url;
+                                },
+                            }
+                        });
+                    }
+                    else { $.alert(result.errorMsg); }
+                },
+                error: function (response) {
+                    $.alert(result.errorMsg);
                 }
-                else { $.alert(result.errorMsg); }
-            },
-            error: function (response) {
-                $.alert(result.errorMsg);
-            }
-        });
+            });
+        }
+        else {
+            SendAjax({
+                url: '@Url.Action("Save0308")',
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.errorCode == 0) {
+                        $.confirm({
+                            title: "",
+                            content: "新增成功",
+                            buttons: {
+                                確定: function () {
+                                    var url = '@Url.Action("Print0308")';
+                                    window.location.href = url;
+                                },
+                            }
+                        });
+                    }
+                    else { $.alert(result.errorMsg); }
+                },
+                error: function (response) {
+                    $.alert(result.errorMsg);
+                }
+            });
+        }
     }
 
 </script>

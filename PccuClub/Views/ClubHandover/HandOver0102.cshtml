@@ -212,8 +212,19 @@
                             </div>
                         </div>
 
+                        @Html.HiddenFor(m => m.Handover0102Model.HoID)
+                        @Html.HiddenFor(m => m.Handover0102Model.IsEdit)
+                        @Html.HiddenFor(m => m.Handover0102Model.HoDetailID)
+
                         <div class="text-center pt-4">
-                            <button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">送出</button>
+                            @if (Model.Handover0102Model.IsEdit == "1")
+                            {
+                                <button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">儲存</button>
+                            }
+                            else
+                            {
+                                <button type="button" class="submit-btn btn btn-primary btn-modern px-5" onclick="SaveData()">送出</button>
+                            }
                         </div>
                     </form>
                 </div>
@@ -230,6 +241,10 @@
     function SaveData() {
 
         var data = new FormData()
+
+        var HoID = $('#@Html.IdFor(m => m.Handover0102Model.HoID)').val();
+        var IsEdit = $('#@Html.IdFor(m => m.Handover0102Model.IsEdit)').val();
+        var HoDetailID = $('#@Html.IdFor(m => m.Handover0102Model.HoDetailID)').val();
 
         var SchoolYear = $('#@Html.IdFor(m => m.Handover0102Model.SchoolYear)').val();
         var ClubID = $('#@Html.IdFor(m => m.Handover0102Model.ClubID)').val();
@@ -300,6 +315,10 @@
         if (Recorder == "") { $.alert("會議記錄姓名不可為空白"); return; }
         if (NewLeader == "") { $.alert("新任社長姓名不可為空白"); return; }
 
+        data.append('@Html.NameFor(m => m.Handover0102Model.HoID)', HoID);
+        data.append('@Html.NameFor(m => m.Handover0102Model.IsEdit)', IsEdit);
+        data.append('@Html.NameFor(m => m.Handover0102Model.HoDetailID)', HoDetailID);
+
         data.append('@Html.NameFor(m => m.Handover0102Model.SchoolYear)', SchoolYear);
         data.append('@Html.NameFor(m => m.Handover0102Model.ClubID)', ClubID);
         data.append('@Html.NameFor(m => m.Handover0102Model.ClubName)', ClubName);
@@ -316,32 +335,58 @@
         data.append('@Html.NameFor(m => m.Handover0102Model.Recorder)', Recorder);
         data.append('@Html.NameFor(m => m.Handover0102Model.NewLeader)', NewLeader);
 
-        
-
-        SendAjax({
-            url: '@Url.Action("Save0102")',
-            data: data,
-            processData: false,
-            contentType: false,
-            success: function (result) {
-                if (result.errorCode == 0) {
-                    $.confirm({
-                        title: "",
-                        content: "新增成功",
-                        buttons: {
-                            確定: function () {
-                                var url = '@Url.Action("Print0102")';
-                                window.location.href = url;
-                            },
-                        }
-                    });
+        if (IsEdit == "1") {
+            SendAjax({
+                url: '@Url.Action("Save0102")',
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.errorCode == 0) {
+                        $.confirm({
+                            title: "",
+                            content: "儲存成功",
+                            buttons: {
+                                確定: function () {
+                                    var url = '@Url.Action("Print0102")';
+                                    window.location.href = url;
+                                },
+                            }
+                        });
+                    }
+                    else { $.alert(result.errorMsg); }
+                },
+                error: function (response) {
+                    $.alert(result.errorMsg);
                 }
-                else { $.alert(result.errorMsg); }
-            },
-            error: function (response) {
-                $.alert(result.errorMsg);
-            }
-        });
+            });
+        }
+        else {
+            SendAjax({
+                url: '@Url.Action("Save0102")',
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.errorCode == 0) {
+                        $.confirm({
+                            title: "",
+                            content: "新增成功",
+                            buttons: {
+                                確定: function () {
+                                    var url = '@Url.Action("Print0102")';
+                                    window.location.href = url;
+                                },
+                            }
+                        });
+                    }
+                    else { $.alert(result.errorMsg); }
+                },
+                error: function (response) {
+                    $.alert(result.errorMsg);
+                }
+            });
+        }
     }
 
 </script>

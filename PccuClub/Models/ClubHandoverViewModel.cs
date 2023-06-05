@@ -226,9 +226,15 @@ namespace WebPccuClub.Models
 
     public class ClubHandover0101ViewModel
     {
+        public string? IsEdit { get; set; } = "0";
+
 		/// <summary>ID</summary>
 		[DisplayName("ID")]
 		public string? HoID { get; set; }
+
+		/// <summary>ID</summary>
+		[DisplayName("ID")]
+		public string? HoDetailID { get; set; }
 
 		/// <summary>社團ID</summary>
 		[DisplayName("社團ID")]
@@ -252,12 +258,18 @@ namespace WebPccuClub.Models
 	}
     public class ClubHandover0102ViewModel
     {
-        /// <summary>ID</summary>
-        [DisplayName("ID")]
-        public string? HoID { get; set; }
+        public string? IsEdit { get; set; } = "0";
 
-        /// <summary>社團ID</summary>
-        [DisplayName("社團ID")]
+		/// <summary>ID</summary>
+		[DisplayName("ID")]
+		public string? HoID { get; set; }
+
+		/// <summary>ID</summary>
+		[DisplayName("ID")]
+		public string? HoDetailID { get; set; }
+
+		/// <summary>社團ID</summary>
+		[DisplayName("社團ID")]
         public string? SchoolYear { get; set; }
 
         /// <summary>社團ID</summary>
@@ -338,6 +350,16 @@ namespace WebPccuClub.Models
 	}
     public class ClubHandover0103ViewModel 
     {
+        public string? IsEdit { get; set; } = "0";
+
+		/// <summary>ID</summary>
+		[DisplayName("ID")]
+		public string? HoID { get; set; }
+
+		/// <summary>ID</summary>
+		[DisplayName("ID")]
+		public string? HoDetailID { get; set; }
+
 		public string? SchoolYear { get; set; }
 		public string? ClubID { get; set; }
 		public string? ClubCName { get; set; }
@@ -383,6 +405,15 @@ namespace WebPccuClub.Models
 	}
     public class ClubHandover0204ViewModel 
     {
+        public string? IsEdit { get; set; } = "0";
+
+		/// <summary>ID</summary>
+		[DisplayName("ID")]
+		public string? HoID { get; set; }
+
+		/// <summary>ID</summary>
+		[DisplayName("ID")]
+		public string? HoDetailID { get; set; }
 		public string? SchoolYear { get; set; }
 		public string? ClubID { get; set; }
 		public string? ClubName { get; set; }
@@ -390,6 +421,14 @@ namespace WebPccuClub.Models
 	}
     public class ClubHandover0205ViewModel
     {
+        public string? IsEdit { get; set; } = "0";
+		/// <summary>ID</summary>
+		[DisplayName("ID")]
+		public string? HoID { get; set; }
+
+		/// <summary>ID</summary>
+		[DisplayName("ID")]
+		public string? HoDetailID { get; set; }
 		public string? SchoolYear { get; set; }
 		public string? ClubID { get; set; }
 		public string? ClubName { get; set; }
@@ -415,6 +454,14 @@ namespace WebPccuClub.Models
 	}
     public class ClubHandover0206ViewModel 
     {
+        public string? IsEdit { get; set; } = "0";
+		/// <summary>ID</summary>
+		[DisplayName("ID")]
+		public string? HoID { get; set; }
+
+		/// <summary>ID</summary>
+		[DisplayName("ID")]
+		public string? HoDetailID { get; set; }
 		public string? SchoolYear { get; set; }
 		public string? ClubID { get; set; }
 		public string? ClubName { get; set; }
@@ -426,6 +473,14 @@ namespace WebPccuClub.Models
 	}
     public class ClubHandover0307ViewModel 
     {
+        public string? IsEdit { get; set; } = "0";
+		/// <summary>ID</summary>
+		[DisplayName("ID")]
+		public string? HoID { get; set; }
+
+		/// <summary>ID</summary>
+		[DisplayName("ID")]
+		public string? HoDetailID { get; set; }
 		public string? SchoolYear { get; set; }
 		public string? ClubID { get; set; }
 		public string? ClubName { get; set; }
@@ -448,7 +503,16 @@ namespace WebPccuClub.Models
 }
     public class ClubHandover0308ViewModel
     {
-        public string? SchoolYear { get; set; }
+		
+		public string? IsEdit { get; set; } = "0";
+		/// <summary>ID</summary>
+		[DisplayName("ID")]
+		public string? HoID { get; set; }
+
+		/// <summary>ID</summary>
+		[DisplayName("ID")]
+		public string? HoDetailID { get; set; }
+		public string? SchoolYear { get; set; }
         public string? ClubID { get; set; }
         public string? ClubName { get; set; }
         public string? Teacher { get; set; }
@@ -462,6 +526,14 @@ namespace WebPccuClub.Models
     }
     public class ClubHandover0309ViewModel 
     {
+        public string? IsEdit { get; set; } = "0";
+		/// <summary>ID</summary>
+		[DisplayName("ID")]
+		public string? HoID { get; set; }
+
+		/// <summary>ID</summary>
+		[DisplayName("ID")]
+		public string? HoDetailID { get; set; }
 		public string? SchoolYear { get; set; }
 		public string? ClubID { get; set; }
 		public string? ClubName { get; set; }
