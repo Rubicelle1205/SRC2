@@ -22,9 +22,14 @@ namespace WebPccuClub.Global
             if (!string.IsNullOrEmpty(file.FileName))
                 encryptedFileName = auth.EncryptionText(Path.GetFileNameWithoutExtension(file.FileName));
 
-            encryptedFileName = encryptedFileName.Replace("/", "").Replace("\\", "");
+            encryptedFileName = encryptedFileName.Replace("/", "").Replace("\\", "").Replace("+", "").Replace("-", "").Replace("*", "").Replace("=", "")
+				.Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace(":", "").Replace("@", "").Replace(";", "").Replace("'", "")
+				.Replace("#", "").Replace("$", "").Replace("%", "").Replace("^", "").Replace("&", "").Replace(",", "").Replace(@"""", "").Replace(" ", "");
 
-            encryptedFileName = encryptedFileName + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
+			
+
+
+			encryptedFileName = encryptedFileName + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
 
             // 組合檔案儲存路徑
              string savePath = Path.Combine(uploadPath, encryptedFileName + fileExtension);

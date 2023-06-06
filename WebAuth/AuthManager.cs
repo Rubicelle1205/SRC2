@@ -83,7 +83,11 @@ namespace PccuClub.WebAuth
                 (DbExecuteInfo Info, IEnumerable<RoleInfo> entitys) reolResult = dbAccess.SelectRoleInfo(LoginUser.LoginId);
                 if (!mainResult.Info.isSuccess)
                 { return false; }
-                LoginUser.UserRole = reolResult.entitys.ToList();
+
+				if (reolResult.entitys.ToList().Count == 0)
+				{ return false; }
+
+				LoginUser.UserRole = reolResult.entitys.ToList();
 
                 // 查詢角色功能
                 (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = dbAccess.SelectFunInfo(LoginUser.LoginId, "F");

@@ -203,7 +203,7 @@ AND (@LifeClass IS NULL OR A.LifeClass = @LifeClass)
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
-            if (ExecuteResult.isSuccess)
+            if (ExecuteResult.isSuccess || ExecuteResult.ErrorCode == dbErrorCode._EC_NotAffect)
             {
                 CommendText = $@"INSERT INTO ClubUser (ClubId, FUserID) VALUES (@ClubId, @FUserId) ";
 

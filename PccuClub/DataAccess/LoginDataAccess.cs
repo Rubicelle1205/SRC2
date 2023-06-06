@@ -3,6 +3,7 @@ using WebPccuClub.Entity;
 using PccuClub.WebAuth;
 using WebPccuClub.Global;
 using System.Data;
+using WebAuth.Entity;
 
 namespace WebPccuClub.DataAccess
 {
@@ -140,15 +141,6 @@ namespace WebPccuClub.DataAccess
 
             if (LoginFrom == "F")
             {
-                CommandTxt = @"SELECT FUserId FROM ClubUser WHERE ClubId = @Loginid";
-
-                ExecuteResult = DbaExecuteNonQuery(CommandTxt, parameters, true, DBAccessException);
-
-                DbaExecuteQuery(CommandTxt, parameters, ds, true, DBAccessException);
-
-                string FUserId = ds.Tables[0].Rows[0]["FUserId"].ToString();
-                parameters.Add("FUserId", FUserId);
-
                 CommandTxt = @"update FUserMain set 
 						        Lastlogindate=ISNULL(@Lastlogindate,Lastlogindate),
 						        Errorcount=ISNULL(@Errorcount,Errorcount),
@@ -156,7 +148,7 @@ namespace WebPccuClub.DataAccess
 						        Lastmodified=ISNULL(@Lastmodified,Lastmodified),
 						        Modifiedreason=ISNULL(@Modifiedreason,Modifiedreason)
 					        where
-						        FUserId = @FUserId";
+						        FUserId = @Loginid";
             }
             else
             {
@@ -203,5 +195,58 @@ namespace WebPccuClub.DataAccess
 
             return ExecuteResult;
         }
-    }
+
+		public DbExecuteInfo InsertNewUser(SSOUserInfo sSOUserInfo)
+		{
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			string CommandTxt = string.Empty;
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			// 登入帳號
+			parameters.Add("FUserId", sSOUserInfo.Account);
+			parameters.Add("UserName", sSOUserInfo.Name);
+			parameters.Add("Department", sSOUserInfo.Department);
+
+			#endregion
+
+			CommandTxt = $@"IF EXISTS (SELECT 1
+                                         FROM FUserMain 
+                                        WHERE FUserId = @FUserId)
+                                    
+                                BEGIN
+                                        UPDATE FUserMain
+                                        SET FUserId = @FUserId
+                                           ,UserName = @UserName
+                                           ,Department = @Department
+                                           ,LastModifier = @FUserId
+                                           ,LastModified = GETDATE() 
+                                        WHERE FUserId = @FUserId;
+                                    END
+                                ELSE
+                                    BEGIN
+                                        INSERT INTO FUserMain
+                                                  (FUserId
+                                                   ,UserName
+                                                   ,Department
+                                                   ,IsEnable
+                                                   ,Creator
+                                                   ,Created
+                                                   ,LastModifier
+                                                   ,LastModified )
+                                            VALUES (@FUserId
+                                                   ,@UserName
+                                                   ,@Department
+                                                   ,1
+                                                   ,@FUserId
+                                                   ,GETDATE()
+                                                   ,@FUserId
+                                                   ,GETDATE() );
+                                    END";
+
+			ExecuteResult = DbaExecuteNonQuery(CommandTxt, parameters, true, DBAccessException);
+
+			return ExecuteResult;
+		}
+	}
 }

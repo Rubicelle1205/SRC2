@@ -46,13 +46,21 @@ namespace WebPccuClub.Controllers
 
                 SSOUserInfo sSOUserInfo = JsonConvert.DeserializeObject<SSOUserInfo>(result.JSONData);
 
-                if (!auth.GetUserByFUserID(sSOUserInfo.Account, out UserInfo user))
+				var dbResult = dbAccess.InsertNewUser(sSOUserInfo);
+
+				if (!dbResult.isSuccess)
+				{
+					dbAccess.DbaRollBack();
+					throw new Exception("新增帳號失敗!");
+				}
+
+				if (!auth.GetUserByFUserID(sSOUserInfo.Account, out UserInfo user))
                 {
                     loginEntity.Memo = "帳號不存在";
                     throw new Exception("登入失敗，帳號不存在!");
                 }
 
-                bool isAuth = false;
+				bool isAuth = false;
 
                 isAuth = auth.FLogin(sSOUserInfo.Account, out UserInfo LoginUser);
 
