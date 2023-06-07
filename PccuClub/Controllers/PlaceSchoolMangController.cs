@@ -221,6 +221,16 @@ namespace WebPccuClub.Controllers
                     hours.Add(j);
                 }
 
+                string msg = string.Empty;
+                bool ok = ChkCanBatchData(vm, dates, hours, out msg);
+
+                if (!ok)
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = msg;
+                    return Json(vmRtn);
+                }
+
                 dbAccess.DbaInitialTransaction();
 
                 DataTable dt = new DataTable();
@@ -236,8 +246,9 @@ namespace WebPccuClub.Controllers
                 }
 
                 string ActId = dt.QueryFieldByDT("ActID");
+                dt.Dispose();
 
-                dbResult = dbAccess.InsertActDetailData(vm, ActId, LoginUser);
+                dbResult = dbAccess.InsertActDetailData(vm, ActId, LoginUser, out dt);
 
                 if (!dbResult.isSuccess)
                 {
@@ -247,11 +258,25 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
+                string ActDetailId = dt.QueryFieldByDT("ActDetailId");
+                dt.Dispose();
+
                 for (int i = 0; i <= dates.Count - 1; i++)
                 {
+                    dbResult = dbAccess.InsertActSectionData(vm, ActId, ActDetailId, dates[i], LoginUser, out dt);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "新增失敗";
+                        return Json(vmRtn);
+                    }
+
+                    string ActSectionId = dt.QueryFieldByDT("ActSectionId");
                     for (int j = 0; j <= hours.Count - 1; j++)
                     {
-                        dbResult = dbAccess.InsertActRundownData(vm, ActId, dates[i], hours[j], LoginUser);
+                        dbResult = dbAccess.InsertActRundownData(vm, ActId, ActDetailId, ActSectionId, dates[i], hours[j], LoginUser);
 
                         if (!dbResult.isSuccess)
                         {
@@ -275,6 +300,8 @@ namespace WebPccuClub.Controllers
 
             return Json(vmRtn);
         }
+
+       
 
         private string[] GetSelectedWeek(string[] arr)
         {
@@ -313,7 +340,38 @@ namespace WebPccuClub.Controllers
             return LstSelectedWeek.ToArray();
         }
 
+        //檢核
+        private bool ChkCanBatchData(PlaceSchoolMangViewModel vm, List<DateTime> dates, List<int> hours, out string msg)
+        {
+            bool ok = true;
+            msg = string.Empty;
 
+            string PlaceID = vm.BatchAddActModel.PlaceID;
+
+            if (string.IsNullOrEmpty(PlaceID)) { msg = "查找場地失敗"; return false; }
+
+
+            foreach (DateTime date in dates)
+            {
+                DataTable dt = dbAccess.GetRundown(PlaceID, date);
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    int STime = int.Parse(dr["STime"].ToString());
+
+                    for (int i = 0; i <= hours.Count - 1; i++)
+                    {
+                        if (STime == hours[i])
+                        {
+                            ok = false;
+                            msg = string.Format("以下時段已有其他活動。<br/> 日期:{0} 時間:{1}:00 ", date.ToString("yyyy/MM/dd"), hours[i]);
+                        }
+                    }
+                }
+            }
+
+            return ok;
+        }
 
     }
 }

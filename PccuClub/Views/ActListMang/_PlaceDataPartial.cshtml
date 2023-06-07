@@ -4,7 +4,7 @@
 
 }
 
-@if (Model.CreateModel.PlaceSource == "01" || Model.CreateModel.PlaceSource == "02")
+@if (Model.CreateModel.PlaceSource == "01")
 {
     @if (ViewBag.ddlBuild != null)
     {
@@ -57,33 +57,6 @@
                                             <td>-</td>
                                         }
                                         <td>@item.PlaceEquip</td>
-                                        <td>@item.Memo</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-                else if (Model.CreateModel.PlaceSource == "02")
-                {
-                    <div id="thisroom_box">
-                        <p class="mb-0 py-2 hint">
-                            <i class="fas fa-caret-down"></i>
-                            場地資訊
-                            <i class="fas fa-caret-down"></i>
-                        </p>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">場地名稱</th>
-                                    <th scope="col">場地備註</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.PlaceDataModel)
-                                {
-                                    <tr>
-                                        <td>@item.PlaceName</td>
                                         <td>@item.Memo</td>
                                     </tr>
                                 }

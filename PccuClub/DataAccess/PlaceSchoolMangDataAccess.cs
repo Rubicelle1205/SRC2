@@ -248,58 +248,35 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@PlaceID", vm.BatchAddActModel.PlaceID);
-            parameters.Add("@PlaceName", vm.BatchAddActModel.PlaceName);
-            parameters.Add("@BuildId", vm.BatchAddActModel.BuildId);
-            parameters.Add("@BorrowType", vm.BatchAddActModel.BorrowType);
             parameters.Add("@SDate", vm.BatchAddActModel.SDate);
             parameters.Add("@EDate", vm.BatchAddActModel.EDate);
             parameters.Add("@STime", vm.BatchAddActModel.STime);
             parameters.Add("@ETime", vm.BatchAddActModel.ETime);
-            parameters.Add("@Memo", vm.BatchAddActModel.Memo);
 
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
             string CommendText = $@"INSERT INTO ActMain
-                                               (BuildId 
-                                                ,PlaceID 
-                                                ,PlaceName 
-                                                ,BrrowClubID
-                                                ,CreateSource 
-                                                ,BorrowType 
-                                                ,SDate 
+                                               (SDate 
                                                 ,EDate 
                                                 ,STime 
                                                 ,ETime 
-                                                ,ActInOrOut 
                                                 ,ActVerify 
-                                                ,Memo 
                                                 ,Creator 
                                                 ,Created 
                                                 ,LastModifier 
-                                                ,LastModified 
-                                                ,ModifiedReason )
+                                                ,LastModified )
                                          OUTPUT Inserted.ActID
                                          VALUES
-                                               (@BuildId 
-                                                ,@PlaceID 
-                                                ,@PlaceName 
-                                                ,@LoginId
-                                                ,'01' 
-                                                ,@BorrowType 
-                                                ,@SDate 
+                                                (@SDate 
                                                 ,@EDate 
                                                 ,@STime 
                                                 ,@ETime
-                                                ,'01'
                                                 ,'05'
-                                                ,@Memo 
                                                 ,@LoginId
                                                 ,GETDATE()
                                                 ,@LoginId
-                                                ,GETDATE()
-                                                ,NULL)";
+                                                ,GETDATE()) ";
 
             ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
             
@@ -309,7 +286,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
 
         }
 
-        public DbExecuteInfo InsertActDetailData(PlaceSchoolMangViewModel vm, string ActId, UserInfo LoginUser)
+        public DbExecuteInfo InsertActDetailData(PlaceSchoolMangViewModel vm, string ActId, UserInfo LoginUser, out DataTable dt)
         {
             DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
@@ -317,47 +294,58 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
 
             #region 參數設定
             parameters.Add("@ActID", ActId);
-            parameters.Add("@ActName", vm.BatchAddActModel.Reason);
-            parameters.Add("@ActShortDesc", vm.BatchAddActModel.Memo);
             parameters.Add("@SchoolYear", PublicFun.GetSchoolYear(vm.BatchAddActModel.SDate));
-            parameters.Add("@StaticOrDynamic", "01");
+            parameters.Add("@BuildID", vm.BatchAddActModel.BuildId);
+            parameters.Add("@PlaceID", vm.BatchAddActModel.PlaceID); 
+            parameters.Add("@ActName", vm.BatchAddActModel.Reason);
+            parameters.Add("@Memo", vm.BatchAddActModel.Memo);
+            parameters.Add("@BorrowType", vm.BatchAddActModel.BorrowType);
             parameters.Add("@Capacity", "0");
             
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
             string CommendText = $@"INSERT INTO ActDetail
-                                               (ActID
-                                                , ActName 
-                                                , SchoolYear 
-                                                , StaticOrDynamic 
-                                                , Capacity 
-                                                , Creator
-                                                , Created
-                                                , LastModifier
-                                                , LastModified
-                                                , ModifiedReason
-                                                )
+                                               (ActID, 
+                                                SchoolYear, 
+                                                BuildID, 
+                                                PlaceID, 
+                                                ActName, 
+                                                BorrowType, 
+                                                BrrowUnit, 
+                                                Capacity, 
+                                                CreateSource, 
+                                                Memo, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         OUTPUT Inserted.ActDetailId
                                          VALUES
-                                               (@ActID
-                                                , @ActName 
-                                                , @SchoolYear 
-                                                , @StaticOrDynamic 
-                                                , @Capacity 
-                                                , @LoginId
-                                                , GETDATE()
-                                                , @LoginId
-                                                , GETDATE()
-                                                , NULL)";
+                                               (@ActID, 
+                                                @SchoolYear, 
+                                                @BuildID, 
+                                                @PlaceID, 
+                                                @ActName, 
+                                                @BorrowType, 
+                                                @LoginId, 
+                                                @Capacity, 
+                                                '01', 
+                                                @Memo, 
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE() )";
 
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            dt = ds.Tables[0];
 
             return ExecuteResult;
         }
 
-
-        /// <summary> 新增批次行程資料</summary>
-        public DbExecuteInfo InsertActRundownData(PlaceSchoolMangViewModel vm, string ActId, DateTime date, int hour, UserInfo LoginUser)
+        /// <summary> 新增日期資料</summary>
+        public DbExecuteInfo InsertActSectionData(PlaceSchoolMangViewModel vm, string ActId, string ActDetailId, DateTime date, UserInfo LoginUser, out DataTable dt)
         {
             DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
@@ -365,41 +353,122 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
 
             #region 參數設定
             parameters.Add("@ActID", ActId);
+            parameters.Add("@ActDetailId", ActDetailId);
+            parameters.Add("@Date", date.ToString("yyyy-MM-dd"));
+            parameters.Add("@Week", date.ToString("dddd"));
+            parameters.Add("@Status", "01");
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO ActSection
+                                               (ActID
+                                                , ActDetailId
+                                                , Date
+                                                , Creator
+                                                , Created
+                                                , LastModifier
+                                                , LastModified )
+                                         OUTPUT Inserted.ActSectionId
+                                         VALUES
+                                               (@ActID
+                                                , @ActDetailId
+                                                , @Date
+                                                , @LoginId
+                                                , GETDATE()
+                                                , @LoginId
+                                                , GETDATE() )";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            dt = ds.Tables[0];
+
+            return ExecuteResult;
+        }
+
+        /// <summary> 新增批次行程資料</summary>
+        public DbExecuteInfo InsertActRundownData(PlaceSchoolMangViewModel vm, string ActId, string ActDetailId, string ActSectionId, DateTime date, int hour, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ActID", ActId);
+            parameters.Add("@ActDetailId", ActDetailId);
+            parameters.Add("@ActSectionId", ActSectionId);
+            parameters.Add("@ActPlaceID", vm.BatchAddActModel.PlaceID);
             parameters.Add("@Date", date.ToString("yyyy-MM-dd"));
             parameters.Add("@Stime", hour.ToString().PadLeft(2, '0'));
+            parameters.Add("@ETime", (hour + 1).ToString().PadLeft(2, '0'));
             parameters.Add("@Week", date.ToString("dddd"));
             parameters.Add("@Status", "01");
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
             string CommendText = $@"INSERT INTO ActRundown
-                                               (ActID
-                                                , Date
-                                                , Stime
-                                                , Week
-                                                , Status
-                                                , Creator
-                                                , Created
-                                                , LastModifier
-                                                , LastModified
-                                                , ModifiedReason
-                                                )
+                                               (ActID, 
+                                                ActDetailId, 
+                                                ActPlaceID, 
+                                                Date, 
+                                                STime, 
+                                                ETime, 
+                                                Week, 
+                                                RundownStatus, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
                                          VALUES
-                                               (@ActID
-                                                , @Date
-                                                , @Stime
-                                                , @Week
-                                                , @Status
-                                                , @LoginId
-                                                , GETDATE()
-                                                , @LoginId
-                                                , GETDATE()
-                                                , NULL)";
+                                               (@ActID, 
+                                                @ActDetailId, 
+                                                @ActPlaceID, 
+                                                @Date, 
+                                                @STime, 
+                                                @ETime, 
+                                                @Week, 
+                                                '01', 
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE())";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
             return ExecuteResult;
         }
+
+        //抓取該日的所有已核准時間
+        public DataTable GetRundown(string? placeID, DateTime date)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@PlaceID", placeID);
+            parameters.Add("@Date", date);
+
+            #endregion
+
+            CommandText = $@"SELECT ActRundownID, ActPlaceID, STime, ETime 
+                               FROM ActRundown 
+                              WHERE ActPlaceID = @PlaceID 
+                                AND [Date] = @Date 
+                                AND RundownStatus = '01'";
+
+
+            (DbExecuteInfo info, IEnumerable<RoleMangEditModel> entitys) dbResult = DbaExecuteQuery<RoleMangEditModel>(CommandText, parameters, true, DBAccessException);
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+            return ds.Tables[0];
+        }
+
+
+
+
+
+
 
         public List<SelectListItem> GetAllHour()
         {
@@ -532,5 +601,6 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
 
             return new List<SelectListItem>();
         }
+
     }
 }
