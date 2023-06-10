@@ -1,12 +1,15 @@
-﻿using MathNet.Numerics.Distributions;
+﻿using DataAccess;
+using MathNet.Numerics.Distributions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.ComponentModel;
+using System.Data;
 using System.Reflection;
 using System.Web.Mvc;
+using System.Web.WebPages.Html;
 using Utility;
 using WebPccuClub.DataAccess;
 using WebPccuClub.Global;
@@ -56,6 +59,7 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlPlaceSource = dbAccess.GetPlaceSource();
             ViewBag.ddlHour = dbAccess.GetAllHour();
             ViewBag.ddlActVerify = dbAccess.GetAllActVerify();
+            ViewBag.ddlAllClub = dbAccess.GetAllClub();
 
             ActListMangViewModel vm = new ActListMangViewModel();
             vm.CreateModel = new ActListMangCreateModel();
@@ -68,19 +72,19 @@ namespace WebPccuClub.Controllers
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
-            //ActListMangViewModel vm = new ActListMangViewModel();
+
+            ViewBag.ddlSDGs = dbAccess.GetSDGs();
+            ViewBag.ddlRundownStatus = dbAccess.GetAllRundownStatus();
+            ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify();
+
             vm.EditModel = dbAccess.GetEditData(submitBtn);
+
+            vm.EditModel.LstActRundown = dbAccess.GetEditRundownData(submitBtn);
+            vm.EditModel.LstProposal = dbAccess.GetEditProposalData(submitBtn);
+            vm.EditModel.LstOutSideFile = dbAccess.GetEditOutSideFileData(submitBtn);
+
             return View(vm);
         }
-
-        [Log(LogActionChineseName.匯入)]
-        public IActionResult Upload()
-        {
-            ActListMangViewModel vm = new ActListMangViewModel();
-            vm.ExcelModel = new ActListMangExcelResultModel();
-            return View(vm);
-        }
-
 
 
 
@@ -101,13 +105,13 @@ namespace WebPccuClub.Controllers
         [LogAttribute(LogActionChineseName.匯出Excel)]
         public IActionResult ExportSearchResult(ActListMangViewModel vm)
         {
-            string FileName = string.Format("{0}_{1}", LogActionChineseName.活動性質項目, DateTime.Now.ToString("yyyyMMdd"));
+            string FileName = string.Format("{0}_{1}", LogActionChineseName.已報備活動, DateTime.Now.ToString("yyyyMMdd"));
             vm.ResultModel = dbAccess.GetExportResult(vm.ConditionModel);
 
             if (vm.ResultModel != null && vm.ResultModel.Count > 0)
             {
                 IWorkbook workbook = new XSSFWorkbook();
-                List<int> LstWidth = new List<int> { 20, 130 };
+                List<int> LstWidth = new List<int> { 20, 20, 50, 50, 30, 30, 30, 50 };
 
                 ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
 
@@ -137,8 +141,14 @@ namespace WebPccuClub.Controllers
                 {
                     IRow dataRow = sheet.CreateRow(i + 1);
 
-                    //dataRow.CreateCell(0).SetCellValue(vm.ResultModel[i].ActTypeName);
-                    //dataRow.CreateCell(1).SetCellValue(vm.ResultModel[i].Memo);
+                    dataRow.CreateCell(0).SetCellValue(vm.ResultModel[i].ActId);
+                    dataRow.CreateCell(1).SetCellValue(vm.ResultModel[i].SchoolYear);
+                    dataRow.CreateCell(2).SetCellValue(vm.ResultModel[i].ClubName);
+                    dataRow.CreateCell(3).SetCellValue(vm.ResultModel[i].ActName);
+                    dataRow.CreateCell(4).SetCellValue(vm.ResultModel[i].SDate.Value.ToString("yyyy/MM/dd"));
+                    dataRow.CreateCell(5).SetCellValue(vm.ResultModel[i].EDate.Value.ToString("yyyy/MM/dd"));
+                    dataRow.CreateCell(6).SetCellValue(vm.ResultModel[i].ActVerifyText);
+                    dataRow.CreateCell(7).SetCellValue(vm.ResultModel[i].Created.Value.ToString("yyyy/MM/dd HH:mm:ss"));
 
                     foreach (ICell cell in dataRow.Cells)
                         cell.CellStyle = contentStyle;
@@ -158,17 +168,12 @@ namespace WebPccuClub.Controllers
 
 
 
-
-
         [Log(LogActionChineseName.新增儲存)]
         [ValidateInput(false)]
         public async Task<IActionResult> SaveNewData(ActListMangViewModel vm)
         {
             try
             {
-
-                vm.CreateModel.LstFile = new List<ActListMangFileModel>();
-
                 if (Request.Form.Files.Count > 0)
                 {
                     for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
@@ -177,28 +182,34 @@ namespace WebPccuClub.Controllers
                         {
                             var file = Request.Form.Files[i];
 
-                            string strFilePath = await upload.UploadFileAsync("HandOverClass01", file);
+                            string strFilePath = await upload.UploadFileAsync("ActOutSide", file);
 
-                            ActListMangFileModel model = new ActListMangFileModel();
+                            ActListFilesModel model = new ActListFilesModel();
+                            model.FileName = file.FileName;
                             model.FilePath = strFilePath;
 
-                            vm.CreateModel.LstFile.Add(model);
+                            vm.CreateModel.LstOutSideFile.Add(model);
                         }
-                        else if(Request.Form.Files[i].Name.Contains("CreateModel.ActProposal"))
+                        else if(Request.Form.Files[i].Name.Contains("Proposal"))
                         {
                             var file = Request.Form.Files[i];
 
                             string strFilePath = await upload.UploadFileAsync("ActProposal", file);
-                            
-                            vm.CreateModel.ActProposal = strFilePath;
+
+                            ActListFilesModel model = new ActListFilesModel();
+                            model.FileName = file.FileName;
+                            model.FilePath = strFilePath;
+
+                            vm.CreateModel.LstProposal.Add(model);
                         }
                     }
                 }
 
                 dbAccess.DbaInitialTransaction();
 
-                //新增Main
-                var dbResult = dbAccess.InsertData(vm, LoginUser);
+                DataTable dt = new DataTable();
+
+                var dbResult = dbAccess.InsertActMainData(vm, LoginUser, out dt);
 
                 if (!dbResult.isSuccess)
                 {
@@ -208,8 +219,10 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
-                //新增Detail
-                dbResult = dbAccess.InsertData(vm, LoginUser);
+                string ActId = dt.QueryFieldByDT("ActID");
+                dt.Dispose();
+
+                dbResult = dbAccess.InsertActDetailData(vm, ActId, LoginUser, out dt);
 
                 if (!dbResult.isSuccess)
                 {
@@ -219,8 +232,87 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
-                //FileOutSide
-                dbResult = dbAccess.InsertData(vm, LoginUser);
+                string ActDetailId = dt.QueryFieldByDT("ActDetailId");
+                dt.Dispose();
+
+                #region 整理一下..
+                List<ActListMangRundownModel> LstRundown = new List<ActListMangRundownModel>();
+                string[] arr = vm.CreateModel.strRundown.Split("|");
+
+                for (int i = 0; i <= arr.Length - 1; i++)
+                { 
+                    string[] arr2 = arr[i].Split(",");
+
+                    string PlaceSource = arr2[0];
+                    string Date = arr2[1];
+                    string STime = arr2[2];
+                    string ETime = arr2[3];
+                    string PlaceID = arr2[4];
+                    string PlaceText = arr2[5];
+
+                    if (LstRundown.Where(x => x.Date == Date && x.PlaceSource == PlaceSource).Count() > 0)
+                    {
+                        for (int j = 0; j <= LstRundown.Count - 1; j++)
+                        {
+                            for (int k = int.Parse(STime); k <= int.Parse(ETime) - 1; k++)
+                            {
+                                LstRundown[j].LstStime.Add(j);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ActListMangRundownModel model = new ActListMangRundownModel();
+                        model.PlaceSource = PlaceSource;
+                        model.Date = Date;
+                        model.STime = STime;
+                        model.ETime = ETime;
+                        model.PlaceID = PlaceID;
+                        model.PlaceText = PlaceText;
+
+                        for (int j = int.Parse(model.STime); j <= int.Parse(model.ETime) - 1; j++)
+                        {
+                            model.LstStime.Add(j);
+                        }
+
+                        LstRundown.Add(model);
+                    }
+                }
+                #endregion
+                List<string> WritedDate = new List<string>();
+
+                for (int i = 0; i <= LstRundown.Count - 1; i++)
+                {
+
+                    if (!WritedDate.Contains(LstRundown[i].Date))
+                    {
+                        dbResult = dbAccess.InsertActSectionData(vm, ActId, ActDetailId, DateTime.Parse(LstRundown[i].Date), LoginUser, out dt);
+
+                        if (!dbResult.isSuccess)
+                        {
+                            dbAccess.DbaRollBack();
+                            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                            vmRtn.ErrorMsg = "新增失敗";
+                            return Json(vmRtn);
+                        }
+
+                        WritedDate.Add(LstRundown[i].Date);
+                    }
+
+                    string ActSectionId = dt.QueryFieldByDT("ActSectionId");
+
+                    dbResult = dbAccess.InsertActRundownData(vm, ActId, ActDetailId, ActSectionId, LstRundown[i], LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "新增失敗";
+                        return Json(vmRtn);
+                    }
+                }
+
+                dbResult = dbAccess.InsertActProposalData(vm, ActId, ActDetailId, LoginUser);
 
                 if (!dbResult.isSuccess)
                 {
@@ -230,16 +322,26 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
-                //Files
-                dbResult = dbAccess.InsertData(vm, LoginUser);
+                dbResult = dbAccess.InsertOutSideData(vm, ActId, ActDetailId, LoginUser);
 
-                if (!dbResult.isSuccess)
+                if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
                 {
                     dbAccess.DbaRollBack();
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "新增失敗";
                     return Json(vmRtn);
                 }
+
+                dbResult = dbAccess.InsertOutSideFileData(vm, ActId, ActDetailId, LoginUser);
+
+                if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
 
                 dbAccess.DbaCommit();
             }
@@ -262,7 +364,7 @@ namespace WebPccuClub.Controllers
             {
                 dbAccess.DbaInitialTransaction();
 
-                var dbResult = dbAccess.UpdateData(vm, LoginUser);
+                var dbResult = dbAccess.UpdateActMainData(vm, LoginUser);
 
                 if (!dbResult.isSuccess)
                 {
@@ -271,6 +373,17 @@ namespace WebPccuClub.Controllers
                     vmRtn.ErrorMsg = "修改失敗";
                     return Json(vmRtn);
                 }
+
+                dbResult = dbAccess.UpdateActDetailData(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
 
                 dbAccess.DbaCommit();
             }
@@ -285,40 +398,6 @@ namespace WebPccuClub.Controllers
             return Json(vmRtn);
         }
 
-        [Log(LogActionChineseName.刪除)]
-        [ValidateInput(false)]
-        public IActionResult Delete(string Ser)
-        {
-            try
-            {
-                dbAccess.DbaInitialTransaction();
-
-                var dbResult = dbAccess.DeletetData(Ser);
-
-                if (!dbResult.isSuccess)
-                {
-                    vmRtn.ErrorCode =  (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "刪除失敗";
-                    return Json(vmRtn);
-                }
-
-                dbAccess.DbaCommit();
-            }
-            catch (Exception ex)
-            {
-                dbAccess.DbaRollBack();
-                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                vmRtn.ErrorMsg = "刪除失敗" + ex.Message;
-                return Json(vmRtn);
-            }
-
-            return Json(vmRtn);
-        }
-
-
-
-
-
 
         #region Jquery用
 
@@ -326,10 +405,11 @@ namespace WebPccuClub.Controllers
         public IActionResult ChkRundown(ActListMangViewModel vm)
         {
             bool CanUse = true;
+            List<int> hours = new List<int>();
 
-            //先判斷是否在開放時間  PlaceSource (01:校內, 02:校內其他, 03:校外
             if (vm.RundownModel.PlaceSource == "01")
             {
+                //確認場地開放狀態
                 CanUse = dbAccess.ChkPlaceSchoolCanUse(vm);
 
                 if (!CanUse)
@@ -338,17 +418,20 @@ namespace WebPccuClub.Controllers
                     vmRtn.ErrorMsg = "該場地目前不可使用";
                     return Json(vmRtn);
                 }
-            }
 
-            //再查看選擇的時間是否已有活動
-            if (vm.RundownModel.PlaceSource == "01")
-            {
-                CanUse = dbAccess.ChkHasAct(vm);
+                for (int j = int.Parse(vm.RundownModel.STime); j <= int.Parse(vm.RundownModel.ETime) - 1; j++)
+                {
+                    hours.Add(j);
+                }
+
+                //確認場地使用狀態
+                string msg = string.Empty;
+                CanUse = ChkCanBatchData(vm, DateTime.Parse(vm.RundownModel.Date), hours, out msg);
 
                 if (!CanUse)
                 {
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "該場地目前已被使用";
+                    vmRtn.ErrorMsg = msg;
                     return Json(vmRtn);
                 }
             }
@@ -376,9 +459,10 @@ namespace WebPccuClub.Controllers
                 }
 
 
-                CanUse = LstRundown.Where(m => m.STime == vm.RundownModel.STime && m.ETime == vm.RundownModel.ETime).ToList().Count > 0;
+                CanUse = LstRundown.Where(m => m.PlaceSource == vm.RundownModel.PlaceSource && m.Date == vm.RundownModel.Date && m.STime == vm.RundownModel.STime && m.ETime == vm.RundownModel.ETime && 
+                                               m.PlaceID == vm.RundownModel.PlaceID && m.PlaceText == vm.RundownModel.PlaceText).ToList().Count > 0;
 
-                if (!CanUse)
+                if (CanUse)
                 {
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "場地重複增加";
@@ -389,25 +473,87 @@ namespace WebPccuClub.Controllers
             return Json(vmRtn);
         }
 
+        //檢核
+        private bool ChkCanBatchData(ActListMangViewModel vm, DateTime date, List<int> hours, out string msg)
+        {
+            bool ok = true;
+            msg = string.Empty;
+
+            string PlaceID = vm.RundownModel.PlaceID;
+
+            if (string.IsNullOrEmpty(PlaceID)) { msg = "查找場地失敗"; return false; }
+
+
+            DataTable dt = dbAccess.GetRundown(PlaceID, date);
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                int STime = int.Parse(dr["STime"].ToString());
+
+                for (int i = 0; i <= hours.Count - 1; i++)
+                {
+                    if (STime == hours[i])
+                    {
+                        ok = false;
+                        msg = string.Format("以下時段已有其他活動。<br/> 日期:{0} 時間:{1}:00 ", date.ToString("yyyy/MM/dd"), hours[i]);
+                    }
+                }
+            }
+
+
+            return ok;
+        }
+
         [ValidateInput(false)]
         public IActionResult GetUsedByDate(string SelectedDate)
         {
             ActListMangViewModel vm = new ActListMangViewModel();
-            vm.LstPlaceUsedModel = dbAccess.GetPlaceUsedData(SelectedDate);
+            //vm.LstPlaceUsedModel = dbAccess.GetPlaceUsedData(SelectedDate);
+
+            //先抓取DB資料
+            List<ActListMangPlaceUsedModel> LstNewPlaceUsed = dbAccess.GetPlaceUsedData(SelectedDate);
+            List<ActListMangPlaceUsedModel> LstNewPlaceUsed2 = new List<ActListMangPlaceUsedModel>();
+
+            foreach (ActListMangPlaceUsedModel item in LstNewPlaceUsed)
+            {
+                ActListMangPlaceUsedModel model = new ActListMangPlaceUsedModel();
+                model.PlaceName = item.PlaceName;
+                model.STime = item.STime;
+                model.ETime = item.ETime;
+
+                var SelectedItem = LstNewPlaceUsed2.Where(m => m.PlaceName == item.PlaceName).FirstOrDefault();
+
+                if (SelectedItem != null)
+                {
+                    if (int.Parse(model.STime) < int.Parse(SelectedItem.STime))
+                    {
+                        SelectedItem.STime = model.STime;
+                    }
+
+                    if (int.Parse(model.ETime) > int.Parse(SelectedItem.ETime))
+                    {
+                        SelectedItem.ETime = model.ETime;
+                    }
+                }
+                else
+                {
+                    LstNewPlaceUsed2.Add(model);
+                }
+            }
+
+
+            vm.LstPlaceUsedModel = LstNewPlaceUsed2;
+
 
             return PartialView("_PlaceUsedPartial", vm);
         }
 
-        public IActionResult GetTodayAct(string PlaceSource, string SelectedDate)
+        public IActionResult GetTodayAct(string PlaceId, string SelectedDate)
         {
             ActListMangViewModel vm = new ActListMangViewModel();
 
-            if (string.IsNullOrEmpty(PlaceSource) || string.IsNullOrEmpty(SelectedDate))
-            {
-                return PartialView("_PlaceTodayActPartial", vm);
-            }
 
-            vm.LstTodayActModel = dbAccess.GetTodayAct(PlaceSource, SelectedDate);
+            vm.LstTodayActModel = dbAccess.GetTodayAct(PlaceId, SelectedDate);
 
 
             return PartialView("_PlaceTodayActPartial", vm);
@@ -417,7 +563,7 @@ namespace WebPccuClub.Controllers
         [ValidateInput(false)]
         public IActionResult InitBuildSelect(string PlaceSource)
         {
-            if (PlaceSource != "03")
+            if (PlaceSource == "01")
             {
                 ViewBag.ddlBuild = dbAccess.GetBuild();
             }

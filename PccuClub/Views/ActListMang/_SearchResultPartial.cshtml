@@ -53,14 +53,12 @@
                                 <span class="text-warning">@item.ActVerifyText</span>
                             }
                         </td>
-                        <td class="text-center text-sm">@item.Created</td>
+                        <td class="text-center text-sm">@item.Created.Value.ToString("yyyy/MM/dd HH:mm:ss")</td>
                         <td class="text-center text-sm">
                             @using (Html.BeginForm("Edit", "ActListMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
                             {
                                 <button type="submit" value="@item.ActId" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
                             }
-
-                            <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel(@item.ActId);">刪除</a>
                         </td>
                     </tr>
                 }
@@ -107,29 +105,6 @@
         $("#@Html.IdFor(m => m.ConditionModel.Page)").val(idx - 1);
 
         GoSearch();
-    }
-
-    function ChkDel(Ser) {
-        $.confirm({
-            title: '確定刪除?',
-            content: '刪除後資料無法復原!',
-            buttons: {
-                確定: function () {
-                    SendAjax({
-                        url: '@Url.Action("Delete")',
-                        data: { 'Ser': Ser },
-                        success: function (result) {
-                            if (result.errorCode == 0) { $.alert("刪除成功"); }
-                            else { $.alert(result.errorMsg); }
-
-                            GoSearch();
-                        }
-                    });
-                },
-                取消: function () {
-                },
-            }
-        });
     }
 
 

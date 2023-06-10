@@ -9,6 +9,7 @@
     List<SelectListItem> LstSDGs = ViewBag.ddlSDGs;
     List<SelectListItem> LstPassport = ViewBag.ddlPassport;
     List<SelectListItem> LstPlaceSource = ViewBag.ddlPlaceSource;
+    List<SelectListItem> LstClub = ViewBag.ddlAllClub;
 
 }
 <!-- Main content -->
@@ -28,7 +29,9 @@
                             <td colspan="2" class="table-secondary font-weight-bold">Step1. 報備資訊</td>
                             <tr>
                                 <th width="15%">@Html.LabelFor(m => m.CreateModel.ClubId)<span class="required">*</span></th>
-                                <td>@Html.TextBoxFor(m => m.CreateModel.ClubId, new {@class = "form-control", placeholder="請輸入社團代號"})</td>
+                                <td>
+                                        @Html.DropDownListFor(m => m.CreateModel.ClubId ,(List<SelectListItem>)ViewBag.ddlAllClub,"請選擇社團", new {@class = "form-control"})
+                                </td>
                             </tr>
                             <tr>
                                 <th width="15%">@Html.LabelFor(m => m.CreateModel.SchoolYear)<span class="required">*</span></th>
@@ -75,7 +78,16 @@
                             <tr>
                                 <th width="15%">聯合國SDGs永續發展目標<span class="required">*</span></th>
                                 <td>
-                                        @Html.DropDownListFor(m => m.CreateModel.SDGs ,(List<SelectListItem>)ViewBag.ddlSDGs,"請選擇", new {@class = "form-control"})
+                                    <div id="divSDGs" class="row p-2">
+                                            @foreach (SelectListItem item in LstSDGs)
+                                            {
+                                            <div class="col-md-3 custom-control custom-checkbox">
+                                                <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                       type="checkbox" id="@string.Format("SDGs_{0}", item.Value)" value="@item.Value">
+                                                <label class="custom-control-label" for="@string.Format("SDGs_{0}", item.Value)">@item.Text</label>
+                                            </div>
+                                            }
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
@@ -191,11 +203,20 @@
                                     </span>
                                 </th>
                                 <td>
-                                    <label class="btn btn-outline-primary mb-0">
-                                            @Html.TextBoxFor(m => m.CreateModel.ActProposal, new {@style="display:none;", type="file", accept=".doc,.docx,.odt,.pdf"})
-                                        <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
-                                    </label>
-                                    <span class="text-sm mx-2 text-muted" id="ActProposalfilename">尚未選擇檔案...</span>
+                                    <div class="target_list_proposal">
+                                        <div class="d-block mb-1 item">
+                                            <label class="btn btn-outline-primary mb-0">
+                                                <input id="ProposalFile0" name="ProposalFile0" type="file" class="filesupload" style="display:none;" accept=".doc,.docx,.odt,.pdf" />
+                                                <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                            </label>
+                                            <span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                            <button class="del-btn btn btn-sm btn-outline-secondary hidden"
+                                                    type="button">
+                                                <i class="fas fa-times"></i> 移除
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button id="add_proposal_input_btn" class="btn btn-secondary btn-sm mt-3 d-block" type="button">新增 <i class="icon-plus"></i></button>
                                 </td>
                             </tr>
                             </tbody>
@@ -266,8 +287,6 @@
                                 </th>
                                 <td>
                                     <div class="target_list">
-
-
                                         <div class="d-block mb-1 item">
                                             <label class="btn btn-outline-primary mb-0">
                                                 <input id="File0" name="File0" type="file" class="filesupload" style="display:none;" accept=".doc,.docx,.odt,.pdf" />
@@ -279,7 +298,6 @@
                                                 <i class="fas fa-times"></i> 移除
                                             </button>
                                         </div>
-
                                     </div>
                                     <button id="add_input_btn" class="btn btn-secondary btn-sm mt-3 d-block" type="button">新增 <i class="icon-plus"></i></button>
                                 </td>
@@ -314,7 +332,7 @@
                         </table>
                     </div>
                     @Html.HiddenFor(m => m.CreateModel.strRundown)
-                    <input type="hidden" id="hidChk" />
+                    @*<input type="hidden" id="hidChk" />*@
                     <!-- /.card-body -->
                     <div class="card-footer d-flex justify-content-end">
                         <button id="Reset" type="reset" class="mx-1 btn btn-outline-dark">重設</button>
@@ -335,57 +353,36 @@
 <script>
 
     $(document).ready(function () {
-        $(document).on('change', '#@Html.IdFor(m => m.CreateModel.ActDate)', function () {
-            var SelectedDate = $(this).val()
-            $("#selected_date").removeClass("hidden").children("span").text(SelectedDate)
-
-
-            SendAjax({
-                url: '@Url.Action("GetUsedByDate")',
-                data: { 'SelectedDate': SelectedDate },
-                success: function (result) {
-                    $("#usedTable").html(result);
-                },
-                error: function (response) {
-                    $.alert(result.errorMsg);
-                }
-            });
-
-            GetBrrowStatus();
-
-        });
-
-        $("#divSDGs .custom-control-input").click(function () {
-            var currentCheckbox = $(this);
-            $("#divSDGs .custom-control-input").not(currentCheckbox).prop("checked", false);
-        });
 
         $("#divActType .custom-control-input").click(function () {
             var currentCheckbox = $(this);
             $("#divActType .custom-control-input").not(currentCheckbox).prop("checked", false);
         });
 
-
         $("[id ^= 'PlaceSource_']").on('change', function () {
 
-            if ($("#@Html.IdFor(m => m.CreateModel.strRundown)").val() != "") {
+            InitBuildSelect($("[id ^= 'PlaceSource_']:checked").val());
+        });
 
-                var ok = confirm('切換會清除目前行程，是否繼續？');
+    });
 
-                if (ok) {
-                    $('#myTable tbody tr').remove();
-                    $("#@Html.IdFor(m => m.CreateModel.strRundown)").val("");
+    $(document).on('change', '#@Html.IdFor(m => m.CreateModel.ActDate)', function () {
+        var SelectedDate = $(this).val()
+        $("#selected_date").removeClass("hidden").children("span").text(SelectedDate)
 
-                    InitBuildSelect($("[id ^= 'PlaceSource_']:checked").val());
-                }
-            }
-            else {
-                $('#myTable tbody tr').remove();
-                $("#@Html.IdFor(m => m.CreateModel.strRundown)").val("");
-
-                InitBuildSelect($("[id ^= 'PlaceSource_']:checked").val());
+        SendAjax({
+            url: '@Url.Action("GetUsedByDate")',
+            data: { 'SelectedDate': SelectedDate },
+            success: function (result) {
+                $("#usedTable").html(result);
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
             }
         });
+
+        GetBrrowStatus();
+
     });
 
     $(document).on('click', '.dateItem .del-btn-d', function () {
@@ -393,14 +390,10 @@
             return false
         } else {
             $(this).closest(".dateItem").remove()
+
+            UpdateInfo();
         }
     })
-
-    function Reset() {
-        $('#filename').html("尚未選擇檔案...");
-    }
-
-
 
     function addRundown() {
 
@@ -409,24 +402,20 @@
         var start_hour = $('#@Html.IdFor(m => m.CreateModel.STime)').val();
         var end_hour = $('#@Html.IdFor(m => m.CreateModel.ETime)').val();
 
-        var place;
+        var placeID;
         var placetext;
-        if (PlaceSource == "01" || PlaceSource == "02") {
-            place = $('#@Html.IdFor(m => m.CreateModel.PlaceId) option:selected').val();
+        if (PlaceSource == "01") {
+            placeID = $('#@Html.IdFor(m => m.CreateModel.PlaceId) option:selected').val();
             placetext = $('#@Html.IdFor(m => m.CreateModel.PlaceId) option:selected').text();
         } else {
-            place = $('#@Html.IdFor(m => m.CreateModel.PlaceName)').val();
+            placeID = $('#@Html.IdFor(m => m.CreateModel.PlaceName)').val();
             placetext = $('#@Html.IdFor(m => m.CreateModel.PlaceName)').val();
         }
-
 
         if ($date == "") { $.alert("請選擇日期"); return false; }
         if (start_hour == "") { $.alert("請選擇開始時間"); return false; }
         if (end_hour == "") { $.alert("請選擇結束時間"); return false; }
-        if (place == "" || place == undefined) { $.alert("請輸入場地名稱"); return false; }
-
-
-
+        if (placeID == "" || placeID == undefined) { $.alert("請輸入場地名稱"); return false; }
 
         var data = new FormData();
 
@@ -436,11 +425,10 @@
         data.append('@Html.NameFor(m => m.RundownModel.Date)', $date);
         data.append('@Html.NameFor(m => m.RundownModel.STime)', start_hour);
         data.append('@Html.NameFor(m => m.RundownModel.ETime)', end_hour);
-        data.append('@Html.NameFor(m => m.RundownModel.PlaceID)', place);
+        data.append('@Html.NameFor(m => m.RundownModel.PlaceID)', placeID);
         data.append('@Html.NameFor(m => m.RundownModel.PlaceText)', placetext);
         data.append('@Html.NameFor(m => m.RundownModel.strRundown)', strRundown);
 
-        $("#hidChk").val(1);
         SendAjax({
             url: '@Url.Action("ChkRundown")',
             data: data,
@@ -448,9 +436,9 @@
             contentType: false,
             success: function (result) {
                 if (result.errorCode == 0) {
-                    $("#hidChk").val(result.errorCode);
+                    DrawTable(PlaceSource, $date, start_hour, end_hour, placeID, placetext);
                 }
-                else { $.alert(result.errorMsg); }
+                else { $.alert(result.errorMsg); return; }
             },
             error: function (response) {
                 $.alert(result.errorMsg);
@@ -458,11 +446,13 @@
         });
 
 
-        alert($("#hidChk"));
+    }
 
+
+    function DrawTable(PlaceSource, $date, start_hour, end_hour, placeID, placetext) {
 
         // 產生tr物件
-        var eventHtml = '<tr class="dateItem">\n';
+        var eventHtml = '<tr class="dateItem" data="' + PlaceSource + "|" + $date + "|" + start_hour + "|" + end_hour + "|" + placeID + "|" + placetext + '">\n';
         eventHtml += '<th>' + $date + '</th>\n';
         eventHtml += '<td>' + start_hour + ':00' + '~' + end_hour + ':00' + '</td>\n';
         eventHtml += '<td>' + placetext + '</td>\n';
@@ -471,20 +461,29 @@
 
         $("#event_des").append(eventHtml)
 
+        UpdateInfo()
+    }
 
+    function UpdateInfo() {
         var strRundown = "";
+        //$("#step4").hide().removeClass("show");
 
         $('#myTable tbody tr').each(function () {
-            var tbday = $(this).find('td:eq(0)').text();
-            var tbstartDate = $(this).find('td:eq(1)').text();
-            var tbendDate = $(this).find('td:eq(2)').text();
-            var tbplace = $(this).find('td:eq(3)').text();
 
-            if (PlaceSource == "01" || PlaceSource == "02") {
-                tbplace = place;
-            }
+            var dataValue = $(this).attr('data');;
 
-            var row = PlaceSource + "," + $date + "," + start_hour + "," + end_hour + "," + place + "," + placetext;
+            var arr = dataValue.split("|");
+
+            var PlaceSource = arr[0];
+            var dd = arr[1];
+            var start_hour = arr[2];
+            var end_hour = arr[3];
+            var placeID = arr[4];
+            var placetext = arr[5];
+
+            if (PlaceSource == "03") { $("#step4").fadeIn().addClass("show"); }
+
+            var row = PlaceSource + "," + dd + "," + start_hour + "," + end_hour + "," + placeID + "," + placetext;
 
             // 拼接字符串
             if (strRundown !== "") {
@@ -493,11 +492,10 @@
             strRundown += row;
         });
 
-
         $("#@Html.IdFor(m => m.CreateModel.strRundown)").val(strRundown);
 
-    }
 
+    }
 
 
     function InitBuildSelect(PlaceSource) {
@@ -511,24 +509,17 @@
         });
 
         $("#brrowTable").html("");
-
-        if (PlaceSource != "03") {
-            $("#step4").hide().removeClass("show");
-        }
-        else {
-            $("#step4").fadeIn().addClass("show");
-        }
     }
 
     function GetBrrowStatus() {
-        var PlaceSource = $("#@Html.IdFor(m => m.CreateModel.PlaceId)").val();
+        var PlaceId = $("#@Html.IdFor(m => m.CreateModel.PlaceId)").val();
         var SelectedDate = $("#@Html.IdFor(m => m.CreateModel.ActDate)").val();
 
         $("#brrowTable").html("");
 
         SendAjax({
             url: '@Url.Action("GetTodayAct")',
-            data: { 'PlaceSource': PlaceSource, 'SelectedDate': SelectedDate },
+            data: { 'PlaceId': PlaceId, 'SelectedDate': SelectedDate },
             success: function (result) {
                 $("#brrowTable").html(result);
             },
@@ -536,8 +527,6 @@
                 $.alert(result.errorMsg);
             }
         });
-
-
     }
 
     $(document).ready(function () {
@@ -590,31 +579,63 @@
                 return num;
             }
         }
+
+        //proposal多檔
+        if ($(".target_list_proposal").length > 0) {
+
+            $(document).on('click', '#add_proposal_input_btn', function () {
+
+                var num = check_proposalNum();
+                var addItem = '<div class="d-block mb-1 item">';
+                addItem += '<label class="btn btn-outline-primary mb-0">';
+                addItem += '<input id="ProposalFile' + num + '" style="display:none;" req class="filesupload" data-title="附件" type="file" name="ProposalFile' + num + '" value="" accept=".doc,.docx,.odt,.pdf" data-file="">';
+                addItem += '<i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案';
+                addItem += '</label>';
+                addItem += '<span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>';
+                addItem += '<button class="del-btn btn btn-sm btn-outline-secondary" type="button"><i class="fas fa-times"></i> 移除</button>';
+                addItem += '</div>';
+                if ($(".target_list_proposal").find("[type='file']").length <= 7) {
+                    $(".target_list_proposal").append(addItem);
+                    $(".target_list_proposal .del-btn").removeClass("hidden")
+                }
+            })
+
+            $(document).on('click', '.target_list_proposal .del-btn', function () {
+                var num = $(".target_list_proposal").find("[type='file']").length
+
+                if (confirm("確認清除？") == false) {
+                    return false
+                } else {
+                    if (num >= 2) {
+                        $(this).closest(".item").remove()
+                        $("#add_proposal_input_btn").prop("disabled", false)
+                    }
+
+                    if (num <= 2) {
+                        $(".target_list_proposal .del-btn").addClass("hidden")
+                    } else {
+                        $(".target_list_proposal .del-btn").removeClass("hidden")
+                    }
+                }
+            })
+
+            function check_proposalNum() {
+                var num = $(".target_list_proposal").find(".d-block.mb-1.item").length
+                if (num >= 7) {
+                    $("#add_proposal_input_btn").prop("disabled", true)
+                } else {
+                    $("#add_proposal_input_btn").prop("disabled", false)
+                }
+                return num;
+            }
+        }
+
         $(document).on('change', ".filesupload", function (e) {
             var filename = e.target.files[0].name;
             $(this).closest('.item').find('.text-muted#filename').text(filename);
         });
 
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-    $('#@Html.IdFor(m => m.CreateModel.ActProposal)').change(function (e) {
-        var geekss = e.target.files[0].name;
-        $('#ActProposalfilename').text(geekss);
-    });
-
-
 
     function SaveData() {
 
@@ -634,26 +655,14 @@
         var SDGs = $('#@Html.IdFor(m => m.CreateModel.SDGs)').val();
         var PassPort = $('#@Html.IdFor(m => m.CreateModel.PassPort)').val();
 
+        var arrSDGs = [];
+        $("input[id ^= 'SDGs_']:checked").each(function () {
+            arrSDGs.push($(this).val());
+        });
+
+        var strSDGs = arrSDGs.join(",");
+
         var strRundown = $('#@Html.IdFor(m => m.CreateModel.strRundown)').val();
-
-
-        var ActProposal = $('#@Html.IdFor(m => m.CreateModel.ActProposal)')[0].files[0];
-
-        if (typeof ActProposal !== 'undefined') {
-            var fileExtension = ActProposal.name.split('.').pop().toLowerCase();
-
-            if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'pdf' && fileExtension !== 'odt') {
-                $.alert("檔案類型不符合");
-                return;
-            }
-
-            data.append('@Html.NameFor(m => m.CreateModel.ActProposal)', ActProposal);
-        }
-        else {
-            $.alert("活動企劃書不可為空白"); return;
-        }
-
-
 
         var LeaderName = $('#@Html.IdFor(m => m.CreateModel.LeaderName)').val();
         var LeaderPhone = $('#@Html.IdFor(m => m.CreateModel.LeaderPhone)').val();
@@ -663,12 +672,40 @@
         var ManagerPhone = $('#@Html.IdFor(m => m.CreateModel.ManagerPhone)').val();
         var ManagerTel = $('#@Html.IdFor(m => m.CreateModel.ManagerTel)').val();
 
+        var allEmpty = true;
+        for (var i = 0; i <= 8; i++) {
+            var file = $('#ProposalFile' + i);
 
-        if (PlaceSource = "03") {
+            if (file.length > 0 && file.val() !== '') {
+                allEmpty = false;
+                var File = $('#ProposalFile' + i)[0].files[0];
+                if (typeof File !== 'undefined') {
+                    var fileExtension = File.name.split('.').pop().toLowerCase();
+
+                    if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'pdf' && fileExtension !== 'odt') {
+                        $.alert("檔案類型不符合");
+                        return;
+                    }
+
+                    data.append('@Html.NameFor(m => m.Proposal)', File);
+                }
+            }
+        }
+
+        if (allEmpty) { $.alert("活動企劃書不可為空白"); return; }
+
+
+        var arr = strRundown.split("|").map(function (item) {
+            return item.trim();
+        });
+
+        if (arr[0].indexOf("03") !== -1) {
+            var allEmpty2 = true;
             for (var i = 0; i <= 8; i++) {
                 var file = $('#File' + i);
 
                 if (file.length > 0 && file.val() !== '') {
+                    allEmpty2 = false;
                     var File = $('#File' + i)[0].files[0];
                     if (typeof File !== 'undefined') {
                         var fileExtension = File.name.split('.').pop().toLowerCase();
@@ -682,18 +719,26 @@
                     }
                 }
             }
+
+            if (allEmpty2) { $.alert("外出活動附件不可為空白"); return; }
         }
 
         var ActVerify = $('#@Html.IdFor(m => m.CreateModel.ActVerify)').val();
         var ActVerifyMemo = $('#@Html.IdFor(m => m.CreateModel.ActVerifyMemo)').val();
 
 
-
-
-
-
-
-
+        if (ClubID == "") { $.alert("社團代號不可為空白"); return; }
+        if (SchoolYear == "") { $.alert("學年度不可為空白"); return; }
+        if (ActName == "") { $.alert("活動名稱不可為空白"); return; }
+        if (StaticOrDynamic == "") { $.alert("活動類型不可為空白"); return; }
+        if (ActInOrOut == "") { $.alert("活動地點不可為空白"); return; }
+        if (Capacity == "") { $.alert("活動人數不可為空白"); return; }
+        if (ActType == "") { $.alert("活動性質不可為空白"); return; }
+        if (UseITEquip == "") { $.alert("使用資訊設備不可為空白"); return; }
+        if (ActShortDesc == "") { $.alert("活動簡介不可為空白"); return; }
+        if (PassPort == "") { $.alert("申請全人學習護照不可為空白"); return; }
+        if (strSDGs == "") { $.alert("需選擇SDGs"); return; }
+        if (ActVerify == "") { $.alert("審核狀態不可為空白"); return; }
 
         data.append('@Html.NameFor(m => m.CreateModel.ClubId)', ClubId);
         data.append('@Html.NameFor(m => m.CreateModel.SchoolYear)', SchoolYear);
@@ -704,15 +749,18 @@
         data.append('@Html.NameFor(m => m.CreateModel.ActType)', ActType);
         data.append('@Html.NameFor(m => m.CreateModel.UseITEquip)', UseITEquip);
         data.append('@Html.NameFor(m => m.CreateModel.ActShortDesc)', ActShortDesc);
-        data.append('@Html.NameFor(m => m.CreateModel.SDGs)', SDGs);
+        data.append('@Html.NameFor(m => m.CreateModel.SDGs)', strSDGs);
         data.append('@Html.NameFor(m => m.CreateModel.PassPort)', PassPort);
+
         data.append('@Html.NameFor(m => m.CreateModel.strRundown)', strRundown);
+
         data.append('@Html.NameFor(m => m.CreateModel.LeaderName)', LeaderName);
         data.append('@Html.NameFor(m => m.CreateModel.LeaderPhone)', LeaderPhone);
         data.append('@Html.NameFor(m => m.CreateModel.LeaderTel)', LeaderTel);
         data.append('@Html.NameFor(m => m.CreateModel.ManagerName)', ManagerName);
         data.append('@Html.NameFor(m => m.CreateModel.ManagerPhone)', ManagerPhone);
         data.append('@Html.NameFor(m => m.CreateModel.ManagerTel)', ManagerTel);
+
         data.append('@Html.NameFor(m => m.CreateModel.ActVerify)', ActVerify);
         data.append('@Html.NameFor(m => m.CreateModel.ActVerifyMemo)', ActVerifyMemo);
 
@@ -728,7 +776,7 @@
                         content: "新增成功",
                         buttons: {
                             確定: function () {
-                                Reset();
+                                window.location = $("#Back").attr("href");
                             },
                         }
                     });
@@ -740,4 +788,9 @@
             }
         });
     }
+
+    function Reset() {
+        $('#filename').html("尚未選擇檔案...");
+    }
+
 </script>

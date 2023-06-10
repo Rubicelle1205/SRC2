@@ -1,0 +1,409 @@
+﻿@model WebPccuClub.Models.ActListMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+    List<SelectListItem> LstSDGs = ViewBag.ddlSDGs;
+    List<string> LstEditSDGs = Model.EditModel.SDGs != null ? Model.EditModel.SDGs.Split(",").ToList() : null;
+}
+
+<head>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                @if (null != Model.EditModel)
+                {
+                    <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                        <div class="card">
+                            <div class="card-body table-responsive-sm">
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                    <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                                </h6>
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.Created)</th>
+                                            <td>
+                                                @Model.EditModel.Created.Value.ToString("yyyy/MM/dd HH:mm:ss")
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.LastModified)</th>
+                                            <td>
+                                                @Model.EditModel.LastModified.Value.ToString("yyyy/MM/dd HH:mm:ss")
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" class="table-secondary font-weight-bold">Step1. 報備資訊</td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.ClubID)</th>
+                                            <td>
+                                                @Html.DisplayFor(m => m.EditModel.ClubID)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.ActName)</th>
+                                            <td>
+                                                @Html.DisplayFor(m => m.EditModel.ActName)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.BrrowUnit)</th>
+                                            <td>
+                                                @Html.DisplayFor(m => m.EditModel.BrrowUnitText)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.StaticOrDynamic)</th>
+                                            <td>
+                                                @Html.DisplayFor(m => m.EditModel.StaticOrDynamicText)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.ActInOrOut)</th>
+                                            <td>
+                                                @Html.DisplayFor(m => m.EditModel.ActInOrOutText)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.Capacity)</th>
+                                            <td>
+                                                @Html.DisplayFor(m => m.EditModel.Capacity)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.UseITEquip)</th>
+                                            <td>
+                                                @Html.DisplayFor(m => m.EditModel.UseITEquipText)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.ActType)</th>
+                                            <td>
+                                                @Html.DisplayFor(m => m.EditModel.ActTypeName)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.ShortDesc)</th>
+                                            <td>
+                                                @Html.DisplayFor(m => m.EditModel.ShortDesc)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">@Html.LabelFor(m => m.EditModel.PassPort)</th>
+                                            <td>
+                                                @Html.DisplayFor(m => m.EditModel.PassPortText)
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="card-body table-responsive-sm">
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                                </h6>
+                                <table class="table table-bordered">
+                                    <tbody>
+                                    <td colspan="2" class="table-secondary font-weight-bold">Step2. 活動行程</td>
+                                    <tr>
+                                        <th width="15%">行程<span class="required"></span></th>
+                                        <td>
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">日期</th>
+                                                        <th scope="col">開始時間</th>
+                                                        <th scope="col">結束時間</th>
+                                                        <th scope="col">地點</th>
+                                                        <th scope="col">狀態</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                        @foreach (var item in Model.EditModel.LstActRundown)
+                                                        {
+                                                        <tr>
+                                                            <th>@item.Date</th>
+                                                            <td>@item.STime</td>
+                                                            <td>@item.ETime</td>
+                                                            <td>@item.PlaceText</td>
+                                                                @if (item.RundownStatus == "01")
+                                                                {
+                                                                <td class="text-success">@item.RundownStatusText</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                <td class="text-secondary">@item.RundownStatusText</td>
+                                                                }
+                                                        </tr>
+                                                        }
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="card-body table-responsive-sm">
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                                </h6>
+                                <table class="table table-bordered">
+                                    <tbody>
+                                    <td colspan="2" class="table-secondary font-weight-bold">Step3. 活動企劃書</td>
+                                    <tr>
+                                        <th width="15%">
+                                            附件<span class="required"></span><br /><span class="text-xs text-danger font-weight-normal">如：活動企劃書</span>
+                                        </th>
+                                        <td>
+                                                @foreach (var item in Model.EditModel.LstProposal)
+                                                {
+                                                <div>
+                                                    <a class="text-sm text-muted" href="@item.FilePath" target="_blank">
+                                                        <i class="fa-regular fa-file mr-2"></i>@item.FileName
+                                                    </a>
+                                                </div>
+                                                }
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                            <div class="card-body table-responsive-sm">
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                                </h6>
+                                <table class="table table-bordered">
+                                    <tbody>
+                                    <td colspan="2" class="table-secondary font-weight-bold">Step4. 校外活動其他資訊</td>
+                                    <tr>
+                                        <td colspan="2" class="table-warning font-weight-bold">領隊資訊</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">姓名<span class="required"></span></th>
+
+                                            @if (!string.IsNullOrEmpty(Model.EditModel.LeaderName))
+                                            {
+                                            <td>@Model.EditModel.LeaderName</td>
+                                            }
+                                            else
+                                            {
+                                            <td>-</td>
+                                            }
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">電話<span class="required"></span></th>
+                                            @if (!string.IsNullOrEmpty(Model.EditModel.LeaderTel))
+                                            {
+                                            <td>@Model.EditModel.LeaderTel</td>
+                                            }
+                                            else
+                                            {
+                                            <td>-</td>
+                                            }
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">手機<span class="required"></span></th>
+                                            @if (!string.IsNullOrEmpty(Model.EditModel.LeaderPhone))
+                                            {
+                                            <td>@Model.EditModel.LeaderPhone</td>
+                                            }
+                                            else
+                                            {
+                                            <td>-</td>
+                                            }
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="table-warning font-weight-bold">活動負責人資訊</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">姓名<span class="required"></span></th>
+                                            @if (!string.IsNullOrEmpty(Model.EditModel.ManagerName))
+                                            {
+                                            <td>@Model.EditModel.ManagerName</td>
+                                            }
+                                            else
+                                            {
+                                            <td>-</td>
+                                            }
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">電話<span class="required"></span></th>
+                                            @if (!string.IsNullOrEmpty(Model.EditModel.ManagerTel))
+                                            {
+                                            <td>@Model.EditModel.ManagerTel</td>
+                                            }
+                                            else
+                                            {
+                                            <td>-</td>
+                                            }
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">手機<span class="required"></span></th>
+                                            @if (!string.IsNullOrEmpty(Model.EditModel.ManagerPhone))
+                                            {
+                                            <td>@Model.EditModel.ManagerPhone</td>
+                                            }
+                                            else
+                                            {
+                                            <td>-</td>
+                                            }
+                                    </tr>
+                                    <td colspan="2" class="table-warning font-weight-bold">校外活動附件</td>
+                                    <tr>
+                                        <th width="15%">
+                                            附件<span class="required"></span><br /><span class="text-xs text-danger font-weight-normal">如：人員暨保險名冊</span>
+                                        </th>
+                                        <td>
+                                                @foreach (var item in Model.EditModel.LstOutSideFile)
+                                                {
+                                                <div>
+                                                    <a class="text-sm text-muted" href="@item.FilePath" target="_blank">
+                                                        <i class="fa-regular fa-file mr-2"></i>@item.FileName
+                                                    </a>
+                                                </div>
+                                                }
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="card-body table-responsive-sm">
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                                </h6>
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <th width="15%">聯合國SDGs永續發展目標<span class="required">*</span></th>
+                                            <td>
+                                                <div class="row p-2">
+                                                    @foreach (SelectListItem item in LstSDGs)
+                                                    {
+                                                        if (LstEditSDGs != null)
+                                                        {
+                                                            if (LstEditSDGs.Contains(item.Value))
+                                                            {
+                                                                <div class="col-md-3 custom-control custom-checkbox">
+                                                                    <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                                           type="checkbox" checked id="@string.Format("SDGs_{0}", item.Value)" value="@item.Value">
+                                                                    <label class="custom-control-label" for="@string.Format("SDGs_{0}", item.Value)">@item.Text</label>
+                                                                </div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="col-md-3 custom-control custom-checkbox">
+                                                                    <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                                           type="checkbox" id="@string.Format("SDGs_{0}", item.Value)" value="@item.Value">
+                                                                    <label class="custom-control-label" for="@string.Format("SDGs_{0}", item.Value)">@item.Text</label>
+                                                                </div>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="col-md-3 custom-control custom-checkbox">
+                                                                <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                                       type="checkbox" id="@string.Format("SDGs_{0}", item.Value)" value="@item.Value">
+                                                                <label class="custom-control-label" for="@string.Format("SDGs_{0}", item.Value)">@item.Text</label>
+                                                            </div>
+                                                        }
+                                                    }
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">審核狀態<span class="required">*</span></th>
+                                            <td>
+                                                @Html.DropDownListFor(m => m.EditModel.ActVerify ,(List<SelectListItem>)ViewBag.ddlAllActVerify,"請選擇審核狀態", new {@class = "form-control"})
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th width="15%">備註<span class="required"></span></th>
+                                            <td>@Html.TextAreaFor(m => m.EditModel.ActVerifyMemo, new {@class="form-control", rows="5", placeholder="請輸入審核備註"})</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            @Html.HiddenFor(m => m.EditModel.ActID)
+                            <div class="card-footer d-flex justify-content-end">
+                                <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
+                                <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                            </div>
+                        </div>
+                        <!-- /.card -->
+                    </form>
+                }
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var ActVerify = $('#@Html.IdFor(m => m.EditModel.ActVerify)').val();
+        var ActVerifyMemo = $('#@Html.IdFor(m => m.EditModel.ActVerifyMemo)').val();
+        var ActID = $('#@Html.IdFor(m => m.EditModel.ActID)').val();
+
+        var arrSDGs = [];
+        $("input[id ^= 'SDGs_']:checked").each(function () {
+            arrSDGs.push($(this).val());
+        });
+
+        var strSDGs = arrSDGs.join(",");
+
+        if (strSDGs == "") { $.alert("需選擇SDGs"); return; }
+        if (ActVerify == "") { $.alert("審核狀態不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.ActID)', ActID);
+        data.append('@Html.NameFor(m => m.EditModel.SDGs)', strSDGs);
+        data.append('@Html.NameFor(m => m.EditModel.ActVerify)', ActVerify);
+        data.append('@Html.NameFor(m => m.EditModel.ActVerifyMemo)', ActVerifyMemo);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+</script>

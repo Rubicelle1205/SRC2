@@ -9,6 +9,7 @@ using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
+using System.Runtime.ConstrainedExecution;
 
 namespace WebPccuClub.DataAccess
 {
@@ -37,22 +38,22 @@ namespace WebPccuClub.DataAccess
             #region 參數設定
             #endregion
 
-            CommandText = $@"
-                            SELECT A.ActID, B.ActName, B.SchoolYear, A.ActVerify, C.Text AS ActVerifyText, A.SDate, A.EDate, 
-                                   A.BuildId, A.PlaceID, A.PlaceName, A.SDate, A.EDate, A.Created,
-                         CASE WHEN A.ActVerify = '05' THEN C.Text + '(' + A.Creator + ')'
-                               END ClubName
-                              FROM ActMain A
-                         LEFT JOIN ActDetail B ON B.ActId = A.ActID
-                         LEFT JOIN Code C ON C.Code = A.ActVerify AND C.Type = 'ActVerify'
-                             WHERE 1 = 1
-{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.LastModified BETWEEN @FromDate AND @ToDate" : " ")}
+            CommandText = $@"SELECT A.ActID, A.SchoolYear, A.ActName, B.ActVerify, C.Text AS ActVerifyText, A.BrrowUnit, 
+                                    CASE WHEN B.ActVerify = '05' THEN C.Text + '(' + B.Creator + ')' ELSE D.ClubCName END ClubName, 
+	                                F.MinDate AS SDate, F.MaxDate AS EDate, A.Created
+                               FROM ActDetail A
+                          LEFT JOIN ActMain B ON B.ActID = A.ActID
+                          LEFT JOIN Code C ON C.Code = B.ActVerify AND C.Type = 'ActVerify'
+                          LEFT JOIN ClubMang D ON D.ClubId = A.BrrowUnit
+                          LEFT JOIN ActSection E ON E.ActDetailId = A.ActDetailId
+                          LEFT JOIN (SELECT ActID, MIN(Date) AS MinDate, MAX(Date) AS MaxDate FROM ActSection GROUP BY ActID) F ON F.ActID = B.ActID
+                              WHERE 1 = 1
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
 AND (@ActId IS NULL OR A.ActId = @ActId)
-AND (@SchoolYear IS NULL OR B.SchoolYear = @SchoolYear)
-AND (@ActVerify IS NULL OR A.ActVerify = @ActVerify)
+AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
+AND (@ActVerify IS NULL OR B.ActVerify = @ActVerify)
 AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%') 
-
-";
+GROUP BY A.ActID, A.SchoolYear, A.ActName, B.ActVerify, C.Text, A.BrrowUnit, F.MinDate, F.MaxDate, B.Creator, D.ClubCName, A.Created";
 
 
             (DbExecuteInfo info, IEnumerable<ActListMangResultModel> entitys) dbResult = DbaExecuteQuery<ActListMangResultModel>(CommandText, parameters, true, DBAccessException);
@@ -63,12 +64,9 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')
             return new List<ActListMangResultModel>();
         }
 
-        /// <summary>
-        /// 取得編輯資料
-        /// </summary>
-        /// <param name="submitBtn"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
+        #region 取得編輯資料
+
+        /// <summary>取得編輯資料</summary>
         public ActListMangEditModel GetEditData(string Ser)
         {
             string CommandText = string.Empty;
@@ -76,16 +74,27 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')
 
             DBAParameter parameters = new DBAParameter();
 
-            parameters.Add("@ActTypeID", Ser);
-
             #region 參數設定
+
+            parameters.Add("@ActId", Ser);
+
             #endregion
 
-            CommandText = $@"
-SELECT ActTypeID, ActTypeName, Memo, Creator, Created, LastModifier, LastModified, ModifiedReason
-FROM ActListMang
-WHERE 1 = 1
-AND (ActTypeID = @ActTypeID) ";
+            CommandText = $@"SELECT A.ActDetailId, A.ActID, A.BrrowUnit AS ClubID, B.ClubCName AS BrrowUnitText, A.SchoolYear, A.ActName, 
+	                                A.Capacity, A.ActType, C.ActTypeName, A.SDGs, A.StaticOrDynamic, D.Text AS StaticOrDynamicText,
+	                                A.ActInOrOut, E.Text AS ActInOrOutText, A.UseITEquip, F.Text AS UseITEquipText, A.PassPort, G.Text AS PassPortText,
+	                                A.ShortDesc, A.Created, A.LastModified, H.ActVerify, H.ActVerifyMemo,
+									I.LeaderName, I.LeaderTel, I.LeaderPhone, I.ManagerName, I.ManagerTel, I.ManagerPhone
+                               FROM ActDetail A
+                          LEFT JOIN ClubMang B ON B.ClubId = A.BrrowUnit
+                          LEFT JOIN ActTypeMang C ON C.ActTypeID = A.ActType
+                          LEFT JOIN Code D ON D.Code = A.StaticOrDynamic AND D.Type = 'StaticOrDynamic'
+                          LEFT JOIN Code E ON E.Code = A.ActInOrOut AND E.Type = 'ActInOrOut'
+                          LEFT JOIN Code F ON F.Code = A.UseITEquip AND F.Type = 'UseITEquip'
+                          LEFT JOIN Code G ON G.Code = A.PassPort AND G.Type = 'PassPort'
+                          LEFT JOIN ActMain H ON H.ActId = A.ActId
+                          LEFT JOIN ActOutSideInfo I ON I.ActID = A.ActID AND I.ActDetailId = I.ActDetailId
+                              WHERE 1 = 1 AND A.ActID = @ActID";
 
 
             (DbExecuteInfo info, IEnumerable<ActListMangEditModel> entitys) dbResult = DbaExecuteQuery<ActListMangEditModel>(CommandText, parameters, true, DBAccessException);
@@ -96,140 +105,582 @@ AND (ActTypeID = @ActTypeID) ";
             return null;
         }
 
+        /// <summary> 取得Rundown資料 </summary>
+        public List<ActListMangEditRundownModel> GetEditRundownData(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@ActId", Ser);
+
+            #endregion
 
 
+            CommandText = $@"SELECT * FROM (SELECT C.PlaceSource, C.Date, C.STime, C.ETime, C.ActPlaceID, C.ActPlaceText AS PlaceText, C.RundownStatus, D.Text AS RundownStatusText
+                                              FROM ActDetail A
+                                         LEFT JOIN PlaceSchoolMang B ON B.PlaceID = A.PlaceID
+                                         LEFT JOIN ActRundown C ON C.ActID = A.ActID AND C.ActDetailId = A.ActDetailId
+                                         LEFT JOIN Code D ON D.Code = C.RundownStatus AND D.Type = 'RundownStatus'
+                                             WHERE 1 = 1 AND A.ActID = @ActId 
+                                     UNION
+                                            SELECT C.PlaceSource, C.Date, C.STime, C.ETime, C.ActPlaceID, C.ActPlaceText AS PlaceText, C.RundownStatus, D.Text AS RundownStatusText
+                                              FROM ActDetail A
+                                         LEFT JOIN PlaceSchoolMang B ON B.PlaceID = A.PlaceID
+                                         LEFT JOIN ActRundownELSE C ON C.ActID = A.ActID AND C.ActDetailId = A.ActDetailId
+                                         LEFT JOIN Code D ON D.Code = C.RundownStatus AND D.Type = 'RundownStatus'
+                                             WHERE 1 = 1 AND A.ActID = @ActId 
+                                            ) T ORDER BY PlaceSource";
+
+            (DbExecuteInfo info, IEnumerable<ActListMangEditRundownModel> entitys) dbResult = DbaExecuteQuery<ActListMangEditRundownModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ActListMangEditRundownModel>();
+        }
+
+        public List<ActListFilesModel> GetEditProposalData(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@ActId", Ser);
+
+            #endregion
+
+
+            CommandText = $@"SELECT FileName, FilePath FROM ActProposal WHERE 1 = 1 AND ActID = @ActID";
+
+            (DbExecuteInfo info, IEnumerable<ActListFilesModel> entitys) dbResult = DbaExecuteQuery<ActListFilesModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ActListFilesModel>();
+        }
+
+        public List<ActListFilesModel> GetEditOutSideFileData(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@ActId", Ser);
+
+            #endregion
+
+
+            CommandText = $@"SELECT FileName, FilePath FROM ActOutSideInfoFile WHERE 1 = 1 AND ActID = @ActID";
+
+            (DbExecuteInfo info, IEnumerable<ActListFilesModel> entitys) dbResult = DbaExecuteQuery<ActListFilesModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ActListFilesModel>();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        #endregion
 
         #region 新增
 
         /// <summary> 新增資料 </summary>
-        public DbExecuteInfo InsertData(ActListMangViewModel vm, UserInfo LoginUser)
+        public DbExecuteInfo InsertActMainData(ActListMangViewModel vm, UserInfo LoginUser, out DataTable dt)
         {
-
+            DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            //parameters.Add("@ActTypeName", vm.CreateModel.ActTypeName);
-            //parameters.Add("@Memo", vm.CreateModel.Memo);
+            parameters.Add("@STime", vm.CreateModel.STime);
+            parameters.Add("@ETime", vm.CreateModel.ETime);
+            parameters.Add("@ActVerify", vm.CreateModel.ActVerify);
+            parameters.Add("@ActVerifyMemo", vm.CreateModel.ActVerifyMemo);
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
-            string CommendText = $@"INSERT INTO ActListMang
-                                               (ActTypeName
-                                               ,Memo
-                                               ,Creator
-                                               ,Created
-                                               ,LastModifier
-                                               ,LastModified
-                                               ,ModifiedReason)
+            string CommendText = $@"INSERT INTO ActMain
+                                               (STime 
+                                                ,ETime 
+                                                ,ActVerify 
+                                                ,ActVerifyMemo 
+                                                ,Creator 
+                                                ,Created 
+                                                ,LastModifier 
+                                                ,LastModified )
+                                         OUTPUT Inserted.ActID
                                          VALUES
-                                               (@ActTypeName
-                                               ,@Memo
-                                               ,@LoginId
-                                               ,GETDATE()
-                                               ,@LoginId
-                                               ,GETDATE()
-                                               ,NULL)";
+                                                (@STime 
+                                                ,@ETime
+                                                ,@ActVerify
+                                                ,@ActVerifyMemo
+                                                ,@LoginId
+                                                ,GETDATE()
+                                                ,@LoginId
+                                                ,GETDATE()) ";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            dt = ds.Tables[0];
+
+            return ExecuteResult;
+        }
+
+        public DbExecuteInfo InsertActDetailData(ActListMangViewModel vm, string ActId, UserInfo LoginUser, out DataTable dt)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ActID", ActId);
+            parameters.Add("@BrrowUnit", vm.CreateModel.ClubId);
+            parameters.Add("@SchoolYear", vm.CreateModel.SchoolYear);
+            parameters.Add("@ActName", vm.CreateModel.ActName);
+            parameters.Add("@Buildid", vm.CreateModel.Buildid);
+            parameters.Add("@PlaceID", vm.CreateModel.PlaceId);
+            parameters.Add("@BorrowType", "01"); // 借用:01 關閉:02
+            parameters.Add("@Capacity", vm.CreateModel.Capacity);
+            parameters.Add("@ActType", vm.CreateModel.ActType);
+            parameters.Add("@SDGs", vm.CreateModel.SDGs);
+            parameters.Add("@StaticOrDynamic", vm.CreateModel.StaticOrDynamic);
+            parameters.Add("@ActInOrOut", vm.CreateModel.ActInOrOut);
+            parameters.Add("@UseITEquip", vm.CreateModel.UseITEquip);
+            parameters.Add("@PassPort", vm.CreateModel.PassPort);
+
+            parameters.Add("@CreateSource", "01"); // 後台:01 前台:02
+            parameters.Add("@ShortDesc", vm.CreateModel.ActShortDesc);
+
+
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO ActDetail
+                                               (ActID, 
+                                                BrrowUnit, 
+                                                SchoolYear, 
+                                                ActName, 
+                                                Buildid, 
+                                                PlaceID, 
+                                                BorrowType, 
+                                                Capacity, 
+                                                ActType, 
+                                                SDGs, 
+                                                StaticOrDynamic, 
+                                                ActInOrOut, 
+                                                UseITEquip, 
+                                                PassPort, 
+                                                CreateSource, 
+                                                ShortDesc, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         OUTPUT Inserted.ActDetailId
+                                         VALUES
+                                               (@ActID, 
+                                                @BrrowUnit, 
+                                                @SchoolYear, 
+                                                @ActName, 
+                                                @Buildid, 
+                                                @PlaceID, 
+                                                @BorrowType, 
+                                                @Capacity, 
+                                                @ActType, 
+                                                @SDGs, 
+                                                @StaticOrDynamic, 
+                                                @ActInOrOut, 
+                                                @UseITEquip, 
+                                                @PassPort, 
+                                                @CreateSource, 
+                                                @ShortDesc, 
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE() )";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            dt = ds.Tables[0];
+
+            return ExecuteResult;
+        }
+
+        /// <summary> 新增日期資料</summary>
+        public DbExecuteInfo InsertActSectionData(ActListMangViewModel vm, string ActId, string ActDetailId, DateTime date, UserInfo LoginUser, out DataTable dt)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ActID", ActId);
+            parameters.Add("@ActDetailId", ActDetailId);
+            parameters.Add("@Date", date.ToString("yyyy-MM-dd"));
+            parameters.Add("@Week", date.ToString("dddd"));
+            parameters.Add("@Status", "01");
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO ActSection
+                                               (ActID
+                                                , ActDetailId
+                                                , Date
+                                                , Creator
+                                                , Created
+                                                , LastModifier
+                                                , LastModified )
+                                         OUTPUT Inserted.ActSectionId
+                                         VALUES
+                                               (@ActID
+                                                , @ActDetailId
+                                                , @Date
+                                                , @LoginId
+                                                , GETDATE()
+                                                , @LoginId
+                                                , GETDATE() )";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            dt = ds.Tables[0];
+
+            return ExecuteResult;
+        }
+
+        /// <summary> 新增批次行程資料</summary>
+        public DbExecuteInfo InsertActRundownData(ActListMangViewModel vm, string ActId, string ActDetailId, string ActSectionId, ActListMangRundownModel RundownModel, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+            string CommendText = string.Empty;
+
+            string PlaceSource = RundownModel.PlaceSource;
+            string PlaceID = RundownModel.PlaceID;
+            string PlaceText = RundownModel.PlaceText;
+
+            if (PlaceSource == "01")
+            {
+                for (int i = 0; i <= RundownModel.LstStime.Count - 1; i++)
+                {
+                    int hour = RundownModel.LstStime[i];
+
+                    #region 參數設定
+                    parameters.Add("@ActID", ActId);
+                    parameters.Add("@ActDetailId", ActDetailId);
+                    parameters.Add("@ActSectionId", ActSectionId);
+                    parameters.Add("@ActPlaceID", PlaceID);
+                    parameters.Add("@ActPlaceText", PlaceText);
+                    parameters.Add("@PlaceSource", PlaceSource);
+                    parameters.Add("@Date", DateTime.Parse(RundownModel.Date).ToString("yyyy-MM-dd"));
+                    parameters.Add("@Stime", hour.ToString().PadLeft(2, '0'));
+                    parameters.Add("@ETime", (hour + 1).ToString().PadLeft(2, '0'));
+                    parameters.Add("@Week", DateTime.Parse(RundownModel.Date).ToString("dddd"));
+                    parameters.Add("@Status", "01");
+                    parameters.Add("@LoginId", LoginUser.LoginId);
+                    #endregion 參數設定
+
+                    CommendText = $@"INSERT INTO ActRundown
+                                               (ActID, 
+                                                ActDetailId, 
+                                                ActSectionId, 
+                                                ActPlaceID, 
+                                                ActPlaceText, 
+                                                PlaceSource, 
+                                                Date, 
+                                                STime, 
+                                                ETime, 
+                                                Week, 
+                                                RundownStatus, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         VALUES
+                                               (@ActID, 
+                                                @ActDetailId, 
+                                                @ActSectionId, 
+                                                @ActPlaceID, 
+                                                @ActPlaceText, 
+                                                @PlaceSource,  
+                                                @Date, 
+                                                @STime, 
+                                                @ETime, 
+                                                @Week, 
+                                                '01', 
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE())";
+
+                    ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+                    if (!ExecuteResult.isSuccess) { return ExecuteResult; }
+                }
+            }
+            else
+            {
+                for (int i = 0; i <= RundownModel.LstStime.Count - 1; i++)
+                {
+                    int hour = RundownModel.LstStime[i];
+
+                    #region 參數設定
+                    parameters.Add("@ActID", ActId);
+                    parameters.Add("@ActDetailId", ActDetailId);
+                    parameters.Add("@ActSectionId", ActSectionId);
+                    parameters.Add("@ActPlaceID", PlaceID);
+                    parameters.Add("@ActPlaceText", PlaceText);
+                    parameters.Add("@PlaceSource", PlaceSource);
+                    parameters.Add("@Date", DateTime.Parse(RundownModel.Date).ToString("yyyy-MM-dd"));
+                    parameters.Add("@Stime", hour.ToString().PadLeft(2, '0'));
+                    parameters.Add("@ETime", (hour + 1).ToString().PadLeft(2, '0'));
+                    parameters.Add("@Week", DateTime.Parse(RundownModel.Date).ToString("dddd"));
+                    parameters.Add("@Status", "01");
+                    parameters.Add("@LoginId", LoginUser.LoginId);
+                    #endregion 參數設定
+
+                    CommendText = $@"INSERT INTO ActRundownElse
+                                               (ActID, 
+                                                ActDetailId, 
+                                                ActSectionId, 
+                                                ActPlaceID, 
+                                                ActPlaceText, 
+                                                PlaceSource, 
+                                                Date, 
+                                                STime, 
+                                                ETime, 
+                                                Week, 
+                                                RundownStatus, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         VALUES
+                                               (@ActID, 
+                                                @ActDetailId, 
+                                                @ActSectionId, 
+                                                @ActPlaceID, 
+                                                @ActPlaceText, 
+                                                @PlaceSource,  
+                                                @Date, 
+                                                @STime, 
+                                                @ETime, 
+                                                @Week, 
+                                                '01', 
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE())";
+
+                    ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+                    if (!ExecuteResult.isSuccess) { return ExecuteResult; }
+                }
+            }
+
+
+            return ExecuteResult;
+
+        }
+
+        public DbExecuteInfo InsertActProposalData(ActListMangViewModel vm, string ActId, string ActDetailId, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+            string CommendText = string.Empty;
+
+            List<ActListFilesModel> dataList = vm.CreateModel.LstProposal;
+
+
+            #region 參數設定
+            #endregion 參數設定
+
+            CommendText = $@"INSERT INTO ActProposal 
+                                               (ActID, 
+                                                ActDetailId, 
+                                                FileName, 
+                                                FilePath, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         VALUES
+                                               ('{ActId}', 
+                                                '{ActDetailId}', 
+                                                @FileName, 
+                                                @FilePath, 
+                                                '{LoginUser.LoginId}', 
+                                                GETDATE(), 
+                                                '{LoginUser.LoginId}', 
+                                                GETDATE())";
+
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+            return ExecuteResult;
+        }
+
+        public DbExecuteInfo InsertOutSideData(ActListMangViewModel vm, string ActId, string ActDetailId, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+            string CommendText = string.Empty;
+
+            #region 參數設定
+            parameters.Add("@ActID", ActId);
+            parameters.Add("@ActDetailId", ActDetailId);
+
+            parameters.Add("@LeaderName", vm.CreateModel.LeaderName);
+            parameters.Add("@LeaderTel", vm.CreateModel.LeaderTel);
+            parameters.Add("@LeaderPhone", vm.CreateModel.LeaderPhone);
+            parameters.Add("@ManagerName", vm.CreateModel.ManagerName);
+            parameters.Add("@ManagerTel", vm.CreateModel.ManagerTel);
+            parameters.Add("@ManagerPhone", vm.CreateModel.ManagerPhone);
+
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            CommendText = $@"INSERT INTO ActOutSideInfo 
+                                               (ActID, 
+                                                ActDetailId, 
+                                                LeaderName, 
+                                                LeaderTel, 
+                                                LeaderPhone, 
+                                                ManagerName, 
+                                                ManagerTel, 
+                                                ManagerPhone, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         VALUES
+                                               (@ActID, 
+                                                @ActDetailId, 
+                                                @LeaderName, 
+                                                @LeaderTel, 
+                                                @LeaderPhone, 
+                                                @ManagerName, 
+                                                @ManagerTel, 
+                                                @ManagerPhone,  
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE())";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
             return ExecuteResult;
         }
 
-        public DbExecuteInfo InsertMain(ActListMangViewModel vm, UserInfo LoginUser)
+        public DbExecuteInfo InsertOutSideFileData(ActListMangViewModel vm, string ActId, string ActDetailId, UserInfo LoginUser)
         {
-
+            DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
+            string CommendText = string.Empty;
+
+            List<ActListFilesModel> dataList = vm.CreateModel.LstOutSideFile;
+
 
             #region 參數設定
-            //parameters.Add("@ActTypeName", vm.CreateModel.ActTypeName);
-            //parameters.Add("@Memo", vm.CreateModel.Memo);
-            parameters.Add("@Memo", vm.CreateModel.Buildid);
-
-
-
-            parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
-            string CommendText = $@"INSERT INTO ActListMang
-                                               (ActTypeName
-                                               ,Memo
-                                               ,Creator
-                                               ,Created
-                                               ,LastModifier
-                                               ,LastModified
-                                               ,ModifiedReason)
+            CommendText = $@"INSERT INTO ActOutSideInfoFile 
+                                               (ActID, 
+                                                ActDetailId, 
+                                                FileName, 
+                                                FilePath, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
                                          VALUES
-                                               (@ActTypeName
-                                               ,@Memo
-                                               ,@LoginId
-                                               ,GETDATE()
-                                               ,@LoginId
-                                               ,GETDATE()
-                                               ,NULL)";
+                                               ('{ActId}', 
+                                                '{ActDetailId}', 
+                                                @FileName, 
+                                                @FilePath, 
+                                                '{LoginUser.LoginId}', 
+                                                GETDATE(), 
+                                                '{LoginUser.LoginId}', 
+                                                GETDATE())";
 
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
 
             return ExecuteResult;
         }
         #endregion
 
-
-
-
-
-
-
-
+        #region 修改
         /// <summary> 修改資料 </summary>
-        public DbExecuteInfo UpdateData(ActListMangViewModel vm, UserInfo LoginUser)
+        public DbExecuteInfo UpdateActMainData(ActListMangViewModel vm, UserInfo LoginUser)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            //parameters.Add("@ActTypeID", vm.EditModel.ActTypeID);
-            //parameters.Add("@ActTypeName", vm.EditModel.ActTypeName);
-            //parameters.Add("@Memo", vm.EditModel.Memo);
+            parameters.Add("@ActID", vm.EditModel.ActID);
+
+            parameters.Add("@ActVerify", vm.EditModel.ActVerify);
+            parameters.Add("@ActVerifyMemo", vm.EditModel.ActVerifyMemo);
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
-            string CommendText = $@"UPDATE ActListMang 
-                                       SET ActTypeName = @ActTypeName, Memo = @Memo, LastModifier = @LoginId, LastModified = GETDATE()
-                                     WHERE ActTypeID = @ActTypeID";
+            string CommendText = $@"UPDATE ActMain 
+                                       SET ActVerify = @ActVerify, ActVerifyMemo = @ActVerifyMemo, LastModifier = @LoginId, LastModified = GETDATE()
+                                     WHERE ActID = @ActID";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
             return ExecuteResult;
         }
 
-        /// <summary>
-        /// 刪除資料
-        /// </summary>
-        /// <param name="ser"></param>
-        /// <returns></returns>
-        public DbExecuteInfo DeletetData(string ser)
+        /// <summary> 修改資料 </summary>
+        public DbExecuteInfo UpdateActDetailData(ActListMangViewModel vm, UserInfo LoginUser)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@ActTypeID", ser);
+            parameters.Add("@ActID", vm.EditModel.ActID);
+            parameters.Add("@SDGs", vm.EditModel.SDGs);
+            parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
-            string CommendText = $@"DELETE FROM ActListMang WHERE ActTypeID = @ActTypeID ";
+            string CommendText = $@"UPDATE ActDetail 
+                                       SET SDGs = @SDGs, LastModifier = @LoginId, LastModified = GETDATE()
+                                     WHERE ActID = @ActID";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
             return ExecuteResult;
         }
 
-        /// <summary>
-        /// Excel 取得資料
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
+        #endregion
+
+        /// <summary> Excel 取得資料 </summary>
         public List<ActListMangResultModel> GetExportResult(ActListMangConditionModel model)
         {
             string CommandText = string.Empty;
@@ -237,18 +688,34 @@ AND (ActTypeID = @ActTypeID) ";
 
             DBAParameter parameters = new DBAParameter();
 
-            //parameters.Add("@ActTypeName", model?.ActTypeName);
-            //parameters.Add("@Memo", model?.Memo);
+            parameters.Add("@ActId", model?.ActId);
+            parameters.Add("@ActName", model?.ActName);
+            parameters.Add("@ClubName", model?.ClubName);  //
+            parameters.Add("@ActVerify", model?.ActVerify);
+            parameters.Add("@LifeClass", model?.LifeClass);  //
+            parameters.Add("@SchoolYear", model?.SchoolYear);
+            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
+            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
 
             #region 參數設定
             #endregion
 
-            CommandText = $@"
-SELECT ActTypeID, ActTypeName, Memo, Creator, Created, LastModifier, LastModified, ModifiedReason
-FROM ActListMang
-WHERE 1 = 1
-AND (@ActTypeName IS NULL OR ActTypeName LIKE '%' + @ActTypeName + '%') 
-AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
+            CommandText = $@"SELECT A.ActID, A.SchoolYear, A.ActName, B.ActVerify, C.Text AS ActVerifyText, A.BrrowUnit, 
+                                    CASE WHEN B.ActVerify = '05' THEN C.Text + '(' + B.Creator + ')' ELSE D.ClubCName END ClubName, 
+	                                F.MinDate AS SDate, F.MaxDate AS EDate, A.Created
+                               FROM ActDetail A
+                          LEFT JOIN ActMain B ON B.ActID = A.ActID
+                          LEFT JOIN Code C ON C.Code = B.ActVerify AND C.Type = 'ActVerify'
+                          LEFT JOIN ClubMang D ON D.ClubId = A.BrrowUnit
+                          LEFT JOIN ActSection E ON E.ActDetailId = A.ActDetailId
+                          LEFT JOIN (SELECT ActID, MIN(Date) AS MinDate, MAX(Date) AS MaxDate FROM ActSection GROUP BY ActID) F ON F.ActID = B.ActID
+                              WHERE 1 = 1
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
+AND (@ActId IS NULL OR A.ActId = @ActId)
+AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
+AND (@ActVerify IS NULL OR B.ActVerify = @ActVerify)
+AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%') 
+GROUP BY A.ActID, A.SchoolYear, A.ActName, B.ActVerify, C.Text, A.BrrowUnit, F.MinDate, F.MaxDate, B.Creator, D.ClubCName, A.Created";
 
             (DbExecuteInfo info, IEnumerable<ActListMangResultModel> entitys) dbResult = DbaExecuteQuery<ActListMangResultModel>(CommandText, parameters, true, DBAccessException);
 
@@ -257,8 +724,6 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
 
             return new List<ActListMangResultModel>();
         }
-
-
 
         #region 其他
 
@@ -275,9 +740,12 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT PlaceName, STime, ETime
-                               FROM ActMain
-                              WHERE SDate < @Date AND @Date <= EDate ";
+            CommandText = $@"SELECT C.PlaceName, B.Date, B.STime, B.ETime, A.ActVerify
+                               FROM ActMain A
+                          LEFT JOIN ActRundown B ON B.ActID = A.ActID
+						  LEFT JOIN PlaceSchoolMang C ON C.PlaceID = B.ActPlaceID
+                              WHERE B.Date = @Date AND B.RundownStatus = '01'
+							  AND A.ActVerify IN ('02', '04', '05')";
 
 
             (DbExecuteInfo info, IEnumerable<ActListMangPlaceUsedModel> entitys) dbResult = DbaExecuteQuery<ActListMangPlaceUsedModel>(CommandText, parameters, true, DBAccessException);
@@ -288,25 +756,26 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
             return new List<ActListMangPlaceUsedModel>();
         }
 
-        public List<ActListMangTodayActModel1> GetTodayAct(string PlaceSource, string Date)
+        public List<ActListMangTodayActModel1> GetTodayAct(string PlaceId, string Date)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
 
             DBAParameter parameters = new DBAParameter();
 
-            parameters.Add("@PlaceSource", PlaceSource);
-            parameters.Add("@Date", Date);
-
             #region 參數設定
+
+            parameters.Add("@PlaceId", PlaceId);
+            parameters.Add("@Date", Date);
+            
             #endregion
 
-            CommandText = $@"SELECT C.ActName, A.STime, A.ETime, A.BrrowClubID, CASE WHEN B.ClubCName IS NULL THEN '學務處' ELSE B.ClubCName END BrrowClubName
-                               FROM ActMain A
-                          LEFT JOIN ClubMang B ON B.ClubID = A.BrrowClubID 
-						  LEFT JOIN ActDetail C ON C.ActID = A.ActID
-                              WHERE A.SDate < @Date AND @Date <= A.EDate 
-                                AND A.PlaceID = @PlaceSource ";
+            CommandText = $@"SELECT B.PlaceName, A.Date, A.STime, A.ETime, C.ActName, C.BrrowUnit, CASE WHEN D.ClubCName IS NULL THEN '學務處' ELSE D.ClubCName END BrrowClubName
+                               FROM ActRundown A
+                          LEFT JOIN PlaceSchoolMang B ON B.PlaceID = A.ActPlaceID
+						  LEFT JOIN ActDetail C ON C.ActDetailId = A.ActDetailId
+						  LEFT JOIN ClubMang D ON D.ClubId = C.BrrowUnit
+                              WHERE A.Date = @Date AND A.ActPlaceID = @PlaceId ";
 
 
             (DbExecuteInfo info, IEnumerable<ActListMangTodayActModel1> entitys) dbResult = DbaExecuteQuery<ActListMangTodayActModel1>(CommandText, parameters, true, DBAccessException);
@@ -349,10 +818,7 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
 
             #endregion
 
-            if (PlaceSource == "01")
                 CommandText = @"SELECT PlaceID AS VALUE, PlaceName AS TEXT FROM PlaceSchoolMang WHERE Buildid = @Buildid";
-            else
-                CommandText = @"SELECT PlaceID AS VALUE, PlaceName AS TEXT FROM PlaceSchoolElseMang WHERE Buildid = @Buildid";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
@@ -374,21 +840,11 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
 
             #endregion
 
-            if (PlaceSource == "01")
-            {
                 CommandText = @"SELECT A.PlaceID, A.PlaceName, A.Capacity, A.PlaceEquip, A.PlaceStatus, B.Text AS PlaceStatusText, A.Memo, 
                                        A.Normal_STime, A.Normal_ETime, A.Holiday_STime, A.Holiday_ETime
                                   FROM PlaceSchoolMang A
                              LEFT JOIN Code B ON B.Code = A.PlaceStatus AND B.Type = 'PlaceStatus'
                                  WHERE A.PlaceId = @PlaceId";
-            }
-
-            else
-            {
-                CommandText = @"SELECT A.PlaceID, A.PlaceName, A.Memo
-                                  FROM PlaceSchoolElseMang A
-                                 WHERE A.PlaceId = @PlaceId";
-            }
 
             (DbExecuteInfo info, IEnumerable<ActListMangPlaceDataModel> entitys) dbResult = DbaExecuteQuery<ActListMangPlaceDataModel>(CommandText, parameters, true, DBAccessException);
 
@@ -430,7 +886,7 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
                                    FROM PlaceSchoolMang
                                   WHERE PlaceID = @PlaceID 
                                     AND PlaceStatus = @PlaceStatus 
-{(IsHoliday ? "AND Holiday_STime <= @STime AND @ETime < Holiday_ETime": "AND Normal_STime <= @STime AND @ETime < Normal_ETime")} 
+{(IsHoliday ? "AND Holiday_STime <= @STime AND @ETime <= Holiday_ETime": "AND Normal_STime <= @STime AND @ETime <= Normal_ETime")} 
 ";
             }
 
@@ -466,8 +922,6 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
 
             return !(ds.Tables[0].Rows.Count > 0);
         }
-
-        #region 取得預設資料
 
         public List<SelectListItem> GetAllActVerify()
         {
@@ -661,6 +1115,26 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
             return new List<SelectListItem>();
         }
 
+        public List<SelectListItem> GetAllClub()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT ClubID AS VALUE, ClubCName AS TEXT FROM ClubMang";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
         public List<SelectListItem> GetAllHour()
         {
             List<SelectListItem> LstItem = new List<SelectListItem>();
@@ -673,17 +1147,53 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
             return LstItem;
         }
 
-        #endregion
+        //抓取該日的所有已核准時間
+        public DataTable GetRundown(string? placeID, DateTime date)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
 
-        #region 取得樓館資料
+            DBAParameter parameters = new DBAParameter();
 
-        #endregion
+            #region 參數設定
+            parameters.Add("@PlaceID", placeID);
+            parameters.Add("@Date", date);
+
+            #endregion
+
+            CommandText = $@"SELECT B.ActRundownID, B.ActPlaceID, B.STime, B.ETime 
+                               FROM ActMain A
+					      LEFT JOIN ActRundown B ON B.ActId = A.ActId
+                              WHERE B.ActPlaceID = @PlaceID 
+                                AND B.[Date] = @Date 
+                                AND B.RundownStatus = '01'
+                                AND A.ActVerify IN ('02', '04', '05')
+";
 
 
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            return ds.Tables[0];
+        }
+
+        public DataTable GetAllRundownStatus()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            #endregion
+
+            CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'RundownStatus'";
 
 
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
 
-
+            return ds.Tables[0];
+        }
 
 
         #endregion

@@ -315,6 +315,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
                                                 BrrowUnit, 
                                                 Capacity, 
                                                 CreateSource, 
+                                                PlaceSource,
                                                 Memo, 
                                                 Creator, 
                                                 Created, 
@@ -330,6 +331,7 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
                                                 @BorrowType, 
                                                 @LoginId, 
                                                 @Capacity, 
+                                                '01', 
                                                 '01', 
                                                 @Memo, 
                                                 @LoginId, 
@@ -408,7 +410,9 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             string CommendText = $@"INSERT INTO ActRundown
                                                (ActID, 
                                                 ActDetailId, 
+                                                ActSectionId, 
                                                 ActPlaceID, 
+                                                PlaceSource, 
                                                 Date, 
                                                 STime, 
                                                 ETime, 
@@ -421,7 +425,9 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
                                          VALUES
                                                (@ActID, 
                                                 @ActDetailId, 
+                                                @ActSectionId, 
                                                 @ActPlaceID, 
+                                                '01',  
                                                 @Date, 
                                                 @STime, 
                                                 @ETime, 
@@ -457,8 +463,6 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
                                 AND [Date] = @Date 
                                 AND RundownStatus = '01'";
 
-
-            (DbExecuteInfo info, IEnumerable<RoleMangEditModel> entitys) dbResult = DbaExecuteQuery<RoleMangEditModel>(CommandText, parameters, true, DBAccessException);
 
             DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
             return ds.Tables[0];
