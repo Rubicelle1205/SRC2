@@ -1,0 +1,207 @@
+﻿@model WebPccuClub.Models.RundownMangViewModel
+
+
+<!-- /.card-header -->
+<div class="card-body table-responsive p-0">
+    <table class="table table-bordered table-hover text-nowrap">
+        <thead>
+            <tr class="text-center">
+                <th width="5%">學年度</th>
+                <th width="10%">活動名稱<br /><span class="text-sm text-secondary">活動人數</span></th>
+                <th width="10%">活動性質<br /><span class="text-sm text-secondary">核心能力</span></th>
+                <th width="10%">社團名稱<br /><span class="text-sm text-secondary">社團ID</span></th>
+                <th width="10%">地點類型<br /><span class="text-sm text-secondary">場地名稱</span></th>
+                <th width="10%">使用日期<br /><span class="text-sm text-secondary">使用時間</span></th>
+                <th width="10%">審核狀態</th>
+                <th width="10%">行程狀態</th>
+                <th width="10%">建立時間</th>
+                <th width="5%">功能</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.ResultModel.Count > 0)
+            {
+                foreach (var item in Model.ResultModel)
+                {
+                    <tr>
+                        <td class="text-center text-sm">
+                                @item.SchoolYear
+                        </td>
+                        <td class="text-center text-sm">
+                            @item.ActName
+                            <br />
+                            <span class="text-muted">
+                                @item.Capacity
+                            </span>
+                        </td>
+                        <td class="text-center text-sm">
+                            @item.ActTypeText
+                            <br />
+                            <span class="text-muted">
+                                @item.SDateText
+                            </span>
+                        </td>
+                        <td class="text-center text-sm">
+                            @item.ClubCName
+                            <br />
+                            <span class="text-muted">
+                                @item.ClubId
+                            </span>
+                        </td>
+                        <td class="text-center text-sm">
+                            @item.PlaceSourceText
+                            <br />
+                            <span class="text-muted">
+                                @item.PlaceText
+                            </span>
+                        </td>
+                        <td class="text-center text-sm">
+                            @item.Date.Value.ToString("yyyy/MM/dd")
+                            <br />
+                            <span class="text-muted">
+                                @string.Format("{0}:00", item.STime) - @string.Format("{0}:00", item.ETime)
+                            </span>
+                        </td>
+                        <td class="text-center text-sm">
+                            @if (item.ActVerify == "01")
+                            {
+                                <span class="text-secondary">@item.ActVerifyText</span>
+                            }
+                            else if (item.ActVerify == "02")
+                            {
+                                <span class="text-success">@item.ActVerifyText</span>
+                            }
+                            else if (item.ActVerify == "03")
+                            {
+                                <span class="text-danger">@item.ActVerifyText</span>
+                            }
+                            else if (item.ActVerify == "04")
+                            {
+                                <span class="text-primary">@item.ActVerifyText</span>
+                            }
+                            else if (item.ActVerify == "05")
+                            {
+                                <span class="text-warning">@item.ActVerifyText</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                @Html.DropDownListFor(m => item.RundownStatus ,(List<SelectListItem>)ViewBag.ddlRundownStatus, null, new {@class = "form-control", id = "RundownStatus_" + item.ActRundownID})
+                                <a href="#" class="btn btn-outline-secondary" onclick="SaveData('@item.ActRundownID')">儲存</a>
+                            </div>
+                        </td>
+                        @if (item.Created.HasValue)
+                        {
+                            <td class="text-center text-sm">
+                                @item.Created.Value.ToString("yyyy/MM/dd  HH:mm:ss")
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="text-center text-sm"></td>
+                        }
+
+                        <td class="text-center text-sm">
+                            @using (Html.BeginForm("Edit", "ActListMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
+                            {
+                                <button type="submit" value="@item.ActID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
+                            }
+
+                            <br><span class="text-sm text-secondary"> </span>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+            <td colspan="10">查無資料</td>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="card-footer clearfix">
+    <div class="pagination justify-content-end" id="SearchResultListPagination"></div>
+</div>
+<!-- /.card-body -->
+
+<script>
+    function SaveData(Ser) {
+        var data = new FormData()
+
+        var Status = $("#RundownStatus_" + Ser).val();
+        var RundownID = Ser;
+
+        if (Status == "") { $.alert("需選擇行程狀態"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.RundownStatus)', Status);
+        data.append('@Html.NameFor(m => m.EditModel.ActRundownID)', RundownID);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                GoSearch();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+    $("button[name='submitBtn']").click(function () {
+        var buttonValue = $(this).val();
+        var dropdownValue = $(this).prev("select").val();
+
+        console.log("按钮值：" + buttonValue);
+        console.log("Dropdownlist选定值：" + dropdownValue);
+        // 在这里可以使用buttonValue和dropdownValue进行后续操作
+    });
+
+
+    $("#SearchResultListPagination").solventoPageBar(
+        {
+            containerHtml: "<ul class='pagination justify-content-end'>{{:firstPageRender}}{{:prePageRender}}{{:pageRender}}{{:nextPageRender}}{{:lastPageRender}}</ul>{{:totalPageRender}}", // render: pagesbarHtml
+            firstPageHtml: "<li class='page-item {{:disable}}'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-double-left'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            lastPageHtml: "<li class='page-item {{:disable}}'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-double-right'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            pageHtml: " <li class='page-item {{:selectedHtml}}'><a {{:idx}} class='page-link {{:pageClass}}'>{{:pageNumber}}</a></li>",//pageClass: clickEventClass, pageNumber: pageNumber, selectedHtml : selectedHtml,idx : idx
+            prePageHtml: "<li class='page-item'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-left'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            nextPageHtml: "<li class='page-item'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-right'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            //totalPageHtml: "<div class='page-intro'>共<span>{{:totalCount}}</span>筆資料</div>",
+            totalPageHtml: "",
+            pNow: "目前為第 {{:pnow}} 頁 / 共 {{:ptotle}} 頁",
+            pEver: "每頁顯示 {{:pever}} 筆 / 共 {{:ptotleever}} 筆",
+            pageSelectedHtml: "active",
+        },
+        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.ConditionModel.Page)']").val()) + 1,
+        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.ConditionModel.PageSize)']").val()),
+
+    @Model.ConditionModel.TotalCount,
+        changePage
+    );
+
+    function changePage(idx) {
+        //動畫
+        $('#SearchForm').find("input[name='@Html.NameFor(m => m.ConditionModel.Page)']").val(idx - 1);
+        //取頁面數
+        $("#@Html.IdFor(m => m.ConditionModel.Page)").val(idx - 1);
+
+        GoSearch();
+    }
+
+
+
+</script>

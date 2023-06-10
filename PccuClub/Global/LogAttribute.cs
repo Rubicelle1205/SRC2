@@ -77,6 +77,7 @@
         後台已填寫表單 = 62,
         後台已上傳檔案 = 63,
         一周場地時間 = 64,
+        行程管理 = 65,
     }
 
 	public enum DBActionChineseName

@@ -72,6 +72,7 @@ namespace WebPccuClub.Controllers
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
+            vm = new ActListMangViewModel();
 
             ViewBag.ddlSDGs = dbAccess.GetSDGs();
             ViewBag.ddlRundownStatus = dbAccess.GetAllRundownStatus();
