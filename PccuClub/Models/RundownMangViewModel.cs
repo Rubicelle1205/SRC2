@@ -182,10 +182,6 @@ namespace WebPccuClub.Models
 
     public class RundownMangExcelResultModel
     {
-        /// <summary>代號</summary>
-        [DisplayName("代號")]
-        public string? ActID { get; set; }
-
         /// <summary>學年度</summary>
         [DisplayName("學年度")]
         public string? SchoolYear { get; set; }
@@ -200,11 +196,7 @@ namespace WebPccuClub.Models
 
         /// <summary>活動性質</summary>
         [DisplayName("活動性質")]
-        public string? ActType { get; set; }
-
-        /// <summary>核心能力</summary>
-        [DisplayName("核心能力")]
-        public string? SDGs { get; set; }
+        public string? ActTypeText { get; set; }
 
         /// <summary>申請單位</summary>
         [DisplayName("申請單位")]
@@ -216,27 +208,27 @@ namespace WebPccuClub.Models
 
         /// <summary>地點類型</summary>
         [DisplayName("地點類型")]
-        public string? PlaceSource { get; set; }
+        public string? PlaceSourceText { get; set; }
 
-        /// <summary>場地名稱</summary>
-        [DisplayName("場地名稱")]
-        public string? PlaceText { get; set; }
+        /// <summary>活動日</summary>
+        [DisplayName("活動日")]
+        public DateTime? Date { get; set; }
 
-        /// <summary>活動開始日</summary>
-        [DisplayName("活動開始日")]
-        public DateTime? SDate { get; set; }
+        /// <summary>使用時間[起]</summary>
+        [DisplayName("使用時間[起]")]
+        public string? STime { get; set; }
 
-        /// <summary>活動結束日</summary>
-        [DisplayName("活動結束日")]
-        public DateTime? EDate { get; set; }
-
-        /// <summary>審核狀態</summary>
-        [DisplayName("審核狀態")]
-        public string? ActVerify { get; set; }
+        /// <summary>使用時間[迄]</summary>
+        [DisplayName("使用時間[迄]")]
+        public string? ETime { get; set; }
 
         /// <summary>審核狀態</summary>
         [DisplayName("審核狀態")]
         public string? ActVerifyText { get; set; }
+
+        /// <summary>行程狀態</summary>
+        [DisplayName("行程狀態")]
+        public string? RundownStatusText { get; set; }
 
         [DisplayName("建立時間")]
         public DateTime? Created { get; set; }
