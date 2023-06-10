@@ -55,6 +55,8 @@
             data: $("#SearchForm").serialize(),
             success: function (result) {
                 $('#SearchResultList').html(result);
+
+                //SetHeight();
             }
         });
     }
@@ -72,5 +74,24 @@
         $("#@Html.IdFor(m => m.ConditionModel.Page)").val(e.target.value);
         GoSearch();
     });
+
+
+
+    //function SetHeight()
+    //{
+    //    var Height = 0;
+
+    //    $('.classInfo').each(function () {
+    //        var height = $(this).height();
+
+    //        if (height > Height) {
+    //            Height = height;
+    //            $('.classInfo').each(function (index) {
+    //                $(this).height(Height);
+    //            });
+    //        }
+    //    });
+    //}
+
 
 </script>

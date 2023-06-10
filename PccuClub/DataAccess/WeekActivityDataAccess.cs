@@ -17,9 +17,7 @@ namespace WebPccuClub.DataAccess
     public class WeekActivityDataAccess : BaseAccess
     {
 
-        /// <summary> 查詢結果 </summary>
-
-        public List<WeekActivityResultModel> GetSearchResult(WeekActivityConditionModel model)
+        public List<PlaceData> GetPlaceData(string? buildID)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -27,22 +25,52 @@ namespace WebPccuClub.DataAccess
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            //parameters.Add("@ClubClass", model.ClubClass);
-            
+            parameters.Add("@Buildid", buildID);
+
             #endregion
 
-            CommandText = $@"SELECT A.ClubId, A.ClubCName, A.ClubClass, B.Text AS ClubClassText, A.LogoPath
-                               FROM ClubMang A
-                          LEFT JOIN Code B ON B.Code = A.ClubClass AND B.Type = 'ClubClass' 
-                              WHERE 1 = 1 
-                                ";
+            CommandText = $@"SELECT PlaceID, PlaceName
+                               FROM PlaceSchoolMang
+                              WHERE (@Buildid IS NULL OR Buildid = @Buildid)";
 
-            (DbExecuteInfo info, IEnumerable<WeekActivityResultModel> entitys) dbResult = DbaExecuteQuery<WeekActivityResultModel>(CommandText, parameters, true, DBAccessException);
+            (DbExecuteInfo info, IEnumerable<PlaceData> entitys) dbResult = DbaExecuteQuery<PlaceData>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList();
 
-            return new List<WeekActivityResultModel>();
+            return new List<PlaceData>();
+        }
+
+        /// <summary> 查詢結果 </summary>
+
+        public List<WeekActClubData> GetSearchResult(WeekActivityConditionModel model)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@SDate", model.SDate);
+            parameters.Add("@EDate", DateTime.Parse(model.SDate).AddDays(6));
+
+            #endregion
+
+            CommandText = $@"SELECT A.ActID, MIN(A.STime) AS STime, MAX(A.ETime) AS ETime,
+                                    A.ActPlaceID, A.ActPlaceText, A.[Date], C.ActName, C.BrrowUnit AS ClubID, D.ClubCName AS ClubCName
+                               FROM ActRundown A
+                          LEFT JOIN PlaceSchoolMang B on B.PlaceID = A.ActPlaceID
+                          LEFT JOIN ActDetail C ON C.ActDetailId = A.ActDetailId
+                          LEFT JOIN ClubMang D ON D.ClubId = C.BrrowUnit
+                              WHERE [date] between @SDate AND @EDate
+                           GROUP BY A.ActID,A.ActPlaceID, A.ActPlaceText, A.[Date], C.ActName, C.BrrowUnit, D.ClubCName";
+
+            (DbExecuteInfo info, IEnumerable<WeekActClubData> entitys) dbResult = DbaExecuteQuery<WeekActClubData>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<WeekActClubData>();
         }
 
 
