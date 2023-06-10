@@ -128,7 +128,7 @@ $(document).ready(function(){
         }) 
     }
 
-    if ((location.pathname).indexOf("act.") >= 0) {
+    if ((location.pathname).indexOf("act.") >= 0|| (location.pathname).indexOf("WeekActivity") >= 0) {
         var calendar = new VanillaCalendar('#calendar',{
             settings: {
                 lang: 'define',
@@ -147,14 +147,22 @@ $(document).ready(function(){
             },
             actions: {
                 clickWeekNumber(event, number, days, year) {
+                    var hidSD = $("#ConditionModel_SDate");
+                    hidSD.val("");
+
                     $("#calendar").find(".vanilla-calendar-day__btn").removeClass("weekbar");
                     for (var i = 0; i < days.length; i++) {
                         days[i].classList.add("weekbar");
                         var weekday = days[i].getAttribute("data-calendar-day");
-                        weekday = weekday.replace(/-/g,"/")
+                        weekday = weekday.replace(/-/g, "/")
+
+                        if (hidSD.val() == "") { hidSD.val(weekday); }
+
                         $(".timetableWrapper .dayItem").eq(i).find(".date").html(weekday)
                     };
                     $(".timetableWrapper").removeClass("hidden");
+                    
+                    GoSearch();
                     timetableHeight()
                 },
                 clickArrow(event, year, month) {

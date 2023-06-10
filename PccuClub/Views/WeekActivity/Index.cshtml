@@ -1,0 +1,76 @@
+﻿@model WebPccuClub.Models.WeekActivityViewModel
+
+@{
+    Layout = "_FrontLayout";
+    string Controller = "FrontLogin";
+    string ActionDisptach = "AuthLogin";
+    string sUpdateTargetId = "#MainContent";
+}
+
+<div class="col-xxl-8">
+
+    @Html.Partial("_FrontRemindWrapper")
+
+    <div class="contentWrapper">
+        <h4 class="pageTitle">一周場地時間</h4>
+        <hr>
+        <p class="hint"><i class="icon-bulb"></i> 點選左方小箭頭選取一周，檢視一周場地時間。</p>
+        <div class="scroll-box">
+            <div id="calendar"></div>
+        </div>
+
+        <section class="timetableWrapper hidden mt-5">
+            <div class="filterbox form-box">
+                <div class="row justify-content-end">
+                    <form method="post" id="SearchForm" enctype="multipart/form-data" action="" style="display: contents;">
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center">
+                            <label class="flex-shrink-0" for="">場域：</label>
+                            @Html.DropDownListFor(m => m.ConditionModel.BuildID,(List<SelectListItem>)ViewBag.ddlAllBuild,"不分場域", new {@class = "form-control"})
+                        </div>
+                        @Html.HiddenFor(m => m.ConditionModel.SDate)
+                    </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="SearchResultList" class="card"></div>
+
+
+        </section>
+
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        //GoSearch();
+    });
+
+    function GoSearch() {
+        SendAjax({
+            url: '@Url.Action("GetSearchResult")',
+            data: $("#SearchForm").serialize(),
+            success: function (result) {
+                $('#SearchResultList').html(result);
+            }
+        });
+    }
+
+    $('#@Html.IdFor(m => m.ConditionModel.BuildID)').change(function (e) {
+        GoSearch();
+    });
+
+    $('#JumpPergroup').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val(e.target.value);
+        GoSearch();
+    });
+
+    $('#Jumppage').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.Page)").val(e.target.value);
+        GoSearch();
+    });
+
+</script>

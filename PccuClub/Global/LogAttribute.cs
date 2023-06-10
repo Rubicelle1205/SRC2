@@ -76,6 +76,7 @@
         已上傳檔案 = 61,
         後台已填寫表單 = 62,
         後台已上傳檔案 = 63,
+        一周場地時間 = 64,
     }
 
 	public enum DBActionChineseName

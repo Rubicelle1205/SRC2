@@ -77,6 +77,7 @@
                     @Html.HiddenFor(m => m.ConditionModel.PageSize)
                     @Html.HiddenFor(m => m.ConditionModel.TotalCount)
                 </form>
+
                 <div id="SearchResultList" class="card"></div>
 
             </div>
@@ -87,7 +88,11 @@
 </section>
 
 <script>
+
+
+
     function GoSearch() {
+
         SendAjax({
             url: '@Url.Action("GetSearchResult")',
             data: $("#SearchForm").serialize(),
@@ -97,32 +102,5 @@
         });
     }
 
-    function ExportSearchResult() {
-        window.open('@Url.Action("ExportSearchResult")' + '?' + $("#SearchForm").serialize());
-    }
-
-    $('#JumpPergroup').change(function (e) {
-        $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val(e.target.value);
-        GoSearch();
-    });
-    
-    $('#Jumppage').change(function (e) {
-        $("#@Html.IdFor(m => m.ConditionModel.Page)").val(e.target.value);
-        GoSearch();
-    });
-
-    $('input:reset').click(function (e) {
-        $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val("10");
-    });
-
-    $('#@Html.IdFor(m => m.ConditionModel.From_ReleaseDate)').tooltip({ title: "獲獎時間[起]" });
-    $('#@Html.IdFor(m => m.ConditionModel.To_ReleaseDate)').tooltip({ title: "獲獎時間[迄]" });
-    $('#@Html.IdFor(m => m.ConditionModel.SchoolYear)').tooltip({ title: "學年度" });
-    $('#@Html.IdFor(m => m.ConditionModel.ClubID)').tooltip({ title: "社團代號" });
-    $('#@Html.IdFor(m => m.ConditionModel.ClubCName)').tooltip({ title: "社團名稱" });
-    $('#@Html.IdFor(m => m.ConditionModel.ActVerify)').tooltip({ title: "審核狀態" });
-    $('#@Html.IdFor(m => m.ConditionModel.AwdActName)').tooltip({ title: "活動名稱" });
-    $('#@Html.IdFor(m => m.ConditionModel.AwdType)').tooltip({ title: "獲獎類別" });
-    $('#@Html.IdFor(m => m.ConditionModel.AwdName)').tooltip({ title: "獎項名稱" });
 
 </script>
