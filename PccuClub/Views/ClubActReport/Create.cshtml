@@ -2,9 +2,6 @@
 
 @{
     Layout = "_FrontLayout";
-    string Controller = "ClubActReport";
-    string ActionDisptach = "Create2";
-    string sUpdateTargetId = "";
     List<SelectListItem> LstSDGs = ViewBag.ddlAllSDGs;
 }
 
@@ -20,7 +17,7 @@
         <hr>
         <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
         <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">Step1. 報備資訊</div>
-        <form asp-action="Create2" method="post">
+        <form asp-action="Create2">
             <div class="infoWrapper mb-5">
                 <div class="infoItem">
                     <div class="tag">學年度</div>

@@ -1,0 +1,40 @@
+﻿@model WebPccuClub.Models.ActListMangViewModel
+
+@{
+
+}
+
+@if (null != Model.LstTodayActModel)
+{
+    <div id="thisdayTable_box">
+        @if (Model.LstTodayActModel.Count > 0)
+        {
+            <p class="mb-0 py-2 hint">
+                <i class="fas fa-caret-down"></i>
+                場地當日借用狀態 <i class="fas fa-caret-down"></i>
+            </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">活動名稱</th>
+                        <th scope="col">活動單位</th>
+                        <th scope="col">開始時間</th>
+                        <th scope="col">結束時間</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.LstTodayActModel)
+                    {
+                        <tr>
+                            <td>@item.ActName</td>
+                            <td>@item.BrrowClubName</td>
+                            <td>@string.Format("{0}:00", item.STime)</td>
+                            <td>@string.Format("{0}:00", item.ETime)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    </div>
+}

@@ -2,41 +2,284 @@
 
 @{
     Layout = "_FrontLayout";
-    string Controller = "ClubActReport";
-    string ActionDisptach = "Create3";
-    List<SelectListItem> LstSDGs = ViewBag.ddlAllSDGs;
+	List<SelectListItem> LstPlaceSource = ViewBag.ddlPlaceSource;
 }
 
-@if (null != Model.CreateModel)
-{
-    <div class="col-xxl-8">
-        <div class="contentWrapper">
-            <h4 class="pageTitle">新增活動報備</h4>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="apply.html">活動報備</a></li>
-                    <li class="breadcrumb-item active">新增活動報備</li>
-                </ol>
-            </nav>
-            <hr>
-            <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
-            <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">Step1. 報備資訊</div>
-            <form asp-action="@ActionDisptach" asp-controller="@Controller" data-ajax="false"
-                  data-ajax-method="POST" data-ajax-mode="replace" data-ajax-begin="SysFormLoadingStart" data-ajax-complete="SysFormLoadingEnd">
-            
-                  @*@Html.TextBoxFor(m => m.CreateModel.AA)*@
+<div class="col-xxl-8">
+	<div class="contentWrapper">
+		<h4 class="pageTitle">新增活動報備</h4>
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="apply.html">活動報備</a></li>
+				<li class="breadcrumb-item active">新增活動報備</li>
+			</ol>
+		</nav>
+		<hr>
 
-            <div class="row justify-content-center mb-5">
-                <div class="col-lg-4">
-                    <button type="button" class="submit-btn btn btn-primary btn-modern border-0 w-100" onclick="SaveData()">下一步<i class="icon-arrow-right"></i></button>
-                </div>
-            </div>
-            </form>
-        </div>
-    </div>
-}
+		<p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
+		<div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">Step2. 活動行程</div>
+		
+			<p class="hint mb-0 py-1"><i class="fas fa-info-circle"></i> 請先選擇日期，再選擇地點和時間</p>
+			<div class="infoWrapper mb-3">
+				<div class="infoItem">
+					<div class="tag">選擇日期<span class="req-star">*</span></div>
+					<div class="content">
+						<input asp-for="CreateModel.ActDate" type="date" class="form-control w-auto" title="請選擇日期">
+						
+						<div id="usedTable_box"></div>
+					</div>
+				</div>
+
+
+				<div class="infoItem">
+					<div class="tag">選擇地點<span class="req-star">*</span></div>
+					<div class="content warning-box">
+                        @foreach (SelectListItem item in LstPlaceSource)
+                        {
+                            <div class="icheck-primary d-inline">
+                                @Html.RadioButtonFor(m => m.CreateModel.PlaceSource, item.Value, new { @id = string.Format("PlaceSource_{0}", item.Value) })
+                                <label for=@string.Format("PlaceSource_{0}", item.Value)>@item.Text</label>
+                            </div>
+                        }
+
+						<div id="class_input_box"></div>
+						<div id="brrowTable"></div>
+					</div>
+				</div>
+				<div class="infoItem">
+					<div class="tag">選擇時間<span class="req-star">*</span></div>
+					<div class="content">
+						<p id="selected_date" class="mb-0 hidden">日期：<span class="font-weight-bold text-primary"></span></p>
+						<div class="row">
+							<div class="col-lg-5">
+
+								<div class="d-flex align-items-center pt-2">
+									<label class="flex-shrink-0 me-2" for="">開始時間(小時)：</label>
+									@Html.DropDownListFor(m => m.CreateModel.STime,(List<SelectListItem>)ViewBag.ddlHour,"請選擇開始時間", new {@class = "form-control w-50"} )
+								</div>
+								<div class="d-flex align-items-center pt-2">
+									<label class="flex-shrink-0 me-2" for="">結束時間(小時)：</label>
+
+									@Html.DropDownListFor(m => m.CreateModel.ETime,(List<SelectListItem>)ViewBag.ddlHour,"請選擇結束時間", new {@class = "form-control w-50"} )
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="row justify-content-center mb-5">
+				<div class="col-lg-3">
+					<button id="BtnAddRundown" class="addevent-btn btn btn-secondary btn-modern border-0 w-100" onclick="addRundown()">加入行程<i class="fas fa-plus"></i></button>
+				</div>
+			</div>
+			<div class="infoWrapper mb-5">
+				<div class="infoItem">
+					<div class="tag">已加入行程</div>
+					<div class="content">
+						<table id="myTable" class="table">
+							<thead>
+								<tr>
+									<th scope="col">日期</th>
+									<th scope="col">時間</th>
+									<th scope="col">地點</th>
+									<th scope="col"></th>
+								</tr>
+							</thead>
+							<tbody id="event_des">
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		<form asp-action="Create3" method="post">
+			<input asp-for="CreateModel.strRundown" type="hidden"/>
+			<div class="row justify-content-center mb-5">
+				<div class="col-lg-3">
+					<a href="apply_add.html" class="btn btn-primary btn-outline btn-modern w-100 mb-2"><i class="icon-arrow-left"></i> 上一步</a>
+				</div>
+				<div class="col-lg-3">
+					<button class="submit-btn btn btn-primary btn-modern w-100 mb-2" type="submit">下一步 <i class="icon-arrow-right"></i></button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
 
 
 <script>
+	$(document).ready(function () {
 
+		$("[id ^= 'PlaceSource_']").on('change', function () {
+
+			InitBuildSelect($("[id ^= 'PlaceSource_']:checked").val());
+		});
+
+	});
+
+	$(document).on('change', '#@Html.IdFor(m => m.CreateModel.ActDate)', function () {
+		var SelectedDate = $(this).val()
+		$("#selected_date").removeClass("hidden").children("span").text(SelectedDate)
+
+		SendAjax({
+			url: '@Url.Action("GetUsedByDate")',
+			data: { 'SelectedDate': SelectedDate },
+			success: function (result) {
+				$("#usedTable_box").html(result);
+			},
+			error: function (response) {
+				$.alert(result.errorMsg);
+			}
+		});
+
+		GetBrrowStatus();
+	});
+
+	function GetBrrowStatus() {
+		var PlaceId = $("#@Html.IdFor(m => m.CreateModel.PlaceId)").val();
+		var SelectedDate = $("#@Html.IdFor(m => m.CreateModel.ActDate)").val();
+
+		$("#brrowTable").html("");
+
+		SendAjax({
+			url: '@Url.Action("GetTodayAct")',
+			data: { 'PlaceId': PlaceId, 'SelectedDate': SelectedDate },
+			success: function (result) {
+				$("#brrowTable").html(result);
+			},
+			error: function (response) {
+				$.alert(result.errorMsg);
+			}
+		});
+	}
+
+	function InitBuildSelect(PlaceSource) {
+
+        SendAjax({
+            url: '@Url.Action("InitBuildSelect")',
+            data: { 'PlaceSource': PlaceSource },
+            success: function (result) {
+                $('#class_input_box').html(result);
+            }
+        });
+
+        $("#brrowTable").html("");
+    }
+
+
+
+	function addRundown() {
+
+		var PlaceSource = $("[id ^= 'PlaceSource_']:checked").val()
+		var $date = $('#@Html.IdFor(m => m.CreateModel.ActDate)').val();
+		var start_hour = $('#@Html.IdFor(m => m.CreateModel.STime)').val();
+		var end_hour = $('#@Html.IdFor(m => m.CreateModel.ETime)').val();
+
+		var placeID;
+		var placetext;
+		if (PlaceSource == "01") {
+			placeID = $('#@Html.IdFor(m => m.CreateModel.PlaceId) option:selected').val();
+			placetext = $('#@Html.IdFor(m => m.CreateModel.PlaceId) option:selected').text();
+		} else {
+			placeID = $('#@Html.IdFor(m => m.CreateModel.PlaceName)').val();
+			placetext = $('#@Html.IdFor(m => m.CreateModel.PlaceName)').val();
+		}
+
+		if ($date == "") { $.alert("請選擇日期"); return false; }
+		if (start_hour == "") { $.alert("請選擇開始時間"); return false; }
+		if (end_hour == "") { $.alert("請選擇結束時間"); return false; }
+		if (placeID == "" || placeID == undefined) { $.alert("請輸入場地名稱"); return false; }
+
+		var data = new FormData();
+
+		var strRundown = $("#@Html.IdFor(m => m.CreateModel.strRundown)").val();
+
+		data.append('@Html.NameFor(m => m.RundownModel.PlaceSource)', PlaceSource);
+		data.append('@Html.NameFor(m => m.RundownModel.Date)', $date);
+		data.append('@Html.NameFor(m => m.RundownModel.STime)', start_hour);
+		data.append('@Html.NameFor(m => m.RundownModel.ETime)', end_hour);
+		data.append('@Html.NameFor(m => m.RundownModel.PlaceID)', placeID);
+		data.append('@Html.NameFor(m => m.RundownModel.PlaceText)', placetext);
+		data.append('@Html.NameFor(m => m.RundownModel.strRundown)', strRundown);
+
+		SendAjax({
+			url: '@Url.Action("ChkRundown")',
+			data: data,
+			processData: false,
+			contentType: false,
+			success: function (result) {
+				if (result.errorCode == 0) {
+					DrawTable(PlaceSource, $date, start_hour, end_hour, placeID, placetext);
+				}
+				else { $.alert(result.errorMsg); return; }
+			},
+			error: function (response) {
+				$.alert(result.errorMsg);
+			}
+		});
+
+
+	}
+
+	function UpdateInfo() {
+		var strRundown = "";
+		//$("#step4").hide().removeClass("show");
+
+		$('#myTable tbody tr').each(function () {
+
+			var dataValue = $(this).attr('data');;
+
+			var arr = dataValue.split("|");
+
+			var PlaceSource = arr[0];
+			var dd = arr[1];
+			var start_hour = arr[2];
+			var end_hour = arr[3];
+			var placeID = arr[4];
+			var placetext = arr[5];
+
+			if (PlaceSource == "03") { $("#step4").fadeIn().addClass("show"); }
+
+			var row = PlaceSource + "," + dd + "," + start_hour + "," + end_hour + "," + placeID + "," + placetext;
+
+			// 拼接字符串
+			if (strRundown !== "") {
+				strRundown += "|";
+			}
+			strRundown += row;
+		});
+
+		$("#@Html.IdFor(m => m.CreateModel.strRundown)").val(strRundown);
+
+
+	}
+
+
+	function DrawTable(PlaceSource, $date, start_hour, end_hour, placeID, placetext) {
+
+		// 產生tr物件
+		var eventHtml = '<tr class="dateItem" data="' + PlaceSource + "|" + $date + "|" + start_hour + "|" + end_hour + "|" + placeID + "|" + placetext + '">\n';
+		eventHtml += '<th>' + $date + '</th>\n';
+		eventHtml += '<td>' + start_hour + ':00' + '~' + end_hour + ':00' + '</td>\n';
+		eventHtml += '<td>' + placetext + '</td>\n';
+		eventHtml += '<td><button class="del-btn-d btn" type="button">移除 <i class="fas fa-times"></i></button></td>\n';
+		eventHtml += '</tr>\n';
+
+		$("#event_des").append(eventHtml)
+
+		UpdateInfo()
+	}
+
+
+
+	$(document).on('click', '.dateItem .del-btn-d', function () {
+		if (confirm("確認移除？") == false) {
+			return false
+		} else {
+			$(this).closest(".dateItem").remove()
+
+			UpdateInfo();
+		}
+	})
 </script>

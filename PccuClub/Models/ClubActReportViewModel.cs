@@ -16,6 +16,21 @@ namespace WebPccuClub.Models
 
         public ClubActReportCreateModel CreateModel { get; set; }
 
+        public List<ActListMangPlaceUsedModel> LstPlaceUsedModel { get; set; }
+
+
+		public ActListMangRundownModel RundownModel { get; set; }
+
+
+
+
+
+
+
+
+
+
+
 		public ClubActReportEditModel EditModel { get; set; }
 
         public ClubActReportConsentModel ConsentModel { get; set; }
@@ -70,6 +85,8 @@ namespace WebPccuClub.Models
 
     public class ClubActReportCreateModel
     {
+        #region section 1
+
         /// <summary>學年度</summary>
         [DisplayName("學年度")]
         public string? SchoolYear { get; set; }
@@ -109,72 +126,48 @@ namespace WebPccuClub.Models
         /// <summary>全人學習護照</summary>
         [DisplayName("全人學習護照")]
         public string? PassPort { get; set; }
-    }
+		#endregion
 
-    public class Section1
-    {
-        /// <summary>學年度</summary>
-        [DisplayName("學年度")]
-        public string? SchoolYear { get; set; }
+		#region Section2
 
-        /// <summary>活動名稱</summary>
-        [DisplayName("活動名稱")]
-        public string? ActName { get; set; }
+		public string? strRundown { get; set; }
 
-        /// <summary>活動類型</summary>
-        [DisplayName("活動類型")]
-        public string? StaticOrDynamic { get; set; }
+		/// <summary>選擇日期</summary>
+		[DisplayName("選擇日期")]
+		public string? ActDate { get; set; }
 
-        /// <summary>活動地點</summary>
-        [DisplayName("活動地點")]
-        public string? ActInOrOut { get; set; }
+		/// <summary>開始時間</summary>
+		[DisplayName("開始時間")]
+		public string? STime { get; set; }
 
-        /// <summary>活動人數</summary>
-        [DisplayName("活動人數")]
-        public string? Capacity { get; set; }
+		/// <summary>結束時間</summary>
+		[DisplayName("結束時間")]
+		public string? ETime { get; set; }
 
-        /// <summary>活動性質</summary>
-        [DisplayName("活動性質")]
-        public string? ActType { get; set; }
+		/// <summary>校內/校內其他/校外</summary>
+		[DisplayName("校內/校內其他/校外")]
+		public string? PlaceSource { get; set; }
 
-        /// <summary>使用資訊設備</summary>
-        [DisplayName("使用資訊設備")]
-        public string? UseITEquip { get; set; }
+		/// <summary>選擇樓館</summary>
+		[DisplayName("選擇樓館")]
+		public string? Buildid { get; set; }
 
-        /// <summary>活動簡介</summary>
-        [DisplayName("活動簡介")]
-        public string? ShortDesc { get; set; }
+		/// <summary>選擇校內場地</summary>
+		[DisplayName("選擇校內場地")]
+		public string? PlaceId { get; set; }
 
-        /// <summary>SDGs</summary>
-        [DisplayName("SDGs")]
-        public string? SDGs { get; set; }
-
-        /// <summary>全人學習護照</summary>
-        [DisplayName("全人學習護照")]
-        public string? PassPort { get; set; }
-    }
-
-    public class Section2
-    { 
-        public string? AA { get; set; }
-    }
-
-    public class Section3
-    {
-
-    }
-
-    public class Section4
-    {
-
-    }
+		/// <summary>場地名稱</summary>
+		[DisplayName("場地名稱")]
+		public string? PlaceName { get; set; }
 
 
+		#endregion
 
 
+	}
 
 
-    public class ClubActReportEditModel
+	public class ClubActReportEditModel
     {
 		#region Section1
 		/// <summary>ID</summary>
