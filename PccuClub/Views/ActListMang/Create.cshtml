@@ -694,12 +694,19 @@
 
         if (allEmpty) { $.alert("活動企劃書不可為空白"); return; }
 
-
+        var NeedChk = false;
         var arr = strRundown.split("|").map(function (item) {
             return item.trim();
         });
 
-        if (arr[0].indexOf("03") !== -1) {
+        $.each(arr, function (index, value) {
+            if (value.startsWith("03,")) {
+                NeedChk = true;
+                return false;
+            }
+        });
+
+        if (NeedChk) {
             var allEmpty2 = true;
             for (var i = 0; i <= 8; i++) {
                 var file = $('#File' + i);
@@ -727,7 +734,7 @@
         var ActVerifyMemo = $('#@Html.IdFor(m => m.CreateModel.ActVerifyMemo)').val();
 
 
-        if (ClubID == "") { $.alert("社團代號不可為空白"); return; }
+        if (ClubId == "") { $.alert("社團代號不可為空白"); return; }
         if (SchoolYear == "") { $.alert("學年度不可為空白"); return; }
         if (ActName == "") { $.alert("活動名稱不可為空白"); return; }
         if (StaticOrDynamic == "") { $.alert("活動類型不可為空白"); return; }

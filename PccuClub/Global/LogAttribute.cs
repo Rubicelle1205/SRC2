@@ -78,6 +78,7 @@
         後台已上傳檔案 = 63,
         一周場地時間 = 64,
         行程管理 = 65,
+        前台活動報備 = 66,
     }
 
 	public enum DBActionChineseName

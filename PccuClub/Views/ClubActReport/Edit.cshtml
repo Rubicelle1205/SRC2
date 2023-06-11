@@ -1,0 +1,226 @@
+﻿@model WebPccuClub.Models.ClubActReportViewModel
+
+@{
+    Layout = "_FrontLayout";
+    List<SelectListItem> LstSDGs = ViewBag.ddlAllSDGs;
+    string StrSDGs = string.Empty;
+}
+
+@if (null != Model.EditModel)
+{
+    <div class="col-xxl-8">
+
+        @Html.Partial("_FrontRemindWrapper")
+
+
+        @if (1 == 1)
+        {
+            <div class="contentWrapper">
+                <h4 class="pageTitle">@Model.EditModel.ActName</h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="apply.html">活動報備</a></li>
+                        <li class="breadcrumb-item active">@Model.EditModel.ActName</li>
+                    </ol>
+                </nav>
+                <hr>
+                <div class="mb-4">
+                    <a id="Back" href="apply.html"><i class="fas fa-chevron-left"></i> 返回列表</a>
+                </div>
+
+                <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">1. 報備資訊</div>
+                <div class="infoWrapper mb-5">
+                    <div class="infoItem">
+                        <div class="tag">活動名稱</div>
+                        <div class="content">@Model.EditModel.ActName</div>
+                    </div>
+                    <div class="infoItem">
+                        <div class="tag">活動狀態</div>
+                        <div class="content">
+                            @if (Model.EditModel.ActVerify == "01")
+                            {
+                                <div class="badge badge-primary">@Model.EditModel.ActVerifyText</div>
+                            }
+                            else if (Model.EditModel.ActVerify == "02")
+                            {
+                                <div class="badge badge-success">@Model.EditModel..ActVerifyText</div>
+                            }
+                            else if (Model.EditModel.ActVerify == "03")
+                            {
+                                <div class="badge badge-secondary">@Model.EditModel..ActVerifyText</div>
+                            }
+                            else if (Model.EditModel.ActVerify == "04")
+                            {
+                                <div class="badge badge-info">@Model.EditModel..ActVerifyText</div>
+                            }
+                        </div>
+                    </div>
+                    <div class="infoItem">
+                        <div class="tag">審核備註</div>
+                        <div class="content">@Model.EditModel.ActVerifyMemo</div>
+                    </div>
+                    <div class="infoItem">
+                        <div class="tag">報備日期</div>
+                        <div class="content">@Model.EditModel.Created.Value.ToString("yyyy/MM/dd")</div>
+                    </div>
+                    <div class="infoItem">
+                        <div class="tag">活動類型</div>
+                        <div class="content">@Model.EditModel.StaticOrDynamicText</div>
+                    </div>
+                    <div class="infoItem">
+                        <div class="tag">活動地點</div>
+                        <div class="content">@Model.EditModel.ActInOrOutText</div>
+                    </div>
+                    <div class="infoItem">
+                        <div class="tag">活動人數</div>
+                        <div class="content">@Model.EditModel.Capacity</div>
+                    </div>
+                    <div class="infoItem">
+                        <div class="tag">活動性質</div>
+                        <div class="content">@Model.EditModel.ActTypeText</div>
+                    </div>
+                    <div class="infoItem">
+                        <div class="tag">使用資訊設備</div>
+                        <div class="content">@Model.EditModel.UseITEquipText</div>
+                    </div>
+                    <div class="infoItem">
+                        <div class="tag">活動簡介</div>
+                        <div class="content">@Model.EditModel.ShortDesc</div>
+                    </div>
+                    <div class="infoItem">
+                        <div class="tag">聯合國SDGs永續發展目標</div>
+                        <div class="content">
+                            @if (!string.IsNullOrEmpty(Model.EditModel.SDGs))
+                            {
+                                string[] arrSDGs = Model.EditModel.SDGs.Split(",");
+
+                                for (int i = 0; i <= arrSDGs.Length - 1; i++)
+                                {
+                                    if (i != arrSDGs.Length - 1)
+                                    {
+                                        StrSDGs += LstSDGs.Where(x => x.Value == arrSDGs[i]).FirstOrDefault().Text + "、";
+                                    }
+                                    else
+                                    {
+                                        StrSDGs += LstSDGs.Where(x => x.Value == arrSDGs[i]).FirstOrDefault().Text;
+                                    }
+                                }
+                            }
+                            @StrSDGs
+                        </div>
+                    </div>
+                    <div class="infoItem">
+                        <div class="tag">全人學習護照</div>
+                        <div class="content">
+                            否
+                            <div class="hint">若該活動欲認列於全人學習護照<a href="http://pass.pccu.edu.tw/" target="_blank">需另外至全人網站填報</a></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">2. 活動行程</div>
+                <div class="infoWrapper mb-5">
+                    <div class="infoItem">
+                        <div class="tag">行程</div>
+                        <div class="content">
+                            <div class="dateItem">
+                                @foreach (var item in Model.EditModel.LstActRundown)
+                                {
+                                    @if (item.RundownStatus == "01")
+                                    {
+                                        <div class="item">
+                                            <span class="date">@item.Date</span>
+                                            <span class="time">@string.Format("{0}:00", item.STime) ~ @string.Format("{0}:00", item.ETime)</span>
+                                            <span class="location">@item.PlaceText</span>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="infoItem">
+                        <div class="tag">已取消行程</div>
+                        <div class="content">
+                            <div id="cancel_wrapper" class="dateItem">
+                                @foreach (var item in Model.EditModel.LstActRundown)
+                                {
+                                    @if (item.RundownStatus == "02")
+                                    {
+                                        <div class="item">
+                                            <span class="date">@item.Date</span>
+                                            <span class="time">@string.Format("{0}:00", item.STime) ~ @string.Format("{0}:00", item.ETime)</span>
+                                            <span class="location">@item.PlaceText</span>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">3. 活動企劃書</div>
+                <div class="infoWrapper mb-5">
+                    <div class="infoItem">
+                        <div class="tag">活動企劃書</div>
+                        <div class="content">
+                            @foreach (var item in Model.EditModel.LstProposal)
+                            {
+                                <div class="mb-1">
+                                    <a class="text-decoration-underline" href="../@item.FilePath" target="_blank">@item.FileName</a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">4. 校外活動其他資訊</div>
+                <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 領隊資訊</div>
+                <div class="infoWrapper mb-4">
+                    <div class="infoItem">
+                        <div class="tag">姓名</div>
+                        <div class="content">@Model.EditModel.LeaderName</div>
+                    </div>
+                    <div class="infoItem">
+                        <div class="tag">電話</div>
+                        <div class="content">@Model.EditModel.LeaderTel</div>
+                    </div>
+                    <div class="infoItem">
+                        <div class="tag">手機</div>
+                        <div class="content">@Model.EditModel.LeaderPhone</div>
+                    </div>
+                </div>
+
+                <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 活動負責人</div>
+                <div class="infoWrapper mb-4">
+                    <div class="infoItem">
+                        <div class="tag">姓名</div>
+                        <div class="content">@Model.EditModel.ManagerName</div>
+                    </div>
+                    <div class="infoItem">
+                        <div class="tag">電話</div>
+                        <div class="content">@Model.EditModel.LeaderTel</div>
+                    </div>
+                    <div class="infoItem">
+                        <div class="tag">手機</div>
+                        <div class="content">@Model.EditModel.ManagerPhone</div>
+                    </div>
+                </div>
+
+                <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 附件</div>
+                <div class="infoWrapper mb-4">
+                    <div class="infoItem">
+                        <div class="tag">附件檔案</div>
+                        <div class="content">
+                            @foreach (var item in Model.EditModel.LstOutSideFile)
+                            {
+                                <div class="mb-1">
+                                    <a class="text-decoration-underline" href="../@item.FilePath" target="_blank">@item.FileName</a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
