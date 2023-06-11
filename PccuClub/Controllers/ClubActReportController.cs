@@ -87,12 +87,67 @@ namespace WebPccuClub.Controllers
 			return View(vm);
         }
 
+        [Log(LogActionChineseName.新增)]
+        public async Task<IActionResult> Create4(ClubActReportViewModel vm)
+        {
+            ClubActReportViewModel vm3 = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
+
+            if (Request.Form.Files.Count > 0)
+            {
+                for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                {
+                  if (Request.Form.Files[i].Name.Contains("Proposal"))
+                    {
+                        var file = Request.Form.Files[i];
+
+                        string strFilePath = await upload.UploadFileAsync("ActProposal", file);
+
+                        ActListFilesModel model = new ActListFilesModel();
+                        model.FileName = file.FileName;
+                        model.FilePath = strFilePath;
+
+                        vm3.CreateModel.LstProposal.Add(model);
+                    }
+                }
+            }
+
+            HttpContext.Session.SetObject("MyModel", vm3);
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.新增)]
+        public async Task<IActionResult> Create(ClubActReportViewModel vm)
+        {
+            ClubActReportViewModel vm4 = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
+
+            if (Request.Form.Files.Count > 0)
+            {
+                for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                {
+                    if (Request.Form.Files[i].Name.Contains("Proposal"))
+                    {
+                        var file = Request.Form.Files[i];
+
+                        string strFilePath = await upload.UploadFileAsync("ActProposal", file);
+
+                        ActListFilesModel model = new ActListFilesModel();
+                        model.FileName = file.FileName;
+                        model.FilePath = strFilePath;
+
+                        vm4.CreateModel.LstProposal.Add(model);
+                    }
+                }
+            }
+
+            HttpContext.Session.SetObject("MyModel", vm4);
+
+            return View(vm);
+        }
 
 
 
-
-
-		[ValidateInput(false)]
+        [ValidateInput(false)]
 		public IActionResult GetUsedByDate(string SelectedDate)
 		{
 			ActListMangViewModel vm = new ActListMangViewModel();

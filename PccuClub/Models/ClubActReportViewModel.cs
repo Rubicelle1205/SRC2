@@ -163,6 +163,41 @@ namespace WebPccuClub.Models
 
 		#endregion
 
+		#region Section3
+
+		public List<ActListFilesModel> LstProposal = new List<ActListFilesModel>();
+
+		#endregion
+
+		#region Section4
+
+		/// <summary>領隊姓名</summary>
+		[DisplayName("領隊姓名")]
+		public string? LeaderName { get; set; }
+
+		/// <summary>領隊電話</summary>
+		[DisplayName("領隊電話")]
+		public string? LeaderTel { get; set; }
+
+		/// <summary>領隊手機</summary>
+		[DisplayName("領隊手機")]
+		public string? LeaderPhone { get; set; }
+
+		/// <summary>活動負責人姓名</summary>
+		[DisplayName("活動負責人姓名")]
+		public string? ManagerName { get; set; }
+
+		/// <summary>活動負責人電話</summary>
+		[DisplayName("活動負責人電話")]
+		public string? ManagerTel { get; set; }
+
+		/// <summary>活動負責人手機</summary>
+		[DisplayName("活動負責人手機")]
+		public string? ManagerPhone { get; set; }
+
+		public List<ActListFilesModel> LstOutSideFile = new List<ActListFilesModel>();
+
+		#endregion
 
 	}
 
