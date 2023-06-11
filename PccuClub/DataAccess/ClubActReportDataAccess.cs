@@ -94,7 +94,6 @@ namespace WebPccuClub.DataAccess
             return null;
         }
 
-
         public ClubActReportConsentModel GetConsentData()
         {
             string CommandText = string.Empty;
@@ -116,75 +115,36 @@ namespace WebPccuClub.DataAccess
             return null;
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        #region 新增
 
         /// <summary> 新增資料 </summary>
-        public DbExecuteInfo InsertData(ClubActReportViewModel vm, UserInfo LoginUser, out DataTable dt)
+        public DbExecuteInfo InsertActMainData(ClubActReportViewModel vm, UserInfo LoginUser, out DataTable dt)
         {
             DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            //parameters.Add("@ClubID", LoginUser.LoginId);
-            //parameters.Add("@SchoolYear", vm.CreateModel.SchoolYear);
-            //parameters.Add("@AwdActName", vm.CreateModel.AwdActName);
-            //parameters.Add("@AwdName", vm.CreateModel.AwdName);
-            //parameters.Add("@AwdDate", vm.CreateModel.AwdDate);
-            //parameters.Add("@AwdType", vm.CreateModel.AwdType);
-            //parameters.Add("@Organizer", vm.CreateModel.Organizer);
-            //parameters.Add("@ActVerify", "01");
-            //parameters.Add("@Attachment", vm.CreateModel.Attachment);
-            //parameters.Add("@LoginId", LoginUser.LoginId);
+            parameters.Add("@STime", vm.CreateModel.STime);
+            parameters.Add("@ETime", vm.CreateModel.ETime);
+            parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
-            string CommendText = $@"INSERT INTO AwardMang
-                                               (ClubID, 
-                                                SchoolYear, 
-                                                AwdActName, 
-                                                AwdName, 
-                                                AwdDate, 
-                                                AwdType, 
-                                                Organizer, 
-                                                ActVerify, 
-                                                Attachment, 
-                                                Creator, 
-                                                Created, 
-                                                LastModifier, 
-                                                LastModified, 
-                                                ModifiedReason)
-                                         OUTPUT Inserted.AwdID
+            string CommendText = $@"INSERT INTO ActMain
+                                               (STime 
+                                                ,ETime 
+                                                ,Creator 
+                                                ,Created 
+                                                ,LastModifier 
+                                                ,LastModified )
+                                         OUTPUT Inserted.ActID
                                          VALUES
-                                               (@ClubID, 
-                                                @SchoolYear, 
-                                                @AwdActName, 
-                                                @AwdName, 
-                                                @AwdDate, 
-                                                @AwdType, 
-                                                @Organizer, 
-                                                @ActVerify, 
-                                                @Attachment, 
-                                                @LoginId, 
-                                                GETDATE(), 
-                                                @LoginId, 
-                                                GETDATE(), 
-                                                NULL)";
+                                                (@STime 
+                                                ,@ETime
+                                                ,@LoginId
+                                                ,GETDATE()
+                                                ,@LoginId
+                                                ,GETDATE()) ";
 
             ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
 
@@ -193,117 +153,390 @@ namespace WebPccuClub.DataAccess
             return ExecuteResult;
         }
 
-        /// <summary> 新增資料 </summary>
-        public DbExecuteInfo InsertDetailData(string AwdID, List<AwdDetailModel> dataList, UserInfo LoginUser)
+        public DbExecuteInfo InsertActDetailData(ClubActReportViewModel vm, string ActId, UserInfo LoginUser, out DataTable dt)
         {
-
+            DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
-            string CommendText = $@"INSERT INTO AwardDetailMang
-                                               (AwdID
-                                               ,Name
-                                               ,SNO
-                                               ,Department
-                                               ,Creator
-                                               ,Created
-                                               ,LastModifier
-                                               ,LastModified)
+            #region 參數設定
+            parameters.Add("@ActID", ActId);
+            parameters.Add("@BrrowUnit", LoginUser.LoginId);
+            parameters.Add("@SchoolYear", vm.CreateModel.SchoolYear);
+            parameters.Add("@ActName", vm.CreateModel.ActName);
+            parameters.Add("@Buildid", vm.CreateModel.Buildid);
+            parameters.Add("@PlaceID", vm.CreateModel.PlaceId);
+            parameters.Add("@BorrowType", "01"); // 借用:01 關閉:02
+            parameters.Add("@Capacity", vm.CreateModel.Capacity);
+            parameters.Add("@ActType", vm.CreateModel.ActType);
+            parameters.Add("@SDGs", vm.CreateModel.SDGs);
+            parameters.Add("@StaticOrDynamic", vm.CreateModel.StaticOrDynamic);
+            parameters.Add("@ActInOrOut", vm.CreateModel.ActInOrOut);
+            parameters.Add("@UseITEquip", vm.CreateModel.UseITEquip);
+            parameters.Add("@PassPort", vm.CreateModel.PassPort);
+
+            parameters.Add("@CreateSource", "02"); // 後台:01 前台:02
+            parameters.Add("@ShortDesc", vm.CreateModel.ShortDesc);
+
+
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO ActDetail
+                                               (ActID, 
+                                                BrrowUnit, 
+                                                SchoolYear, 
+                                                ActName, 
+                                                Buildid, 
+                                                PlaceID, 
+                                                BorrowType, 
+                                                Capacity, 
+                                                ActType, 
+                                                SDGs, 
+                                                StaticOrDynamic, 
+                                                ActInOrOut, 
+                                                UseITEquip, 
+                                                PassPort, 
+                                                CreateSource, 
+                                                ShortDesc, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         OUTPUT Inserted.ActDetailId
                                          VALUES
-                                               ('{AwdID}'
-                                               ,@Name
-                                               ,@SNO
-                                               ,@Department
-                                               ,'{LoginUser.LoginId}'
-                                               ,GETDATE()
-                                               ,'{LoginUser.LoginId}'
-                                               ,GETDATE())";
+                                               (@ActID, 
+                                                @BrrowUnit, 
+                                                @SchoolYear, 
+                                                @ActName, 
+                                                @Buildid, 
+                                                @PlaceID, 
+                                                @BorrowType, 
+                                                @Capacity, 
+                                                @ActType, 
+                                                @SDGs, 
+                                                @StaticOrDynamic, 
+                                                @ActInOrOut, 
+                                                @UseITEquip, 
+                                                @PassPort, 
+                                                @CreateSource, 
+                                                @ShortDesc, 
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE() )";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            dt = ds.Tables[0];
+
+            return ExecuteResult;
+        }
+
+        /// <summary> 新增日期資料</summary>
+        public DbExecuteInfo InsertActSectionData(ClubActReportViewModel vm, string ActId, string ActDetailId, DateTime date, UserInfo LoginUser, out DataTable dt)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ActID", ActId);
+            parameters.Add("@ActDetailId", ActDetailId);
+            parameters.Add("@Date", date.ToString("yyyy-MM-dd"));
+            parameters.Add("@Week", date.ToString("dddd"));
+            parameters.Add("@Status", "01");
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO ActSection
+                                               (ActID
+                                                , ActDetailId
+                                                , Date
+                                                , Creator
+                                                , Created
+                                                , LastModifier
+                                                , LastModified )
+                                         OUTPUT Inserted.ActSectionId
+                                         VALUES
+                                               (@ActID
+                                                , @ActDetailId
+                                                , @Date
+                                                , @LoginId
+                                                , GETDATE()
+                                                , @LoginId
+                                                , GETDATE() )";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            dt = ds.Tables[0];
+
+            return ExecuteResult;
+        }
+
+        /// <summary> 新增批次行程資料</summary>
+        public DbExecuteInfo InsertActRundownData(ClubActReportViewModel vm, string ActId, string ActDetailId, string ActSectionId, ActListMangRundownModel RundownModel, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+            string CommendText = string.Empty;
+
+            string PlaceSource = RundownModel.PlaceSource;
+            string PlaceID = RundownModel.PlaceID;
+            string PlaceText = RundownModel.PlaceText;
+
+            if (PlaceSource == "01")
+            {
+                for (int i = 0; i <= RundownModel.LstStime.Count - 1; i++)
+                {
+                    int hour = RundownModel.LstStime[i];
+
+                    #region 參數設定
+                    parameters.Add("@ActID", ActId);
+                    parameters.Add("@ActDetailId", ActDetailId);
+                    parameters.Add("@ActSectionId", ActSectionId);
+                    parameters.Add("@ActPlaceID", PlaceID);
+                    parameters.Add("@ActPlaceText", PlaceText);
+                    parameters.Add("@PlaceSource", PlaceSource);
+                    parameters.Add("@Date", DateTime.Parse(RundownModel.Date).ToString("yyyy-MM-dd"));
+                    parameters.Add("@Stime", hour.ToString().PadLeft(2, '0'));
+                    parameters.Add("@ETime", (hour + 1).ToString().PadLeft(2, '0'));
+                    parameters.Add("@Week", DateTime.Parse(RundownModel.Date).ToString("dddd"));
+                    parameters.Add("@Status", "01");
+                    parameters.Add("@LoginId", LoginUser.LoginId);
+                    #endregion 參數設定
+
+                    CommendText = $@"INSERT INTO ActRundown
+                                               (ActID, 
+                                                ActDetailId, 
+                                                ActSectionId, 
+                                                ActPlaceID, 
+                                                ActPlaceText, 
+                                                PlaceSource, 
+                                                Date, 
+                                                STime, 
+                                                ETime, 
+                                                Week, 
+                                                RundownStatus, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         VALUES
+                                               (@ActID, 
+                                                @ActDetailId, 
+                                                @ActSectionId, 
+                                                @ActPlaceID, 
+                                                @ActPlaceText, 
+                                                @PlaceSource,  
+                                                @Date, 
+                                                @STime, 
+                                                @ETime, 
+                                                @Week, 
+                                                '01', 
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE())";
+
+                    ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+                    if (!ExecuteResult.isSuccess) { return ExecuteResult; }
+                }
+            }
+            else
+            {
+                for (int i = 0; i <= RundownModel.LstStime.Count - 1; i++)
+                {
+                    int hour = RundownModel.LstStime[i];
+
+                    #region 參數設定
+                    parameters.Add("@ActID", ActId);
+                    parameters.Add("@ActDetailId", ActDetailId);
+                    parameters.Add("@ActSectionId", ActSectionId);
+                    parameters.Add("@ActPlaceID", PlaceID);
+                    parameters.Add("@ActPlaceText", PlaceText);
+                    parameters.Add("@PlaceSource", PlaceSource);
+                    parameters.Add("@Date", DateTime.Parse(RundownModel.Date).ToString("yyyy-MM-dd"));
+                    parameters.Add("@Stime", hour.ToString().PadLeft(2, '0'));
+                    parameters.Add("@ETime", (hour + 1).ToString().PadLeft(2, '0'));
+                    parameters.Add("@Week", DateTime.Parse(RundownModel.Date).ToString("dddd"));
+                    parameters.Add("@Status", "01");
+                    parameters.Add("@LoginId", LoginUser.LoginId);
+                    #endregion 參數設定
+
+                    CommendText = $@"INSERT INTO ActRundownElse
+                                               (ActID, 
+                                                ActDetailId, 
+                                                ActSectionId, 
+                                                ActPlaceID, 
+                                                ActPlaceText, 
+                                                PlaceSource, 
+                                                Date, 
+                                                STime, 
+                                                ETime, 
+                                                Week, 
+                                                RundownStatus, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         VALUES
+                                               (@ActID, 
+                                                @ActDetailId, 
+                                                @ActSectionId, 
+                                                @ActPlaceID, 
+                                                @ActPlaceText, 
+                                                @PlaceSource,  
+                                                @Date, 
+                                                @STime, 
+                                                @ETime, 
+                                                @Week, 
+                                                '01', 
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE())";
+
+                    ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+                    if (!ExecuteResult.isSuccess) { return ExecuteResult; }
+                }
+            }
+
+
+            return ExecuteResult;
+
+        }
+
+        public DbExecuteInfo InsertActProposalData(ClubActReportViewModel vm, string ActId, string ActDetailId, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+            string CommendText = string.Empty;
+
+            List<ActListFilesModel> dataList = vm.CreateModel.LstProposal;
+
+
+            #region 參數設定
+            #endregion 參數設定
+
+            CommendText = $@"INSERT INTO ActProposal 
+                                               (ActID, 
+                                                ActDetailId, 
+                                                FileName, 
+                                                FilePath, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         VALUES
+                                               ('{ActId}', 
+                                                '{ActDetailId}', 
+                                                @FileName, 
+                                                @FilePath, 
+                                                '{LoginUser.LoginId}', 
+                                                GETDATE(), 
+                                                '{LoginUser.LoginId}', 
+                                                GETDATE())";
 
             ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
 
             return ExecuteResult;
         }
 
-        /// <summary> 修改資料 </summary>
-        public DbExecuteInfo UpdateData(ClubActReportViewModel vm, UserInfo LoginUser)
+        public DbExecuteInfo InsertOutSideData(ClubActReportViewModel vm, string ActId, string ActDetailId, UserInfo LoginUser)
         {
+            DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
+            string CommendText = string.Empty;
 
             #region 參數設定
-            //parameters.Add("@AwdID", vm.EditModel.AwdID);
-            //parameters.Add("@SchoolYear", vm.EditModel.SchoolYear);
-            //parameters.Add("@AwdActName", vm.EditModel.AwdActName); 
-            //parameters.Add("@AwdDate", vm.EditModel.AwdDate);
-            //parameters.Add("@AwdType", vm.EditModel.AwdType);
-            //parameters.Add("@AwdName", vm.EditModel.AwdName);
-            //parameters.Add("@Organizer", vm.EditModel.Organizer);
-            //parameters.Add("@ActVerify", vm.EditModel.ActVerify);
+            parameters.Add("@ActID", ActId);
+            parameters.Add("@ActDetailId", ActDetailId);
 
-            //if(!string.IsNullOrEmpty(vm.EditModel.Attachment))
-            //    parameters.Add("@Attachment", vm.EditModel.Attachment);
+            parameters.Add("@LeaderName", vm.CreateModel.LeaderName);
+            parameters.Add("@LeaderTel", vm.CreateModel.LeaderTel);
+            parameters.Add("@LeaderPhone", vm.CreateModel.LeaderPhone);
+            parameters.Add("@ManagerName", vm.CreateModel.ManagerName);
+            parameters.Add("@ManagerTel", vm.CreateModel.ManagerTel);
+            parameters.Add("@ManagerPhone", vm.CreateModel.ManagerPhone);
 
-            //parameters.Add("@Memo", vm.EditModel.Memo);
-            //parameters.Add("@LoginId", LoginUser.LoginId);
+            parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
-            string CommendText = $@" UPDATE AwardMang 
-                                        SET SchoolYear = @SchoolYear, 
-                                            AwdActName = @AwdActName, 
-                                            AwdDate = @AwdDate, 
-                                            AwdType = @AwdType, 
-                                            AwdName = @AwdName, 
-                                            Organizer = @Organizer, 
-                                            ActVerify = @ActVerify, 
-
-                                            Memo = @Memo, 
-                                            LastModifier = @LoginId, 
-                                            LastModified = GETDATE() 
-                                     WHERE AwdID = @AwdID";
+            CommendText = $@"INSERT INTO ActOutSideInfo 
+                                               (ActID, 
+                                                ActDetailId, 
+                                                LeaderName, 
+                                                LeaderTel, 
+                                                LeaderPhone, 
+                                                ManagerName, 
+                                                ManagerTel, 
+                                                ManagerPhone, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
+                                         VALUES
+                                               (@ActID, 
+                                                @ActDetailId, 
+                                                @LeaderName, 
+                                                @LeaderTel, 
+                                                @LeaderPhone, 
+                                                @ManagerName, 
+                                                @ManagerTel, 
+                                                @ManagerPhone,  
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE())";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
             return ExecuteResult;
         }
 
-        /// <summary> 新增資料 </summary>
-        public DbExecuteInfo EditDetailData(ClubActReportViewModel vm, List<AwdDetailModel> dataList, UserInfo LoginUser)
+        public DbExecuteInfo InsertOutSideFileData(ClubActReportViewModel vm, string ActId, string ActDetailId, UserInfo LoginUser)
         {
-
+            DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
+            string CommendText = string.Empty;
 
-            string CommendText = $@"DELETE FROM AwardDetailMang WHERE AwdID = '{vm.EditModel.AwdID}'";
+            List<ActListFilesModel> dataList = vm.CreateModel.LstOutSideFile;
 
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
-            if (ExecuteResult.isSuccess)
-            {
-                CommendText = $@"INSERT INTO AwardDetailMang
-                                               (AwdID
-                                               ,Name
-                                               ,SNO
-                                               ,Department
-                                               ,Creator
-                                               ,Created
-                                               ,LastModifier
-                                               ,LastModified)
+            #region 參數設定
+            #endregion 參數設定
+
+            CommendText = $@"INSERT INTO ActOutSideInfoFile 
+                                               (ActID, 
+                                                ActDetailId, 
+                                                FileName, 
+                                                FilePath, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified)
                                          VALUES
-                                               ('{vm.EditModel.AwdID}'
-                                               ,@Name
-                                               ,@SNO
-                                               ,@Department
-                                               ,'{LoginUser.LoginId}'
-                                               ,GETDATE()
-                                               ,'{LoginUser.LoginId}'
-                                               ,GETDATE())";
+                                               ('{ActId}', 
+                                                '{ActDetailId}', 
+                                                @FileName, 
+                                                @FilePath, 
+                                                '{LoginUser.LoginId}', 
+                                                GETDATE(), 
+                                                '{LoginUser.LoginId}', 
+                                                GETDATE())";
 
-                ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
-            }
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
 
             return ExecuteResult;
         }
-
+        #endregion
 
         public List<SelectListItem> GetSchoolYear()
         {
@@ -318,7 +551,6 @@ namespace WebPccuClub.DataAccess
 
             return LstItem;
         }
-
 
 		public List<SelectListItem> GetAllSDGs()
 		{

@@ -23,6 +23,8 @@
 				<div class="infoItem">
 					<div class="tag">上傳活動企劃書<span class="req-star">*</span></div>
 					<div class="content">
+
+
                         <div class="target_list_proposal">
                             <div class="d-block mb-1 item">
                                 <label class="btn btn-outline-primary mb-0">
@@ -44,10 +46,12 @@
 			</div>
 			<div class="row justify-content-center mb-5">
 				<div class="col-lg-3">
-					<a href="apply_add2.html" class="btn btn-primary btn-outline btn-modern w-100 mb-2"><i class="icon-arrow-left"></i> 上一步</a>
+					<a href="@Url.Action("Create2")" class="btn btn-primary btn-outline btn-modern w-100 mb-2"><i class="icon-arrow-left"></i> 上一步</a>
 				</div>
 				<div class="col-lg-3">
-					<button class="submit-btn btn btn-primary btn-modern w-100 mb-2" type="submit">下一步 <i class="icon-arrow-right"></i></button>
+					<button class="submit-btn btn btn-primary btn-modern w-100 mb-2" type="submit" onclick="return SaveData()">下一步 <i class="icon-arrow-right"></i></button>
+                    @*<button class="submit-btn btn btn-primary btn-modern w-100 mb-2" type="submit">下一步 <i class="icon-arrow-right"></i></button>*@
+
 				</div>
 			</div>
 		</form>
@@ -56,7 +60,28 @@
 
 
 <script>
+    function SaveData() {
 
+        var allEmpty = true;
+        for (var i = 0; i <= 8; i++) {
+            var file = $('#ProposalFile' + i);
+
+            if (file.length > 0 && file.val() !== '') {
+                allEmpty = false;
+                var File = $('#ProposalFile' + i)[0].files[0];
+                if (typeof File !== 'undefined') {
+                    var fileExtension = File.name.split('.').pop().toLowerCase();
+
+                    if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'pdf' && fileExtension !== 'odt') {
+                        $.alert("檔案類型不符合");
+                        return false;
+                    }
+                }
+            }
+        }
+
+        if (allEmpty) { $.alert("活動企劃書不可為空白"); return false; }
+    }
 
     $(document).ready(function () {
         

@@ -100,6 +100,7 @@
 					<a href="@Url.Action("Create")" class="btn btn-primary btn-outline btn-modern w-100 mb-2"><i class="icon-arrow-left"></i> 上一步</a>
 				</div>
 				<div class="col-lg-3">
+					@*<button class="submit-btn btn btn-primary btn-modern w-100 mb-2" type="submit" onclick="return SaveData()">下一步 <i class="icon-arrow-right"></i></button>*@
 					<button class="submit-btn btn btn-primary btn-modern w-100 mb-2" type="submit">下一步 <i class="icon-arrow-right"></i></button>
 				</div>
 			</div>
@@ -282,4 +283,13 @@
 			UpdateInfo();
 		}
 	})
+
+
+	function SaveData() {
+		var StrRundown = $("#@Html.IdFor(m => m.CreateModel.strRundown)").val();
+
+		if (StrRundown == "") { $.alert("請先加入行程"); return false; }
+
+
+	}
 </script>

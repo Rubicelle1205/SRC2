@@ -6,6 +6,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.Streaming.Values;
 using NPOI.XSSF.UserModel;
 using NPOI.XWPF.UserModel;
+using Org.BouncyCastle.Utilities;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
@@ -47,6 +48,8 @@ namespace WebPccuClub.Controllers
             return View(vm);
         }
 
+        #region 新增
+
         [Log(LogActionChineseName.新增)]
         public IActionResult Create()
         {
@@ -68,8 +71,15 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public IActionResult Create2(ClubActReportViewModel vm)
         {
+            if (vm.CreateModel != null)
+            {
+                HttpContext.Session.SetObject("MyModel", vm);
+            }
+            else
+            { 
+                vm = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
+			}
 			
-			HttpContext.Session.SetObject("MyModel", vm);
 
 			ViewBag.ddlPlaceSource = dbAccess2.GetPlaceSource();
 			ViewBag.ddlHour = dbAccess2.GetAllHour();
@@ -81,10 +91,14 @@ namespace WebPccuClub.Controllers
         public IActionResult Create3(ClubActReportViewModel vm)
         {
 			ClubActReportViewModel vm2 = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
-            vm2.CreateModel.strRundown = vm.CreateModel.strRundown;
-			HttpContext.Session.SetObject("MyModel", vm2);
 
-			return View(vm);
+            if (vm.CreateModel != null)
+            {
+				vm2.CreateModel.strRundown = vm.CreateModel.strRundown;
+				HttpContext.Session.SetObject("MyModel", vm2);
+			}
+
+			return View(vm2);
         }
 
         [Log(LogActionChineseName.新增)]
@@ -113,39 +127,107 @@ namespace WebPccuClub.Controllers
 
             HttpContext.Session.SetObject("MyModel", vm3);
 
-            return View(vm);
+			string[] arr = vm3.CreateModel.strRundown.Split("|");
+
+			foreach (string item in arr)
+			{
+				string[] parts = item.Split(',');
+
+				if (parts[0] == "03")
+				{
+					return View(vm);
+				}
+			}
+
+			return RedirectToAction("ActCheck", vm3);
+			
         }
+
+
+		[Log(LogActionChineseName.新增)]
+		public async Task<IActionResult> ActCheck(ClubActReportViewModel vm)
+		{
+			ClubActReportViewModel vm4 = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
+
+            bool NeedUpload = false;
+			string[] arr = vm4.CreateModel.strRundown.Split("|");
+
+			foreach (string item in arr)
+			{
+				string[] parts = item.Split(',');
+
+				if (parts[0] == "03")
+				{
+                    NeedUpload = true;
+				}
+			}
+
+            if (NeedUpload)
+            { 
+			if (Request.Form.Files.Count > 0)
+			{
+				for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+				{
+					if (Request.Form.Files[i].Name.Contains("OutSide"))
+					{
+						var file = Request.Form.Files[i];
+
+						string strFilePath = await upload.UploadFileAsync("ActOutSide", file);
+
+						ActListFilesModel model = new ActListFilesModel();
+						model.FileName = file.FileName;
+						model.FilePath = strFilePath;
+
+						vm4.CreateModel.LstOutSideFile.Add(model);
+					}
+				}
+			}
+			}
+
+			HttpContext.Session.SetObject("MyModel", vm4);
+
+			ViewBag.ddlStaticOrDynamic = dbAccess2.GetStaticOrDynamic();
+			ViewBag.ddlActInOrOut = dbAccess2.GetActInOrOut();
+			ViewBag.ddlActType = dbAccess2.GetActType();
+			ViewBag.ddlUseITEquip = dbAccess2.GetUseITEquip();
+			ViewBag.ddlSDGs = dbAccess2.GetSDGs();
+			ViewBag.ddlPassport = dbAccess2.GetPassport();
+			ViewBag.ddlPlaceSource = dbAccess2.GetPlaceSource();
+			ViewBag.ddlHour = dbAccess2.GetAllHour();
+			ViewBag.ddlActVerify = dbAccess2.GetAllActVerify();
+			ViewBag.ddlAllClub = dbAccess2.GetAllClub();
+
+			return View(vm4);
+		}
 
         [Log(LogActionChineseName.新增)]
-        public async Task<IActionResult> Create(ClubActReportViewModel vm)
+        public async Task<IActionResult> ActFinish()
         {
-            ClubActReportViewModel vm4 = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
+            return View();
+        }
+        #endregion
 
-            if (Request.Form.Files.Count > 0)
-            {
-                for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
-                {
-                    if (Request.Form.Files[i].Name.Contains("Proposal"))
-                    {
-                        var file = Request.Form.Files[i];
+        [Log(LogActionChineseName.編輯)]
+        public IActionResult Edit(string id, ClubActReportViewModel vm)
+        {
 
-                        string strFilePath = await upload.UploadFileAsync("ActProposal", file);
 
-                        ActListFilesModel model = new ActListFilesModel();
-                        model.FileName = file.FileName;
-                        model.FilePath = strFilePath;
+            if (string.IsNullOrEmpty(id))
+                return RedirectToAction("Index");
 
-                        vm4.CreateModel.LstProposal.Add(model);
-                    }
-                }
-            }
+            ViewBag.ddlAllSDGs = dbAccess.GetAllSDGs();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
 
-            HttpContext.Session.SetObject("MyModel", vm4);
+            //ClubActReportViewModel vm = new ClubActReportViewModel();
+            vm.EditModel = dbAccess.GetEditData(id);
+            vm.EditModel.LstActRundown = dbAccess2.GetEditRundownData(id);
+            vm.EditModel.LstProposal = dbAccess2.GetEditProposalData(id);
+            vm.EditModel.LstOutSideFile = dbAccess2.GetEditOutSideFileData(id);
 
             return View(vm);
         }
 
-
+        #region Jquery
 
         [ValidateInput(false)]
 		public IActionResult GetUsedByDate(string SelectedDate)
@@ -190,7 +272,6 @@ namespace WebPccuClub.Controllers
 
 			return PartialView("_PlaceUsedPartial", vm);
 		}
-
 
         public IActionResult GetTodayAct(string PlaceId, string SelectedDate)
         {
@@ -256,7 +337,6 @@ namespace WebPccuClub.Controllers
 
             return PartialView("_PlaceDataPartial", vm);
         }
-
 
 		[ValidateInput(false)]
 		public IActionResult ChkRundown(ActListMangViewModel vm)
@@ -361,114 +441,6 @@ namespace WebPccuClub.Controllers
 		}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		[Log(LogActionChineseName.編輯)]
-        public IActionResult Edit(string id, ClubActReportViewModel vm)
-        {
-            
-
-            if (string.IsNullOrEmpty(id))
-                return RedirectToAction("Index");
-            
-            ViewBag.ddlAllSDGs = dbAccess.GetAllSDGs();
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
-
-            //ClubActReportViewModel vm = new ClubActReportViewModel();
-            vm.EditModel = dbAccess.GetEditData(id);
-			vm.EditModel.LstActRundown = dbAccess2.GetEditRundownData(id);
-			vm.EditModel.LstProposal = dbAccess2.GetEditProposalData(id);
-			vm.EditModel.LstOutSideFile = dbAccess2.GetEditOutSideFileData(id);
-
-			return View(vm);
-        }
-
-
-
-
-        [Log(LogActionChineseName.新增儲存)]
-        [ValidateInput(false)]
-        public async Task<IActionResult> SaveCreate1(ClubActReportViewModel vm)
-        {
-            try
-            {
-               
-            }
-            catch (Exception ex)
-            {
-                dbAccess.DbaRollBack();
-                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                vmRtn.ErrorMsg = "新增失敗" + ex.Message;
-                return Json(vmRtn);
-            }
-
-            return RedirectToAction("Create2", vm);
-
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         [ValidateInput(false)]
         public IActionResult GetConsentMang(string Selected)
         {
@@ -480,17 +452,7 @@ namespace WebPccuClub.Controllers
             return PartialView("_AgreeBoxPartial", vm);
         }
 
-
-
-
-
-
-
-
-
-
-
-
+        #endregion
 
         [LogAttribute(LogActionChineseName.查詢)]
         public IActionResult GetSearchResult(ClubActReportViewModel vm)
@@ -506,36 +468,19 @@ namespace WebPccuClub.Controllers
             return PartialView("_SearchResultPartial", vm);
         }
 
-
-
-
-
         [Log(LogActionChineseName.新增儲存)]
         [ValidateInput(false)]
-        public async Task<IActionResult> SaveNewData(ClubActReportViewModel vm)
+        public async Task<IActionResult> SaveData()
         {
             try
             {
-                if (Request.Form.Files.Count > 0)
-                {
-                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
-                    {
-                        if (Request.Form.Files[i].Name.Contains("Attachment"))
-                        {
-                            var file = Request.Form.Files.GetFile("CreateModel.Attachment");
-
-                            string strFilePath = await upload.UploadFileAsync("Award", file);
-
-                            //vm.CreateModel.Attachment = strFilePath;
-                        }
-                    }
-                }
-
+                ClubActReportViewModel vm = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
 
                 dbAccess.DbaInitialTransaction();
+
                 DataTable dt = new DataTable();
 
-                var dbResult = dbAccess.InsertData(vm, LoginUser, out dt);
+                var dbResult = dbAccess.InsertActMainData(vm, LoginUser, out dt);
 
                 if (!dbResult.isSuccess)
                 {
@@ -545,117 +490,89 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
-                if (vm.File != null)
-                {
-                    string AwdID = dt.QueryFieldByDT("AwdID");
-                    List<AwdDetailModel> LstAwdDetail = new List<AwdDetailModel>();
+                string ActId = dt.QueryFieldByDT("ActID");
+                dt.Dispose();
 
-                    using (Stream stream = vm.File.OpenReadStream())
-                    {
-                        XSSFWorkbook workbook = new XSSFWorkbook(stream);
-                        ISheet sheet = workbook.GetSheetAt(0);
-
-                        for (int i = 1; i <= sheet.LastRowNum; i++)
-                        {
-                            IRow row = sheet.GetRow(i);
-
-                            if (row != null)
-                            {
-                                AwdDetailModel excel = new AwdDetailModel
-                                {
-                                    Department = row.GetCell(0)?.StringCellValue.TrimStartAndEnd(),
-                                    Name = row.GetCell(1)?.StringCellValue.TrimStartAndEnd(),
-                                    SNO = row.GetCell(2)?.StringCellValue.TrimStartAndEnd()
-                                };
-
-                                LstAwdDetail.Add(excel);
-                            }
-                        }
-                    }
-                    dbResult = dbAccess.InsertDetailData(AwdID, LstAwdDetail, LoginUser);
-
-                    if (!dbResult.isSuccess)
-                    {
-                        dbAccess.DbaRollBack();
-                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        vmRtn.ErrorMsg = "新增失敗";
-                        return Json(vmRtn);
-                    }
-                }
-
-                dbAccess.DbaCommit();
-            }
-            catch (Exception ex)
-            {
-                dbAccess.DbaRollBack();
-                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                vmRtn.ErrorMsg = "新增失敗" + ex.Message;
-                return Json(vmRtn);
-            }
-
-            return Json(vmRtn);
-        }
-
-        [Log(LogActionChineseName.編輯儲存)]
-        [ValidateInput(false)]
-        public async Task<IActionResult> EditOldData(ClubActReportViewModel vm)
-        {
-            try
-            {
-                //if (Request.Form.Files.Count > 0)
-                //{
-                //    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
-                //    {
-                //        if (Request.Form.Files[i].Name.Contains("Attachment"))
-                //        {
-                //            var file = Request.Form.Files.GetFile("EditModel.Attachment");
-
-                //            string strFilePath = await upload.UploadFileAsync("Award", file);
-
-                //            vm.EditModel.Attachment = strFilePath;
-                //        }
-                //    }
-                //}
-
-                dbAccess.DbaInitialTransaction();
-
-                var dbResult = dbAccess.UpdateData(vm, LoginUser);
+                dbResult = dbAccess.InsertActDetailData(vm, ActId, LoginUser, out dt);
 
                 if (!dbResult.isSuccess)
                 {
                     dbAccess.DbaRollBack();
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "修改失敗";
+                    vmRtn.ErrorMsg = "新增失敗";
                     return Json(vmRtn);
                 }
 
-                if (vm.File != null)
+                string ActDetailId = dt.QueryFieldByDT("ActDetailId");
+                dt.Dispose();
+
+                #region 整理一下..
+                List<ActListMangRundownModel> LstRundown = new List<ActListMangRundownModel>();
+                string[] arr = vm.CreateModel.strRundown.Split("|");
+
+                for (int i = 0; i <= arr.Length - 1; i++)
                 {
-                    List<AwdDetailModel> LstAwdDetail = new List<AwdDetailModel>();
+                    string[] arr2 = arr[i].Split(",");
 
-                    using (Stream stream = vm.File.OpenReadStream())
+                    string PlaceSource = arr2[0];
+                    string Date = arr2[1];
+                    string STime = arr2[2];
+                    string ETime = arr2[3];
+                    string PlaceID = arr2[4];
+                    string PlaceText = arr2[5];
+
+                    if (LstRundown.Where(x => x.Date == Date && x.PlaceSource == PlaceSource).Count() > 0)
                     {
-                        XSSFWorkbook workbook = new XSSFWorkbook(stream);
-                        ISheet sheet = workbook.GetSheetAt(0);
-
-                        for (int i = 1; i <= sheet.LastRowNum; i++)
+                        for (int j = 0; j <= LstRundown.Count - 1; j++)
                         {
-                            IRow row = sheet.GetRow(i);
-
-                            if (row != null)
+                            for (int k = int.Parse(STime); k <= int.Parse(ETime) - 1; k++)
                             {
-                                AwdDetailModel excel = new AwdDetailModel
-                                {
-                                    Department = row.GetCell(0)?.StringCellValue.TrimStartAndEnd(),
-                                    Name = row.GetCell(1)?.StringCellValue.TrimStartAndEnd(),
-                                    SNO = row.GetCell(2)?.StringCellValue.TrimStartAndEnd()
-                                };
-
-                                LstAwdDetail.Add(excel);
+                                LstRundown[j].LstStime.Add(j);
                             }
                         }
                     }
-                    dbResult = dbAccess.EditDetailData(vm, LstAwdDetail, LoginUser);
+                    else
+                    {
+                        ActListMangRundownModel model = new ActListMangRundownModel();
+                        model.PlaceSource = PlaceSource;
+                        model.Date = Date;
+                        model.STime = STime;
+                        model.ETime = ETime;
+                        model.PlaceID = PlaceID;
+                        model.PlaceText = PlaceText;
+
+                        for (int j = int.Parse(model.STime); j <= int.Parse(model.ETime) - 1; j++)
+                        {
+                            model.LstStime.Add(j);
+                        }
+
+                        LstRundown.Add(model);
+                    }
+                }
+                #endregion
+                List<string> WritedDate = new List<string>();
+
+                for (int i = 0; i <= LstRundown.Count - 1; i++)
+                {
+
+                    if (!WritedDate.Contains(LstRundown[i].Date))
+                    {
+                        dbResult = dbAccess.InsertActSectionData(vm, ActId, ActDetailId, DateTime.Parse(LstRundown[i].Date), LoginUser, out dt);
+
+                        if (!dbResult.isSuccess)
+                        {
+                            dbAccess.DbaRollBack();
+                            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                            vmRtn.ErrorMsg = "新增失敗";
+                            return Json(vmRtn);
+                        }
+
+                        WritedDate.Add(LstRundown[i].Date);
+                    }
+
+                    string ActSectionId = dt.QueryFieldByDT("ActSectionId");
+
+                    dbResult = dbAccess.InsertActRundownData(vm, ActId, ActDetailId, ActSectionId, LstRundown[i], LoginUser);
 
                     if (!dbResult.isSuccess)
                     {
@@ -665,6 +582,37 @@ namespace WebPccuClub.Controllers
                         return Json(vmRtn);
                     }
                 }
+
+                dbResult = dbAccess.InsertActProposalData(vm, ActId, ActDetailId, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                dbResult = dbAccess.InsertOutSideData(vm, ActId, ActDetailId, LoginUser);
+
+                if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                dbResult = dbAccess.InsertOutSideFileData(vm, ActId, ActDetailId, LoginUser);
+
+                if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
 
                 dbAccess.DbaCommit();
             }
@@ -676,7 +624,7 @@ namespace WebPccuClub.Controllers
                 return Json(vmRtn);
             }
 
-            return Json(vmRtn);
+            return RedirectToAction("ActFinish");
         }
 
     }

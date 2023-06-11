@@ -1,0 +1,191 @@
+﻿@model WebPccuClub.Models.ClubActReportViewModel
+
+@{
+    Layout = "_FrontLayout";
+	List<SelectListItem> LstPlaceSource = ViewBag.ddlPlaceSource;
+}
+
+<div class="col-xxl-8">
+	<div class="contentWrapper">
+		<h4 class="pageTitle">新增活動報備</h4>
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="apply.html">活動報備</a></li>
+				<li class="breadcrumb-item active">新增活動報備</li>
+			</ol>
+		</nav>
+		<hr>
+
+		<p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
+		<div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">Step4. 校外活動其他資訊</div>
+		<form asp-action="ActCheck" method="post" enctype="multipart/form-data">
+			<div>
+				<div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 領隊資訊</div>
+				<div class="infoWrapper mb-4">
+					<div class="infoItem">
+						<div class="tag">姓名<span class="req-star">*</span></div>
+						<div class="content">
+							<input asp-for="CreateModel.LeaderName" type="text" class="form-control w-auto" title="請填寫領隊姓名" placeholder="領隊姓名">
+						</div>
+					</div>
+					<div class="infoItem">
+						<div class="tag">電話<span class="req-star">*</span></div>
+						<div class="content">
+							<input asp-for="CreateModel.LeaderTel" type="tel" class="form-control w-auto" title="請填寫領隊電話" placeholder="領隊電話">
+						</div>
+					</div>
+					<div class="infoItem">
+						<div class="tag">手機<span class="req-star">*</span></div>
+						<div class="content">
+							<input asp-for="CreateModel.LeaderPhone" type="tel" class="form-control w-auto" title="請填寫領隊手機" placeholder="領隊手機">
+						</div>
+					</div>
+				</div>
+
+				<div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 活動負責人</div>
+				<div class="infoWrapper mb-4">
+					<div class="infoItem">
+						<div class="tag">姓名<span class="req-star">*</span></div>
+						<div class="content">
+							<input asp-for="CreateModel.ManagerName" type="text" class="form-control w-auto" title="請填寫活動負責人姓名" placeholder="活動負責人姓名">
+						</div>
+					</div>
+					<div class="infoItem">
+						<div class="tag">電話<span class="req-star">*</span></div>
+						<div class="content">
+							<input asp-for="CreateModel.ManagerTel" type="tel" class="form-control w-auto" title="請填寫活動負責人電話" placeholder="活動負責人電話">
+						</div>
+					</div>
+					<div class="infoItem">
+						<div class="tag">手機<span class="req-star">*</span></div>
+						<div class="content">
+							<input asp-for="CreateModel.ManagerPhone" type="tel" class="form-control w-auto" title="請填寫活動負責人手機" placeholder="活動負責人手機">
+						</div>
+					</div>
+				</div>
+
+				<div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 上傳附件</div>
+				<div class="infoWrapper mb-5">
+					<div class="infoItem">
+						<div class="tag">附件檔案<span class="req-star">*</span></div>
+						<div class="content">
+
+							<div class="target_list_outside">
+								<div class="d-block mb-1 item">
+									<label class="btn btn-outline-primary mb-0">
+										<input id="OutSide0" name="OutSide0" type="file" class="filesupload" style="display:none;" accept=".doc,.docx,.odt,.pdf" />
+										<i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+									</label>
+									<span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+									<button class="del-btn btn btn-sm btn-outline-secondary hidden"
+											type="button">
+										<i class="fas fa-times"></i> 移除
+									</button>
+								</div>
+							</div>
+							<button id="add_outside_input_btn" class="btn btn-secondary btn-sm mt-3 d-block" type="button">新增 <i class="icon-plus"></i></button>
+
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row justify-content-center mb-5">
+				<div class="col-lg-3">
+					<a href="@Url.Action("Create3")" class="btn btn-primary btn-outline btn-modern w-100 mb-2"><i class="icon-arrow-left"></i> 上一步</a>
+				</div>
+				<div class="col-lg-3">
+					<button class="submit-btn btn btn-primary btn-modern w-100 mb-2" type="submit" onclick="return SaveData()">下一步 <i class="icon-arrow-right"></i></button>
+					@*<button class="submit-btn btn btn-primary btn-modern w-100 mb-2" type="submit">下一步 <i class="icon-arrow-right"></i></button>*@
+
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+<script>
+	function SaveData() {
+
+        var allEmpty = true;
+        for (var i = 0; i <= 8; i++) {
+            var file = $('#OutSide' + i);
+
+            if (file.length > 0 && file.val() !== '') {
+                allEmpty = false;
+                var File = $('#ProposalFile' + i)[0].files[0];
+                if (typeof File !== 'undefined') {
+                    var fileExtension = File.name.split('.').pop().toLowerCase();
+
+                    if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'pdf' && fileExtension !== 'odt') {
+                        $.alert("檔案類型不符合");
+                        return false;
+                    }
+                }
+            }
+        }
+
+		if (allEmpty) { $.alert("活動附件不可為空白"); return false; }
+    }
+
+	$(document).ready(function () {
+
+		//proposal多檔
+		if ($(".target_list_outside").length > 0) {
+
+			$(document).on('click', '#add_outside_input_btn', function () {
+
+				var num = check_outsideNum();
+				var addItem = '<div class="d-block mb-1 item">';
+				addItem += '<label class="btn btn-outline-primary mb-0">';
+				addItem += '<input id="OutSide' + num + '" style="display:none;" req class="filesupload" data-title="附件" type="file" name="OutSide' + num + '" value="" accept=".doc,.docx,.odt,.pdf" data-file="">';
+				addItem += '<i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案';
+				addItem += '</label>';
+				addItem += '<span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>';
+				addItem += '<button class="del-btn btn btn-sm btn-outline-secondary" type="button"><i class="fas fa-times"></i> 移除</button>';
+				addItem += '</div>';
+				if ($(".target_list_outside").find("[type='file']").length <= 7) {
+					$(".target_list_outside").append(addItem);
+					$(".target_list_outside .del-btn").removeClass("hidden")
+				}
+			})
+
+			$(document).on('click', '.target_list_outside .del-btn', function () {
+				var num = $(".target_list_outside").find("[type='file']").length
+
+				if (confirm("確認清除？") == false) {
+					return false
+				} else {
+					if (num >= 2) {
+						$(this).closest(".item").remove()
+						$("#add_outside_input_btn").prop("disabled", false)
+					}
+
+					if (num <= 2) {
+						$(".target_list_outside .del-btn").addClass("hidden")
+					} else {
+						$(".target_list_outside .del-btn").removeClass("hidden")
+					}
+				}
+			})
+
+			function check_outsideNum() {
+				var num = $(".target_list_outside").find(".d-block.mb-1.item").length
+				if (num >= 7) {
+					$("#add_outside_input_btn").prop("disabled", true)
+				} else {
+					$("#add_outside_input_btn").prop("disabled", false)
+				}
+				return num;
+			}
+		}
+
+		$(document).on('change', ".filesupload", function (e) {
+			var filename = e.target.files[0].name;
+			$(this).closest('.item').find('.text-muted#filename').text(filename);
+		});
+
+	});
+
+
+</script>
