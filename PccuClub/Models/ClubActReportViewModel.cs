@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using NPOI.HPSF;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace WebPccuClub.Models
@@ -16,6 +17,8 @@ namespace WebPccuClub.Models
         public ClubActReportCreateModel CreateModel { get; set; }
 
 		public ClubActReportEditModel EditModel { get; set; }
+
+        public ClubActReportConsentModel ConsentModel { get; set; }
 
     }
 
@@ -71,34 +74,105 @@ namespace WebPccuClub.Models
         [DisplayName("學年度")]
         public string? SchoolYear { get; set; }
 
-        /// <summary>主辦單位</summary>
-        [DisplayName("主辦單位")]
-        public string? Organizer { get; set; }
+        /// <summary>活動名稱</summary>
+        [DisplayName("活動名稱")]
+        public string? ActName { get; set; }
+
+        /// <summary>活動類型</summary>
+        [DisplayName("活動類型")]
+        public string? StaticOrDynamic { get; set; }
+
+        /// <summary>活動地點</summary>
+        [DisplayName("活動地點")]
+        public string? ActInOrOut { get; set; }
+
+        /// <summary>活動人數</summary>
+        [DisplayName("活動人數")]
+        public string? Capacity { get; set; }
+
+        /// <summary>活動性質</summary>
+        [DisplayName("活動性質")]
+        public string? ActType { get; set; }
+
+        /// <summary>使用資訊設備</summary>
+        [DisplayName("使用資訊設備")]
+        public string? UseITEquip { get; set; }
+
+        /// <summary>活動簡介</summary>
+        [DisplayName("活動簡介")]
+        public string? ShortDesc { get; set; }
+
+        /// <summary>SDGs</summary>
+        [DisplayName("SDGs")]
+        public string? SDGs { get; set; }
+
+        /// <summary>全人學習護照</summary>
+        [DisplayName("全人學習護照")]
+        public string? PassPort { get; set; }
+    }
+
+    public class Section1
+    {
+        /// <summary>學年度</summary>
+        [DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
 
         /// <summary>活動名稱</summary>
         [DisplayName("活動名稱")]
-        public string? AwdActName { get; set; }
+        public string? ActName { get; set; }
 
-        /// <summary>獲獎類別</summary>
-        [DisplayName("獲獎類別")]
-        public string? AwdType { get; set; }
+        /// <summary>活動類型</summary>
+        [DisplayName("活動類型")]
+        public string? StaticOrDynamic { get; set; }
 
-        /// <summary>獎項名稱</summary>
-        [DisplayName("獎項名稱")]
-        public string? AwdName { get; set; }
+        /// <summary>活動地點</summary>
+        [DisplayName("活動地點")]
+        public string? ActInOrOut { get; set; }
 
-        /// <summary>獲獎日期</summary>
-        [DisplayName("獲獎日期")]
-        public string? AwdDate { get; set; }
+        /// <summary>活動人數</summary>
+        [DisplayName("活動人數")]
+        public string? Capacity { get; set; }
 
-        /// <summary>附件</summary>
-        [DisplayName("附件")]
-        public string? Attachment { get; set; }
+        /// <summary>活動性質</summary>
+        [DisplayName("活動性質")]
+        public string? ActType { get; set; }
 
-        /// <summary>審核狀態</summary>
-        [DisplayName("審核狀態")]
-        public string? ActVerify { get; set; }
+        /// <summary>使用資訊設備</summary>
+        [DisplayName("使用資訊設備")]
+        public string? UseITEquip { get; set; }
+
+        /// <summary>活動簡介</summary>
+        [DisplayName("活動簡介")]
+        public string? ShortDesc { get; set; }
+
+        /// <summary>SDGs</summary>
+        [DisplayName("SDGs")]
+        public string? SDGs { get; set; }
+
+        /// <summary>全人學習護照</summary>
+        [DisplayName("全人學習護照")]
+        public string? PassPort { get; set; }
     }
+
+    public class Section2
+    { 
+        public string? AA { get; set; }
+    }
+
+    public class Section3
+    {
+
+    }
+
+    public class Section4
+    {
+
+    }
+
+
+
+
+
 
     public class ClubActReportEditModel
     {
@@ -236,4 +310,13 @@ namespace WebPccuClub.Models
 
 	}
 
+    public class ClubActReportConsentModel
+    { 
+        public string? Selected { get; set; }
+        public string? InSchool { get; set; }
+
+        public string? OutSchool { get; set; }
+
+        public string? InAndOutSchool { get; set; }
+    }
 }

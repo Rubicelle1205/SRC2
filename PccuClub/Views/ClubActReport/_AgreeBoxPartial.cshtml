@@ -1,0 +1,62 @@
+﻿@model WebPccuClub.Models.ClubActReportViewModel
+
+
+@if (null != Model.ConsentModel)
+{
+    <div id="agree_box">
+        <div class="inner">
+            @if (Model.ConsentModel.Selected == "01")
+            {
+                <h5 class="mb-2">校內活動同意事項</h5>
+                <div class="textbox" style="white-space: pre-line;">
+                    @Model.ConsentModel.InSchool
+                </div>
+                <div class="d-flex justify-content-center bg-tertiary py-1">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="我同意上述事項並在活動中遵守" id="agree1">
+                        <label class="form-check-label font-weight-bold" for="agree1">
+                            我同意上述事項並在活動中遵守
+                        </label>
+                    </div>
+                </div>
+            }
+            else if (Model.ConsentModel.Selected == "02")
+            {
+                <h5 class="mb-2">校外活動同意事項</h5>
+                <div class="textbox" style="white-space: pre-line;">
+                    @Model.ConsentModel.OutSchool
+                </div>
+                <div class="d-flex justify-content-center bg-tertiary py-1">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="我同意上述事項並在活動中遵守" id="agree1">
+                        <label class="form-check-label font-weight-bold" for="agree1">
+                            我同意上述事項並在活動中遵守
+                        </label>
+                    </div>
+                </div>
+            
+            }
+            else if (Model.ConsentModel.Selected == "03")
+            {
+                <h5 class="mb-2">
+                    校內外皆有活動同意事項
+                </h5>
+                <div class="textbox" style="white-space: pre-line;">
+                    @Model.ConsentModel.InAndOutSchool
+                </div>
+                <div class="d-flex justify-content-center bg-tertiary py-1">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="我同意上述事項並在活動中遵守" id="agree1">
+                        <label class="form-check-label font-weight-bold" for="agree1">
+                            我同意上述事項並在活動中遵守
+                        </label>
+                    </div>
+                </div>
+
+            }
+
+        </div>
+    </div>
+}
+
+        

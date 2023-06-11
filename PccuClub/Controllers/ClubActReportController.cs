@@ -1,4 +1,5 @@
 ﻿using DataAccess;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
@@ -45,27 +46,54 @@ namespace WebPccuClub.Controllers
             return View(vm);
         }
 
-        //[Log(LogActionChineseName.新增)]
-        //public IActionResult Create()
-        //{
-        //    ViewBag.ddlAllClub = dbAccess.GetAllClub();
-        //    ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
-        //    ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify();
+        [Log(LogActionChineseName.新增)]
+        public IActionResult Create()
+        {
+            ViewBag.ddlStaticOrDynamic = dbAccess2.GetStaticOrDynamic();
+            ViewBag.ddlActInOrOut = dbAccess2.GetActInOrOut();
+            ViewBag.ddlActType = dbAccess2.GetActType();
+            ViewBag.ddlUseITEquip = dbAccess2.GetUseITEquip();
+            ViewBag.ddlPassport = dbAccess2.GetPassport();
+            ViewBag.ddlAllSDGs = dbAccess.GetAllSDGs();
 
-        //    ClubActReportViewModel vm = new ClubActReportViewModel();
-        //    vm.CreateModel = new ClubActReportCreateModel();
-        //    vm.CreateModel.SchoolYear = PublicFun.GetNowSchoolYear();
-        //    return View(vm);
-        //}
+            ClubActReportViewModel vm = new ClubActReportViewModel();
+            vm.CreateModel = new ClubActReportCreateModel();
+            vm.CreateModel.SchoolYear = PublicFun.GetNowSchoolYear();
+            return View(vm);
+        }
+
+        [Microsoft.AspNetCore.Mvc.HttpPost]
+        [Log(LogActionChineseName.新增)]
+        public IActionResult Create2(ClubActReportViewModel vm)
+        {
+            TempData["Section1"] = vm;
+
+
+            vm.CreateModel = new ClubActReportCreateModel();
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.新增)]
+        public IActionResult Create3(ClubActReportViewModel vm)
+        {
+            TempData["Create1"] = vm;
+
+
+            //vm.CreateModel = new ClubActReportCreateModel();
+            //vm.CreateModel.SchoolYear = PublicFun.GetNowSchoolYear();
+            return View(vm);
+        }
 
         [Log(LogActionChineseName.編輯)]
         public IActionResult Edit(string id, ClubActReportViewModel vm)
         {
-            ViewBag.ddlAllSDGs = dbAccess.GetAllSDGs();
+            
 
             if (string.IsNullOrEmpty(id))
                 return RedirectToAction("Index");
-
+            
+            ViewBag.ddlAllSDGs = dbAccess.GetAllSDGs();
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
 
             //ClubActReportViewModel vm = new ClubActReportViewModel();
@@ -76,6 +104,80 @@ namespace WebPccuClub.Controllers
 
 			return View(vm);
         }
+
+
+
+
+        [Log(LogActionChineseName.新增儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> SaveCreate1(ClubActReportViewModel vm)
+        {
+            try
+            {
+               
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "新增失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return RedirectToAction("Create2", vm);
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        [ValidateInput(false)]
+        public IActionResult GetConsentMang(string Selected)
+        {
+            ClubActReportViewModel vm = new ClubActReportViewModel();
+
+            vm.ConsentModel = dbAccess.GetConsentData();
+            vm.ConsentModel.Selected = Selected;
+
+            return PartialView("_AgreeBoxPartial", vm);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
 
         [LogAttribute(LogActionChineseName.查詢)]
         public IActionResult GetSearchResult(ClubActReportViewModel vm)
@@ -90,6 +192,10 @@ namespace WebPccuClub.Controllers
 
             return PartialView("_SearchResultPartial", vm);
         }
+
+
+
+
 
         [Log(LogActionChineseName.新增儲存)]
         [ValidateInput(false)]
@@ -107,7 +213,7 @@ namespace WebPccuClub.Controllers
 
                             string strFilePath = await upload.UploadFileAsync("Award", file);
 
-                            vm.CreateModel.Attachment = strFilePath;
+                            //vm.CreateModel.Attachment = strFilePath;
                         }
                     }
                 }

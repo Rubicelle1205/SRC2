@@ -8,6 +8,7 @@ using WebPccuClub.Global;
 using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Runtime.ConstrainedExecution;
 
 namespace WebPccuClub.DataAccess
 {
@@ -93,6 +94,46 @@ namespace WebPccuClub.DataAccess
             return null;
         }
 
+
+        public ClubActReportConsentModel GetConsentData()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT InSchool, OutSchool, InAndOutSchool FROM ConsentMang";
+
+
+            (DbExecuteInfo info, IEnumerable<ClubActReportConsentModel> entitys) dbResult = DbaExecuteQuery<ClubActReportConsentModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList().FirstOrDefault();
+
+            return null;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         /// <summary> 新增資料 </summary>
         public DbExecuteInfo InsertData(ClubActReportViewModel vm, UserInfo LoginUser, out DataTable dt)
         {
@@ -101,16 +142,16 @@ namespace WebPccuClub.DataAccess
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@ClubID", LoginUser.LoginId);
-            parameters.Add("@SchoolYear", vm.CreateModel.SchoolYear);
-            parameters.Add("@AwdActName", vm.CreateModel.AwdActName);
-            parameters.Add("@AwdName", vm.CreateModel.AwdName);
-            parameters.Add("@AwdDate", vm.CreateModel.AwdDate);
-            parameters.Add("@AwdType", vm.CreateModel.AwdType);
-            parameters.Add("@Organizer", vm.CreateModel.Organizer);
-            parameters.Add("@ActVerify", "01");
-            parameters.Add("@Attachment", vm.CreateModel.Attachment);
-            parameters.Add("@LoginId", LoginUser.LoginId);
+            //parameters.Add("@ClubID", LoginUser.LoginId);
+            //parameters.Add("@SchoolYear", vm.CreateModel.SchoolYear);
+            //parameters.Add("@AwdActName", vm.CreateModel.AwdActName);
+            //parameters.Add("@AwdName", vm.CreateModel.AwdName);
+            //parameters.Add("@AwdDate", vm.CreateModel.AwdDate);
+            //parameters.Add("@AwdType", vm.CreateModel.AwdType);
+            //parameters.Add("@Organizer", vm.CreateModel.Organizer);
+            //parameters.Add("@ActVerify", "01");
+            //parameters.Add("@Attachment", vm.CreateModel.Attachment);
+            //parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
             string CommendText = $@"INSERT INTO AwardMang
@@ -299,8 +340,5 @@ namespace WebPccuClub.DataAccess
 			return new List<SelectListItem>();
 		}
 
-
-
-
-	}
+    }
 }

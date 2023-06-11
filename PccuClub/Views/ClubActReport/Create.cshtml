@@ -1,0 +1,195 @@
+﻿@model WebPccuClub.Models.ClubActReportViewModel
+
+@{
+    Layout = "_FrontLayout";
+    string Controller = "ClubActReport";
+    string ActionDisptach = "Create2";
+    string sUpdateTargetId = "";
+    List<SelectListItem> LstSDGs = ViewBag.ddlAllSDGs;
+}
+
+<div class="col-xxl-8">
+    <div class="contentWrapper">
+        <h4 class="pageTitle">新增活動報備</h4>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="apply.html">活動報備</a></li>
+                <li class="breadcrumb-item active">新增活動報備</li>
+            </ol>
+        </nav>
+        <hr>
+        <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
+        <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">Step1. 報備資訊</div>
+        <form asp-action="Create2" method="post">
+            <div class="infoWrapper mb-5">
+                <div class="infoItem">
+                    <div class="tag">學年度</div>
+                    <div class="content">
+                        <input asp-for="CreateModel.SchoolYear" class="form-control" readonly="readonly" />
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動名稱<span class="req-star">*</span></div>
+                    <div class="content">
+                        <input asp-for="CreateModel.ActName" class="form-control" placeholder="例：A999-報備範例社-年度會議" />
+                        <p class="hint mb-0 pt-1"><i class="fas fa-info-circle"></i> 活動名稱請以「社團代號-社團/系會名稱-活動名稱」格式輸入，例：A999-報備範例社-年度會議</p>
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動類型<span class="req-star">*</span></div>
+                    <div class="content warning-box">
+                        <select asp-for="CreateModel.StaticOrDynamic" asp-items="@ViewBag.ddlStaticOrDynamic" class="form-control">
+                            <option value="">請選擇活動類型</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動地點及同意事項<span class="req-star">*</span></div>
+                    <div class="content warning-box">
+                        <select asp-for="CreateModel.ActInOrOut" asp-items="@ViewBag.ddlActInOrOut" class="form-control">
+                            <option value="">請選擇活動地點</option>
+                        </select>
+                        <div id="act_loc_agree" class=""></div>
+
+
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動人數</div>
+                    <div class="content">
+                        <div class="d-flex align-items-center">
+                            <input asp-for="CreateModel.Capacity" class="form-control" placeholder="活動人數" />
+                            <span class="ms-2">人</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動性質</div>
+                    <div class="content warning-box">
+                        <select asp-for="CreateModel.ActType" asp-items="@ViewBag.ddlActType" class="form-control">
+                            <option value="">請選擇活動性質</option>
+                        </select>
+
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">使用資訊設備<span class="req-star">*</span></div>
+                    <div class="content warning-box">
+                        <select asp-for="CreateModel.UseITEquip" asp-items="@ViewBag.ddlUseITEquip" class="form-control">
+                            <option value="">請選擇是否使用資訊設備</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動簡介<span class="req-star">*</span></div>
+                    <div class="content">
+                        <textarea asp-for="CreateModel.ShortDesc" class="form-control" placeholder="活動簡介" cols="30" rows="5"></textarea>
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">聯合國SDGs永續發展目標<span class="req-star">*</span></div>
+                    <div class="content warning-box">
+                        <input asp-for="CreateModel.SDGs" type="hidden" />
+                        @foreach (SelectListItem item in LstSDGs)
+                        {
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="checkbox" id="@string.Format("SDGs_{0}", item.Value)" value="@item.Value">
+                                <label class="form-check-label" for="@string.Format("SDGs_{0}", item.Value)">@item.Text</label>
+                            </div>
+                        }
+                        <div class="mt-1">
+                            <a href="https://usr.moe.gov.tw/" target="_blank">（教育部大學社會責任推動中心）</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">全人學習護照<span class="req-star">*</span></div>
+                    <div class="content warning-box">
+                        <select asp-for="CreateModel.PassPort" asp-items="@ViewBag.ddlPassport" class="form-control">
+                            <option value="">請選擇</option>
+                        </select>
+                        <div class="hint">
+                            若該活動欲認列於全人學習護照<a href="http://pass.pccu.edu.tw/" target="_blank">需另外至全人網站填報</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-4">
+                    <button type="submit" class="submit-btn btn btn-primary btn-modern border-0 w-100" onclick="return SaveData()">下一步<i class="icon-arrow-right"></i></button>
+                    @*<button type="submit" class="submit-btn btn btn-primary btn-modern border-0 w-100">下一步<i class="icon-arrow-right"></i></button>*@
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).on('change', '#@Html.IdFor(m => m.CreateModel.ActInOrOut)', function () {
+        var Selected = $(this).val()
+
+        SendAjax({
+            url: '@Url.Action("GetConsentMang")',
+            data: { 'Selected': Selected },
+            success: function (result) {
+                $("#act_loc_agree").html(result);
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    });
+
+
+    function SaveData() {
+
+
+
+        var arrSDGs = [];
+        $("input[id ^= 'SDGs_']:checked").each(function () {
+            arrSDGs.push($(this).val());
+        });
+
+        var strSDGs = arrSDGs.join(",");
+
+        if (strSDGs == "") { $.alert("需選擇SDGs"); return false; }
+
+
+
+        var SchoolYear = $('#@Html.IdFor(m => m.CreateModel.SchoolYear)').val();
+        var ActName = $('#@Html.IdFor(m => m.CreateModel.ActName)').val();
+        var StaticOrDynamic = $('#@Html.IdFor(m => m.CreateModel.StaticOrDynamic)').val();
+        var ActInOrOut = $('#@Html.IdFor(m => m.CreateModel.ActInOrOut)').val();
+        var Capacity = $('#@Html.IdFor(m => m.CreateModel.Capacity)').val();
+        var ActType = $('#@Html.IdFor(m => m.CreateModel.ActType)').val();
+        var UseITEquip = $('#@Html.IdFor(m => m.CreateModel.UseITEquip)').val();
+        var ShortDesc = $('#@Html.IdFor(m => m.CreateModel.ShortDesc)').val();
+        var PassPort = $('#@Html.IdFor(m => m.CreateModel.PassPort)').val();
+
+        if (ActName == "") { $.alert("活動名稱為空"); return false; }
+        if (StaticOrDynamic == "") { $.alert("活動類型為空"); return false; }
+        if (ActInOrOut == "") { $.alert("活動地點及同意事項為空"); return false; }
+        if (Capacity == "") { $.alert("活動人數為空"); return false; }
+        if (ActType == "") { $.alert("活動性質為空"); return false; }
+        if (UseITEquip == "") { $.alert("使用資訊設備為空"); return false; }
+        if (ShortDesc == "") { $.alert("活動簡介為空"); return false; }
+        if (PassPort == "") { $.alert("全人學習護照為空"); return false; }
+
+        $('#@Html.IdFor(m => m.CreateModel.SDGs)').val(strSDGs);
+
+        var checkbox = $("#agree1");
+        if (!checkbox.is(":checked")) {
+            $.alert("請選擇活動地點並詳閱同意遵守同意事項");
+            return false;
+        }
+
+
+
+
+    }
+
+</script>

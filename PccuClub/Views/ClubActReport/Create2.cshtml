@@ -1,0 +1,42 @@
+﻿@model WebPccuClub.Models.ClubActReportViewModel
+
+@{
+    Layout = "_FrontLayout";
+    string Controller = "ClubActReport";
+    string ActionDisptach = "Create3";
+    List<SelectListItem> LstSDGs = ViewBag.ddlAllSDGs;
+}
+
+@if (null != Model.CreateModel)
+{
+    <div class="col-xxl-8">
+        <div class="contentWrapper">
+            <h4 class="pageTitle">新增活動報備</h4>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="apply.html">活動報備</a></li>
+                    <li class="breadcrumb-item active">新增活動報備</li>
+                </ol>
+            </nav>
+            <hr>
+            <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
+            <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">Step1. 報備資訊</div>
+            <form asp-action="@ActionDisptach" asp-controller="@Controller" data-ajax="false"
+                  data-ajax-method="POST" data-ajax-mode="replace" data-ajax-begin="SysFormLoadingStart" data-ajax-complete="SysFormLoadingEnd">
+            
+                  @*@Html.TextBoxFor(m => m.CreateModel.AA)*@
+
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-4">
+                    <button type="button" class="submit-btn btn btn-primary btn-modern border-0 w-100" onclick="SaveData()">下一步<i class="icon-arrow-right"></i></button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+}
+
+
+<script>
+
+</script>
