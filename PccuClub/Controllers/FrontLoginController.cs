@@ -15,8 +15,8 @@ using Newtonsoft.Json;
 
 namespace WebPccuClub.Controllers
 {
-    public class FrontLoginController : FBaseController
-    {
+    public class FrontLoginController : Controller
+	{
         private LoginDataAccess dbAccess = new LoginDataAccess();
         public List<string> AlertMsg = new List<string>();
 

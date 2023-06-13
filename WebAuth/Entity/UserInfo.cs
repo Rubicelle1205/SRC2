@@ -22,8 +22,11 @@ namespace PccuClub.WebAuth
         /// <summary> 單位名稱 </summary>
         public string UnitName { get; set; }
 
-        /// <summary> 出生日期 </summary>
-        public DateTime? Birthday { get; set; }
+		/// <summary> 帳號來源 </summary>
+		public string LoginSource { get; set; }
+
+		/// <summary> 出生日期 </summary>
+		public DateTime? Birthday { get; set; }
 
         /// <summary> 性別(0:女，1:男) </summary>
         public int? Sex { get; set; }
@@ -88,13 +91,13 @@ namespace PccuClub.WebAuth
         /// <summary> 根據 URL 取得 MenuNode (僅能查詢到有權限的 MenuNode )</summary>
         public string GetMenuNodeByURL(string URL)
         {
-            return UserRoleFun.Find(p => p.Url == URL).MenuNode;
+			return UserRoleFun.Where(p => p.Url == URL).FirstOrDefault() != null ? UserRoleFun.Where(p => p.Url == URL).FirstOrDefault().MenuNode : null;
         }
 
         /// <summary> 根據 MenuNode 取得上層選單 </summary>
         public string GetMenuNodeByParentMenuNode(string MenuNode)
         {
-            return UserRoleFun.Find(p => p.MenuNode == MenuNode).MenuUpNode;
+            return UserRoleFun.Find(p => p.MenuNode == MenuNode) != null ? UserRoleFun.Find(p => p.MenuNode == MenuNode).MenuUpNode : null;
         }
 
         /// <summary> 取得所有最上層選單 </summary>

@@ -15,7 +15,7 @@ namespace WebAuth.DataAccess
             DBAParameter parameter = new DBAParameter();
             parameter.Add("@FUserId", FUserId);
 
-            string SQL = @"SELECT A.FUserId AS LoginId, A.UserName, C.ClubId AS LoginId, A.EMail, A.CellPhone, A.Department, C.ClubId, C.ClubCName, C.ClubEName, C.SchoolYear, C.LifeClass, C.ClubClass
+            string SQL = @"SELECT A.FUserId AS LoginId, A.UserName, C.ClubId AS LoginId, A.EMail, A.CellPhone, A.Department, C.ClubId, C.ClubCName, C.ClubEName, C.SchoolYear, C.LifeClass, C.ClubClass, 'F' AS LoginSource
                              FROM FUserMain A
                         LEFT JOIN ClubUser B ON B.FUserId = A.FUserId
                         LEFT JOIN ClubMang C ON C.ClubId = B.ClubId
@@ -68,14 +68,14 @@ namespace WebAuth.DataAccess
 
             string SQL = string.Empty;
             if (LoginFrom == "B"){
-                SQL = @"SELECT A.*, C.RoleName AS UnitName
+                SQL = @"SELECT A.*, C.RoleName AS UnitName, 'B' AS LoginSource
                              FROM UserMain A
                         LEFT JOIN UserRole B ON B.LoginId = A.LoginId
                         LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
                             WHERE A.LoginId = @LoginId AND A.Password = @Password and A.IsEnable = 1";
             }
             else {
-                SQL = @"SELECT A.*, A.ClubId AS LoginId, A.ClubCName AS UserName, B.*
+                SQL = @"SELECT A.*, A.ClubId AS LoginId, A.ClubCName AS UserName, B.*, 'F' AS LoginSource
                              FROM ClubMang A
                         LEFT JOIN UserRole B ON B.LoginId = A.ClubId
                         LEFT JOIN SystemRole C ON C.RoleId = B.RoleId

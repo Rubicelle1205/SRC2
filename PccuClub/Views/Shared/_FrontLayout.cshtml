@@ -10,7 +10,7 @@
     string LoginName = string.Empty;
     string LastLoginDate = string.Empty;
 
-    if (LoginUser != null)
+    if (LoginUser != null && LoginUser.LoginSource == "F")
     {
         UnitName = LoginUser.UserRole[0].RoleName != null ? LoginUser.UserRole[0].RoleName : "訪客";
         LoginId = LoginUser.LoginId;
@@ -131,7 +131,7 @@
                                         <div class="header-nav-main header-nav-main-text-capitalize header-nav-main-square header-nav-main-arrows header-nav-main-dropdown-no-borders header-nav-main-effect-2 header-nav-main-sub-effect-1">
                                             <nav class="collapse">
                                                 <ul class="nav nav-pills" id="mainNav">
-                                                    @if (LoginUser != null)
+                                                    @if (LoginUser != null && LoginUser.LoginSource == "F")
                                                     {
                                                         @Html.Raw(headHtml)
                                                         <li>
@@ -161,7 +161,7 @@
                 <div class="row justify-content-center">
                     <div class="col-xxl-2 col-xl-2">
 
-                        @if (LoginUser != null)
+                        @if (LoginUser != null && LoginUser.LoginSource == "F")
                         {
                             <div class="user-acinfo">
                                 <div class="greetings font-weight-6">歡迎！</div>

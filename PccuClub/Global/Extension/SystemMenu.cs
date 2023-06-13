@@ -40,56 +40,59 @@ namespace WebPccuClub.Global.Extension
             StringBuilder MenuBuilder = new StringBuilder();
             List<FunInfo> subMenus = roleFuns.FindAll(f => f.MenuUpNode == rootMenu.MenuNode);
 
-            string suburl = GetSubUrl();
-            string funUrl = string.IsNullOrEmpty(rootMenu.Url) ? "#" : rootMenu.Url;
-            string leftHtml = "";
-
-            string sitemap = GetUserSiteMap(thisUser, routeurl);
-            string[] arr = sitemap.Split("|");
-            string RouteUpNode = thisUser.UserRoleFun.Find(f => f.MenuNode == arr[0]) == null ? arr[0] : thisUser.UserRoleFun.Find(f => f.MenuNode == arr[0]).MenuNode;
-            string RouteFunUrl = thisUser.UserRoleFun.Find(f => f.MenuNode == arr[1]) == null ? arr[1] : thisUser.UserRoleFun.Find(f => f.MenuNode == arr[1]).Url;
-
-            if (subMenus.Count > 0)
+            if (thisUser.LoginSource == "B")
             {
-                if (funUrl == "#" && rootMenu.MenuNode == RouteUpNode)
-                {
-                    MenuBuilder.Append($@"<li class='nav-item menu-open'><a href='{baseurl}{funUrl}' class='nav-link active' target='_self'><i class='{rootMenu.IconTag}' aria-hidden='true'></i><p>{rootMenu.MenuName}<i class='right fas fa-angle-left'></i></p></a>");
-                }
-                else
-                {
-                    MenuBuilder.Append($@"<li class='nav-item'><a href='{baseurl}{funUrl}' class='nav-link' target='_self'><i class='{rootMenu.IconTag}' aria-hidden='true'></i><p>{rootMenu.MenuName}<i class='right fas fa-angle-left'></i></p></a>");
-                }
-                
-                
-                MenuBuilder.Append(@"<ul class='nav nav-treeview'>");
-                foreach (FunInfo fun in subMenus)
-                {
-                    StringBuilder thisSubFun = BuildUserMenu(fun, thisUser, baseurl, routeurl);
-                    MenuBuilder.Append(thisSubFun.ToString());
-                }
-                MenuBuilder.Append(@"</ul></li>");
-            }
-            else
-            {
-                if (routeurl == "Home")
-                {
-                    leftHtml = $@"<li class='nav-item'><a href='{baseurl}{funUrl}' class='nav-link active' target='_self'><i class='{rootMenu.IconTag}' aria-hidden='true'></i><p>{rootMenu.MenuName}</p></a></li>";
-                }
-                else
-                {
-                    if (RouteFunUrl == funUrl)
-                    {
-                        leftHtml = $@"<li class='nav-item'><a href='{baseurl}{funUrl}' class='nav-link active' target='_self'><i class='{rootMenu.IconTag}'></i><p>{rootMenu.MenuName}</p></a></li>";
-                    }
-                    else
-                    {
-                        leftHtml = $@"<li class='nav-item'><a href='{baseurl}{funUrl}' class='nav-link' target='_self'><i class='{rootMenu.IconTag}'></i><p>{rootMenu.MenuName}</p></a></li>";
-                    }
-                }
+				string suburl = GetSubUrl();
+				string funUrl = string.IsNullOrEmpty(rootMenu.Url) ? "#" : rootMenu.Url;
+				string leftHtml = "";
 
-                MenuBuilder.Append(leftHtml);
+				string sitemap = GetUserSiteMap(thisUser, routeurl);
+				string[] arr = sitemap.Split("|");
+				string RouteUpNode = thisUser.UserRoleFun.Find(f => f.MenuNode == arr[0]) == null ? arr[0] : thisUser.UserRoleFun.Find(f => f.MenuNode == arr[0]).MenuNode;
+				string RouteFunUrl = thisUser.UserRoleFun.Find(f => f.MenuNode == arr[1]) == null ? arr[1] : thisUser.UserRoleFun.Find(f => f.MenuNode == arr[1]).Url;
 
-            }
+				if (subMenus.Count > 0)
+				{
+					if (funUrl == "#" && rootMenu.MenuNode == RouteUpNode)
+					{
+						MenuBuilder.Append($@"<li class='nav-item menu-open'><a href='{baseurl}{funUrl}' class='nav-link active' target='_self'><i class='{rootMenu.IconTag}' aria-hidden='true'></i><p>{rootMenu.MenuName}<i class='right fas fa-angle-left'></i></p></a>");
+					}
+					else
+					{
+						MenuBuilder.Append($@"<li class='nav-item'><a href='{baseurl}{funUrl}' class='nav-link' target='_self'><i class='{rootMenu.IconTag}' aria-hidden='true'></i><p>{rootMenu.MenuName}<i class='right fas fa-angle-left'></i></p></a>");
+					}
+
+
+					MenuBuilder.Append(@"<ul class='nav nav-treeview'>");
+					foreach (FunInfo fun in subMenus)
+					{
+						StringBuilder thisSubFun = BuildUserMenu(fun, thisUser, baseurl, routeurl);
+						MenuBuilder.Append(thisSubFun.ToString());
+					}
+					MenuBuilder.Append(@"</ul></li>");
+				}
+				else
+				{
+					if (routeurl == "Home")
+					{
+						leftHtml = $@"<li class='nav-item'><a href='{baseurl}{funUrl}' class='nav-link active' target='_self'><i class='{rootMenu.IconTag}' aria-hidden='true'></i><p>{rootMenu.MenuName}</p></a></li>";
+					}
+					else
+					{
+						if (RouteFunUrl == funUrl)
+						{
+							leftHtml = $@"<li class='nav-item'><a href='{baseurl}{funUrl}' class='nav-link active' target='_self'><i class='{rootMenu.IconTag}'></i><p>{rootMenu.MenuName}</p></a></li>";
+						}
+						else
+						{
+							leftHtml = $@"<li class='nav-item'><a href='{baseurl}{funUrl}' class='nav-link' target='_self'><i class='{rootMenu.IconTag}'></i><p>{rootMenu.MenuName}</p></a></li>";
+						}
+					}
+
+					MenuBuilder.Append(leftHtml);
+
+				}
+			}
 
             return MenuBuilder;
         }
@@ -112,7 +115,8 @@ namespace WebPccuClub.Global.Extension
                 MenuUpNode = thisUser.GetMenuNodeByParentMenuNode(MenuNode);
             }
 
-            SiteMap = MenuUpNode + "|" + MenuNode;
+            if(MenuNode != null && MenuUpNode != null)
+                SiteMap = MenuUpNode + "|" + MenuNode;
 
             return SiteMap;
         }
@@ -132,7 +136,7 @@ namespace WebPccuClub.Global.Extension
         {
             StringBuilder Menu = new StringBuilder();
 
-            if (thisUser != null)
+            if (thisUser != null && thisUser.LoginSource == "F")
             {
                 List<FunInfo> rootMenu = thisUser.UserRoleFun.FindAll(f => f.MenuUpNode == "-1" && f.IsVisIble == true);
                 foreach (FunInfo menu in rootMenu.OrderBy(p => p.SortOrder))
@@ -217,29 +221,32 @@ namespace WebPccuClub.Global.Extension
             StringBuilder MenuBuilder = new StringBuilder();
             List<FunInfo> subMenus = roleFuns.FindAll(f => f.MenuUpNode == rootMenu.MenuNode);
 
-            string suburl = GetSubUrl();
-            string funUrl = string.IsNullOrEmpty(rootMenu.Url) ? "#" : rootMenu.Url;
-
-            string sitemap = GetUserSiteMap(thisUser, routeurl);
-            string[] arr = sitemap.Split("|");
-            string RouteUpNode = thisUser.UserRoleFun.Find(f => f.MenuNode == arr[0]) == null ? arr[0] : thisUser.UserRoleFun.Find(f => f.MenuNode == arr[0]).MenuNode;
-            string RouteFunUrl = thisUser.UserRoleFun.Find(f => f.MenuNode == arr[1]) == null ? arr[1] : thisUser.UserRoleFun.Find(f => f.MenuNode == arr[1]).Url;
-
-            if (subMenus.Any(f => f.Url == "/" + routeurl))
+            if (thisUser.LoginSource == "F")
             {
-                foreach (var item in subMenus)
-                {
-                    if ("/" + routeurl == item.Url)
-                    {
-                        MenuBuilder.Append($@"<li><a class='sideitem active' href='{baseurl}{item.Url}'>{item.MenuName}</a></li>");
-                    }
-                    else
-                    {
-                        MenuBuilder.Append($@"<li><a class='sideitem' href='{baseurl}{item.Url}'>{item.MenuName}</a></li>");
-                    }
-                }
-            }
+				string suburl = GetSubUrl();
+				string funUrl = string.IsNullOrEmpty(rootMenu.Url) ? "#" : rootMenu.Url;
 
+				string sitemap = GetUserSiteMap(thisUser, routeurl);
+				string[] arr = sitemap.Split("|");
+				string RouteUpNode = thisUser.UserRoleFun.Find(f => f.MenuNode == arr[0]) == null ? arr[0] : thisUser.UserRoleFun.Find(f => f.MenuNode == arr[0]).MenuNode;
+				string RouteFunUrl = thisUser.UserRoleFun.Find(f => f.MenuNode == arr[1]) == null ? arr[1] : thisUser.UserRoleFun.Find(f => f.MenuNode == arr[1]).Url;
+
+				if (subMenus.Any(f => f.Url == "/" + routeurl))
+				{
+					foreach (var item in subMenus)
+					{
+						if ("/" + routeurl == item.Url)
+						{
+							MenuBuilder.Append($@"<li><a class='sideitem active' href='{baseurl}{item.Url}'>{item.MenuName}</a></li>");
+						}
+						else
+						{
+							MenuBuilder.Append($@"<li><a class='sideitem' href='{baseurl}{item.Url}'>{item.MenuName}</a></li>");
+						}
+					}
+				}
+			}
+ 
             return MenuBuilder;
         }
 

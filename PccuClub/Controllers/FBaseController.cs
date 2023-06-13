@@ -19,9 +19,10 @@ namespace WebPccuClub.Controllers
 
         #region 共用屬性
         private const string strConst_LoginPageUrl = @"/FrontLogin";
-        private const string strConst_DefaultPageUrl = @"/Home/Index?node=-1";
+        private const string strConst_DefaultPageUrl = @"/FrontLogin/Index";
         private const string strConst_Timeout = "操作逾時，請重新登入！";
-        private const string strConst_NoAccess = "很抱歉 您無此頁面的存取權限！！";
+		private const string strConst_NoLogin = "請先登入以操作此功能!!";
+		private const string strConst_NoAccess = "很抱歉 您無此頁面的存取權限！！";
         private const string keywordConditionSessionName = "SessionKeywordCondition";
         public Dictionary<string, string> localDictionary = new Dictionary<string, string>()
         {
@@ -171,24 +172,34 @@ namespace WebPccuClub.Controllers
             ModelState.Clear();
 
             var controller = (ControllerBase)filterContext.Controller;
-            var actionName = controller.ControllerContext.ActionDescriptor.ActionName;
-            var controllerAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetCustomAttributes(typeof(LogAttribute), false);
-            var actionAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetMethod(actionName)?.GetCustomAttributes(typeof(LogAttribute), false);
-            if (LoginUser != null && (controllerAttributes?.Any() ?? false) && (actionAttributes?.Any() ?? false))
-            {
-                LogViewModel logModel = new LogViewModel()
-                {
-                    LoginID = LoginUser.LoginId,
-                    UserName = LoginUser.UserName,
-                    RoleName = string.Join(",", LoginUser.UserRole[0].RoleName),
-                    IP = filterContext.HttpContext.Connection?.RemoteIpAddress?.ToString(),
-                    FunName = controllerAttributes != null ? (controllerAttributes.FirstOrDefault() as LogAttribute)?.LogDisplayName : controller.ControllerContext.ActionDescriptor.ControllerName,
-                    ActionName = actionAttributes != null ? (actionAttributes.FirstOrDefault() as LogAttribute)?.LogDisplayName : controller.ControllerContext.ActionDescriptor.ActionName
-                };
-                dbAccess.InsertLog(logModel);
-            }
+            var controllerName = controller.ControllerContext.ActionDescriptor.ControllerName;
+			var actionName = controller.ControllerContext.ActionDescriptor.ActionName;
+			var controllerAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetCustomAttributes(typeof(LogAttribute), false);
+			var actionAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetMethod(actionName)?.GetCustomAttributes(typeof(LogAttribute), false);
 
-            base.OnActionExecuting(filterContext);
+
+			if (LoginUser != null && (controllerAttributes?.Any() ?? false) && (actionAttributes?.Any() ?? false) && (LoginUser.LoginSource == ""))
+			{
+				LogViewModel logModel = new LogViewModel()
+				{
+					LoginID = LoginUser.LoginId,
+					UserName = LoginUser.UserName,
+					RoleName = string.Join(",", LoginUser.UserRole[0].RoleName),
+					IP = filterContext.HttpContext.Connection?.RemoteIpAddress?.ToString(),
+					FunName = controllerAttributes != null ? (controllerAttributes.FirstOrDefault() as LogAttribute)?.LogDisplayName : controller.ControllerContext.ActionDescriptor.ControllerName,
+					ActionName = actionAttributes != null ? (actionAttributes.FirstOrDefault() as LogAttribute)?.LogDisplayName : controller.ControllerContext.ActionDescriptor.ActionName
+				};
+				dbAccess.InsertLog(logModel);
+			}
+			else
+			{
+				if (controllerName != "ClubList" && controllerName != "WeekActivity")
+				{
+					filterContext.Result = AlertMsgRedirect(strConst_NoLogin, SystemMenu.GetSubUrl() + strConst_DefaultPageUrl);
+				}
+			}
+
+			base.OnActionExecuting(filterContext);
         }
 
         public override void OnActionExecuted(ActionExecutedContext filterContext)
