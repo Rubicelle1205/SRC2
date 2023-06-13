@@ -42,7 +42,9 @@
                                     </tr>
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.CScheDate)<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.CScheDate, new {@class="form-control", type="date"})</td>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.EditModel.CScheDate, new {@class="form-control", type="date"})
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.Budget)<span class="required">*</span></th>
@@ -91,6 +93,13 @@
                                                     </label>
                                                     <span class="text-sm mx-2 text-muted"
                                                           id="filename">尚未選擇檔案...</span>
+                                                    <br>
+                                                    @if (!string.IsNullOrEmpty(Model.EditModel.Attachment))
+                                                    {
+                                                        <a class="text-sm text-muted" href=@Html.DisplayFor(m => m.EditModel.Attachment) target="_blank">
+                                                            <i class="fa-regular fa-file mr-2"></i>@string.Format("附件檔案")
+                                                        </a>
+                                                    }
                                                 </div>
                                             </div>
                                         </td>

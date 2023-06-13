@@ -178,7 +178,7 @@ namespace WebPccuClub.Controllers
 			var actionAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetMethod(actionName)?.GetCustomAttributes(typeof(LogAttribute), false);
 
 
-			if (LoginUser != null && (controllerAttributes?.Any() ?? false) && (actionAttributes?.Any() ?? false) && (LoginUser.LoginSource == ""))
+			if (LoginUser != null && (controllerAttributes?.Any() ?? false) && (actionAttributes?.Any() ?? false) && (LoginUser.LoginSource == "F"))
 			{
 				LogViewModel logModel = new LogViewModel()
 				{

@@ -200,7 +200,7 @@ namespace WebPccuClub.Models
 
         /// <summary>活動日期</summary>
         [DisplayName("活動日期")]
-        public DateTime? CScheDate { get; set; }
+        public string? CScheDate { get; set; }
 
         /// <summary>舉辦狀態	</summary>
         [DisplayName("舉辦狀態")]

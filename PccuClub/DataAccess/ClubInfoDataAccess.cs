@@ -217,8 +217,8 @@ namespace WebPccuClub.DataAccess
                                                ,@CScheDate
                                                ,@Budget
                                                ,@BookingPlace
-                                               ,'01'
-                                               ,@ActHoldType 
+                                               ,@ShortDesc
+                                               ,'01' 
                                                ,@LoginId
                                                ,GETDATE()
                                                ,@LoginId
