@@ -301,7 +301,7 @@ namespace WebPccuClub.Controllers
 
 			ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0101Model = new ClubHandover0101ViewModel();
-
+			vm.Handover0101Model.SchoolYear = PublicFun.GetNowSchoolYear();
 			if (!string.IsNullOrEmpty(id))
 			{
 				vm.Handover0101Model = dbAccess.GetHandover0101Data(id, LoginUser);

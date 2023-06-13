@@ -17,7 +17,7 @@ namespace WebPccuClub.DataAccess
         PublicFun PublicFun = new PublicFun();
 
         /// <summary> 查詢結果 </summary>
-        public List<ClubAwardResultModel> GetSearchResult(ClubAwardConditionModel model)
+        public List<ClubAwardResultModel> GetSearchResult(ClubAwardConditionModel model, UserInfo LoginUser)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -27,6 +27,7 @@ namespace WebPccuClub.DataAccess
             #region 參數設定
             
             parameters.Add("@SchoolYear", model?.SchoolYear);
+            parameters.Add("@LoginId", LoginUser.LoginId);
 
             #endregion
 
@@ -36,7 +37,8 @@ namespace WebPccuClub.DataAccess
                           LEFT JOIN ClubMang B ON B.ClubID = A.ClubID
                           LEFT JOIN Code C ON C.Code = A.ActVerify AND C.Type = 'ActVerify'
                               WHERE 1 = 1
-AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)";
+AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
+AND A.ClubID = @LoginId";
 
 
             (DbExecuteInfo info, IEnumerable<ClubAwardResultModel> entitys) dbResult = DbaExecuteQuery<ClubAwardResultModel>(CommandText, parameters, true, DBAccessException);

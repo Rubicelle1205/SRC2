@@ -84,7 +84,7 @@ namespace WebPccuClub.Controllers
         [LogAttribute(LogActionChineseName.查詢)]
         public IActionResult GetSearchResult(ClubAwardViewModel vm)
         {
-            vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel).ToList();
+            vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel, LoginUser).ToList();
 
             #region 分頁
             vm.ConditionModel.TotalCount = vm.ResultModel.Count();

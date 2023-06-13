@@ -129,6 +129,10 @@
 
             data.append('@Html.NameFor(m => m.File)', File);
         }
+        else{
+            $.alert("獲獎名冊不可為空");
+            return;
+        }
 
 
         if (Organizer == "") { $.alert("主辦單位不可為空白"); return; }

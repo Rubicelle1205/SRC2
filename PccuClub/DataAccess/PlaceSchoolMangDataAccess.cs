@@ -28,7 +28,7 @@ namespace WebPccuClub.DataAccess
             #region 參數設定
             
             parameters.Add("@PlaceStatus", model?.PlaceStatus);
-            parameters.Add("@BuildName", model?.BuildName);
+            parameters.Add("@Buildid", model?.BuildName);
             parameters.Add("@PlaceId", model?.PlaceId);
             parameters.Add("@PlaceName", model?.PlaceName);
             parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
@@ -44,7 +44,7 @@ namespace WebPccuClub.DataAccess
                               WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.LastModified BETWEEN @FromDate AND @ToDate" : " ")}
 AND (@PlaceStatus IS NULL OR A.PlaceStatus = @PlaceStatus)
-AND (@BuildName IS NULL OR B.BuildName LIKE '%' + @BuildName + '%') 
+AND (@Buildid IS NULL OR B.Buildid = @Buildid)
 AND (@PlaceId IS NULL OR A.PlaceId LIKE '%' + @PlaceId + '%') 
 AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
 

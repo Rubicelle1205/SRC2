@@ -42,14 +42,19 @@ namespace WebPccuClub.DataAccess
          
             #endregion
 
-            CommandText = $@"SELECT A.ClubId, A.ClubCName, A.ClubEName, A.SchoolYear, A.LifeClass, C.Text AS LifeClassText, A.ClubClass, B.Text AS ClubClassText, A.EMail, A.Tel, A.Created
+            CommandText = $@"SELECT A.ClubId, A.ClubCName, A.ClubEName, A.SchoolYear, E.UserName AS ClubLeader, E.Department,
+                                    A.LifeClass, C.Text AS LifeClassText, A.ClubClass, B.Text AS ClubClassText, A.EMail, A.Tel, A.Created
                                FROM ClubMang A
 							   LEFT JOIN Code B ON B.Code = A.ClubClass AND B.Type = 'ClubClass'
 							   LEFT JOIN Code C ON C.Code = A.LifeClass AND C.Type = 'LifeClass'
+							   LEFT JOIN ClubUser D ON D.ClubId = A.ClubId
+							   LEFT JOIN FUserMain E ON E.FUserId = D.FUserId
                               WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.LastModified BETWEEN @FromDate AND @ToDate" : " ")}
 {(model.ClubId != null ? " AND A.ClubId LIKE '%' + @ClubId + '%'" : " ")}
-{(model.ClubName != null ? " AND A.ClubName LIKE '%' + @ClubName + '%'" : " ")}
+{(model.ClubName != null ? " AND A.ClubCName LIKE '%' + @ClubName + '%'" : " ")}
+{(model.ClubLeader != null ? " AND E.UserName LIKE '%' + @ClubLeader + '%'" : " ")}
+{(model.Department != null ? " AND E.Department LIKE '%' + @Department + '%'" : " ")}
 {(model.MailOrTel != null ? " AND (A.EMail LIKE '%' + @MailOrTel + '%' OR A.Tel LIKE  '%' + @MailOrTel + '%') " : " ")}
 AND (@ClubClass IS NULL OR A.ClubClass = @ClubClass)
 AND (@LifeClass IS NULL OR A.LifeClass = @LifeClass)
