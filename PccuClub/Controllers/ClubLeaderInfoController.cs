@@ -9,8 +9,8 @@ using WebPccuClub.Models;
 namespace WebPccuClub.Controllers
 {
     [LogAttribute(LogActionChineseName.個人資料)]
-    public class ClubLeaderInfoController : BaseController
-    {
+    public class ClubLeaderInfoController : FBaseController
+	{
         ReturnViewModel vmRtn = new ReturnViewModel();
         ClubLeaderInfoDataAccess dbAccess = new ClubLeaderInfoDataAccess();
 

@@ -20,8 +20,8 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 namespace WebPccuClub.Controllers
 {
     [LogAttribute(LogActionChineseName.交接資料管理)]
-    public class ClubHandoverController : BaseController
-    {
+    public class ClubHandoverController : FBaseController
+	{
         PublicFun PublicFun = new PublicFun();
         ReturnViewModel vmRtn = new ReturnViewModel();
         ClubHandoverDataAccess dbAccess = new ClubHandoverDataAccess();

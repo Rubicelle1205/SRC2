@@ -19,8 +19,8 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 namespace WebPccuClub.Controllers
 {
     [LogAttribute(LogActionChineseName.校外獲獎紀錄)]
-    public class ClubAwardController : BaseController
-    {
+    public class ClubAwardController : FBaseController
+	{
         PublicFun PublicFun = new PublicFun();
         ReturnViewModel vmRtn = new ReturnViewModel();
         ClubAwardDataAccess dbAccess = new ClubAwardDataAccess();
