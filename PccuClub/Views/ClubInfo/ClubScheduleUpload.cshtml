@@ -1,4 +1,4 @@
-﻿@model WebPccuClub.Models.MemberMangViewModel
+﻿@model WebPccuClub.Models.CadreMangViewModel
 
 @{
     Layout = "_BackendLayout";
@@ -30,7 +30,7 @@
                                                 <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
                                             </span>
                                         <br />
-                                        <a href="@Url.Action("DownloadTemplate", "MemberMang")" class="link-primary">範本檔下載</a>
+                                        <a href="@Url.Action("DownloadTemplate", "CadreMang")" class="link-primary">範本檔下載</a>
                                         </th>
                                         <td>
                                             <label class="btn btn-outline-primary mb-0">
@@ -81,14 +81,10 @@
                 formdata.append('@Html.NameFor(m => m.File)', fileInput.files[i]);
             }
         }
-        else {
-            $.alert("尚未選擇檔案");
-            return;
-        }
 
         $.ajax({
             method: "POST",
-            url: "@(Url.Action("ImportExcel", "MemberMang"))",
+            url: "@(Url.Action("ImportExcel", "CadreMang"))",
             async: true,
             data: formdata,
             processData: false,

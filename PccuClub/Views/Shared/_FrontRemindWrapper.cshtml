@@ -1,20 +1,40 @@
-﻿@{
+﻿@using WebPccuClub.Controllers;
 
-	var Year = DateTime.Now.Year;
+@{
+	FBaseController cont = new FBaseController();
+	string Content = cont.GetRemind(Context.Request.RouteValues["controller"].ToString());
 
 }
 
-<div class="remindWrapper">
-	<div class="title"><i class="fa-solid fa-bell"></i> 提醒</div>
-	<div class="remindBox">
-		<div class="item">
-			<p>請於 @Year/08/15之前，填寫送出「個人資料告知暨同意書」</p>
-		</div>
-		<div class="item">
-			<p>請於 @Year/08/15之前，填寫送出「改選會議概要」</p>
-		</div>
-		<div class="item">
-			<p>請於 @Year/08/15之前，填寫送出「社團負責人資訊」</p>
+<style>
+	textarea{
+		width: 100%;
+		background: transparent;
+		border-style: none;
+		resize: none;
+		overflow: hidden;
+	}
+</style>
+
+@if (!string.IsNullOrEmpty(Content))
+{
+	<div class="remindWrapper">
+		<div class="title"><i class="fa-solid fa-bell"></i> 提醒</div>
+		<div class="remindBox">
+			<textarea id="myTextarea" oninput="autoResize()">@Content</textarea>
 		</div>
 	</div>
-</div>
+}
+
+
+<script>
+	$(document).ready(function () {
+		$("#myTextarea").trigger("input");
+	});
+
+	function autoResize() {
+		const textarea = document.getElementById("myTextarea");
+		textarea.style.height = "auto";
+		textarea.style.height = textarea.scrollHeight + "px";
+	}
+</script>

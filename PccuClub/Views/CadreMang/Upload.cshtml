@@ -1,4 +1,4 @@
-﻿@model WebPccuClub.Models.CadreMangViewModel
+﻿@model WebPccuClub.Models.ClubInfoViewModel
 
 @{
     Layout = "_BackendLayout";
@@ -80,6 +80,10 @@
             for (i = 0; i < fileInput.files.length; i++) {
                 formdata.append('@Html.NameFor(m => m.File)', fileInput.files[i]);
             }
+        }
+        else{
+            $.alert("尚未選擇檔案");
+            return;
         }
 
         $.ajax({

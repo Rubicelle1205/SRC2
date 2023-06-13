@@ -1,4 +1,5 @@
 ﻿using DataAccess;
+using System.Data;
 using WebPccuClub.Global;
 using WebPccuClub.Models;
 
@@ -31,5 +32,33 @@ namespace WebPccuClub.DataAccess
 
             return ExecuteResult;
         }
-    }
+
+
+		public string GetRemind(string ControllerName)
+		{
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+			DataSet ds = new DataSet();
+
+            string str = "";
+            string CommendText = "";
+
+            if (ControllerName == "ClubInfo")
+            {
+				CommendText = "SELECT ClubInfoConform AS Content FROM ConformMang ";
+			}
+			else if (ControllerName == "ClubActReport")
+			{
+				CommendText = "SELECT ActivityConform AS Content FROM ConformMang ";
+			}
+
+			DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            if (ds != null && ds.Tables[0].Rows.Count > 0) {
+                str = ds.Tables[0].QueryFieldByDT("Content");
+            }
+
+			return str;
+		}
+	}
 }

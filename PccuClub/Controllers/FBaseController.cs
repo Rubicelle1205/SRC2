@@ -272,6 +272,12 @@ namespace WebPccuClub.Controllers
             return $@"{LoginUser.UserName}";
         }
 
+        public string GetRemind(string ControllerName)
+        {
+            return dbAccess.GetRemind(ControllerName);
+        }
+
+
         #region Method
         /// <summary> 從Session中取關鍵字清單 </summary>
         public virtual Dictionary<string, string>? GetKeywordCondtionFromTempData()

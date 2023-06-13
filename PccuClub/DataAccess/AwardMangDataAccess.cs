@@ -34,8 +34,8 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@AwdActName", model?.AwdActName);
             parameters.Add("@AwdType", model?.AwdType);
             parameters.Add("@AwdName", model?.AwdName);
-            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
-            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
+            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy-MM-dd 00:00:00") : null);
+            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy-MM-dd 23:59:59") : null);
 
             #endregion
 
@@ -379,7 +379,7 @@ AND (@AwdName IS NULL OR A.AwdName LIKE '%' + @AwdName + '%') ";
             #region 參數設定
             #endregion
 
-            CommandText = @"SELECT ClubID AS VALUE, ClubCName AS TEXT FROM ClubMang";
+            CommandText = @"SELECT ClubID AS VALUE,  '(' + ClubID + ')' + ClubCName AS TEXT FROM ClubMang";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 

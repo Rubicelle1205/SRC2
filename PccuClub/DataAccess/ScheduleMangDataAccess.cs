@@ -375,7 +375,7 @@ AND (@ActHoldType IS NULL OR A.ActHoldType = @ActHoldType) ";
             #region 參數設定
             #endregion
 
-            CommandText = @"SELECT ClubId AS VALUE, ClubCName AS TEXT FROM ClubMang";
+            CommandText = @"SELECT ClubID AS VALUE,  '(' + ClubID + ')' + ClubCName AS TEXT FROM ClubMang";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 

@@ -293,7 +293,7 @@ namespace WebPccuClub.Controllers
         [LogAttribute(LogActionChineseName.匯出Excel)]
         public IActionResult ExportSearchResult(AwardMangViewModel vm)
         {
-            string FileName = string.Format("{0}_{1}", LogActionChineseName.幹部名冊, DateTime.Now.ToString("yyyyMMdd"));
+            string FileName = string.Format("{0}_{1}", LogActionChineseName.校外獲獎紀錄, DateTime.Now.ToString("yyyyMMdd"));
             vm.ExcelModel = dbAccess.GetExportResult(vm.ConditionModel);
 
             if (vm.ExcelModel != null && vm.ExcelModel.Count > 0)
