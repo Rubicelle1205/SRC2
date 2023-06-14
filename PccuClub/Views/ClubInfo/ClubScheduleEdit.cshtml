@@ -5,118 +5,127 @@
 }
 
 
-<div class="col-xxl-8 col-xl-10">
-    <div class="contentWrapper">
-        <h4 class="pageTitle">幹部名冊</h4>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="@Url.Action("Index")">社團簡介</a></li>
-                <li class="breadcrumb-item"><a href="@Url.Action("ClubScheduleIndex")">活動績效管理</a></li>
-                <li class="breadcrumb-item active">@Model.ClubScheduleEditModel.CScheName</li>
-            </ol>
-        </nav>
-        <hr>
-        <div class="mb-4">
-            <a id="Back" href=@Url.Action("ClubScheduleIndex")><i class="fas fa-chevron-left"></i> 返回</a>
-        </div>
+    <div class="col-xxl-8 col-xl-10">
+        <div class="contentWrapper">
+            <h4 class="pageTitle">幹部名冊</h4>
 
-        <div class="form-box checkthisform">
-            <div class=" mb-4">
-                <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
+        @if (null != Model.ClubScheduleEditModel)
+        {
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index")">社團簡介</a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("ClubScheduleIndex")">活動績效管理</a></li>
+                    <li class="breadcrumb-item active">@Model.ClubScheduleEditModel.CScheName</li>
+                </ol>
+            </nav>
+            <hr>
+            <div class="mb-4">
+                <a id="Back" href=@Url.Action("ClubScheduleIndex")><i class="fas fa-chevron-left"></i> 返回</a>
+            </div>
 
-                <div class="row">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="form-item">
-                            <label for="">學年度</label>
-                            @Html.TextBoxFor(m => m.ClubScheduleEditModel.SchoolYear, new {@class="form-control w-100", @readonly="readonly"} )
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="form-item">
-                            <label for="">活動類別<span class="req-star">*</span></label>
-                            @Html.DropDownListFor(m => m.ClubScheduleEditModel.ActTypeID,(List<SelectListItem>)ViewBag.ddlAllActType,"請選擇", new {@class = "form-control w-100"})
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="form-item">
-                            <label for="">活動名稱<span class="req-star">*</span></label>
-                            @Html.TextBoxFor(m => m.ClubScheduleEditModel.CScheName, new {@class="form-control w-100 input_title", placeholder="請填寫活動名稱"} )
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="form-item">
-                            <label for="">活動時間<span class="req-star">*</span></label>
-                            @Html.TextBoxFor(m => m.ClubScheduleEditModel.CScheDate, new {@class="form-control w-100", placeholder="請填寫活動時間", type="date"} )
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="form-item">
-                            <label for="">預定場地<span class="req-star">*</span></label>
-                            @Html.TextBoxFor(m => m.ClubScheduleEditModel.BookingPlace, new {@class="form-control w-100 input_loc", placeholder="請填寫預定場地"} )
-                        </div>
-                    </div>
+            <div class="form-box checkthisform">
+                <div class=" mb-4">
+                    <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
 
-                    <div class="col-lg-4 col-md-6">
-                        <div class="form-item">
-                            <label for="">經費預算<span class="req-star">*</span></label>
-                            @Html.TextBoxFor(m => m.ClubScheduleEditModel.Budget, new {@class="form-control w-100 input_bud", placeholder="請填寫經費預算"} )
-                        </div>
-                    </div>
-                    <div class="col-lg-12 col-md-12">
-                        <div class="form-item">
-                            <label for="">內容簡介<span class="req-star">*</span></label>
-                            @Html.TextAreaFor(m => m.ClubScheduleEditModel.ShortDesc, new {@class="form-control input_intro", placeholder="請填寫內容簡介"} )
-                        </div>
-                    </div>
-                    <div class="col-lg-12 col-md-12">
-                        <div class="form-item">
-                            <label for="">自檢狀態項<span class="req-star">*</span></label>
-                            <div class="content warning-box">
-                                @Html.DropDownListFor(m => m.ClubScheduleEditModel.ActHoldType,(List<SelectListItem>)ViewBag.ddlAllActHoldType,"請選擇", new {@class = "form-control w-100"})
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6">
+                            <div class="form-item">
+                                <label for="">學年度</label>
+                                @Html.TextBoxFor(m => m.ClubScheduleEditModel.SchoolYear, new {@class="form-control w-100", @readonly="readonly"} )
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="form-item">
-                            <label for="">參與人數<span class="req-star">*</span></label>
-                            @Html.TextBoxFor(m => m.ClubScheduleEditModel.Participants, new {@class="form-control w-100", placeholder="請填寫參與人數", type="number",min="0", max="99999"} )
+                        <div class="col-lg-4 col-md-6">
+                            <div class="form-item">
+                                <label for="">活動類別<span class="req-star">*</span></label>
+                                @Html.DropDownListFor(m => m.ClubScheduleEditModel.ActTypeID,(List<SelectListItem>)ViewBag.ddlAllActType,"請選擇", new {@class = "form-control w-100"})
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-12 col-md-12">
-                        <div class="form-item">
-                            <label for="">接受哪些經費補助<span class="req-star">*</span></label>
-                            @Html.TextAreaFor(m => m.ClubScheduleEditModel.Support, new {@class="form-control", placeholder="接受哪些經費補助", cols="30", rows="3"} )
+                        <div class="col-lg-4 col-md-6">
+                            <div class="form-item">
+                                <label for="">活動名稱<span class="req-star">*</span></label>
+                                @Html.TextBoxFor(m => m.ClubScheduleEditModel.CScheName, new {@class="form-control w-100 input_title", placeholder="請填寫活動名稱"} )
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="form-item">
-                            <label for="">滿意度<span class="req-star">*</span></label>
-                            @Html.TextBoxFor(m => m.ClubScheduleEditModel.Satisfaction, new {@class="form-control w-100", placeholder="請填寫滿意度", type="number",min="0", max="100"} )
+                        <div class="col-lg-4 col-md-6">
+                            <div class="form-item">
+                                <label for="">活動時間<span class="req-star">*</span></label>
+                                @Html.TextBoxFor(m => m.ClubScheduleEditModel.CScheDate, new {@class="form-control w-100", placeholder="請填寫活動時間", type="date"} )
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-12 col-md-6">
-                        <div class="form-item">
-                            <label for="">附件檔案</label>
-                            @Html.TextBoxFor(m => m.ClubScheduleEditModel.Attachment, new {@class="form-control w-100", placeholder="附件檔案", type="file", accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z"} )
-                            <div class="fs-90percent red-hint pt-2">僅接受以下格式：.pdf、.jpg、.jpeg、.png、.zip、.rar、.7z</div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="form-item">
+                                <label for="">預定場地<span class="req-star">*</span></label>
+                                @Html.TextBoxFor(m => m.ClubScheduleEditModel.BookingPlace, new {@class="form-control w-100 input_loc", placeholder="請填寫預定場地"} )
+                            </div>
                         </div>
-                    </div>
-                    @Html.HiddenFor(m => m.ClubScheduleEditModel.SchoolYear)
-                    @Html.HiddenFor(m => m.ClubScheduleEditModel.CScheID)
 
-                    <div class="col-lg-12 col-md-12">
-                        <div class="toolbox">
-                            <button id="" class="submit-btn btn btn-primary btn-modern" type="button" onclick="SaveData()">儲存編輯</button>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="form-item">
+                                <label for="">經費預算<span class="req-star">*</span></label>
+                                @Html.TextBoxFor(m => m.ClubScheduleEditModel.Budget, new {@class="form-control w-100 input_bud", placeholder="請填寫經費預算"} )
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12">
+                            <div class="form-item">
+                                <label for="">內容簡介<span class="req-star">*</span></label>
+                                @Html.TextAreaFor(m => m.ClubScheduleEditModel.ShortDesc, new {@class="form-control input_intro", placeholder="請填寫內容簡介"} )
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12">
+                            <div class="form-item">
+                                <label for="">自檢狀態項<span class="req-star">*</span></label>
+                                <div class="content warning-box">
+                                    @Html.DropDownListFor(m => m.ClubScheduleEditModel.ActHoldType,(List<SelectListItem>)ViewBag.ddlAllActHoldType,"請選擇", new {@class = "form-control w-100"})
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="form-item">
+                                <label for="">參與人數<span class="req-star">*</span></label>
+                                @Html.TextBoxFor(m => m.ClubScheduleEditModel.Participants, new {@class="form-control w-100", placeholder="請填寫參與人數", type="number",min="0", max="99999"} )
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12">
+                            <div class="form-item">
+                                <label for="">接受哪些經費補助<span class="req-star">*</span></label>
+                                @Html.TextAreaFor(m => m.ClubScheduleEditModel.Support, new {@class="form-control", placeholder="接受哪些經費補助", cols="30", rows="3"} )
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="form-item">
+                                <label for="">滿意度<span class="req-star">*</span></label>
+                                @Html.TextBoxFor(m => m.ClubScheduleEditModel.Satisfaction, new {@class="form-control w-100", placeholder="請填寫滿意度", type="number",min="0", max="100"} )
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-6">
+                            <div class="form-item">
+                                <label for="">附件檔案</label>
+                                @Html.TextBoxFor(m => m.ClubScheduleEditModel.Attachment, new {@class="form-control w-100", placeholder="附件檔案", type="file", accept=".doc、.docx、.odt、.pdf、.png、.jpg、.jpeg"} )
+                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.doc、.docx、.odt、.pdf、.png、.jpg、.jpeg</div>
+                            </div>
+                            @if (!string.IsNullOrEmpty(Model.ClubScheduleEditModel.Attachment))
+                            {
+                                <a href=../@Html.DisplayFor(m => m.ClubScheduleEditModel.Attachment) target="_blank">
+                                    <i class="fa-regular fa-file mr-2"></i>@string.Format("附件檔案")
+                                </a>
+                            }
+                        </div>
+                        @Html.HiddenFor(m => m.ClubScheduleEditModel.SchoolYear)
+                        @Html.HiddenFor(m => m.ClubScheduleEditModel.CScheID)
+
+                        <div class="col-lg-12 col-md-12">
+                            <div class="toolbox">
+                                <button id="" class="submit-btn btn btn-primary btn-modern" type="button" onclick="SaveData()">儲存編輯</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+        }
+
         </div>
-
-
     </div>
-</div>
-
 <script>
 
     function SaveData() {
@@ -140,9 +149,9 @@
         var fileInput = $('#@Html.IdFor(m => m.ClubScheduleEditModel.Attachment)')[0].files[0];
         if (typeof fileInput !== 'undefined') {
             var fileExtension = fileInput.name.split('.').pop().toLowerCase();
-
-            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png'
-                && fileExtension !== 'pdf' && fileExtension !== 'zip' && fileExtension !== 'rar' && fileExtension !== '7z') {
+                
+            if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'odt'
+                && fileExtension !== 'pdf' && fileExtension !== 'png' && fileExtension !== 'jpg' && fileExtension !== 'jpeg') {
                 $.alert("檔案類型不符合");
                 return;
             }

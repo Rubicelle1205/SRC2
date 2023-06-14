@@ -181,18 +181,18 @@ AND (@ActHoldType IS NULL OR A.ActHoldType = @ActHoldType)
             parameters.Add("@CScheID", vm.EditModel.CScheID);
             parameters.Add("@ClubId", vm.EditModel.ClubId);
             parameters.Add("@SchoolYear", vm.EditModel.SchoolYear);
-            parameters.Add("@ActTypeID", vm.CreateModel.ActTypeID);
-            parameters.Add("@CScheName", vm.CreateModel.CScheName);
-            parameters.Add("@CScheDate", vm.CreateModel.CScheDate);
-            parameters.Add("@Budget", vm.CreateModel.Budget);
-            parameters.Add("@BookingPlace", vm.CreateModel.BookingPlace);
-            parameters.Add("@ShortDesc", vm.CreateModel.ShortDesc);
-            parameters.Add("@ActHoldType", vm.CreateModel.ActHoldType);
-            parameters.Add("@Support", vm.CreateModel.Support);
-            parameters.Add("@Participants", vm.CreateModel.Participants);
-            parameters.Add("@Satisfaction", vm.CreateModel.Satisfaction);
-            parameters.Add("@Attachment", vm.CreateModel.Attachment);
-            parameters.Add("@Memo", vm.CreateModel.Memo);
+            parameters.Add("@ActTypeID", vm.EditModel.ActTypeID);
+            parameters.Add("@CScheName", vm.EditModel.CScheName);
+            parameters.Add("@CScheDate", vm.EditModel.CScheDate);
+            parameters.Add("@Budget", vm.EditModel.Budget);
+            parameters.Add("@BookingPlace", vm.EditModel.BookingPlace);
+            parameters.Add("@ShortDesc", vm.EditModel.ShortDesc);
+            parameters.Add("@ActHoldType", vm.EditModel.ActHoldType);
+            parameters.Add("@Support", vm.EditModel.Support);
+            parameters.Add("@Participants", vm.EditModel.Participants);
+            parameters.Add("@Satisfaction", vm.EditModel.Satisfaction);
+            parameters.Add("@Attachment", vm.EditModel.Attachment);
+            parameters.Add("@Memo", vm.EditModel.Memo);
 
             parameters.Add("@LastModifier", LoginUser.LoginId);
                 #endregion 參數設定
