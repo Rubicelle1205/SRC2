@@ -1,4 +1,5 @@
 ﻿using DataAccess;
+using MathNet.Numerics.RootFinding;
 using Microsoft.AspNetCore.Mvc;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
@@ -58,6 +59,13 @@ namespace WebPccuClub.Controllers
 
             ScheduleMangViewModel vm = new ScheduleMangViewModel();
             vm.CreateModel = new ScheduleMangCreateModel();
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.匯入)]
+        public IActionResult Upload()
+        {
+            ScheduleMangViewModel vm = new ScheduleMangViewModel();
             return View(vm);
         }
 
@@ -131,6 +139,133 @@ namespace WebPccuClub.Controllers
                 vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                 vmRtn.ErrorMsg = "新增失敗" + ex.Message;
                 return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+        [LogAttribute(LogActionChineseName.匯入Excel)]
+        public IActionResult ImportExcel(ScheduleMangViewModel vm)
+        {
+            if (vm.File != null && vm.File.Length > 0)
+            {
+                string fileExtension = Path.GetExtension(vm.File.FileName);
+
+                if (fileExtension != ".xlsx")
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "選擇檔案格式錯誤";
+                    return Json(vmRtn);
+                }
+
+                if (!vm.File.FileName.Contains(LogActionChineseName.活動績效管理.ToString()))
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "選擇檔案錯誤";
+                    return Json(vmRtn);
+                }
+
+                List<ScheduleMangImportExcelModel> LstExcel = new List<ScheduleMangImportExcelModel>();
+
+                using (Stream stream = vm.File.OpenReadStream())
+                {
+                    XSSFWorkbook workbook = new XSSFWorkbook(stream);
+                    ISheet sheet = workbook.GetSheetAt(0);
+
+                    for (int i = 1; i <= sheet.LastRowNum; i++)
+                    {
+                        IRow row = sheet.GetRow(i);
+
+                        for (int j = 0; j <= row.Count() - 1; j++)
+                        {
+                            row.GetCell(j).SetCellType(CellType.String);
+                        }
+
+                        if (row != null)
+                        {
+                            string ActType = "";
+                            string ActHoldType = "";
+                            DateTime CScheDate = DateTime.Now;
+
+                            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstClubID = dbAccess.GetAllClub();
+                            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstActType = dbAccess.GetActType();
+                            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstActHoldType = dbAccess.GetActHoldType();
+
+                            if (!LstClubID.Any(m => m.Value == row.GetCell(0)?.ToString()))
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("檢核資料失敗:{0}", row.GetCell(0).ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
+
+                            if (!LstActType.Any(m => m.Text == row.GetCell(2)?.ToString()))
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("檢核資料失敗:{0}", row.GetCell(4).ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
+                            else
+                            {
+                                ActType = LstActType.Where(m => m.Text == row.GetCell(2)?.ToString()).FirstOrDefault().Value;
+                            }
+
+                            bool ok = DateTime.TryParse(row.GetCell(4)?.StringCellValue, out CScheDate);
+
+                            if (!ok)
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("檢核資料失敗:{0}", row.GetCell(4).ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
+
+                            if (!LstActHoldType.Any(m => m.Text == row.GetCell(5)?.ToString()))
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("檢核資料失敗:{0}", row.GetCell(5).ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
+                            else
+                            {
+                                ActHoldType = LstActHoldType.Where(m => m.Text == row.GetCell(5)?.ToString()).FirstOrDefault().Value;
+                            }
+
+                            ScheduleMangImportExcelModel excel = new ScheduleMangImportExcelModel
+                            {
+                                ClubId = row.GetCell(0)?.StringCellValue.TrimStartAndEnd(),
+                                SchoolYear = row.GetCell(1)?.StringCellValue.TrimStartAndEnd(),
+                                ActTypeID = ActType,
+                                CScheName = row.GetCell(3)?.StringCellValue.TrimStartAndEnd(),
+                                CScheDate = CScheDate.ToString("yyyy-MM-dd"),
+                                ActHoldType = ActHoldType,
+                                BookingPlace = row.GetCell(6)?.StringCellValue.TrimStartAndEnd(),
+                                Budget = row.GetCell(7)?.StringCellValue.TrimStartAndEnd(),
+                                ShortDesc = row.GetCell(8)?.StringCellValue.TrimStartAndEnd(),
+                            };
+
+                            LstExcel.Add(excel);
+                        }
+                    }
+                }
+
+                dbAccess.DbaInitialTransaction();
+                if (LstExcel.Count > 0)
+                {
+                    var dbResult = dbAccess.ImportData(LstExcel, LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "上傳失敗";
+                    }
+                }
+
+                dbAccess.DbaCommit();
+            }
+            else
+            {
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "請選擇檔案上傳";
             }
 
             return Json(vmRtn);
@@ -277,7 +412,18 @@ namespace WebPccuClub.Controllers
 
         }
 
+        [LogAttribute(LogActionChineseName.下載template檔案)]
+        public IActionResult DownloadTemplate()
+        {
+            string FileName = "活動績效管理_template.xlsx";
 
+            string filePath = Path.Combine(hostingEnvironment.ContentRootPath, "Template", FileName);
+
+            byte[] fileContents = System.IO.File.ReadAllBytes(filePath);
+
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName);
+
+        }
 
         #region Method
 

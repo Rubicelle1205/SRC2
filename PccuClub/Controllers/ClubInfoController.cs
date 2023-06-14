@@ -189,7 +189,6 @@ namespace WebPccuClub.Controllers
 
         #endregion
 
-
         #region 計畫表
 
         [Log(LogActionChineseName.活動績效管理)]
@@ -323,8 +322,5 @@ namespace WebPccuClub.Controllers
             return Json(vmRtn);
         }
         #endregion
-
-
-
     }
 }

@@ -277,4 +277,43 @@ namespace WebPccuClub.Models
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm:ss}")]
         public DateTime? Created { get; set; }
     }
+
+    public class ScheduleMangImportExcelModel
+    {
+        /// <summary>社團代號</summary>
+        [DisplayName("社團代號")]
+        public string? ClubId { get; set; }
+
+        /// <summary>學年度</summary>
+        [DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>活動類別	</summary>
+        [DisplayName("活動類別")]
+        public string? ActTypeID { get; set; }
+
+        /// <summary>活動名稱</summary>
+        [DisplayName("活動名稱")]
+        public string? CScheName { get; set; }
+
+        /// <summary>活動日期</summary>
+        [DisplayName("活動日期")]
+        public string? CScheDate { get; set; }
+
+        /// <summary>舉辦狀態	</summary>
+        [DisplayName("舉辦狀態")]
+        public string? ActHoldType { get; set; }
+
+        /// <summary>預定場地</summary>
+        [DisplayName("預定場地")]
+        public string? BookingPlace { get; set; }
+
+        /// <summary>經費預算</summary>
+        [DisplayName("經費預算")]
+        public string? Budget { get; set; }
+
+        /// <summary>簡介</summary>
+        [DisplayName("簡介")]
+        public string? ShortDesc { get; set; }
+    }
 }

@@ -384,6 +384,51 @@ AND (@ActHoldType IS NULL OR A.ActHoldType = @ActHoldType) ";
 
             return new List<SelectListItem>();
         }
-        
+
+        /// <summary> 新增資料 </summary>
+        public DbExecuteInfo ImportData(List<ScheduleMangImportExcelModel> dataList, UserInfo LoginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO ClubSchedule
+                                               (ClubID, 
+                                                SchoolYear, 
+                                                ActTypeID, 
+                                                CScheName, 
+                                                CScheDate, 
+                                                Budget, 
+                                                BookingPlace, 
+                                                ShortDesc, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier, 
+                                                LastModified, 
+                                                ModifiedReason)
+                                         VALUES
+                                               (@ClubID, 
+                                                @SchoolYear, 
+                                                @ActTypeID, 
+                                                @CScheName, 
+                                                @CScheDate, 
+                                                @Budget, 
+                                                @BookingPlace, 
+                                                @ShortDesc, 
+                                               '{LoginUser.LoginId}', 
+                                               GETDATE(), 
+                                               '{LoginUser.LoginId}', 
+                                               GETDATE(), 
+                                               NULL)";
+
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+            return ExecuteResult;
+        }
+
     }
 }
