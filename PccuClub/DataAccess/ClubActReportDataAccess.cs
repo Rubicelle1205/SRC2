@@ -550,6 +550,34 @@ namespace WebPccuClub.DataAccess
             return LstItem;
         }
 
+        internal string? GetDefaultActName(UserInfo LoginUser)
+        {
+            string str = string.Empty;
 
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ClubID", LoginUser.LoginId);
+
+            #endregion
+
+            CommandText = $@"SELECT ClubID + '-' + ClubCName + '-' AS DefaultActName 
+                               FROM ClubMang
+                              WHERE ClubID = @ClubID
+";
+
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                str = ds.Tables[0].QueryFieldByDT("DefaultActName");
+            }
+
+            return str;
+        }
     }
 }

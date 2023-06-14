@@ -11,6 +11,7 @@
     <None Remove="Upload\PersonalConsent\20230528\aZTue3jjiKbgNYLiNTLJrQtCUIsXDCp0ZH1572hKWqhMIO7BXfEj1b4oDxK1DcS0kOH8M+NfcLL4oLLjBEmokg==.pdf" />
     <None Remove="Upload\PersonalConsent\20230528\aZTue3jjiKbgNYLiNTLJrQtCUIsXDCp0ZH1572hKWqhuIPje8v6JlKA8cI98+y8OPmjPJnhp6JdKNhjIrSVsGg==.pdf" />
     <None Remove="Upload\PersonalConsent\20230528\aZTue3jjiKbgNYLiNTLJrQtCUIsXDCp0ZH1572hKWqjvXfG3JaiX632TUhnT38jNK+YUEgrWRVh5J1mlvJwGkA==.pdf" />
+    <None Remove="Views\AwardMang\Edit.cshtml~RF77852b.TMP" />
     <None Remove="Views\HandOverDocMang\_SearchResultPartial.cshtml~RFb5efbe.TMP" />
     <None Remove="Views\RoleMang\Index.cshtml~RF1eb3cd6.TMP" />
   </ItemGroup>

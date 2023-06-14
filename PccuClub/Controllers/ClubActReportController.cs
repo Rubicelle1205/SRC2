@@ -63,7 +63,7 @@ namespace WebPccuClub.Controllers
             ClubActReportViewModel vm = new ClubActReportViewModel();
             vm.CreateModel = new ClubActReportCreateModel();
             vm.CreateModel.SchoolYear = PublicFun.GetNowSchoolYear();
-
+            vm.CreateModel.ActName = dbAccess.GetDefaultActName(LoginUser);
 
 			return View(vm);
         }

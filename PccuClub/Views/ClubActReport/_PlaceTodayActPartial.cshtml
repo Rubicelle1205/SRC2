@@ -13,27 +13,27 @@
                 <i class="fas fa-caret-down"></i>
                 場地當日借用狀態 <i class="fas fa-caret-down"></i>
             </p>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">活動名稱</th>
-                        <th scope="col">活動單位</th>
-                        <th scope="col">開始時間</th>
-                        <th scope="col">結束時間</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div class="hint scroll-hint">(左右滑動以查看完整資訊)</div>
+
+            <div class="scroll-box">
+                <div class="thisdayTable table-shadow">
+                    <div class="headerItem item">
+                        <div class="cell">活動名稱</div>
+                        <div class="cell">活動單位</div>
+                        <div class="cell">開始時間</div>
+                        <div class="cell">結束時間</div>
+                    </div>
                     @foreach (var item in Model.LstTodayActModel)
                     {
-                        <tr>
-                            <td>@item.ActName</td>
-                            <td>@item.BrrowClubName</td>
-                            <td>@string.Format("{0}:00", item.STime)</td>
-                            <td>@string.Format("{0}:00", item.ETime)</td>
-                        </tr>
+                        <div class="item">
+                            <span class="cell">@item.ActName</span>
+                            <span class="cell">@item.BrrowClubName</span>
+                            <span class="cell">@string.Format("{0}:00", item.STime)</span>
+                            <span class="cell">@string.Format("{0}:00", item.ETime)</span>
+                        </div>
                     }
-                </tbody>
-            </table>
+                </div>
+            </div>
         }
 
     </div>

@@ -36,8 +36,8 @@
 					<div class="content warning-box">
                         @foreach (SelectListItem item in LstPlaceSource)
                         {
-                            <div class="icheck-primary d-inline">
-                                @Html.RadioButtonFor(m => m.CreateModel.PlaceSource, item.Value, new { @id = string.Format("PlaceSource_{0}", item.Value) })
+						<div class="form-check form-check-inline">
+							@Html.RadioButtonFor(m => m.CreateModel.PlaceSource, item.Value, new { @id = string.Format("PlaceSource_{0}", item.Value), @class="form-check-input class_input_trigger" })
                                 <label for=@string.Format("PlaceSource_{0}", item.Value)>@item.Text</label>
                             </div>
                         }

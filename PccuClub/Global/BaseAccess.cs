@@ -455,8 +455,9 @@ namespace WebPccuClub.Global
                                FROM ActMain A
                           LEFT JOIN ActRundown B ON B.ActID = A.ActID
 						  LEFT JOIN PlaceSchoolMang C ON C.PlaceID = B.ActPlaceID
-                              WHERE B.Date = @Date AND B.RundownStatus = '01'
-							  AND A.ActVerify IN ('02', '04', '05')";
+                              WHERE B.Date = @Date AND B.RundownStatus = '01'";
+							  
+			//AND A.ActVerify IN ('02', '04', '05')
 
 
 			(DbExecuteInfo info, IEnumerable<ActListMangPlaceUsedModel> entitys) dbResult = DbaExecuteQuery<ActListMangPlaceUsedModel>(CommandText, parameters, true, DBAccessException);

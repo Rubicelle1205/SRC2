@@ -30,38 +30,38 @@
                             場地開放時間狀態
                             <i class="fas fa-caret-down"></i>
                         </p>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">平日開放時間</th>
-                                    <th scope="col">假日開放時間</th>
-                                    <th scope="col">場地狀態</th>
-                                    <th scope="col">可使用人數</th>
-                                    <th scope="col">已配置資訊器材</th>
-                                    <th scope="col">場地備註</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <div class="hint scroll-hint">(左右滑動以查看完整資訊)</div>
+
+                        <div class="scroll-box">
+                            <div class="thisroomTable table-shadow mb-3">
+                                <div class="headerItem item">
+                                    <div class="cell">平日開放時間</div>
+                                    <div class="cell">假日開放時間</div>
+                                    <div class="cell">場地狀態</div>
+                                    <div class="cell">可使用人數</div>
+                                    <div class="cell">已配置資訊器材</div>
+                                    <div class="cell">場地備註</div>
+                                </div>
                                 @foreach (var item in Model.PlaceDataModel)
                                 {
-                                    <tr>
-                                        <td>@string.Format("{0}:00", item.Normal_STime) ～ @string.Format("{0}:00", item.Normal_ETime)</td>
-                                        <td>@string.Format("{0}:00", item.Holiday_STime) ～ @string.Format("{0}:00", item.Holiday_ETime)</td>
-                                        <td>@item.PlaceStatusText</td>
+                                <div class="item">
+                                    <span class="cell">@string.Format("{0}:00", item.Normal_STime) ～ @string.Format("{0}:00", item.Normal_ETime)</span>
+                                    <span class="cell">@string.Format("{0}:00", item.Holiday_STime) ～ @string.Format("{0}:00", item.Holiday_ETime)</span>
+                                        <span class="cell">@item.PlaceStatusText</span>
                                         @if (!string.IsNullOrEmpty(item.Capacity) && item.Capacity != "0")
                                         {
-                                            <td>@string.Format("{0}人", item.Capacity)</td>
+                                            <span>@string.Format("{0}人", item.Capacity)</span>
                                         }
                                         else
                                         {
-                                            <td>-</td>
+                                            <span>-</span>
                                         }
-                                        <td>@item.PlaceEquip</td>
-                                        <td>@item.Memo</td>
-                                    </tr>
+                                        <span class="cell">@item.PlaceEquip</span>
+                                        <span class="cell">@item.Memo</span>
+                                </div>
                                 }
-                            </tbody>
-                        </table>
+                            </div>
+                        </div>
                     </div>
                 }
             }
