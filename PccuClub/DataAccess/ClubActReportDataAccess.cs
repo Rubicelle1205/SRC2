@@ -131,16 +131,14 @@ namespace WebPccuClub.DataAccess
             #endregion 參數設定
 
             string CommendText = $@"INSERT INTO ActMain
-                                               (STime 
-                                                ,ETime 
+                                               (ActVerify
                                                 ,Creator 
                                                 ,Created 
                                                 ,LastModifier 
                                                 ,LastModified )
                                          OUTPUT Inserted.ActID
                                          VALUES
-                                                (@STime 
-                                                ,@ETime
+                                                (@ActVerify
                                                 ,@LoginId
                                                 ,GETDATE()
                                                 ,@LoginId

@@ -97,6 +97,35 @@ AND (@AwdName IS NULL OR A.AwdName LIKE '%' + @AwdName + '%') ";
             return null;
         }
 
+
+        /// <summary> 查詢Detail結果 </summary>
+        public List<AwdDetailModel> GetDetailData(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@AwdID", Ser);
+
+            #endregion
+
+            CommandText = $@"SELECT AwdID, Name, SNO, Department
+                               FROM AwardDetailMang
+                              WHERE 1 = 1
+                                AND AwdID = @AwdID";
+
+
+            (DbExecuteInfo info, IEnumerable<AwdDetailModel> entitys) dbResult = DbaExecuteQuery<AwdDetailModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<AwdDetailModel>();
+        }
+
         /// <summary> 新增資料 </summary>
         public DbExecuteInfo InsertData(AwardMangViewModel vm, UserInfo LoginUser, out DataTable dt)
         {

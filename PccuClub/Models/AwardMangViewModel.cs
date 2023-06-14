@@ -17,6 +17,8 @@ namespace WebPccuClub.Models
 
         public AwardMangEditModel EditModel { get; set; }
 
+        public List<AwdDetailModel> DetailModel { get; set; }
+
         public List<AwardMangExcelResultModel> ExcelModel { get; set; }
     }
 

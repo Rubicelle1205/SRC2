@@ -354,7 +354,7 @@ namespace WebPccuClub.Controllers
                 return Json(vmRtn);
             }
 
-            return RedirectToAction("ActFinish");
+            return Json(vmRtn);
         }
 
         [Log(LogActionChineseName.編輯儲存)]

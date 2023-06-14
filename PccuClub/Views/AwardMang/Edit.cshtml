@@ -79,9 +79,41 @@
 
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            獲獎名冊
+                                        </th>
+                                        <td>
+                                            @if (Model.DetailModel != null)
+                                            {
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col"></th>
+                                                            <th scope="col">系級</th>
+                                                            <th scope="col">姓名</th>
+                                                            <th scope="col">學號</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @for(int i = 0; i <= Model.DetailModel.Count -1; i++)
+                                                        {
+                                                            <tr>
+                                                                <th width="15%">@(i+1)</th>
+                                                                <td>@Model.DetailModel[i].Department</td>
+                                                                <td>@Model.DetailModel[i].Name</td>
+                                                                <td>@Model.DetailModel[i].SNO</td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                                
+                                            }
+                                        </td>
+                                    </tr>
                                     <tr class="table-warning">
                                         <td colspan="2">
-                                            <span class="text-sm text-danger font-weight-bold">※請按照<a href=@Url.Action("DownloadTemplate") class="text-primary">Excel格式</a>進行修改</span>
+                                            <span class="text-sm text-danger font-weight-bold">※若要重新上傳獲獎名冊請按照<a href=@Url.Action("DownloadTemplate") class="text-primary">Excel格式</a>進行修改</span>
                                         </td>
                                     </tr>
                                     <tr>

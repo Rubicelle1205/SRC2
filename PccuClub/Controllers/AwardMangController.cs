@@ -67,6 +67,7 @@ namespace WebPccuClub.Controllers
 
             //AwardMangViewModel vm = new AwardMangViewModel();
             vm.EditModel = dbAccess.GetEditData(submitBtn);
+            vm.DetailModel = dbAccess.GetDetailData(submitBtn);
             return View(vm);
         }
 
