@@ -27,7 +27,7 @@ namespace WebPccuClub.Controllers
         PublicFun PublicFun = new PublicFun();
         ReturnViewModel vmRtn = new ReturnViewModel();
         ClubActReportDataAccess dbAccess = new ClubActReportDataAccess();
-		ActListMangDataAccess dbAccess2 = new ActListMangDataAccess();
+		ActListMangDataAccess dbAccess3 = new ActListMangDataAccess();
 		UploadUtil upload = new UploadUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
@@ -53,12 +53,12 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public IActionResult Create()
         {
-            ViewBag.ddlStaticOrDynamic = dbAccess2.GetStaticOrDynamic();
-            ViewBag.ddlActInOrOut = dbAccess2.GetActInOrOut();
-            ViewBag.ddlActType = dbAccess2.GetActType();
-            ViewBag.ddlUseITEquip = dbAccess2.GetUseITEquip();
-            ViewBag.ddlPassport = dbAccess2.GetPassport();
-            ViewBag.ddlAllSDGs = dbAccess.GetAllSDGs();
+            ViewBag.ddlStaticOrDynamic = dbAccess.GetStaticOrDynamic();
+            ViewBag.ddlActInOrOut = dbAccess.GetActInOrOut();
+            ViewBag.ddlActType = dbAccess.GetActType();
+            ViewBag.ddlUseITEquip = dbAccess.GetUseITEquip();
+            ViewBag.ddlPassport = dbAccess.GetPassport();
+            ViewBag.ddlAllSDGs = dbAccess.GetSDGs();
 
             ClubActReportViewModel vm = new ClubActReportViewModel();
             vm.CreateModel = new ClubActReportCreateModel();
@@ -81,8 +81,8 @@ namespace WebPccuClub.Controllers
 			}
 			
 
-			ViewBag.ddlPlaceSource = dbAccess2.GetPlaceSource();
-			ViewBag.ddlHour = dbAccess2.GetAllHour();
+			ViewBag.ddlPlaceSource = dbAccess.GetPlaceSource();
+			ViewBag.ddlHour = dbAccess.GetAllHour();
 
 			return View(vm);
         }
@@ -186,16 +186,16 @@ namespace WebPccuClub.Controllers
 
 			HttpContext.Session.SetObject("MyModel", vm4);
 
-			ViewBag.ddlStaticOrDynamic = dbAccess2.GetStaticOrDynamic();
-			ViewBag.ddlActInOrOut = dbAccess2.GetActInOrOut();
-			ViewBag.ddlActType = dbAccess2.GetActType();
-			ViewBag.ddlUseITEquip = dbAccess2.GetUseITEquip();
-			ViewBag.ddlSDGs = dbAccess2.GetSDGs();
-			ViewBag.ddlPassport = dbAccess2.GetPassport();
-			ViewBag.ddlPlaceSource = dbAccess2.GetPlaceSource();
-			ViewBag.ddlHour = dbAccess2.GetAllHour();
-			ViewBag.ddlActVerify = dbAccess2.GetAllActVerify();
-			ViewBag.ddlAllClub = dbAccess2.GetAllClub();
+			ViewBag.ddlStaticOrDynamic = dbAccess.GetStaticOrDynamic();
+			ViewBag.ddlActInOrOut = dbAccess.GetActInOrOut();
+			ViewBag.ddlActType = dbAccess.GetActType();
+			ViewBag.ddlUseITEquip = dbAccess.GetUseITEquip();
+			ViewBag.ddlSDGs = dbAccess.GetSDGs();
+			ViewBag.ddlPassport = dbAccess.GetPassport();
+			ViewBag.ddlPlaceSource = dbAccess.GetPlaceSource();
+			ViewBag.ddlHour = dbAccess.GetAllHour();
+			ViewBag.ddlActVerify = dbAccess.GetAllActVerify();
+			ViewBag.ddlAllClub = dbAccess.GetAllClub();
 
 			return View(vm4);
 		}
@@ -215,14 +215,14 @@ namespace WebPccuClub.Controllers
             if (string.IsNullOrEmpty(id))
                 return RedirectToAction("Index");
 
-            ViewBag.ddlAllSDGs = dbAccess.GetAllSDGs();
+            ViewBag.ddlAllSDGs = dbAccess.GetSDGs();
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
 
             //ClubActReportViewModel vm = new ClubActReportViewModel();
             vm.EditModel = dbAccess.GetEditData(id);
-            vm.EditModel.LstActRundown = dbAccess2.GetEditRundownData(id);
-            vm.EditModel.LstProposal = dbAccess2.GetEditProposalData(id);
-            vm.EditModel.LstOutSideFile = dbAccess2.GetEditOutSideFileData(id);
+            vm.EditModel.LstActRundown = dbAccess.GetEditRundownData(id);
+            vm.EditModel.LstProposal = dbAccess.GetEditProposalData(id);
+            vm.EditModel.LstOutSideFile = dbAccess.GetEditOutSideFileData(id);
 
             return View(vm);
         }
@@ -236,7 +236,7 @@ namespace WebPccuClub.Controllers
 			//vm.LstPlaceUsedModel = dbAccess.GetPlaceUsedData(SelectedDate);
 
 			//先抓取DB資料
-			List<ActListMangPlaceUsedModel> LstNewPlaceUsed = dbAccess2.GetPlaceUsedData(SelectedDate);
+			List<ActListMangPlaceUsedModel> LstNewPlaceUsed = dbAccess.GetPlaceUsedData(SelectedDate);
 			List<ActListMangPlaceUsedModel> LstNewPlaceUsed2 = new List<ActListMangPlaceUsedModel>();
 
 			foreach (ActListMangPlaceUsedModel item in LstNewPlaceUsed)
@@ -278,7 +278,7 @@ namespace WebPccuClub.Controllers
             ActListMangViewModel vm = new ActListMangViewModel();
 
 
-            vm.LstTodayActModel = dbAccess2.GetTodayAct(PlaceId, SelectedDate);
+            vm.LstTodayActModel = dbAccess.GetTodayAct(PlaceId, SelectedDate);
 
 
             return PartialView("_PlaceTodayActPartial", vm);
@@ -290,7 +290,7 @@ namespace WebPccuClub.Controllers
         {
             if (PlaceSource == "01")
             {
-                ViewBag.ddlBuild = dbAccess2.GetBuild();
+                ViewBag.ddlBuild = dbAccess.GetBuild();
             }
 
             ActListMangViewModel vm = new ActListMangViewModel();
@@ -304,8 +304,8 @@ namespace WebPccuClub.Controllers
         [ValidateInput(false)]
         public IActionResult InitPlaceSelect(string PlaceSource, string Buildid)
         {
-            ViewBag.ddlBuild = dbAccess2.GetBuild();
-            ViewBag.ddlPlace = dbAccess2.GetPlace(PlaceSource, Buildid);
+            ViewBag.ddlBuild = dbAccess.GetBuild();
+            ViewBag.ddlPlace = dbAccess.GetPlace(PlaceSource, Buildid);
 
 
             ActListMangViewModel vm = new ActListMangViewModel();
@@ -321,8 +321,8 @@ namespace WebPccuClub.Controllers
         [ValidateInput(false)]
         public IActionResult InitPlaceData(string PlaceSource, string Buildid, string PlaceId)
         {
-            ViewBag.ddlBuild = dbAccess2.GetBuild();
-            ViewBag.ddlPlace = dbAccess2.GetPlace(PlaceSource, Buildid);
+            ViewBag.ddlBuild = dbAccess.GetBuild();
+            ViewBag.ddlPlace = dbAccess.GetPlace(PlaceSource, Buildid);
 
 
             ActListMangViewModel vm = new ActListMangViewModel();
@@ -331,7 +331,7 @@ namespace WebPccuClub.Controllers
             vm.CreateModel.Buildid = Buildid;
             vm.CreateModel.PlaceId = PlaceId;
 
-            vm.PlaceDataModel = dbAccess2.GetPlaceData(PlaceSource, PlaceId);
+            vm.PlaceDataModel = dbAccess.GetPlaceData(PlaceSource, PlaceId);
 
 
 
@@ -347,7 +347,7 @@ namespace WebPccuClub.Controllers
 			if (vm.RundownModel.PlaceSource == "01")
 			{
 				//確認場地開放狀態
-				CanUse = dbAccess2.ChkPlaceSchoolCanUse(vm);
+				CanUse = dbAccess.ChkPlaceSchoolCanUse(vm);
 
 				if (!CanUse)
 				{
@@ -420,7 +420,7 @@ namespace WebPccuClub.Controllers
 			if (string.IsNullOrEmpty(PlaceID)) { msg = "查找場地失敗"; return false; }
 
 
-			DataTable dt = dbAccess2.GetRundown(PlaceID, date);
+			DataTable dt = dbAccess.GetRundown(PlaceID, date);
 
 			foreach (DataRow dr in dt.Rows)
 			{

@@ -178,7 +178,7 @@ namespace WebPccuClub.Controllers
 			var actionAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetMethod(actionName)?.GetCustomAttributes(typeof(LogAttribute), false);
 
 
-			if (LoginUser != null && (controllerAttributes?.Any() ?? false) && (actionAttributes?.Any() ?? false) && (LoginUser.LoginSource == "F"))
+			if (LoginUser != null && (LoginUser.LoginSource == "F"))
 			{
 				LogViewModel logModel = new LogViewModel()
 				{
@@ -193,7 +193,7 @@ namespace WebPccuClub.Controllers
 			}
 			else
 			{
-				if (controllerName != "ClubList" && controllerName != "WeekActivity")
+				if (controllerName != "ClubList" && controllerName != "WeekActivity" && controllerName != "ClubHandover")
 				{
 					filterContext.Result = AlertMsgRedirect(strConst_NoLogin, SystemMenu.GetSubUrl() + strConst_DefaultPageUrl);
 				}

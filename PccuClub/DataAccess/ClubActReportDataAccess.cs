@@ -552,25 +552,6 @@ namespace WebPccuClub.DataAccess
             return LstItem;
         }
 
-		public List<SelectListItem> GetAllSDGs()
-		{
-			string CommandText = string.Empty;
-			DataSet ds = new DataSet();
-
-			DBAParameter parameters = new DBAParameter();
-
-			#region 參數設定
-			#endregion
-
-			CommandText = @"SELECT SDGID AS VALUE, ShortName AS TEXT FROM SDGsMang";
-
-			(DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
-
-			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
-				return dbResult.entitys.ToList();
-
-			return new List<SelectListItem>();
-		}
 
     }
 }
