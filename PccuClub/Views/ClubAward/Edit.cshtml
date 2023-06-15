@@ -73,7 +73,11 @@
                 <div class="infoItem">
                     <div class="tag">獲獎證明</div>
                     <div class="content">
-                        <a href="../@Model.EditModel.Attachment" target="_blank">檔案連結</a>
+                        @if (!string.IsNullOrEmpty(Model.EditModel.Attachment))
+                        {
+                            <a href="../@Model.EditModel.Attachment" target="_blank">檔案連結</a>
+                        }
+                        
                     </div>
                 </div>
             </div>

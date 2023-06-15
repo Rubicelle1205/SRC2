@@ -319,7 +319,11 @@ namespace WebPccuClub.Controllers
 			if (!string.IsNullOrEmpty(id))
 			{
 				vm.Handover0101Model = dbAccess.GetHandover0101Data(id, LoginUser);
-				vm.Handover0101Model.IsEdit = "1";
+				if (null != vm.Handover0101Model)
+					vm.Handover0101Model.IsEdit = "1";
+				else {
+					return RedirectToAction("HandOverHistory");
+				}
             }
 
 			return View(vm);
@@ -333,6 +337,18 @@ namespace WebPccuClub.Controllers
 			{
 				DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
 				string HoID = dt.QueryFieldByDT("HoID");
+
+				if (vm.Handover0101Model.IsEdit != "1")
+				{
+                    ClubHandoverDocCheckModel model = dbAccess.GetHandoverDocData(HoID, "01");
+
+                    if (model != null)
+                    {
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "此表單已存在，如需調整請至「已填寫表單」編輯";
+                        return Json(vmRtn);
+                    }
+                }
 
                 dbAccess.DbaInitialTransaction();
 
@@ -420,6 +436,12 @@ namespace WebPccuClub.Controllers
             if (!string.IsNullOrEmpty(id))
             {
                 vm.Handover0102Model = dbAccess.GetHandover0102Data(id, LoginUser);
+                if (null != vm.Handover0102Model)
+                    vm.Handover0102Model.IsEdit = "1";
+                else
+                {
+                    return RedirectToAction("HandOverHistory");
+                }
             }
 
             return View(vm);
@@ -433,6 +455,19 @@ namespace WebPccuClub.Controllers
             {
                 DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
                 string HoID = dt.QueryFieldByDT("HoID");
+
+                if (vm.Handover0102Model.IsEdit != "1")
+                {
+                    ClubHandoverDocCheckModel model = dbAccess.GetHandoverDocData(HoID, "02");
+
+                    if (model != null)
+                    {
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "此表單已存在，如需調整請至「已填寫表單」編輯";
+                        return Json(vmRtn);
+                    }
+                }
+
 
                 if (Request.Form.Files.Count > 0)
                 {
@@ -545,7 +580,12 @@ namespace WebPccuClub.Controllers
             if (!string.IsNullOrEmpty(id))
             {
                 vm.Handover0103Model = dbAccess.GetHandover0103Data(id, LoginUser);
-                vm.Handover0103Model.IsEdit = "1";
+                if (null != vm.Handover0103Model)
+                    vm.Handover0103Model.IsEdit = "1";
+                else
+                {
+                    return RedirectToAction("HandOverHistory");
+                }
             }
 
             return View(vm);
@@ -559,6 +599,18 @@ namespace WebPccuClub.Controllers
             {
                 DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
                 string HoID = dt.QueryFieldByDT("HoID");
+
+                if (vm.Handover0103Model.IsEdit != "1")
+                {
+                    ClubHandoverDocCheckModel model = dbAccess.GetHandoverDocData(HoID, "03");
+
+                    if (model != null)
+                    {
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "此表單已存在，如需調整請至「已填寫表單」編輯";
+                        return Json(vmRtn);
+                    }
+                }
 
                 if (Request.Form.Files.Count > 0)
                 {
@@ -671,7 +723,12 @@ namespace WebPccuClub.Controllers
 			if (!string.IsNullOrEmpty(id))
 			{
 				vm.Handover0204Model = dbAccess.GetHandover0204Data(id, LoginUser);
-                vm.Handover0204Model.IsEdit = "1";
+                if (null != vm.Handover0204Model)
+                    vm.Handover0204Model.IsEdit = "1";
+                else
+                {
+                    return RedirectToAction("HandOverHistory");
+                }
             }
 
 			return View(vm);
@@ -685,6 +742,19 @@ namespace WebPccuClub.Controllers
 			{
 				DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
 				string HoID = dt.QueryFieldByDT("HoID");
+
+                if (vm.Handover0204Model.IsEdit != "1")
+                {
+                    ClubHandoverDocCheckModel model = dbAccess.GetHandoverDocData(HoID, "04");
+
+                    if (model != null)
+                    {
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "此表單已存在，如需調整請至「已填寫表單」編輯";
+                        return Json(vmRtn);
+                    }
+                }
+
 
                 dbAccess.DbaInitialTransaction();
 
@@ -772,7 +842,12 @@ namespace WebPccuClub.Controllers
 			if (!string.IsNullOrEmpty(id))
 			{
 				vm.Handover0205Model = dbAccess.GetHandover0205Data(id, LoginUser);
-                vm.Handover0205Model.IsEdit = "1";
+                if (null != vm.Handover0205Model)
+                    vm.Handover0205Model.IsEdit = "1";
+                else
+                {
+                    return RedirectToAction("HandOverHistory");
+                }
             }
 
 			return View(vm);
@@ -786,6 +861,19 @@ namespace WebPccuClub.Controllers
 			{
 				DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
 				string HoID = dt.QueryFieldByDT("HoID");
+
+
+                if (vm.Handover0205Model.IsEdit != "1")
+                {
+                    ClubHandoverDocCheckModel model = dbAccess.GetHandoverDocData(HoID, "05");
+
+                    if (model != null)
+                    {
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "此表單已存在，如需調整請至「已填寫表單」編輯";
+                        return Json(vmRtn);
+                    }
+                }
 
                 if (Request.Form.Files.Count > 0)
 				{
@@ -902,7 +990,12 @@ namespace WebPccuClub.Controllers
 			if (!string.IsNullOrEmpty(id))
 			{
 				vm.Handover0206Model = dbAccess.GetHandover0206Data(id, LoginUser);
-                vm.Handover0206Model.IsEdit = "1";
+                if (null != vm.Handover0206Model)
+                    vm.Handover0206Model.IsEdit = "1";
+                else
+                {
+                    return RedirectToAction("HandOverHistory");
+                }
             }
 
 			return View(vm);
@@ -916,6 +1009,18 @@ namespace WebPccuClub.Controllers
 			{
 				DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
 				string HoID = dt.QueryFieldByDT("HoID");
+
+                if (vm.Handover0206Model.IsEdit != "1")
+                {
+                    ClubHandoverDocCheckModel model = dbAccess.GetHandoverDocData(HoID, "06");
+
+                    if (model != null)
+                    {
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "此表單已存在，如需調整請至「已填寫表單」編輯";
+                        return Json(vmRtn);
+                    }
+                }
 
 
                 if (Request.Form.Files.Count > 0)
@@ -1037,7 +1142,12 @@ namespace WebPccuClub.Controllers
 			if (!string.IsNullOrEmpty(id))
 			{
 				vm.Handover0307Model = dbAccess.GetHandover0307Data(id, LoginUser);
-                vm.Handover0307Model.IsEdit = "1";
+                if (null != vm.Handover0307Model)
+                    vm.Handover0307Model.IsEdit = "1";
+                else
+                {
+                    return RedirectToAction("HandOverHistory");
+                }
             }
 
 			return View(vm);
@@ -1052,8 +1162,20 @@ namespace WebPccuClub.Controllers
 				DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
 				string HoID = dt.QueryFieldByDT("HoID");
 
+                if (vm.Handover0307Model.IsEdit != "1")
+                {
+                    ClubHandoverDocCheckModel model = dbAccess.GetHandoverDocData(HoID, "07");
 
-				dbAccess.DbaInitialTransaction();
+                    if (model != null)
+                    {
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "此表單已存在，如需調整請至「已填寫表單」編輯";
+                        return Json(vmRtn);
+                    }
+                }
+
+
+                dbAccess.DbaInitialTransaction();
 
                 var dbResult = new DbExecuteInfo();
                 if (vm.Handover0307Model.IsEdit == "1")
@@ -1142,7 +1264,12 @@ namespace WebPccuClub.Controllers
             if (!string.IsNullOrEmpty(id))
             {
                 vm.Handover0308Model = dbAccess.GetHandover0308Data(id, LoginUser);
-                vm.Handover0308Model.IsEdit = "1";
+                if (null != vm.Handover0308Model)
+                    vm.Handover0308Model.IsEdit = "1";
+                else
+                {
+                    return RedirectToAction("HandOverHistory");
+                }
             }
 
             return View(vm);
@@ -1156,6 +1283,19 @@ namespace WebPccuClub.Controllers
             {
                 DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
                 string HoID = dt.QueryFieldByDT("HoID");
+
+                if (vm.Handover0308Model.IsEdit != "1")
+                {
+                    ClubHandoverDocCheckModel model = dbAccess.GetHandoverDocData(HoID, "08");
+
+                    if (model != null)
+                    {
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "此表單已存在，如需調整請至「已填寫表單」編輯";
+                        return Json(vmRtn);
+                    }
+                }
+
 
                 dbAccess.DbaInitialTransaction();
 
@@ -1245,7 +1385,12 @@ namespace WebPccuClub.Controllers
 			if (!string.IsNullOrEmpty(id))
 			{
 				vm.Handover0309Model = dbAccess.GetHandover0309Data(id, LoginUser);
-                vm.Handover0309Model.IsEdit = "1";
+                if (null != vm.Handover0309Model)
+                    vm.Handover0309Model.IsEdit = "1";
+                else
+                {
+                    return RedirectToAction("HandOverHistory");
+                }
             }
 
 			return View(vm);
@@ -1253,12 +1398,25 @@ namespace WebPccuClub.Controllers
 
 		[Log(LogActionChineseName.編輯儲存)]
 		[ValidateInput(false)]
-		public async Task<IActionResult> Save0309Async(ClubHandoverViewModel vm)
+		public async Task<IActionResult> Save0309(ClubHandoverViewModel vm)
 		{
 			try
 			{
 				DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
 				string HoID = dt.QueryFieldByDT("HoID");
+
+                if (vm.Handover0309Model.IsEdit != "1")
+                {
+                    ClubHandoverDocCheckModel model = dbAccess.GetHandoverDocData(HoID, "09");
+
+                    if (model != null)
+                    {
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "此表單已存在，如需調整請至「已填寫表單」編輯";
+                        return Json(vmRtn);
+                    }
+                }
+
 
                 if (Request.Form.Files.Count > 0)
 				{

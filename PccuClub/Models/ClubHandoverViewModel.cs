@@ -114,7 +114,8 @@ namespace WebPccuClub.Models
         [DisplayName("建立日期")]
         public DateTime? Created { get; set; }
 
-
+        /// <summary> 狀態 </summary>
+        public string? HandOverStatus { get; set; }
 
 
 

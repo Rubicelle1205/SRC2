@@ -171,7 +171,9 @@ namespace WebPccuClub.Controllers
         {
             ModelState.Clear();
 
-            var controller = (ControllerBase)filterContext.Controller;
+			bool isAjaxRequest = filterContext.HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+
+			var controller = (ControllerBase)filterContext.Controller;
             var controllerName = controller.ControllerContext.ActionDescriptor.ControllerName;
 			var actionName = controller.ControllerContext.ActionDescriptor.ActionName;
 			var controllerAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetCustomAttributes(typeof(LogAttribute), false);
@@ -193,9 +195,26 @@ namespace WebPccuClub.Controllers
 			}
 			else
 			{
-				if (controllerName != "ClubList" && controllerName != "WeekActivity" && controllerName != "ClubHandover")
-				{
-					filterContext.Result = AlertMsgRedirect(strConst_NoLogin, SystemMenu.GetSubUrl() + strConst_DefaultPageUrl);
+                if (controllerName != "ClubList" && controllerName != "WeekActivity" && controllerName != "ClubHandover")
+                {
+                    filterContext.Result = AlertMsgRedirect(strConst_NoLogin, SystemMenu.GetSubUrl() + strConst_DefaultPageUrl);
+                }
+                else {
+                    if (!isAjaxRequest)
+                    {
+                        if (controllerName != "ClubHandover")
+                        {
+                            filterContext.Result = AlertMsgRedirect(strConst_Timeout, SystemMenu.GetSubUrl() + strConst_LoginPageUrl);
+                        }
+                    }
+                    else
+                    {
+                        ReturnViewModel vmRtn = new ReturnViewModel();
+						vmRtn.ErrorCode = 1;
+						vmRtn.ErrorMsg = strConst_Timeout;
+
+                        filterContext.Result = Json(vmRtn);
+					}
 				}
 			}
 

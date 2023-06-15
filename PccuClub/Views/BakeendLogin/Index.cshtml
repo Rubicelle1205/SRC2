@@ -18,13 +18,13 @@
                       data-ajax-begin="SysFormLoadingStart" data-ajax-complete="SysFormLoadingEnd">
                     <div class="mb-3">
                         <label for="account" class="form-label">管理員帳號</label>
-                        <input type="text" asp-for="LoginID" value="supervisor" class="form-control" data-val="false" placeholder="請輸入管理員帳號" />
-                        @*<input type="text" asp-for="LoginID" class="form-control" data-val="false" placeholder="請輸入管理員帳號" />*@
+                        @*<input type="text" asp-for="LoginID" value="supervisor" class="form-control" data-val="false" placeholder="請輸入管理員帳號" />*@
+                        <input type="text" asp-for="LoginID" class="form-control" data-val="false" placeholder="請輸入管理員帳號" />
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">密碼</label>
-                        <input type="password" asp-for="PassWord" value=@string.Format("{0}", "Pwd6410@@") size="18" class="form-control" data-val="false" placeholder="請輸入密碼" />
-                        @*<input type="password" asp-for="PassWord" size="18" class="form-control" data-val="false" placeholder="請輸入密碼" />*@
+                        @*<input type="password" asp-for="PassWord" value=@string.Format("{0}", "Pwd6410@@") size="18" class="form-control" data-val="false" placeholder="請輸入密碼" />*@
+                        <input type="password" asp-for="PassWord" size="18" class="form-control" data-val="false" placeholder="請輸入密碼" />
                     </div>
                     <button type="submit" name="submitBtn" value="Login" class="btn btn-outline-dark w-100 mt-3">登入</button>
                     @Html.ActionLink("忘記密碼?", "ForgetPwd", "BakeendLogin", null, new { @class = "mt-3 text-secondary d-flex justify-content-center" })

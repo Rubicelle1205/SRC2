@@ -4,29 +4,38 @@
 @if (Model.HistoryResultModel.Count > 0)
 {
     <div class="pagelist pagelist-icon2">
-    @foreach (var item in Model.HistoryResultModel)
-    {
-        <div class="listItem">
-            <div class="textbox">
+        @foreach (var item in Model.HistoryResultModel)
+        {
+            <div class="listItem">
+                <div class="textbox">
                     <div class="title">@item.DocTypeText</div>
-                <div class="spec">
-                    <div class="tag">學年度：</div>
-                    <div class="content">@item.SchoolYear</div>
+                    <div class="spec">
+                        <div class="tag">學年度：</div>
+                        <div class="content">@item.SchoolYear</div>
+                    </div>
+                    <div class="spec">
+                        <div class="tag">上傳時間：</div>
+                        <div class="content">@item.Created.Value.ToString("yyyy/MM/dd")</div>
+                    </div>
                 </div>
-                <div class="spec">
-                    <div class="tag">上傳時間：</div>
-                    <div class="content">@item.Created.Value.ToString("yyyy/MM/dd")</div>
-                </div>
-            </div>
-                <a href="@Url.Action("HistorySwitch", new { id = @item.HoID, docType = item.DocType })" target="_blank" class="icon">
-                編輯 <i class="fas fa-pen"></i>
-            </a>
+                @if (item.HandOverStatus != "04")
+                {
+                    <a href="@Url.Action("HistorySwitch", new { id = @item.HoID, docType = item.DocType })" target="_blank" class="icon">
+                        編輯 <i class="fas fa-pen"></i>
+                    </a>
+                }
+                else
+                {
+                    <a href="" target="_blank" class="icon">
+                        已結案 <i class="fas fa-pen"></i>
+                    </a>
+                }
                 <a href="@Url.Action("PrintSwitch", new { id = @item.HoID, docType = item.DocType })" target="_blank" class="icon">
-                列印 <i class="fas fa-print"></i>
-            </a>
-        </div>
+                    列印 <i class="fas fa-print"></i>
+                </a>
+            </div>
 
-    }
+        }
     </div>
 }
 

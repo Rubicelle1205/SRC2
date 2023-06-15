@@ -37,8 +37,8 @@ namespace WebPccuClub.DataAccess
 
             CommandText = $@"SELECT HoID, ClubID, SchoolYear, HandOverStatus
                                FROM HandOverMain
-                              WHERE SchoolYear = @SchoolYear AND ClubID = @ClubID 
-                                {(IsApply ? " AND HandOverStatus = '01' " : "" )} ";
+                              WHERE SchoolYear = @SchoolYear AND ClubID = @ClubID
+                                {(IsApply ? " AND HandOverStatus = '01' " : " AND HandOverStatus <> '04' ")} ";
 
 			(DbExecuteInfo info, IEnumerable<ClubHandoverCheckModel> entitys) dbResult = DbaExecuteQuery<ClubHandoverCheckModel>(CommandText, parameters, true, DBAccessException);
 
@@ -235,6 +235,7 @@ namespace WebPccuClub.DataAccess
 			#region 參數設定
 			parameters.Add("@HoID", HoID);
 			parameters.Add("@HoDetailID", HoDetailID);
+			parameters.Add("@SchoolYear", vm.Handover0101Model.SchoolYear);
 			parameters.Add("@ClubID", vm.Handover0101Model.ClubID);
 			parameters.Add("@ClubName", vm.Handover0101Model.ClubName);
 			parameters.Add("@UserName", vm.Handover0101Model.UserName);
@@ -255,9 +256,9 @@ namespace WebPccuClub.DataAccess
                                                 LastModifier, 
                                                 LastModified)
                                          VALUES
-                                               (@SchoolYear,
-                                                @HoID, 
+                                               (@HoID, 
                                                 @HoDetailID,
+                                                @SchoolYear,
                                                 @ClubID, 
                                                 @ClubName, 
                                                 @UserName, 
@@ -1779,11 +1780,12 @@ namespace WebPccuClub.DataAccess
 
 			#endregion
 
-			CommandText = $@"SELECT A.HoID, A.HoDetailID, A.DocType, C.Text AS DocTypeText, B.SchoolYear, A.Created
+			CommandText = $@"SELECT A.HoID, A.HoDetailID, A.DocType, C.Text AS DocTypeText, B.HandOverStatus, B.SchoolYear, A.Created
                                FROM HandOverDocDetail A
                           LEFT JOIN HandOverMain B ON B.HoID = A.HoID
                           LEFT JOIN Code C ON C.Code = A.DocType AND C.Type = 'DocType'
-                              WHERE B.SchoolYear = @SchoolYear";
+                              WHERE B.SchoolYear = @SchoolYear 
+                           ORDER BY B.HandOverStatus, DocType ";
 
 			(DbExecuteInfo info, IEnumerable<ClubHandoverHistroyResultModel> entitys) dbResult = DbaExecuteQuery<ClubHandoverHistroyResultModel>(CommandText, parameters, true, DBAccessException);
 
