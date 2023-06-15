@@ -3,6 +3,7 @@
 @{
     Layout = "_FrontLayout";
     List<SelectListItem> LstSDGs = ViewBag.ddlAllSDGs;
+    List<string> LstEditSDGs = Model.CreateModel.SDGs != null ? Model.CreateModel.SDGs.Split(",").ToList() : null;
 }
 
 <div class="col-xxl-8">
@@ -89,11 +90,33 @@
                         <input asp-for="CreateModel.SDGs" type="hidden" />
                         @foreach (SelectListItem item in LstSDGs)
                         {
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input"
-                                       type="checkbox" id="@string.Format("SDGs_{0}", item.Value)" value="@item.Value">
-                                <label class="form-check-label" for="@string.Format("SDGs_{0}", item.Value)">@item.Text</label>
-                            </div>
+                            if (LstEditSDGs != null)
+                            {
+                                if (LstEditSDGs.Contains(item.Value))
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input"
+                                               type="checkbox" checked id="@string.Format("SDGs_{0}", item.Value)" value="@item.Value">
+                                        <label class="form-check-label" for="@string.Format("SDGs_{0}", item.Value)">@item.Text</label>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input"
+                                               type="checkbox" id="@string.Format("SDGs_{0}", item.Value)" value="@item.Value">
+                                        <label class="form-check-label" for="@string.Format("SDGs_{0}", item.Value)">@item.Text</label>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input"
+                                           type="checkbox" id="@string.Format("SDGs_{0}", item.Value)" value="@item.Value">
+                                    <label class="form-check-label" for="@string.Format("SDGs_{0}", item.Value)">@item.Text</label>
+                                </div>
+                            }
                         }
                         <div class="mt-1">
                             <a href="https://usr.moe.gov.tw/" target="_blank">（教育部大學社會責任推動中心）</a>
@@ -141,10 +164,27 @@
         });
     });
 
+    $(document).ready(function () {
+        var ActInOrOut = $('#@Html.IdFor(m => m.CreateModel.ActInOrOut)').val();
+
+        if (ActInOrOut != "") {
+            SendAjax({
+                url: '@Url.Action("GetConsentMang")',
+                data: { 'Selected': ActInOrOut },
+                success: function (result) {
+                    $("#act_loc_agree").html(result);
+                },
+                error: function (response) {
+                    $.alert(result.errorMsg);
+                }
+            });
+        }
+
+    });
+
+
 
     function SaveData() {
-
-
 
         var arrSDGs = [];
         $("input[id ^= 'SDGs_']:checked").each(function () {

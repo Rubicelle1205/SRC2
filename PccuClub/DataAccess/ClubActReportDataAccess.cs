@@ -138,7 +138,7 @@ namespace WebPccuClub.DataAccess
                                                 ,LastModified )
                                          OUTPUT Inserted.ActID
                                          VALUES
-                                                (@ActVerify
+                                                ('01'
                                                 ,@LoginId
                                                 ,GETDATE()
                                                 ,@LoginId

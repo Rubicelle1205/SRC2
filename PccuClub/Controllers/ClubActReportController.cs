@@ -65,6 +65,11 @@ namespace WebPccuClub.Controllers
             vm.CreateModel.SchoolYear = PublicFun.GetNowSchoolYear();
             vm.CreateModel.ActName = dbAccess.GetDefaultActName(LoginUser);
 
+            if (HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel") != null)
+            {
+                vm = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
+            }
+
 			return View(vm);
         }
 
@@ -164,27 +169,34 @@ namespace WebPccuClub.Controllers
 
             if (NeedUpload)
             { 
-			if (Request.Form.Files.Count > 0)
-			{
-				for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
-				{
-					if (Request.Form.Files[i].Name.Contains("OutSide"))
-					{
-						var file = Request.Form.Files[i];
+			    if (Request.Form.Files.Count > 0)
+			    {
+				    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+				    {
+					    if (Request.Form.Files[i].Name.Contains("OutSide"))
+					    {
+						    var file = Request.Form.Files[i];
 
-						string strFilePath = await upload.UploadFileAsync("ActOutSide", file);
+						    string strFilePath = await upload.UploadFileAsync("ActOutSide", file);
 
-						ActListFilesModel model = new ActListFilesModel();
-						model.FileName = file.FileName;
-						model.FilePath = strFilePath;
+						    ActListFilesModel model = new ActListFilesModel();
+						    model.FileName = file.FileName;
+						    model.FilePath = strFilePath;
 
-						vm4.CreateModel.LstOutSideFile.Add(model);
-					}
-				}
+						    vm4.CreateModel.LstOutSideFile.Add(model);
+					    }
+				    }
+			    }
+
+				vm4.CreateModel.LeaderName = vm.CreateModel.LeaderName;
+				vm4.CreateModel.LeaderTel = vm.CreateModel.LeaderTel;
+				vm4.CreateModel.LeaderPhone = vm.CreateModel.LeaderPhone;
+				vm4.CreateModel.ManagerName = vm.CreateModel.LeaderName;
+				vm4.CreateModel.ManagerTel = vm.CreateModel.ManagerTel;
+				vm4.CreateModel.ManagerPhone = vm.CreateModel.ManagerPhone;
 			}
-			}
 
-			HttpContext.Session.SetObject("MyModel", vm4);
+            HttpContext.Session.SetObject("MyModel", vm4);
 
 			ViewBag.ddlStaticOrDynamic = dbAccess.GetStaticOrDynamic();
 			ViewBag.ddlActInOrOut = dbAccess.GetActInOrOut();
@@ -205,9 +217,15 @@ namespace WebPccuClub.Controllers
         {
             return View();
         }
-        #endregion
 
-        [Log(LogActionChineseName.編輯)]
+		[Log(LogActionChineseName.新增)]
+		public async Task<IActionResult> ActFail()
+		{
+			return View();
+		}
+		#endregion
+
+		[Log(LogActionChineseName.編輯)]
         public IActionResult Edit(string id, ClubActReportViewModel vm)
         {
 
@@ -484,11 +502,9 @@ namespace WebPccuClub.Controllers
 
                 if (!dbResult.isSuccess)
                 {
-                    dbAccess.DbaRollBack();
-                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "新增失敗";
-                    return Json(vmRtn);
-                }
+					dbAccess.DbaRollBack();
+					throw new Exception("新增失敗!");
+				}
 
                 string ActId = dt.QueryFieldByDT("ActID");
                 dt.Dispose();
@@ -497,11 +513,9 @@ namespace WebPccuClub.Controllers
 
                 if (!dbResult.isSuccess)
                 {
-                    dbAccess.DbaRollBack();
-                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "新增失敗";
-                    return Json(vmRtn);
-                }
+					dbAccess.DbaRollBack();
+					throw new Exception("新增失敗!");
+				}
 
                 string ActDetailId = dt.QueryFieldByDT("ActDetailId");
                 dt.Dispose();
@@ -588,41 +602,33 @@ namespace WebPccuClub.Controllers
                 if (!dbResult.isSuccess)
                 {
                     dbAccess.DbaRollBack();
-                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "新增失敗";
-                    return Json(vmRtn);
-                }
+					throw new Exception("新增失敗!");
+					
+				}
 
                 dbResult = dbAccess.InsertOutSideData(vm, ActId, ActDetailId, LoginUser);
 
                 if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
                 {
-                    dbAccess.DbaRollBack();
-                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "新增失敗";
-                    return Json(vmRtn);
-                }
+					dbAccess.DbaRollBack();
+					throw new Exception("新增失敗!");
+				}
 
                 dbResult = dbAccess.InsertOutSideFileData(vm, ActId, ActDetailId, LoginUser);
 
                 if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
                 {
-                    dbAccess.DbaRollBack();
-                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "新增失敗";
-                    return Json(vmRtn);
-                }
-
+					dbAccess.DbaRollBack();
+					throw new Exception("新增失敗!");
+				}
 
                 dbAccess.DbaCommit();
             }
             catch (Exception ex)
             {
                 dbAccess.DbaRollBack();
-                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
-                return Json(vmRtn);
-            }
+				return RedirectToAction("ActFail");
+			}
 
             return RedirectToAction("ActFinish");
         }
