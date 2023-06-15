@@ -10,7 +10,7 @@ namespace WebPccuClub.Models
         [UIHint("_UploadFile")]
         public IFormFile? File { get; set; }
 
-        public List<ClubHandoverCheckModel> CheckModel { get; set; }
+        public ClubHandoverCheckModel CheckModel { get; set; }
 
 
         public ClubHandoverHistroyConditionModel HistoryConditionModel { get; set; }

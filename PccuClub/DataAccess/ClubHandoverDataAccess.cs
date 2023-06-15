@@ -10,6 +10,7 @@ using WebPccuClub.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NPOI.SS.Formula.Functions;
 using System.Runtime.ConstrainedExecution;
+using MathNet.Numerics.RootFinding;
 
 namespace WebPccuClub.DataAccess
 {
@@ -20,7 +21,7 @@ namespace WebPccuClub.DataAccess
 
 		#region 交接申請
 
-		public List<ClubHandoverCheckModel> GetCheckData(string LoginId, bool IsApply = false)
+		public ClubHandoverCheckModel GetCheckData(string LoginId, bool IsApply = false)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -37,15 +38,14 @@ namespace WebPccuClub.DataAccess
             CommandText = $@"SELECT HoID, ClubID, SchoolYear, HandOverStatus
                                FROM HandOverMain
                               WHERE SchoolYear = @SchoolYear AND ClubID = @ClubID 
-                                {(IsApply ? "" : " AND HandOverStatus<> '01' " )} ";
+                                {(IsApply ? " AND HandOverStatus = '01' " : "" )} ";
 
+			(DbExecuteInfo info, IEnumerable<ClubHandoverCheckModel> entitys) dbResult = DbaExecuteQuery<ClubHandoverCheckModel>(CommandText, parameters, true, DBAccessException);
 
-            (DbExecuteInfo info, IEnumerable<ClubHandoverCheckModel> entitys) dbResult = DbaExecuteQuery<ClubHandoverCheckModel>(CommandText, parameters, true, DBAccessException);
+			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+				return dbResult.entitys.ToList().FirstOrDefault();
 
-            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
-                return dbResult.entitys.ToList();
-
-            return new List<ClubHandoverCheckModel>();
+            return null;
         }
 
         /// <summary> 交接申請 </summary>
@@ -134,6 +134,25 @@ namespace WebPccuClub.DataAccess
 
 				ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 			}
+
+			return ExecuteResult;
+		}
+
+
+		public DbExecuteInfo UpdateHandoverMain(ClubHandoverViewModel vm)
+		{
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+
+			string CommendText = string.Empty;
+
+			#region 參數設定
+			parameters.Add("@HoID", vm.CheckModel.HoID);
+			#endregion 參數設定
+
+			CommendText = $@"UPDATE HandOverMain SET HandOverStatus = '04' WHERE HoID = @HoID";
+
+			ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
 			return ExecuteResult;
 		}
@@ -2012,6 +2031,7 @@ namespace WebPccuClub.DataAccess
 
 			return new List<SelectListItem>();
 		}
+
 
 		#endregion
 

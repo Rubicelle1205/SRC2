@@ -54,7 +54,7 @@ namespace WebPccuClub.Controllers
 			{
 				vm.CheckModel = dbAccess.GetCheckData(LoginUser.LoginId, true);
 
-				if (vm.CheckModel != null && vm.CheckModel.Count > 0)
+				if (vm.CheckModel != null)
 				{
 					dbAccess.DbaRollBack();
 					vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
@@ -97,20 +97,31 @@ namespace WebPccuClub.Controllers
 			try
 			{
 				dbAccess.DbaInitialTransaction();
+				string NewLeaderSNO = string.Empty;
 
-				vm.CheckModel = dbAccess.GetCheckData(LoginUser.LoginId, true);
+				vm.CheckModel = dbAccess.GetCheckData(LoginUser.LoginId, false);
 
-				if (vm.CheckModel != null && vm.CheckModel.Count > 0)
+				if (vm.CheckModel != null)
 				{
-					string SchoolYear = vm.CheckModel[0].SchoolYear;
+					string SchoolYear = vm.CheckModel.SchoolYear;
 
 					//先取得交接的學生學號
-					string NewLeaderSNO = dbAccess.GetNewLeader(LoginUser.LoginId, SchoolYear);
+					NewLeaderSNO = dbAccess.GetNewLeader(LoginUser.LoginId, SchoolYear);
 
 					if (!string.IsNullOrEmpty(NewLeaderSNO))
 					{
 						//更新ClubUser
 						var dbResult = dbAccess.UpdateUserClub(LoginUser.LoginId, NewLeaderSNO);
+
+						if (!dbResult.isSuccess)
+						{
+							dbAccess.DbaRollBack();
+							vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+							vmRtn.ErrorMsg = "更新失敗";
+							return Json(vmRtn);
+						}
+
+						dbResult = dbAccess.UpdateHandoverMain(vm);
 
 						if (!dbResult.isSuccess)
 						{
@@ -136,6 +147,7 @@ namespace WebPccuClub.Controllers
 				}
 
 				dbAccess.DbaCommit();
+				vmRtn.ErrorMsg = "已成功將社長交接至 " + NewLeaderSNO;
 			}
 			catch (Exception ex)
 			{
@@ -144,6 +156,8 @@ namespace WebPccuClub.Controllers
 				vmRtn.ErrorMsg = "更新失敗" + ex.Message;
 				return Json(vmRtn);
 			}
+
+			
 
 			return Json(vmRtn);
 		}
