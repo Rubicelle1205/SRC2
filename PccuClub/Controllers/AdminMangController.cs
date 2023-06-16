@@ -105,8 +105,8 @@ namespace WebPccuClub.Controllers
                 dbAccess.DbaInitialTransaction();
 
                 string EncryptPw = String.Empty;
-                if (!string.IsNullOrEmpty(vm.CreateModel.Password))
-                    EncryptPw = auth.EncryptionText(vm.CreateModel.Password);
+                if (!string.IsNullOrEmpty(vm.CreateModel.Pwd))
+                    EncryptPw = auth.EncryptionText(vm.CreateModel.Pwd);
 
                 var dbResult = dbAccess.InsertData(vm, LoginUser, EncryptPw);
 
@@ -160,8 +160,8 @@ namespace WebPccuClub.Controllers
                 dbAccess.DbaInitialTransaction();
 
                 string EncryptPw = String.Empty;
-                if (!string.IsNullOrEmpty(vm.EditModel.Password))
-                    EncryptPw = auth.EncryptionText(vm.EditModel.Password);
+                if (!string.IsNullOrEmpty(vm.EditModel.Pwd))
+                    EncryptPw = auth.EncryptionText(vm.EditModel.Pwd);
 
                 var dbResult = dbAccess.UpdateData(vm, LoginUser, EncryptPw);
 

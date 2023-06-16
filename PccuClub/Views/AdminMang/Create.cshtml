@@ -54,13 +54,13 @@
                                     </tr>
                                     <tr>
                                         <th width="15%">
-                                            @Html.LabelFor(m => m.CreateModel.Password)
+                                            @Html.LabelFor(m => m.CreateModel.Pwd)
                                             <br />
                                             <span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
                                         </th>
                                         <td>
                                             <div class="input-group">
-                                                @Html.PasswordFor(m => m.CreateModel.Password, new {@class="form-control", placeholder="請輸入密碼"})
+                                                @Html.PasswordFor(m => m.CreateModel.Pwd, new {@class="form-control", placeholder="請輸入密碼"})
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="pwvisible1"><i class="fa-solid fa-eye-slash"></i></span>
                                                 </div>
@@ -69,13 +69,13 @@
                                     </tr>
                                     <tr>
                                         <th width="15%">
-                                            @Html.LabelFor(m => m.CreateModel.ConformPassword)
+                                            @Html.LabelFor(m => m.CreateModel.ConformPwd)
                                             <br />
                                             <span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
                                         </th>
                                         <td>
                                             <div class="input-group">
-                                                @Html.PasswordFor(m => m.CreateModel.ConformPassword, new {@class="form-control", placeholder="請再輸入一次密碼"})
+                                                @Html.PasswordFor(m => m.CreateModel.ConformPwd, new {@class="form-control", placeholder="請再輸入一次密碼"})
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="pwvisible2"><i class="fa-solid fa-eye-slash"></i></span>
                                                 </div>
@@ -135,8 +135,8 @@
         var UserName = $('#@Html.IdFor(m => m.CreateModel.UserName)').val();
         var LoginId = $('#@Html.IdFor(m => m.CreateModel.LoginId)').val();
         var EMail = $('#@Html.IdFor(m => m.CreateModel.EMail)').val();
-        var Password = $('#@Html.IdFor(m => m.CreateModel.Password)').val();
-        var ConformPassword = $('#@Html.IdFor(m => m.CreateModel.ConformPassword)').val();
+        var Pwd = $('#@Html.IdFor(m => m.CreateModel.Pwd)').val();
+        var ConformPwd = $('#@Html.IdFor(m => m.CreateModel.ConformPwd)').val();
         var Memo = $('#@Html.IdFor(m => m.CreateModel.Memo)').val();
 
         if (Enable == "") {
@@ -163,16 +163,16 @@
             $.alert("管理者信箱不可為空");
             return;
         }
-        if (Password == "") {
+        if (Pwd == "") {
             $.alert("密碼不可為空");
             return;
         }
-        if (ConformPassword == "") {
+        if (ConformPwd == "") {
             $.alert("確認密碼不可為空");
             return;
         }
 
-        if(Password != ConformPassword){
+        if (Pwd != ConformPwd) {
             $.alert("密碼與確認密碼需相符");
             return;
         }
@@ -183,7 +183,7 @@
         data.append('@Html.NameFor(m => m.CreateModel.UserName)', UserName);
         data.append('@Html.NameFor(m => m.CreateModel.LoginId)', LoginId);
         data.append('@Html.NameFor(m => m.CreateModel.EMail)', EMail);
-        data.append('@Html.NameFor(m => m.CreateModel.Password)', Password);
+        data.append('@Html.NameFor(m => m.CreateModel.Pwd)', Pwd);
         data.append('@Html.NameFor(m => m.CreateModel.Memo)', Memo);
 
         SendAjax({
