@@ -41,13 +41,13 @@
                                     </tr>
                                     <tr>
                                         <th width="15%">
-                                            @Html.LabelFor(m => m.EditModel.Password)
+                                            @Html.LabelFor(m => m.EditModel.Pwd)
                                             <br />
                                             <span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
                                         </th>
                                         <td>
                                             <div class="input-group">
-                                                @Html.PasswordFor(m => m.EditModel.Password, new {@class="form-control", placeholder="請輸入密碼"})
+                                                @Html.PasswordFor(m => m.EditModel.Pwd, new {@class="form-control", placeholder="請輸入密碼"})
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="pwvisible1"><i class="fa-solid fa-eye-slash"></i></span>
                                                 </div>
@@ -56,13 +56,13 @@
                                     </tr>
                                     <tr>
                                         <th width="15%">
-                                            @Html.LabelFor(m => m.EditModel.ConformPassword)
+                                            @Html.LabelFor(m => m.EditModel.ConformPwd)
                                             <br />
                                             <span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
                                         </th>
                                         <td>
                                             <div class="input-group">
-                                                @Html.PasswordFor(m => m.EditModel.ConformPassword, new {@class="form-control", placeholder="請再輸入一次密碼"})
+                                                @Html.PasswordFor(m => m.EditModel.ConformPwd, new {@class="form-control", placeholder="請再輸入一次密碼"})
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="pwvisible2"><i class="fa-solid fa-eye-slash"></i></span>
                                                 </div>
@@ -107,8 +107,8 @@
 
         var data = new FormData()
         var EMail = $('#@Html.IdFor(m => m.EditModel.EMail)').val();
-        var pw = $('#@Html.IdFor(m => m.EditModel.Password)').val();
-        var cpw = $('#@Html.IdFor(m => m.EditModel.ConformPassword)').val();
+        var pw = $('#@Html.IdFor(m => m.EditModel.Pwd)').val();
+        var cpw = $('#@Html.IdFor(m => m.EditModel.ConformPwd)').val();
 
         if (EMail == "") {
             $.alert("信箱不可為空");
@@ -123,8 +123,8 @@
 
 
         data.append('@Html.NameFor(m => m.EditModel.EMail)', EMail);
-        data.append('@Html.NameFor(m => m.EditModel.Password)', pw);
-        data.append('@Html.NameFor(m => m.EditModel.ConformPassword)', cpw);
+        data.append('@Html.NameFor(m => m.EditModel.Pwd)', pw);
+        data.append('@Html.NameFor(m => m.EditModel.ConformPwd)', cpw);
 
         SendAjax({
             url: '@Url.Action("EditOldData")',

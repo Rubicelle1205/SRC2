@@ -134,11 +134,11 @@ namespace WebPccuClub.Models
 
         /// <summary>密碼</summary>
         [DisplayName("密碼")]
-        public string? Password { get; set; }
+        public string? Pwd { get; set; }
 
         /// <summary>密碼</summary>
         [DisplayName("密碼")]
-        public string? ConformPassword { get; set; }
+        public string? ConformPwd { get; set; }
 
         /// <summary>角色</summary>
         [DisplayName("角色")]
@@ -214,11 +214,11 @@ namespace WebPccuClub.Models
 
         /// <summary>密碼</summary>
         [DisplayName("密碼")]
-        public string? Password { get; set; }
+        public string? Pwd { get; set; }
 
         /// <summary>密碼</summary>
         [DisplayName("密碼")]
-        public string? ConformPassword { get; set; }
+        public string? ConformPwd { get; set; }
 
         /// <summary>角色</summary>
         [DisplayName("角色")]

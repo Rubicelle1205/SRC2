@@ -11,7 +11,7 @@ namespace WebPccuClub.Models
         public string LoginID { get; set; }
 
         /// <summary> 使用者密碼 </summary>
-        public string PassWord { get; set; }
+        public string Pwd { get; set; }
 
     }
 }

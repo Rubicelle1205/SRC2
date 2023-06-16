@@ -27,13 +27,13 @@
                                     </tr>
                                     <tr>
                                         <th width="15%">
-                                            @Html.LabelFor(m => m.CreateModel.Password)
+                                            @Html.LabelFor(m => m.CreateModel.Pwd)
                                             <br />
                                             <span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
                                         </th>
                                         <td>
                                             <div class="input-group">
-                                                @Html.PasswordFor(m => m.CreateModel.Password, new {@class="form-control", placeholder="請輸入密碼"})
+                                                @Html.PasswordFor(m => m.CreateModel.Pwd, new {@class="form-control", placeholder="請輸入密碼"})
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="pwvisible1"><i class="fa-solid fa-eye-slash"></i></span>
                                                 </div>
@@ -42,13 +42,13 @@
                                     </tr>
                                     <tr>
                                         <th width="15%">
-                                            @Html.LabelFor(m => m.CreateModel.ConformPassword)
+                                            @Html.LabelFor(m => m.CreateModel.ConformPwd)
                                             <br />
                                             <span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
                                         </th>
                                         <td>
                                             <div class="input-group">
-                                                @Html.PasswordFor(m => m.CreateModel.ConformPassword, new {@class="form-control", placeholder="請再輸入一次密碼"})
+                                                @Html.PasswordFor(m => m.CreateModel.ConformPwd, new {@class="form-control", placeholder="請再輸入一次密碼"})
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="pwvisible2"><i class="fa-solid fa-eye-slash"></i></span>
                                                 </div>
@@ -183,8 +183,8 @@
         var data = new FormData()
 
         var ClubId = $('#@Html.IdFor(m => m.CreateModel.ClubId)').val();
-        var pw = $('#@Html.IdFor(m => m.CreateModel.Password)').val();
-        var cpw = $('#@Html.IdFor(m => m.CreateModel.ConformPassword)').val();
+        var pw = $('#@Html.IdFor(m => m.CreateModel.Pwd)').val();
+        var cpw = $('#@Html.IdFor(m => m.CreateModel.ConformPwd)').val();
         var RoleId = $('#@Html.IdFor(m => m.CreateModel.RoleId)').val();
         var SchoolYear = $('#@Html.IdFor(m => m.CreateModel.SchoolYear)').val();
         var ClubCName = $('#@Html.IdFor(m => m.CreateModel.ClubCName)').val();
@@ -271,8 +271,8 @@
         }
 
         data.append('@Html.NameFor(m => m.CreateModel.ClubId)', ClubId);
-        data.append('@Html.NameFor(m => m.CreateModel.Password)', pw);
-        data.append('@Html.NameFor(m => m.CreateModel.ConformPassword)', cpw);
+        data.append('@Html.NameFor(m => m.CreateModel.Pwd)', pw);
+        data.append('@Html.NameFor(m => m.CreateModel.ConformPwd)', cpw);
         data.append('@Html.NameFor(m => m.CreateModel.RoleId)', RoleId);
         data.append('@Html.NameFor(m => m.CreateModel.SchoolYear)', SchoolYear);
         data.append('@Html.NameFor(m => m.CreateModel.ClubCName)', ClubCName);

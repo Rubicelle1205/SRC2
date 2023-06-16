@@ -40,8 +40,8 @@ namespace WebPccuClub.Controllers
                 dbAccess.DbaInitialTransaction();
                 string EncryptPw = String.Empty;
                 
-                if (!string.IsNullOrEmpty(vm.EditModel.Password))
-                    EncryptPw = auth.EncryptionText(vm.EditModel.Password);
+                if (!string.IsNullOrEmpty(vm.EditModel.Pwd))
+                    EncryptPw = auth.EncryptionText(vm.EditModel.Pwd);
 
                 var dbResult = dbAccess.UpdatePersonalData(EncryptPw, vm.EditModel, LoginUser);
 
@@ -70,18 +70,18 @@ namespace WebPccuClub.Controllers
         {
             msg = string.Empty;
 
-            if (!string.IsNullOrEmpty(editModel.Password))
+            if (!string.IsNullOrEmpty(editModel.Pwd))
             {
-                if (editModel.Password != editModel.ConformPassword)
+                if (editModel.Pwd != editModel.ConformPwd)
                     msg += "請確認密碼與密碼確認輸入的資料相等!<br/>";
 
-                if (6 > editModel.Password.Length || 15 < editModel.Password.Length)
+                if (6 > editModel.Pwd.Length || 15 < editModel.Pwd.Length)
                     msg += "密碼長度錯誤!<br/>";
 
-                if (!editModel.Password.HasNumber())
+                if (!editModel.Pwd.HasNumber())
                     msg += "密碼需包含至少一個數字!<br/>";
 
-                if (!editModel.Password.HasUpperText() && !editModel.Password.HasLowerText())
+                if (!editModel.Pwd.HasUpperText() && !editModel.Pwd.HasLowerText())
                     msg += "至少包含一大寫或小寫英文字母!<br/>";
             }
 

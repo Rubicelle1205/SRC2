@@ -28,9 +28,9 @@ namespace WebPccuClub.Models
         public string? LoginId { get; set; }
 
         [DisplayName("密碼")]
-        public string? Password { get; set; }
+        public string? Pwd { get; set; }
 
         [DisplayName("密碼確認")]
-        public string? ConformPassword { get; set; }
+        public string? ConformPwd { get; set; }
     }
 }

@@ -132,7 +132,7 @@ namespace WebPccuClub.Controllers
 
                 bool isAuth = false;
 
-                isAuth = auth.Login(vm.LoginID, vm.PassWord, out UserInfo LoginUser, "F");
+                isAuth = auth.Login(vm.LoginID, vm.Pwd, out UserInfo LoginUser, "F");
                 if (!isAuth)
                 {
                     user.ErrorCount += 1;
@@ -186,7 +186,7 @@ namespace WebPccuClub.Controllers
             if (string.IsNullOrEmpty(vm.LoginID))
             { ValidMsg.Add("請輸入帳號!"); }
 
-            if (string.IsNullOrEmpty(vm.PassWord))
+            if (string.IsNullOrEmpty(vm.Pwd))
             { ValidMsg.Add("請輸入密碼!"); }
 
             if (ValidMsg.Count > 0)
