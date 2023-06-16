@@ -202,18 +202,21 @@ namespace WebPccuClub.Controllers
                 else {
                     if (!isAjaxRequest)
                     {
-                        if (controllerName != "ClubHandover")
+                        if (controllerName != "ClubList" && controllerName != "WeekActivity" && controllerName != "ClubHandover")
                         {
                             filterContext.Result = AlertMsgRedirect(strConst_Timeout, SystemMenu.GetSubUrl() + strConst_LoginPageUrl);
                         }
                     }
                     else
                     {
-                        ReturnViewModel vmRtn = new ReturnViewModel();
-						vmRtn.ErrorCode = 1;
-						vmRtn.ErrorMsg = strConst_Timeout;
+                        if (controllerName != "ClubList" && controllerName != "WeekActivity" && controllerName != "ClubHandover")
+                        {
+                            ReturnViewModel vmRtn = new ReturnViewModel();
+                            vmRtn.ErrorCode = 1;
+                            vmRtn.ErrorMsg = strConst_Timeout;
 
-                        filterContext.Result = Json(vmRtn);
+                            filterContext.Result = Json(vmRtn);
+                        }
 					}
 				}
 			}
