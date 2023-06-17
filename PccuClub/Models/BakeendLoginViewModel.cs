@@ -14,5 +14,8 @@ namespace WebPccuClub.Models
         public string Pwd { get; set; }
 
         public string Mail { get; set; }
+
+        /// <summary> 驗證碼 </summary>
+        public string Captcha { get; set; }
     }
 }

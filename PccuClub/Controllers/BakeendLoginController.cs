@@ -8,6 +8,7 @@ using WebPccuClub.Entity;
 using WebPccuClub.DataAccess;
 using WebPccuClub.Global.Extension;
 using Utility;
+using WebPccuClub.Global;
 
 namespace WebPccuClub.Controllers
 {
@@ -16,6 +17,22 @@ namespace WebPccuClub.Controllers
         private LoginDataAccess dbAccess = new LoginDataAccess();
         public List<string> AlertMsg = new List<string>();
         AuthManager auth = new AuthManager();
+
+        /// <summary> 驗證碼 </summary>
+        public string CaptchaCode
+        {
+            get
+            {
+                if (TempData["SysLoginAuthValidateCode"] != null)
+                { return TempData["SysLoginAuthValidateCode"]?.ToString(); }
+
+                return string.Empty;
+            }
+            set
+            {
+                TempData["SysLoginAuthValidateCode"] = value;
+            }
+        }
 
         /// <summary> 功能首頁 </summary>
         public IActionResult Index()
@@ -49,9 +66,22 @@ namespace WebPccuClub.Controllers
                     throw new Exception("登入失敗，帳號不存在!");
                 }
 
+
                 bool isAuth = false;
 
+#if DEBUG
                 isAuth = auth.Login(vm.LoginID, vm.Pwd, out UserInfo LoginUser, "B");
+#else
+                if (vm.Captcha != CaptchaCode)
+                {
+                    user.ErrorCount += 1;
+                    loginEntity.Memo = "驗證碼錯誤";
+                    throw new Exception("登入失敗，驗證碼錯誤!");
+                }
+                isAuth = auth.Login(vm.LoginID, vm.Pwd, out UserInfo LoginUser, "B");
+#endif
+
+
                 if (!isAuth)
                 {
                     user.ErrorCount += 1;
@@ -212,6 +242,23 @@ namespace WebPccuClub.Controllers
         {
             DbExecuteInfo dbResult = dbAccess.UpdateEntity(user);
             return dbResult.isSuccess;
+        }
+
+        /// <summary> 取得驗證碼 </summary>
+        public IActionResult GetCaptcha()
+        {
+            try
+            {
+                string ValCode = ValidateCodeUtil.GetValidCode(4, 1);
+                CaptchaCode = ValCode;
+
+                byte[] ms = ValidateCodeUtil.GetImageByte(ValCode);
+                return File(ms, "image/png");
+            }
+            catch (Exception)
+            {
+                return File(new byte[1], "image/png");
+            }
         }
 
         #endregion

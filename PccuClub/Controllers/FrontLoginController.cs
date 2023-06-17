@@ -25,6 +25,21 @@ namespace WebPccuClub.Controllers
 
         Utility.AuthUtil SSOAuth = new AuthUtil();
 
+        public string CaptchaCode
+        {
+            get
+            {
+                if (TempData["SysLoginAuthValidateCode"] != null)
+                { return TempData["SysLoginAuthValidateCode"]?.ToString(); }
+
+                return string.Empty;
+            }
+            set
+            {
+                TempData["SysLoginAuthValidateCode"] = value;
+            }
+        }
+
         /// <summary> SSO登入 </summary>
         public async Task<IActionResult> Index(string guid)
         {
@@ -132,7 +147,18 @@ namespace WebPccuClub.Controllers
 
                 bool isAuth = false;
 
+#if DEBUG
                 isAuth = auth.Login(vm.LoginID, vm.Pwd, out UserInfo LoginUser, "F");
+#else
+                if (vm.Captcha != CaptchaCode)
+                {
+                    user.ErrorCount += 1;
+                    loginEntity.Memo = "驗證碼錯誤";
+                    throw new Exception("登入失敗，驗證碼錯誤!");
+                }
+                isAuth = auth.Login(vm.LoginID, vm.Pwd, out UserInfo LoginUser, "F");
+#endif
+
                 if (!isAuth)
                 {
                     user.ErrorCount += 1;
@@ -176,6 +202,23 @@ namespace WebPccuClub.Controllers
             FrontLoginViewModel vm = new FrontLoginViewModel();
 
             return View("Index", vm);
+        }
+
+        /// <summary> 取得驗證碼 </summary>
+        public IActionResult GetCaptcha()
+        {
+            try
+            {
+                string ValCode = ValidateCodeUtil.GetValidCode(4, 1);
+                CaptchaCode = ValCode;
+
+                byte[] ms = ValidateCodeUtil.GetImageByte(ValCode);
+                return File(ms, "image/png");
+            }
+            catch (Exception)
+            {
+                return File(new byte[1], "image/png");
+            }
         }
 
         #region 登入相關

@@ -25,6 +25,20 @@
                     <label for="">密碼</label>
                     <input type="password" asp-for="Pwd" size="18" class="form-control" data-val="false" placeholder="請輸入密碼" />
                 </div>
+                <div class="form-group">
+                    <label class="control-label">驗證碼</label>
+                    <div class="form-box">
+                        @Html.TextBoxFor(model => model.Captcha, new { @class = "form-control", @placeholder = "請輸入驗證碼" })
+                    </div>
+                </div>
+                <div class="form-group captcha">
+                    <div class="captcha-box">
+                        <div class="captcha">
+                            <img class="imgChk" id="imgChkCode" src="" width="122" height="36">
+                        </div>
+                        <button id="reCaptcha" type="button" class="btn-regenerate-captcha">重新產生驗證碼</button>
+                    </div>
+                </div>
                 <div class="d-grid gap-2 mb-1">
                     <button type="submit" name="submitBtn" value="Login" class="submit-btn btn btn-modern btn-primary box-shadow-6 border-0">登入</button>
                 </div>
@@ -32,3 +46,16 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript" lang="javascript">
+
+    $(function () {
+        $("#imgChkCode").attr('src', '@Url.Action("GetCaptcha","FrontLogin")')
+
+        $('#reCaptcha').click(function () {
+            var ImgUrl = '@Url.Action("GetCaptcha","FrontLogin")' + "?t=" + new Date().getTime();
+            $('#imgChkCode').attr('src', ImgUrl);
+        });
+    });
+
+</script>
