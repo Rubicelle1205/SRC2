@@ -384,7 +384,7 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
             #region 參數設定
             #endregion
 
-            CommandText = @"SELECT MenuNode AS VALUE, MenuName AS TEXT FROM SystemMenu WHERE MenuUpNode <> '-1' ";
+            CommandText = @"SELECT MenuNode AS VALUE, MenuName AS TEXT FROM SystemMenu WHERE MenuUpNode <> '-1'";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
@@ -392,6 +392,26 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
                 return dbResult.entitys.ToList();
 
             return new List<SelectListItem>();
+        }
+
+        public List<FunSelectedItem> GetAllFunInfo2()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT MenuNode AS VALUE, MenuName AS TEXT, BackOrFront AS [GROUP] FROM SystemMenu WHERE MenuUpNode <> '-1'";
+
+            (DbExecuteInfo info, IEnumerable<FunSelectedItem> entitys) dbResult = DbaExecuteQuery<FunSelectedItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<FunSelectedItem>();
         }
 
         public List<SelectListItem> GetAllLifeClass()

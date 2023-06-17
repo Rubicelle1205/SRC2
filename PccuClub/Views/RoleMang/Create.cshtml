@@ -2,7 +2,9 @@
 
 @{
     Layout = "_BackendLayout";
-    var LstAllFunInfo = ViewBag.ddlFunInfo;
+    List<FunSelectedItem> LstAllFunInfo = ViewBag.ddlFunInfo;
+    List<FunSelectedItem> FList = LstAllFunInfo.Where(x => x.Group == "F").ToList();
+    List<FunSelectedItem> BList = LstAllFunInfo.Where(x => x.Group == "B").ToList();
 }
 
 <!-- Main content -->
@@ -36,27 +38,37 @@
                                     <tr>
                                         <th width="15%">權限<span class="required">*</span></th>
                                         <td>
-                                                <div class="row p-2">
-                                                @foreach (SelectListItem item in LstAllFunInfo)
-                                                {
-                                                    @if (Model.CreateModel.LstFunItem.Any(x => x.Value == item.Value))
-                                                    {
-                                                        <div class="col-md-3 custom-control custom-checkbox">
-                                                            <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                       type="checkbox" id="@item.Value" value="@item.Value" checked>
-                                                            <label class="custom-control-label" for="@item.Value">@item.Text</label>
-                                                        </div>
-                                                    }
-                                                    else
-                                                    {
-                                                        <div class="col-md-3 custom-control custom-checkbox">
-                                                            <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                       type="checkbox" id="@item.Value" value="@item.Value">
-                                                            <label class="custom-control-label" for="@item.Value">@item.Text</label>
-                                                        </div>
-                                                    }
-                                                }
+                                            <div class="row p-2">
+
+                                                <div style="width:100%;">
+                                                    <div style="width:100%; font-size: larger;">前台功能</div>
+                                                    <div style="width:100%; display:flex; flex-flow: wrap;">
+                                                        @foreach (FunSelectedItem item in FList)
+                                                        {
+                                                            <div class="col-md-3 custom-control custom-checkbox">
+                                                                <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                                       type="checkbox" id="@item.Value" value="@item.Value">
+                                                                <label class="custom-control-label" for="@item.Value">@item.Text</label>
+                                                            </div>
+                                                        }
+                                                    </div>
                                                 </div>
+
+                                                <div style="width:100%; margin-top: 1em;">
+                                                    <div style="width:100%; font-size: larger;">後台功能</div>
+                                                    <div style="width:100%; display:flex; flex-flow: wrap;">
+                                                        @foreach (FunSelectedItem item in BList)
+                                                        {
+                                                            <div class="col-md-3 custom-control custom-checkbox">
+                                                                <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                                       type="checkbox" id="@item.Value" value="@item.Value">
+                                                                <label class="custom-control-label" for="@item.Value">@item.Text</label>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>

@@ -47,7 +47,7 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public IActionResult Create()
         {
-            ViewBag.ddlFunInfo = dbAccess.GetAllFunInfo();
+            ViewBag.ddlFunInfo = dbAccess.GetAllFunInfo2();
 
             RoleMangViewModel vm = new RoleMangViewModel();
             vm.CreateModel = new RoleMangCreateModel();
@@ -60,7 +60,7 @@ namespace WebPccuClub.Controllers
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
-            ViewBag.ddlFunInfo = dbAccess.GetAllFunInfo();
+            ViewBag.ddlFunInfo = dbAccess.GetAllFunInfo2();
 
             vm.EditModel = dbAccess.GetEditData(submitBtn);
             vm.EditModel.LstFunItem = dbAccess.GetUserFunInfo(vm.EditModel.RoleId);

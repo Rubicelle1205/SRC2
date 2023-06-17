@@ -144,4 +144,11 @@ namespace WebPccuClub.Models
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm:ss}")]
         public DateTime? LastModified { get; set; }
     }
+
+    public class FunSelectedItem
+    { 
+        public string Value { get; set; }
+        public string Text { get; set; }
+        public string Group { get; set; }
+    }
 }
