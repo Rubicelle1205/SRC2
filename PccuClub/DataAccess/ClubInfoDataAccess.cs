@@ -337,6 +337,10 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@Participants", vm.ClubScheduleEditModel.Participants);
             parameters.Add("@Support", vm.ClubScheduleEditModel.Support);
             parameters.Add("@Satisfaction", vm.ClubScheduleEditModel.Satisfaction);
+
+            if(!string.IsNullOrEmpty(vm.ClubScheduleEditModel.Attachment))
+                parameters.Add("@Attachment", vm.ClubScheduleEditModel.Attachment);
+    
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
@@ -351,9 +355,15 @@ namespace WebPccuClub.DataAccess
                                            ,Participants = @Participants
                                            ,Support = @Support
                                            ,Satisfaction = @Satisfaction
+                                            %Attachment%
                                            ,LastModifier = @LoginId 
                                            ,LastModified = GETDATE() 
                                      WHERE CScheID = @CScheID";
+
+            if (!string.IsNullOrEmpty(vm.ClubScheduleEditModel.Attachment))
+                CommendText = CommendText.Replace("%Attachment%", ",Attachment = @Attachment");
+            else
+                CommendText = CommendText.Replace("%Attachment%", "");
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -380,6 +390,7 @@ namespace WebPccuClub.DataAccess
                                                 Budget, 
                                                 BookingPlace, 
                                                 ShortDesc, 
+                                                ActHoldType, 
                                                 Creator, 
                                                 Created, 
                                                 LastModifier, 
@@ -394,6 +405,7 @@ namespace WebPccuClub.DataAccess
                                                 @Budget, 
                                                 @BookingPlace, 
                                                 @ShortDesc, 
+                                                @ActHoldType, 
                                                '{LoginUser.LoginId}', 
                                                GETDATE(), 
                                                '{LoginUser.LoginId}', 

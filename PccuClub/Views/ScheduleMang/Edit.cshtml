@@ -165,8 +165,10 @@
         var Attachment = $('#@Html.IdFor(m => m.EditModel.Attachment)')[0].files[0];
         if (typeof Attachment !== 'undefined') {
             var fileExtension = Attachment.name.split('.').pop().toLowerCase();
-
-            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                .doc,.docx,.odt,.pdf,.jpg,.jpeg., png
+            if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'odt' &&
+                fileExtension !== 'pdf' && fileExtension !== 'jpg' && fileExtension !== 'jpeg' &&
+                fileExtension !== 'png') {
                 $.alert("檔案類型不符合");
                 return;
             }
