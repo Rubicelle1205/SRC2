@@ -31,7 +31,7 @@
                                     <tr>
                                         <th width="15%">學年度<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.Handover0102Model.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇", new {@class = "form-control"})
+                                            @Html.DropDownListFor(m => m.Handover0103Model.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇", new {@class = "form-control"})
                                         </td>
                                     </tr>
                                     <tr>
@@ -144,13 +144,10 @@
                                 <td colspan="2" class="table-secondary font-weight-bold">檢核項目</td>
                                 <tr>
                                     <th width="15%">
-                                        成績單<span class="required">*</span><span class="mx-1"
-                                                                                data-toggle="tooltip"
-                                                                                data-bs-placement="top"
-                                                                                title=""
-                                                                                data-original-title="無限制檔案類型">
-                                            <i class="fa-regular fa-circle-question"
-                                               aria-hidden="true"></i><br /><span class="text-xs text-danger font-weight-normal">成績單請以連同本表以附件檢附，應為正本向學校申請之有效文件。</span>
+                                        成績單<span class="required">*</span>
+                                            <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                            <br />
+                                               <span class="text-xs text-danger font-weight-normal">成績單請以連同本表以附件檢附，應為正本向學校申請之有效文件。</span>
                                         </span>
                                     </th>
                                     <td>

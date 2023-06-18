@@ -6,6 +6,7 @@ using NPOI.XSSF.Streaming.Values;
 using NPOI.XSSF.UserModel;
 using NPOI.XWPF.UserModel;
 using NuGet.DependencyResolver;
+using PccuClub.WebAuth;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
@@ -14,6 +15,7 @@ using System.Web.Mvc;
 using Utility;
 using WebPccuClub.DataAccess;
 using WebPccuClub.Global;
+using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
@@ -408,11 +410,15 @@ namespace WebPccuClub.Controllers
 		[Log(LogActionChineseName.列印)]
 		public IActionResult Print0101(string id)
         {
-			DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
-			string HoID = dt.QueryFieldByDT("HoID");
+			string HoID = string.Empty;
 
-			if (!string.IsNullOrEmpty(id))
+            if (!string.IsNullOrEmpty(id))
 				HoID = id;
+			else
+			{
+                DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
+                HoID = dt.QueryFieldByDT("HoID");
+            }
 
 			ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0101Model = dbAccess.GetHandover0101Data(HoID, LoginUser);
@@ -550,11 +556,15 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.列印)]
         public IActionResult Print0102(string id)
         {
-            DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
-            string HoID = dt.QueryFieldByDT("HoID");
+            string HoID = string.Empty;
 
             if (!string.IsNullOrEmpty(id))
                 HoID = id;
+            else
+            {
+                DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
+                HoID = dt.QueryFieldByDT("HoID");
+            }
 
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0102Model = dbAccess.GetHandover0102Data(HoID, LoginUser);
@@ -687,11 +697,15 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.列印)]
         public IActionResult Print0103(string id)
         {
-            DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
-            string HoID = dt.QueryFieldByDT("HoID");
+            string HoID = string.Empty;
 
             if (!string.IsNullOrEmpty(id))
                 HoID = id;
+            else
+            {
+                DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
+                HoID = dt.QueryFieldByDT("HoID");
+            }
 
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0103Model = dbAccess.GetHandover0103Data(HoID, LoginUser);
@@ -814,13 +828,17 @@ namespace WebPccuClub.Controllers
 		[Log(LogActionChineseName.列印)]
 		public IActionResult Print0204(string id)
 		{
-			DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
-			string HoID = dt.QueryFieldByDT("HoID");
+            string HoID = string.Empty;
 
-			if (!string.IsNullOrEmpty(id))
-				HoID = id;
+            if (!string.IsNullOrEmpty(id))
+                HoID = id;
+            else
+            {
+                DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
+                HoID = dt.QueryFieldByDT("HoID");
+            }
 
-			ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0204Model = dbAccess.GetHandover0204Data(HoID, LoginUser);
 
 			return View(vm);
@@ -964,13 +982,17 @@ namespace WebPccuClub.Controllers
 		[Log(LogActionChineseName.列印)]
 		public IActionResult Print0205(string id)
 		{
-			DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
-			string HoID = dt.QueryFieldByDT("HoID");
+            string HoID = string.Empty;
 
-			if (!string.IsNullOrEmpty(id))
-				HoID = id;
+            if (!string.IsNullOrEmpty(id))
+                HoID = id;
+            else
+            {
+                DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
+                HoID = dt.QueryFieldByDT("HoID");
+            }
 
-			ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0205Model = dbAccess.GetHandover0205Data(HoID, LoginUser);
 
 			return View(vm);
@@ -1104,13 +1126,17 @@ namespace WebPccuClub.Controllers
 		[Log(LogActionChineseName.列印)]
 		public IActionResult Print0206(string id)
 		{
-			DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
-			string HoID = dt.QueryFieldByDT("HoID");
+            string HoID = string.Empty;
 
-			if (!string.IsNullOrEmpty(id))
-				HoID = id;
+            if (!string.IsNullOrEmpty(id))
+                HoID = id;
+            else
+            {
+                DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
+                HoID = dt.QueryFieldByDT("HoID");
+            }
 
-			ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0206Model = dbAccess.GetHandover0206Data(HoID, LoginUser);
 
 			return View(vm);
@@ -1234,15 +1260,17 @@ namespace WebPccuClub.Controllers
 		[Log(LogActionChineseName.列印)]
 		public IActionResult Print0307(string id)
 		{
-			DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
-			string HoID = dt.QueryFieldByDT("HoID");
+            string HoID = string.Empty;
 
-			if (!string.IsNullOrEmpty(id))
-				HoID = id;
+            if (!string.IsNullOrEmpty(id))
+                HoID = id;
+            else
+            {
+                DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
+                HoID = dt.QueryFieldByDT("HoID");
+            }
 
-
-
-			ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0307Model = dbAccess.GetHandover0307Data(HoID, LoginUser);
 
 			return View(vm);
@@ -1355,13 +1383,15 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.列印)]
         public IActionResult Print0308(string id)
         {
-            DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
-            string HoID = dt.QueryFieldByDT("HoID");
+            string HoID = string.Empty;
 
             if (!string.IsNullOrEmpty(id))
                 HoID = id;
-
-
+            else
+            {
+                DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
+                HoID = dt.QueryFieldByDT("HoID");
+            }
 
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0308Model = dbAccess.GetHandover0308Data(HoID, LoginUser);
@@ -1491,15 +1521,17 @@ namespace WebPccuClub.Controllers
 		[Log(LogActionChineseName.列印)]
 		public IActionResult Print0309(string id)
 		{
-			DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
-			string HoID = dt.QueryFieldByDT("HoID");
+            string HoID = string.Empty;
 
-			if (!string.IsNullOrEmpty(id))
-				HoID = id;
+            if (!string.IsNullOrEmpty(id))
+                HoID = id;
+            else
+            {
+                DataTable dt = dbAccess.GetHoID(LoginUser.LoginId, PublicFun.GetNowSchoolYear());
+                HoID = dt.QueryFieldByDT("HoID");
+            }
 
-
-
-			ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0309Model = dbAccess.GetHandover0309Data(HoID, LoginUser);
 
 			return View(vm);

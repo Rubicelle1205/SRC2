@@ -360,7 +360,7 @@ namespace WebPccuClub.Controllers
 
 
         [Log(LogActionChineseName.社團負責人改選管理)]
-        public IActionResult HandOver025(string id)
+        public IActionResult HandOver0205(string id)
         {
             ViewBag.ddlYesOrNo = dbAccess.GetYesOrNo();
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();

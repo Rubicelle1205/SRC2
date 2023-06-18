@@ -2,7 +2,7 @@
 @using PccuClub.WebAuth;
 @using WebPccuClub.Global.Extension;
 @{
-    UserInfo LoginUser = Context.Session.GetObject<UserInfo>("FLoginUser");
+    UserInfo LoginUser = Context.Session.GetObject<UserInfo>("LoginUser");
     string[] arr = Model.Split("|");
     string UpFunName = LoginUser.UserRoleFun.Find(f => f.MenuNode == arr[0]) == null ? arr[0] : LoginUser.UserRoleFun.Find(f => f.MenuNode == arr[0]).MenuName;
     string FunMenu = arr[1];

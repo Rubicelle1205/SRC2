@@ -21,11 +21,11 @@
                                 <tbody>
                                     <tr>
                                         <th width="15%">建立時間</th>
-                                        <td>@Model.Handover0103Model.Created.Value.ToString("yyyy/MM/dd HH:mm:ss"))</td>
+                                        <td>@Model.Handover0206Model.Created.Value.ToString("yyyy/MM/dd HH:mm:ss"))</td>
                                     </tr>
                                     <tr>
                                         <th width="15%">更新時間</th>
-                                        <td>@Model.Handover0103Model.LastModified.Value.ToString("yyyy/MM/dd HH:mm:ss"))</td>
+                                        <td>@Model.Handover0206Model.LastModified.Value.ToString("yyyy/MM/dd HH:mm:ss"))</td>
                                     </tr>
                                     <tr>
                                         <th width="15%">社團代號<span class="required">*</span></th>
@@ -36,7 +36,7 @@
                                     <tr>
                                         <th width="15%">學年度<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.Handover0102Model.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇", new {@class = "form-control"})
+                                            @Html.DropDownListFor(m => m.Handover0206Model.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇", new {@class = "form-control"})
                                         </td>
                                     </tr>
                                     <tr>

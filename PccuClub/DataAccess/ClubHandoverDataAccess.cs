@@ -315,7 +315,7 @@ namespace WebPccuClub.DataAccess
 			DBAParameter parameters = new DBAParameter();
 
 			parameters.Add("@HoID", HoID);
-            parameters.Add("@ClubID", Login.LoginId);
+            //parameters.Add("@ClubID", Login.LoginId);
 
 			#region 參數設定
 			#endregion
@@ -834,7 +834,7 @@ namespace WebPccuClub.DataAccess
 			DBAParameter parameters = new DBAParameter();
 
 			parameters.Add("@HoID", HoID);
-			parameters.Add("@ClubID", Login.LoginId);
+			//parameters.Add("@ClubID", Login.LoginId);
 
 			#region 參數設定
 			#endregion
@@ -1021,7 +1021,7 @@ namespace WebPccuClub.DataAccess
 			DBAParameter parameters = new DBAParameter();
 
 			parameters.Add("@HoID", HoID);
-			parameters.Add("@ClubID", Login.LoginId);
+			//parameters.Add("@ClubID", Login.LoginId);
 
 			#region 參數設定
 			#endregion
@@ -1148,7 +1148,7 @@ namespace WebPccuClub.DataAccess
 			DBAParameter parameters = new DBAParameter();
 
 			parameters.Add("@HoID", HoID);
-			parameters.Add("@ClubID", Login.LoginId);
+			//parameters.Add("@ClubID", Login.LoginId);
 
 			#region 參數設定
 			#endregion
@@ -1309,7 +1309,7 @@ namespace WebPccuClub.DataAccess
 			DBAParameter parameters = new DBAParameter();
 
 			parameters.Add("@HoID", HoID);
-			parameters.Add("@ClubID", Login.LoginId);
+			//parameters.Add("@ClubID", Login.LoginId);
 
 			#region 參數設定
 			#endregion
@@ -1448,7 +1448,7 @@ namespace WebPccuClub.DataAccess
             DBAParameter parameters = new DBAParameter();
 
             parameters.Add("@HoID", HoID);
-            parameters.Add("@ClubID", Login.LoginId);
+            //parameters.Add("@ClubID", Login.LoginId);
 
             #region 參數設定
             #endregion
@@ -1612,7 +1612,7 @@ namespace WebPccuClub.DataAccess
 			DBAParameter parameters = new DBAParameter();
 
 			parameters.Add("@HoID", HoID);
-			parameters.Add("@ClubID", Login.LoginId);
+			//parameters.Add("@ClubID", Login.LoginId);
 
 			#region 參數設定
 			#endregion
