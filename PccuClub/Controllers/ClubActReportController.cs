@@ -157,7 +157,8 @@ namespace WebPccuClub.Controllers
 			ClubActReportViewModel vm4 = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
 
             bool NeedUpload = false;
-			string[] arr = vm4.CreateModel.strRundown.Split("|");
+            vm4.CreateModel.HasOutSide = "0";
+            string[] arr = vm4.CreateModel.strRundown.Split("|");
 
 			foreach (string item in arr)
 			{
@@ -196,7 +197,9 @@ namespace WebPccuClub.Controllers
 				vm4.CreateModel.ManagerName = vm.CreateModel.LeaderName;
 				vm4.CreateModel.ManagerTel = vm.CreateModel.ManagerTel;
 				vm4.CreateModel.ManagerPhone = vm.CreateModel.ManagerPhone;
-			}
+                vm4.CreateModel.HasOutSide = "1";
+
+            }
 
             HttpContext.Session.SetObject("MyModel", vm4);
 

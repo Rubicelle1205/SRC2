@@ -148,57 +148,67 @@
             </div>
         </div>
 
-        <div class="font-weight-bold text-4 py-2 mb-0">4. 校外活動其他資訊</div>
-        <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 領隊資訊</div>
-        <div class="infoWrapper mb-4">
-            <div class="infoItem">
-                <div class="tag">姓名</div>
-                <div class="content">@Model.CreateModel.LeaderName</div>
-            </div>
-            <div class="infoItem">
-                <div class="tag">電話</div>
-                <div class="content">@Model.CreateModel.LeaderTel</div>
-            </div>
-            <div class="infoItem">
-                <div class="tag">手機</div>
-                <div class="content">@Model.CreateModel.LeaderPhone</div>
-            </div>
-        </div>
-
-        <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 活動負責人</div>
-        <div class="infoWrapper mb-4">
-            <div class="infoItem">
-                <div class="tag">姓名</div>
-                <div class="content">@Model.CreateModel.ManagerName</div>
-            </div>
-            <div class="infoItem">
-                <div class="tag">電話</div>
-                <div class="content">@Model.CreateModel.ManagerTel</div>
-            </div>
-            <div class="infoItem">
-                <div class="tag">手機</div>
-                <div class="content">@Model.CreateModel.ManagerPhone</div>
-            </div>
-        </div>
-
-        <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 附件</div>
-        <div class="infoWrapper mb-5">
-            <div class="infoItem">
-                <div class="tag">附件檔案</div>
-                <div class="content">
-                    @foreach (var item in Model.CreateModel.LstOutSideFile)
-                    {
-                        <div class="mb-1">
-                            <a class="text-decoration-underline" href="../@item.FilePath" target="_blank">@item.FileName</a>
-                        </div>
-                    }
+        @if (Model.CreateModel.HasOutSide == "1")
+        {
+            <div class="font-weight-bold text-4 py-2 mb-0">4. 校外活動其他資訊</div>
+            <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 領隊資訊</div>
+            <div class="infoWrapper mb-4">
+                <div class="infoItem">
+                    <div class="tag">姓名</div>
+                    <div class="content">@Model.CreateModel.LeaderName</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">電話</div>
+                    <div class="content">@Model.CreateModel.LeaderTel</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">手機</div>
+                    <div class="content">@Model.CreateModel.LeaderPhone</div>
                 </div>
             </div>
-        </div>
+
+            <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 活動負責人</div>
+            <div class="infoWrapper mb-4">
+                <div class="infoItem">
+                    <div class="tag">姓名</div>
+                    <div class="content">@Model.CreateModel.ManagerName</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">電話</div>
+                    <div class="content">@Model.CreateModel.ManagerTel</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">手機</div>
+                    <div class="content">@Model.CreateModel.ManagerPhone</div>
+                </div>
+            </div>
+
+            <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 附件</div>
+            <div class="infoWrapper mb-5">
+                <div class="infoItem">
+                    <div class="tag">附件檔案</div>
+                    <div class="content">
+                        @foreach (var item in Model.CreateModel.LstOutSideFile)
+                        {
+                            <div class="mb-1">
+                                <a class="text-decoration-underline" href="../@item.FilePath" target="_blank">@item.FileName</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
 
         <div class="row justify-content-center mb-5">
             <div class="col-lg-3">
-                <a href="@Url.Action("Create4")" class="btn btn-primary btn-outline btn-modern w-100 mb-2"><i class="icon-arrow-left"></i> 返回</a>
+                @if (Model.CreateModel.HasOutSide == "1")
+                {
+                    <a href="@Url.Action("Create4")" class="btn btn-primary btn-outline btn-modern w-100 mb-2"><i class="icon-arrow-left"></i> 返回</a>
+                }
+                else
+                {
+                    <a href="@Url.Action("Create3")" class="btn btn-primary btn-outline btn-modern w-100 mb-2"><i class="icon-arrow-left"></i> 返回</a>
+                }
             </div>
             <div class="col-lg-3">
                 <form asp-action="SaveData" method="post">

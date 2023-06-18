@@ -157,12 +157,14 @@ namespace WebPccuClub.Models
 
 		public List<ActListFilesModel> LstProposal = new List<ActListFilesModel>();
 
-		#endregion
+        #endregion
 
-		#region Section4
+        #region Section4
 
-		/// <summary>領隊姓名</summary>
-		[DisplayName("領隊姓名")]
+        public string? HasOutSide { get; set; }
+
+        /// <summary>領隊姓名</summary>
+        [DisplayName("領隊姓名")]
 		public string? LeaderName { get; set; }
 
 		/// <summary>領隊電話</summary>
