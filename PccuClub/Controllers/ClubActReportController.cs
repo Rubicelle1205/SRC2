@@ -408,8 +408,21 @@ namespace WebPccuClub.Controllers
 				}
 			}
 
-			//判斷是否重複增加，先拿出舊的資料
-			if (!string.IsNullOrEmpty(vm.RundownModel.strRundown))
+            //確認報備日期
+            string LastReportDate = dbAccess.GetLastReportDate().QueryFieldByDT("ActivityReport");
+
+            DateTime LastDate = DateTime.Parse(vm.RundownModel.Date).AddDays(-int.Parse(LastReportDate));
+            int result = DateTime.Compare(DateTime.Now, LastDate);
+
+            if (result >= 0)
+            {
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = $"活動需在{LastReportDate}天前報備";
+                return Json(vmRtn);
+            }
+
+            //判斷是否重複增加，先拿出舊的資料
+            if (!string.IsNullOrEmpty(vm.RundownModel.strRundown))
 			{
 				List<ActListMangRundownModel> LstRundown = new List<ActListMangRundownModel>();
 
@@ -454,8 +467,10 @@ namespace WebPccuClub.Controllers
 
 			if (string.IsNullOrEmpty(PlaceID)) { msg = "查找場地失敗"; return false; }
 
+           
 
-			DataTable dt = dbAccess.GetRundown(PlaceID, date);
+            //確認活動
+            DataTable dt = dbAccess.GetRundown(PlaceID, date);
 
 			foreach (DataRow dr in dt.Rows)
 			{

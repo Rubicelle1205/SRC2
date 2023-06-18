@@ -137,6 +137,24 @@ namespace WebPccuClub.Global
 
         #region 基本資料撈取
 
+        public DataTable GetLastReportDate()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            #endregion
+
+            CommandText = $@"SELECT ActivityReport FROM DateLineMang";
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            return ds.Tables[0];
+        }
+
         public DataTable GetCancelDay()
         {
             string CommandText = string.Empty;
