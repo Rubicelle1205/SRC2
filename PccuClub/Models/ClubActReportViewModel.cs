@@ -21,16 +21,6 @@ namespace WebPccuClub.Models
 
 		public ActListMangRundownModel RundownModel { get; set; }
 
-
-
-
-
-
-
-
-
-
-
 		public ClubActReportEditModel EditModel { get; set; }
 
         public ClubActReportConsentModel ConsentModel { get; set; }
@@ -204,14 +194,16 @@ namespace WebPccuClub.Models
 
 	public class ClubActReportEditModel
     {
+		public string? CancelDay { get; set; }
+
 		#region Section1
 		/// <summary>ID</summary>
 		[DisplayName("ID")]
-        public string? AwdID { get; set; }
+        public string? ActID { get; set; }
 
 		/// <summary>ID</summary>
 		[DisplayName("ID")]
-		public string? AwdDetailID { get; set; }
+		public string? ActDetailID { get; set; }
 
 		/// <summary>學年度</summary>
 		[DisplayName("學年度")]
@@ -302,11 +294,16 @@ namespace WebPccuClub.Models
 
 		#region Section3
 
-		public List<ActListFilesModel> LstProposal = new List<ActListFilesModel>();
+		public string Proposal { get; set; }
+
+
+        public List<ActListFilesModel> LstProposal = new List<ActListFilesModel>();
 
 		#endregion
 
 		#region Section4
+
+		public string? HasOutSide { get; set; }
 
 		/// <summary>領隊</summary>
 		[DisplayName("領隊")]

@@ -132,11 +132,29 @@ namespace WebPccuClub.Global
             return strRtn;
         }
 
-		#endregion
+        #endregion
 
-		#region 基本資料撈取
+        #region 基本資料撈取
 
-		public List<SelectListItem> GetStaticOrDynamic()
+        public DataTable GetCancelDay()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            #endregion
+
+            CommandText = $@"SELECT TripCancel FROM DateLineMang";
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            return ds.Tables[0];
+        }
+
+        public List<SelectListItem> GetStaticOrDynamic()
 		{
 			string CommandText = string.Empty;
 			DataSet ds = new DataSet();
@@ -366,14 +384,14 @@ namespace WebPccuClub.Global
 			#endregion
 
 
-			CommandText = $@"SELECT * FROM (SELECT C.PlaceSource, C.Date, C.STime, C.ETime, C.ActPlaceID, C.ActPlaceText AS PlaceText, C.RundownStatus, D.Text AS RundownStatusText
+			CommandText = $@"SELECT * FROM (SELECT C.ActRundownID, C.PlaceSource, C.Date, C.STime, C.ETime, C.ActPlaceID, C.ActPlaceText AS PlaceText, C.RundownStatus, D.Text AS RundownStatusText
                                               FROM ActDetail A
                                          LEFT JOIN PlaceSchoolMang B ON B.PlaceID = A.PlaceID
                                          LEFT JOIN ActRundown C ON C.ActID = A.ActID AND C.ActDetailId = A.ActDetailId
                                          LEFT JOIN Code D ON D.Code = C.RundownStatus AND D.Type = 'RundownStatus'
                                              WHERE 1 = 1 AND A.ActID = @ActId 
                                      UNION
-                                            SELECT C.PlaceSource, C.Date, C.STime, C.ETime, C.ActPlaceID, C.ActPlaceText AS PlaceText, C.RundownStatus, D.Text AS RundownStatusText
+                                            SELECT C.ActRundownID, C.PlaceSource, C.Date, C.STime, C.ETime, C.ActPlaceID, C.ActPlaceText AS PlaceText, C.RundownStatus, D.Text AS RundownStatusText
                                               FROM ActDetail A
                                          LEFT JOIN PlaceSchoolMang B ON B.PlaceID = A.PlaceID
                                          LEFT JOIN ActRundownELSE C ON C.ActID = A.ActID AND C.ActDetailId = A.ActDetailId

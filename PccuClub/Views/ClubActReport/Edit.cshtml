@@ -4,7 +4,14 @@
     Layout = "_FrontLayout";
     List<SelectListItem> LstSDGs = ViewBag.ddlAllSDGs;
     string StrSDGs = string.Empty;
+
 }
+
+<style>
+    .required {
+        color: red;
+    }
+</style>
 
 @if (null != Model.EditModel)
 {
@@ -13,214 +20,794 @@
         @Html.Partial("_FrontRemindWrapper")
 
 
-        @if (1 == 1)
+        @if (null != Model.EditModel)
         {
-            <div class="contentWrapper">
-                <h4 class="pageTitle">@Model.EditModel.ActName</h4>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="apply.html">活動報備</a></li>
-                        <li class="breadcrumb-item active">@Model.EditModel.ActName</li>
-                    </ol>
-                </nav>
-                <hr>
-                <div class="mb-4">
-                    <a id="Back" href="@Url.Action("Index")"><i class="fas fa-chevron-left"></i> 返回列表</a>
-                </div>
-
-                <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">1. 報備資訊</div>
-                <div class="infoWrapper mb-5">
-                    <div class="infoItem">
-                        <div class="tag">活動名稱</div>
-                        <div class="content">@Model.EditModel.ActName</div>
+            @if (Model.EditModel.ActVerify == "02" || Model.EditModel.ActVerify == "04")
+            {
+                <div class="contentWrapper">
+                    <h4 class="pageTitle">@Model.EditModel.ActName</h4>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="apply.html">活動報備</a></li>
+                            <li class="breadcrumb-item active">@Model.EditModel.ActName</li>
+                        </ol>
+                    </nav>
+                    <hr>
+                    <div class="mb-4">
+                        <a id="Back" href="@Url.Action("Index")"><i class="fas fa-chevron-left"></i> 返回列表</a>
                     </div>
-                    <div class="infoItem">
-                        <div class="tag">活動狀態</div>
-                        <div class="content">
-                            @if (Model.EditModel.ActVerify == "01")
-                            {
-                                <div class="badge badge-primary">@Model.EditModel.ActVerifyText</div>
-                            }
-                            else if (Model.EditModel.ActVerify == "02")
-                            {
-                                <div class="badge badge-success">@Model.EditModel..ActVerifyText</div>
-                            }
-                            else if (Model.EditModel.ActVerify == "03")
-                            {
-                                <div class="badge badge-secondary">@Model.EditModel..ActVerifyText</div>
-                            }
-                            else if (Model.EditModel.ActVerify == "04")
-                            {
-                                <div class="badge badge-info">@Model.EditModel..ActVerifyText</div>
-                            }
+
+                    <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">1. 報備資訊</div>
+                    <div class="infoWrapper mb-5">
+                        <div class="infoItem">
+                            <div class="tag">活動名稱</div>
+                            <div class="content">@Model.EditModel.ActName</div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">活動狀態</div>
+                            <div class="content">
+                                @if (Model.EditModel.ActVerify == "01")
+                                {
+                                    <div class="badge badge-primary">@Model.EditModel.ActVerifyText</div>
+                                }
+                                else if (Model.EditModel.ActVerify == "02")
+                                {
+                                    <div class="badge badge-success">@Model.EditModel.ActVerifyText</div>
+                                }
+                                else if (Model.EditModel.ActVerify == "03")
+                                {
+                                    <div class="badge badge-secondary">@Model.EditModel.ActVerifyText</div>
+                                }
+                                else if (Model.EditModel.ActVerify == "04")
+                                {
+                                    <div class="badge badge-info">@Model.EditModel.ActVerifyText</div>
+                                }
+                            </div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">審核備註</div>
+                            <div class="content">@Model.EditModel.ActVerifyMemo</div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">報備日期</div>
+                            <div class="content">@Model.EditModel.Created.Value.ToString("yyyy/MM/dd")</div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">活動類型</div>
+                            <div class="content">@Model.EditModel.StaticOrDynamicText</div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">活動地點</div>
+                            <div class="content">@Model.EditModel.ActInOrOutText</div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">活動人數</div>
+                            <div class="content">@Model.EditModel.Capacity</div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">活動性質</div>
+                            <div class="content">@Model.EditModel.ActTypeText</div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">使用資訊設備</div>
+                            <div class="content">@Model.EditModel.UseITEquipText</div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">活動簡介</div>
+                            <div class="content">@Model.EditModel.ShortDesc</div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">聯合國SDGs永續發展目標</div>
+                            <div class="content">
+                                @if (!string.IsNullOrEmpty(Model.EditModel.SDGs))
+                                {
+                                    string[] arrSDGs = Model.EditModel.SDGs.Split(",");
+
+                                    for (int i = 0; i <= arrSDGs.Length - 1; i++)
+                                    {
+                                        if (i != arrSDGs.Length - 1)
+                                        {
+                                            StrSDGs += LstSDGs.Where(x => x.Value == arrSDGs[i]).FirstOrDefault().Text + "、";
+                                        }
+                                        else
+                                        {
+                                            StrSDGs += LstSDGs.Where(x => x.Value == arrSDGs[i]).FirstOrDefault().Text;
+                                        }
+                                    }
+                                }
+                                @StrSDGs
+                            </div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">全人學習護照</div>
+                            <div class="content">
+                                @Model.EditModel.PassPortText
+                                <div class="hint">若該活動欲認列於全人學習護照<a href="http://pass.pccu.edu.tw/" target="_blank">需另外至全人網站填報</a></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="infoItem">
-                        <div class="tag">審核備註</div>
-                        <div class="content">@Model.EditModel.ActVerifyMemo</div>
-                    </div>
-                    <div class="infoItem">
-                        <div class="tag">報備日期</div>
-                        <div class="content">@Model.EditModel.Created.Value.ToString("yyyy/MM/dd")</div>
-                    </div>
-                    <div class="infoItem">
-                        <div class="tag">活動類型</div>
-                        <div class="content">@Model.EditModel.StaticOrDynamicText</div>
-                    </div>
-                    <div class="infoItem">
-                        <div class="tag">活動地點</div>
-                        <div class="content">@Model.EditModel.ActInOrOutText</div>
-                    </div>
-                    <div class="infoItem">
-                        <div class="tag">活動人數</div>
-                        <div class="content">@Model.EditModel.Capacity</div>
-                    </div>
-                    <div class="infoItem">
-                        <div class="tag">活動性質</div>
-                        <div class="content">@Model.EditModel.ActTypeText</div>
-                    </div>
-                    <div class="infoItem">
-                        <div class="tag">使用資訊設備</div>
-                        <div class="content">@Model.EditModel.UseITEquipText</div>
-                    </div>
-                    <div class="infoItem">
-                        <div class="tag">活動簡介</div>
-                        <div class="content">@Model.EditModel.ShortDesc</div>
-                    </div>
-                    <div class="infoItem">
-                        <div class="tag">聯合國SDGs永續發展目標</div>
-                        <div class="content">
-                            @if (!string.IsNullOrEmpty(Model.EditModel.SDGs))
-                            {
-                                string[] arrSDGs = Model.EditModel.SDGs.Split(",");
 
-                                for (int i = 0; i <= arrSDGs.Length - 1; i++)
-                                {
-                                    if (i != arrSDGs.Length - 1)
+                    <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">2. 活動行程</div>
+                    <div class="infoWrapper mb-5">
+                        <div class="infoItem">
+                            <div class="tag">行程</div>
+                            <div class="content">
+                                <div class="dateItem">
+                                    @foreach (var item in Model.EditModel.LstActRundown)
                                     {
-                                        StrSDGs += LstSDGs.Where(x => x.Value == arrSDGs[i]).FirstOrDefault().Text + "、";
+                                        @if (item.RundownStatus == "01")
+                                        {
+                                            <div class="item">
+                                                <span class="date">@item.Date</span>
+                                                <span class="time">@string.Format("{0}:00", item.STime) ~ @string.Format("{0}:00", item.ETime)</span>
+                                                <span class="location">@item.PlaceText</span>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">已取消行程</div>
+                            <div class="content">
+                                <div id="cancel_wrapper" class="dateItem">
+                                    @foreach (var item in Model.EditModel.LstActRundown)
+                                    {
+                                        @if (item.RundownStatus == "02")
+                                        {
+                                            <div class="item">
+                                                <span class="date">@item.Date</span>
+                                                <span class="time">@string.Format("{0}:00", item.STime) ~ @string.Format("{0}:00", item.ETime)</span>
+                                                <span class="location">@item.PlaceText</span>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">3. 活動企劃書</div>
+                    <div class="infoWrapper mb-5">
+                        <div class="infoItem">
+                            <div class="tag">活動企劃書</div>
+                            <div class="content">
+
+                                @foreach (var item in Model.EditModel.LstProposal)
+                                {
+                                    <div class="mb-1">
+                                        <a class="text-decoration-underline" href="../@item.FilePath" target="_blank">@item.FileName</a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">4. 校外活動其他資訊</div>
+                    <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 領隊資訊</div>
+                    <div class="infoWrapper mb-4">
+                        <div class="infoItem">
+                            <div class="tag">姓名</div>
+                            <div class="content">@Model.EditModel.LeaderName</div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">電話</div>
+                            <div class="content">@Model.EditModel.LeaderTel</div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">手機</div>
+                            <div class="content">@Model.EditModel.LeaderPhone</div>
+                        </div>
+                    </div>
+
+                    <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 活動負責人</div>
+                    <div class="infoWrapper mb-4">
+                        <div class="infoItem">
+                            <div class="tag">姓名</div>
+                            <div class="content">@Model.EditModel.ManagerName</div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">電話</div>
+                            <div class="content">@Model.EditModel.LeaderTel</div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">手機</div>
+                            <div class="content">@Model.EditModel.ManagerPhone</div>
+                        </div>
+                    </div>
+
+                    <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 附件</div>
+                    <div class="infoWrapper mb-4">
+                        <div class="infoItem">
+                            <div class="tag">附件檔案</div>
+                            <div class="content">
+                                @foreach (var item in Model.EditModel.LstOutSideFile)
+                                {
+                                    <div class="mb-1">
+                                        <a class="text-decoration-underline" href="../@item.FilePath" target="_blank">@item.FileName</a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (Model.EditModel.ActVerify == "01" || Model.EditModel.ActVerify == "03")
+            {
+                <div class="contentWrapper">
+                    <h4 class="pageTitle">@Model.EditModel.ActName</h4>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="apply.html">活動報備</a></li>
+                            <li class="breadcrumb-item active">@Model.EditModel.ActName</li>
+                        </ol>
+                    </nav>
+                    <hr>
+                    <div class="mb-4">
+                        <a id="Back" href="@Url.Action("Index")"><i class="fas fa-chevron-left"></i> 返回列表</a>
+                    </div>
+
+                    <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">1. 報備資訊</div>
+                    <div class="infoWrapper mb-5">
+                        <div class="infoItem">
+                            <div class="tag">活動名稱<span class="required">*</span></div>
+                            <div class="content">
+                                @Html.TextBoxFor(m => m.EditModel.ActName, new {@class="form-control", @placeholder="請填寫活動名稱"} )
+                            </div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">活動狀態</div>
+                            <div class="content">
+                                @if (Model.EditModel.ActVerify == "01")
+                                {
+                                    <div class="badge badge-primary">@Model.EditModel.ActVerifyText</div>
+                                }
+                                else if (Model.EditModel.ActVerify == "02")
+                                {
+                                    <div class="badge badge-success">@Model.EditModel.ActVerifyText</div>
+                                }
+                                else if (Model.EditModel.ActVerify == "03")
+                                {
+                                    <div class="badge badge-secondary">@Model.EditModel.ActVerifyText</div>
+                                }
+                                else if (Model.EditModel.ActVerify == "04")
+                                {
+                                    <div class="badge badge-info">@Model.EditModel.ActVerifyText</div>
+                                }
+                            </div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">審核備註</div>
+                            <div class="content">@Model.EditModel.ActVerifyMemo</div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">報備日期</div>
+                            <div class="content">@Model.EditModel.Created.Value.ToString("yyyy/MM/dd")</div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">活動類型<span class="required">*</span></div>
+                            <div class="content">
+                                @Html.DropDownListFor(m => m.EditModel.StaticOrDynamic ,(List<SelectListItem>)ViewBag.ddlStaticOrDynamic,"請選擇", new {@class = "form-control"})
+                            </div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">活動地點<span class="required">*</span></div>
+                            <div class="content">
+                                @Html.DropDownListFor(m => m.EditModel.ActInOrOut ,(List<SelectListItem>)ViewBag.ddlActInOrOut,"請選擇", new {@class = "form-control"})
+                            </div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">活動人數<span class="required">*</span></div>
+                            <div class="content">
+                                @Html.TextBoxFor(m => m.EditModel.Capacity, new {@class = "form-control", placeholder="請輸入活動人數"})
+                            </div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">活動性質<span class="required">*</span></div>
+                            <div class="content">
+                                @Html.DropDownListFor(m => m.EditModel.ActType ,(List<SelectListItem>)ViewBag.ddlActType,"請選擇", new {@class = "form-control"})
+                            </div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">使用資訊設備<span class="required">*</span></div>
+                            <div class="content">
+                                @Html.DropDownListFor(m => m.EditModel.UseITEquip ,(List<SelectListItem>)ViewBag.ddlUseITEquip,"請選擇", new {@class = "form-control"})
+                            </div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">活動簡介<span class="required">*</span></div>
+                            <div class="content">
+                                @Html.TextAreaFor(m => m.EditModel.ShortDesc, new {@class="form-control", rows="5", placeholder = "請輸入活動簡介"})
+                            </div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">聯合國SDGs永續發展目標<span class="required">*</span></div>
+                            <div class="content">
+                                @foreach (SelectListItem item in LstSDGs)
+                                {
+                                    List<string> arrSDGs = Model.EditModel.SDGs.Split(",").ToList();
+
+                                    if (arrSDGs.Contains(item.Value))
+                                    {
+                                        <div class="col-md-3 custom-control custom-checkbox">
+                                            <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                   type="checkbox" checked id="@string.Format("SDGs_{0}", item.Value)" value="@item.Value">
+                                            <label class="custom-control-label" for="@string.Format("SDGs_{0}", item.Value)">@item.Text</label>
+                                        </div>
                                     }
                                     else
                                     {
-                                        StrSDGs += LstSDGs.Where(x => x.Value == arrSDGs[i]).FirstOrDefault().Text;
-                                    }
-                                }
-                            }
-                            @StrSDGs
-                        </div>
-                    </div>
-                    <div class="infoItem">
-                        <div class="tag">全人學習護照</div>
-                        <div class="content">
-                            否
-                            <div class="hint">若該活動欲認列於全人學習護照<a href="http://pass.pccu.edu.tw/" target="_blank">需另外至全人網站填報</a></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">2. 活動行程</div>
-                <div class="infoWrapper mb-5">
-                    <div class="infoItem">
-                        <div class="tag">行程</div>
-                        <div class="content">
-                            <div class="dateItem">
-                                @foreach (var item in Model.EditModel.LstActRundown)
-                                {
-                                    @if (item.RundownStatus == "01")
-                                    {
-                                        <div class="item">
-                                            <span class="date">@item.Date</span>
-                                            <span class="time">@string.Format("{0}:00", item.STime) ~ @string.Format("{0}:00", item.ETime)</span>
-                                            <span class="location">@item.PlaceText</span>
+                                        <div class="col-md-3 custom-control custom-checkbox">
+                                            <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                   type="checkbox" id="@string.Format("SDGs_{0}", item.Value)" value="@item.Value">
+                                            <label class="custom-control-label" for="@string.Format("SDGs_{0}", item.Value)">@item.Text</label>
                                         </div>
                                     }
                                 }
                             </div>
                         </div>
-                    </div>
-                    <div class="infoItem">
-                        <div class="tag">已取消行程</div>
-                        <div class="content">
-                            <div id="cancel_wrapper" class="dateItem">
-                                @foreach (var item in Model.EditModel.LstActRundown)
-                                {
-                                    @if (item.RundownStatus == "02")
-                                    {
-                                        <div class="item">
-                                            <span class="date">@item.Date</span>
-                                            <span class="time">@string.Format("{0}:00", item.STime) ~ @string.Format("{0}:00", item.ETime)</span>
-                                            <span class="location">@item.PlaceText</span>
-                                        </div>
-                                    }
-                                }
+                        <div class="infoItem">
+                            <div class="tag">全人學習護照<span class="required">*</span></div>
+                            <div class="content">
+                                @Html.DropDownListFor(m => m.EditModel.PassPort ,(List<SelectListItem>)ViewBag.ddlPassport,"請選擇", new {@class = "form-control"})
+                                <div class="hint">若該活動欲認列於全人學習護照<a href="http://pass.pccu.edu.tw/" target="_blank">需另外至全人網站填報</a></div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">3. 活動企劃書</div>
-                <div class="infoWrapper mb-5">
-                    <div class="infoItem">
-                        <div class="tag">活動企劃書</div>
-                        <div class="content">
-                            @foreach (var item in Model.EditModel.LstProposal)
-                            {
-                                <div class="mb-1">
-                                    <a class="text-decoration-underline" href="../@item.FilePath" target="_blank">@item.FileName</a>
+                    <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">2. 活動行程</div>
+                    <div class="infoWrapper mb-5">
+                        <div class="infoItem">
+                            <div class="tag">行程</div>
+                            <div class="content">
+                                <div class="dateItem">
+                                    @foreach (var item in Model.EditModel.LstActRundown)
+                                    {
+                                        @if (item.RundownStatus == "01")
+                                        {
+                                            DateTime CancelLastDate = DateTime.Parse(item.Date).AddDays(-int.Parse(Model.EditModel.CancelDay));
+                                            int result = DateTime.Compare(DateTime.Now, CancelLastDate);
+
+                                            <div class="item">
+                                                <span class="date">@item.Date</span>
+                                                <span class="time">@string.Format("{0}:00", item.STime) ~ @string.Format("{0}:00", item.ETime)</span>
+                                                <span class="location">@item.PlaceText</span>
+
+                                                @if (result < 0)
+                                                {
+                                                    <button class="del-btn btn" onclick="RemoveRundown('@string.Format("{0}|{1}", @item.PlaceSource, @item.ActRundownID)');" type="button">移除 <i class="fas fa-times"></i></button>
+                                                }
+
+                                            </div>
+                                        }
+                                    }
+                                    <p class="hint mb-0">※如欲取消行程，請於該行程日 <strong>@Model.EditModel.CancelDay</strong> 天前完成取消</p>
                                 </div>
-                            }
+                            </div>
+                        </div>
+                        <div class="infoItem">
+                            <div class="tag">已取消行程</div>
+                            <div class="content">
+                                <div id="cancel_wrapper" class="dateItem">
+                                    @foreach (var item in Model.EditModel.LstActRundown)
+                                    {
+                                        @if (item.RundownStatus == "02")
+                                        {
+                                            <div class="item">
+                                                <span class="date">@item.Date</span>
+                                                <span class="time">@string.Format("{0}:00", item.STime) ~ @string.Format("{0}:00", item.ETime)</span>
+                                                <span class="location">@item.PlaceText</span>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">4. 校外活動其他資訊</div>
-                <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 領隊資訊</div>
-                <div class="infoWrapper mb-4">
-                    <div class="infoItem">
-                        <div class="tag">姓名</div>
-                        <div class="content">@Model.EditModel.LeaderName</div>
-                    </div>
-                    <div class="infoItem">
-                        <div class="tag">電話</div>
-                        <div class="content">@Model.EditModel.LeaderTel</div>
-                    </div>
-                    <div class="infoItem">
-                        <div class="tag">手機</div>
-                        <div class="content">@Model.EditModel.LeaderPhone</div>
-                    </div>
-                </div>
-
-                <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 活動負責人</div>
-                <div class="infoWrapper mb-4">
-                    <div class="infoItem">
-                        <div class="tag">姓名</div>
-                        <div class="content">@Model.EditModel.ManagerName</div>
-                    </div>
-                    <div class="infoItem">
-                        <div class="tag">電話</div>
-                        <div class="content">@Model.EditModel.LeaderTel</div>
-                    </div>
-                    <div class="infoItem">
-                        <div class="tag">手機</div>
-                        <div class="content">@Model.EditModel.ManagerPhone</div>
-                    </div>
-                </div>
-
-                <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 附件</div>
-                <div class="infoWrapper mb-4">
-                    <div class="infoItem">
-                        <div class="tag">附件檔案</div>
-                        <div class="content">
-                            @foreach (var item in Model.EditModel.LstOutSideFile)
-                            {
-                                <div class="mb-1">
-                                    <a class="text-decoration-underline" href="../@item.FilePath" target="_blank">@item.FileName</a>
+                    <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">3. 活動企劃書</div>
+                    <div class="infoWrapper mb-5">
+                        <div class="infoItem">
+                            <div class="tag">
+                                活動企劃書
+                                <br />
+                                <span style="color: red; font-size: 0.5em;">僅接受.doc,.docx,.odt,.pdf檔</span>
+                            </div>
+                            <div class="content">
+                                <div class="target_list_Proposal">
+                                    @if (Model.EditModel.LstProposal.Count > 0)
+                                    {
+                                        for (int i = 0; i <= Model.EditModel.LstProposal.Count - 1; i++)
+                                        {
+                                            <div class="d-block mb-1 item">
+                                                <a class="text-decoration-underline"
+                                                   href="../@Model.EditModel.LstProposal[i].FilePath" target="_blank">@Model.EditModel.LstProposal[i].FileName</a>
+                                            </div>
+                                        }
+                                    }
                                 </div>
-                            }
+                                <button id="add_input_btn_Proposal" class="btn btn-secondary btn-sm mt-3 d-block" type="button">
+                                    新增 <i class="icon-plus"></i>
+                                </button>
+
+                            </div>
                         </div>
                     </div>
+
+                    @if (Model.EditModel.HasOutSide == "1")
+                    {
+
+                        <div class="bg-quaternary font-weight-bold text-4 text-center py-2 mb-0">4. 校外活動其他資訊</div>
+                        <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 領隊資訊</div>
+                        <div class="infoWrapper mb-4">
+                            <div class="infoItem">
+                                <div class="tag">姓名</div>
+                                <div class="content">
+                                    @Html.TextBoxFor(m => m.EditModel.LeaderName, new {@class="form-control", @placeholder="請填寫領隊姓名"} )
+                                </div>
+                            </div>
+                            <div class="infoItem">
+                                <div class="tag">電話</div>
+                                <div class="content">
+                                    @Html.TextBoxFor(m => m.EditModel.LeaderTel, new {@class="form-control", @placeholder="請填寫領隊電話"} )
+                                </div>
+                            </div>
+                            <div class="infoItem">
+                                <div class="tag">手機</div>
+                                <div class="content">
+                                    @Html.TextBoxFor(m => m.EditModel.LeaderPhone, new {@class="form-control", @placeholder="請填寫領隊手機"} )
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 活動負責人</div>
+                        <div class="infoWrapper mb-4">
+                            <div class="infoItem">
+                                <div class="tag">姓名</div>
+                                <div class="content">
+                                    @Html.TextBoxFor(m => m.EditModel.ManagerName, new {@class="form-control", @placeholder="請填寫活動負責人姓名"} )
+                                </div>
+                            </div>
+                            <div class="infoItem">
+                                <div class="tag">電話</div>
+                                <div class="content">
+                                    @Html.TextBoxFor(m => m.EditModel.ManagerTel, new {@class="form-control", @placeholder="請填寫活動負責人電話"} )
+                                </div>
+                            </div>
+                            <div class="infoItem">
+                                <div class="tag">手機</div>
+                                <div class="content">
+                                    @Html.TextBoxFor(m => m.EditModel.ManagerPhone, new {@class="form-control", @placeholder="請填寫活動負責人手機"} )
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 附件</div>
+                        <div class="infoWrapper mb-4">
+                            <div class="infoItem">
+                                <div class="tag">
+                                    附件檔案
+                                    <br />
+                                    <span style="color: red; font-size: 0.5em;">僅接受.doc,.docx,.odt,.pdf檔</span>
+                                </div>
+                                <div class="content">
+                                    <div class="target_list_OutSideFile">
+                                        @if (Model.EditModel.LstOutSideFile.Count > 0)
+                                        {
+                                            for (int i = 0; i <= Model.EditModel.LstOutSideFile.Count - 1; i++)
+                                            {
+                                                <div class="d-block mb-1 item">
+                                                    <a class="text-decoration-underline"
+                                                       href="../@Model.EditModel.LstOutSideFile[i].FilePath" target="_blank">@Model.EditModel.LstOutSideFile[i].FileName</a>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                    <button id="add_input_btn_OutSideFile" class="btn btn-secondary btn-sm mt-3 d-block" type="button">
+                                        新增 <i class="icon-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+
+                    @Html.HiddenFor(m => m.EditModel.ActID)
+                    @Html.HiddenFor(m => m.EditModel.HasOutSide)
+                    @Html.HiddenFor(m => m.EditModel.ActDetailID)
+                    <div class="row justify-content-center mb-5">
+                        <div class="col-lg-4">
+                            <button type="button" class="submit-btn btn btn-primary btn-modern border-0 w-100" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+
                 </div>
-            </div>
+            }
         }
     </div>
 }
+
+
+<script>
+    $(document).ready(function () {
+        // 多檔上傳
+        if ($(".target_list_Proposal").length > 0) {
+
+            $(document).on('click', '#add_input_btn_Proposal', function () {
+
+                var num = checkNum();
+                var addItem = '<div class="d-block mb-1 item">';
+                addItem += '<label class="btn btn-outline-primary mb-0">';
+                addItem += '<input id="Proposal' + num + '" style="display:none;" req class="filesupload" data-title="附件" type="file" name="Proposal' + num + '" value="" accept=".doc,.docx,.odt,.pdf" data-file="">';
+                addItem += '<i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案';
+                addItem += '</label>';
+                addItem += '<span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>';
+                addItem += '<button class="del-btn btn btn-sm btn-outline-secondary" type="button"><i class="fas fa-times"></i> 移除</button>';
+                addItem += '</div>';
+                if ($(".target_list_Proposal").find("[type='file']").length <= 7) {
+                    $(".target_list_Proposal").append(addItem);
+                    $(".target_list_Proposal .del-btn").removeClass("hidden")
+                }
+            })
+
+            $(document).on('click', '.target_list_Proposal .del-btn', function () {
+                var num = $(".target_list_Proposal").find("[type='file']").length
+
+                if (confirm("確認清除？") == false) {
+                    return false
+                } else {
+                    if (num >= 2) {
+                        $(this).closest(".item").remove()
+                        $("#add_input_btn_Proposal").prop("disabled", false)
+                    }
+
+                    if (num <= 2) {
+                        $(".target_list_Proposal .del-btn").addClass("hidden")
+                    } else {
+                        $(".target_list_Proposal .del-btn").removeClass("hidden")
+                    }
+                }
+            })
+
+            function checkNum() {
+                var num = $(".target_list_Proposal").find(".d-block.mb-1.item").length
+                if (num >= 7) {
+                    $("#add_input_btn_Proposal").prop("disabled", true)
+                } else {
+                    $("#add_input_btn_Proposal").prop("disabled", false)
+                }
+                return num;
+            }
+        }
+        $(document).on('change', ".filesupload", function (e) {
+            var filename = e.target.files[0].name;
+            $(this).closest('.item').find('.text-muted#filename').text(filename);
+        });
+
+    });
+
+    $(document).ready(function () {
+        // 多檔上傳
+        if ($(".target_list_OutSideFile").length > 0) {
+
+            $(document).on('click', '#add_input_btn_OutSideFile', function () {
+
+                var num = checkNum();
+                var addItem = '<div class="d-block mb-1 item">';
+                addItem += '<label class="btn btn-outline-primary mb-0">';
+                addItem += '<input id="OutSideFile' + num + '" style="display:none;" req class="filesupload" data-title="附件" type="file" name="OutSideFile' + num + '" value="" accept=".doc,.docx,.odt,.pdf" data-file="">';
+                addItem += '<i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案';
+                addItem += '</label>';
+                addItem += '<span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>';
+                addItem += '<button class="del-btn btn btn-sm btn-outline-secondary" type="button"><i class="fas fa-times"></i> 移除</button>';
+                addItem += '</div>';
+                if ($(".target_list_OutSideFile").find("[type='file']").length <= 7) {
+                    $(".target_list_OutSideFile").append(addItem);
+                    $(".target_list_OutSideFile .del-btn").removeClass("hidden")
+                }
+            })
+
+            $(document).on('click', '.target_list_OutSideFile .del-btn', function () {
+                var num = $(".target_list_OutSideFile").find("[type='file']").length
+
+                if (confirm("確認清除？") == false) {
+                    return false
+                } else {
+                    if (num >= 2) {
+                        $(this).closest(".item").remove()
+                        $("#add_input_btn_OutSideFile").prop("disabled", false)
+                    }
+
+                    if (num <= 2) {
+                        $(".target_list_OutSideFile .del-btn").addClass("hidden")
+                    } else {
+                        $(".target_list_OutSideFile .del-btn").removeClass("hidden")
+                    }
+                }
+            })
+
+            function checkNum() {
+                var num = $(".target_list_OutSideFile").find(".d-block.mb-1.item").length
+                if (num >= 7) {
+                    $("#add_input_btn_OutSideFile").prop("disabled", true)
+                } else {
+                    $("#add_input_btn_OutSideFile").prop("disabled", false)
+                }
+                return num;
+            }
+        }
+        $(document).on('change', ".filesupload", function (e) {
+            var filename = e.target.files[0].name;
+            $(this).closest('.item').find('.text-muted#filename').text(filename);
+        });
+
+    });
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var ActID = $('#@Html.IdFor(m => m.EditModel.ActID)').val();
+        var ActDetailID = $('#@Html.IdFor(m => m.EditModel.ActDetailID)').val();
+        var SchoolYear = $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val();
+        var ActName = $('#@Html.IdFor(m => m.EditModel.ActName)').val();
+        var StaticOrDynamic = $('#@Html.IdFor(m => m.EditModel.StaticOrDynamic)').val();
+        var ActInOrOut = $('#@Html.IdFor(m => m.EditModel.ActInOrOut)').val();
+        var Capacity = $('#@Html.IdFor(m => m.EditModel.Capacity)').val();
+        var ActType = $('#@Html.IdFor(m => m.EditModel.ActType)').val();
+        var UseITEquip = $('#@Html.IdFor(m => m.EditModel.UseITEquip)').val();
+        var ActShortDesc = $('#@Html.IdFor(m => m.EditModel.ShortDesc)').val();
+        var SDGs = $('#@Html.IdFor(m => m.EditModel.SDGs)').val();
+        var PassPort = $('#@Html.IdFor(m => m.EditModel.PassPort)').val();
+        var HasOutSide = $('#@Html.IdFor(m => m.EditModel.HasOutSide)').val();
+
+        var arrSDGs = [];
+        $("input[id ^= 'SDGs_']:checked").each(function () {
+            arrSDGs.push($(this).val());
+        });
+
+        var strSDGs = arrSDGs.join(",");
+
+        var LeaderName = $('#@Html.IdFor(m => m.EditModel.LeaderName)').val();
+        var LeaderPhone = $('#@Html.IdFor(m => m.EditModel.LeaderPhone)').val();
+        var LeaderTel = $('#@Html.IdFor(m => m.EditModel.LeaderTel)').val();
+
+        var ManagerName = $('#@Html.IdFor(m => m.EditModel.ManagerName)').val();
+        var ManagerPhone = $('#@Html.IdFor(m => m.EditModel.ManagerPhone)').val();
+        var ManagerTel = $('#@Html.IdFor(m => m.EditModel.ManagerTel)').val();
+
+        var allEmpty = true;
+        for (var i = 0; i <= 8; i++) {
+            var file = $('#Proposal' + i);
+
+            if (file.length > 0 && file.val() !== '') {
+                allEmpty = false;
+                var File = $('#Proposal' + i)[0].files[0];
+                if (typeof File !== 'undefined') {
+                    var fileExtension = File.name.split('.').pop().toLowerCase();
+
+                    if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'pdf' && fileExtension !== 'odt') {
+                        $.alert("檔案類型不符合");
+                        return;
+                    }
+
+                    data.append('@Html.NameFor(m => m.EditModel.Proposal)', File);
+                }
+            }
+        }
+
+        if(@Model.EditModel.LstProposal.Count > 0)
+        {
+            allEmpty = false;
+        }
+
+        if (allEmpty) { $.alert("活動企劃書不可為空白"); return; }
+
+        if (HasOutSide == "1") {
+            var allEmpty2 = true;
+            for (var i = 0; i <= 8; i++) {
+                var file = $('#OutSideFile' + i);
+
+                if (file.length > 0 && file.val() !== '') {
+                    allEmpty2 = false;
+                    var File = $('#OutSideFile' + i)[0].files[0];
+                    if (typeof File !== 'undefined') {
+                        var fileExtension = File.name.split('.').pop().toLowerCase();
+
+                        if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'pdf' && fileExtension !== 'odt') {
+                            $.alert("檔案類型不符合");
+                            return;
+                        }
+
+                        data.append('@Html.NameFor(m => m.File)', File);
+                    }
+                }
+            }
+
+            if (@Model.EditModel.LstOutSideFile.Count > 0) {
+                allEmpty2 = false;
+            }
+
+            if (allEmpty2) { $.alert("外出活動附件不可為空白"); return; }
+
+
+            data.append('@Html.NameFor(m => m.EditModel.LeaderName)', LeaderName);
+            data.append('@Html.NameFor(m => m.EditModel.LeaderPhone)', LeaderPhone);
+            data.append('@Html.NameFor(m => m.EditModel.LeaderTel)', LeaderTel);
+            data.append('@Html.NameFor(m => m.EditModel.ManagerName)', ManagerName);
+            data.append('@Html.NameFor(m => m.EditModel.ManagerPhone)', ManagerPhone);
+            data.append('@Html.NameFor(m => m.EditModel.ManagerTel)', ManagerTel);
+        }
+
+        if (ActName == "") { $.alert("活動名稱不可為空白"); return; }
+        if (StaticOrDynamic == "") { $.alert("活動類型不可為空白"); return; }
+        if (ActInOrOut == "") { $.alert("活動地點不可為空白"); return; }
+        if (Capacity == "") { $.alert("活動人數不可為空白"); return; }
+        if (ActType == "") { $.alert("活動性質不可為空白"); return; }
+        if (UseITEquip == "") { $.alert("使用資訊設備不可為空白"); return; }
+        if (ActShortDesc == "") { $.alert("活動簡介不可為空白"); return; }
+        if (PassPort == "") { $.alert("申請全人學習護照不可為空白"); return; }
+        if (strSDGs == "") { $.alert("需選擇SDGs"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.ActID)', ActID);
+        data.append('@Html.NameFor(m => m.EditModel.ActDetailID)', ActDetailID);
+        data.append('@Html.NameFor(m => m.EditModel.ActName)', ActName);
+        data.append('@Html.NameFor(m => m.EditModel.StaticOrDynamic)', StaticOrDynamic);
+        data.append('@Html.NameFor(m => m.EditModel.ActInOrOut)', ActInOrOut);
+        data.append('@Html.NameFor(m => m.EditModel.Capacity)', Capacity);
+        data.append('@Html.NameFor(m => m.EditModel.ActType)', ActType);
+        data.append('@Html.NameFor(m => m.EditModel.UseITEquip)', UseITEquip);
+        data.append('@Html.NameFor(m => m.EditModel.ShortDesc)', ActShortDesc);
+        data.append('@Html.NameFor(m => m.EditModel.SDGs)', strSDGs);
+        data.append('@Html.NameFor(m => m.EditModel.PassPort)', PassPort);
+        data.append('@Html.NameFor(m => m.EditModel.HasOutSide)', HasOutSide);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(response.errorMsg);
+            }
+        });
+    }
+
+    function RemoveRundown(Ser) {
+
+        $.confirm({
+            title: '確定取消?',
+            content: '取消後資料無法復原!',
+            buttons: {
+                確定: function () {
+                    SendAjax({
+                        url: '@Url.Action("CancelRundown")',
+                        data: { 'Ser': Ser },
+                        success: function (result) {
+                            if (result.errorCode == 0) { location.reload(); }
+                            else { $.alert(result.errorMsg); }
+
+                            
+                        }
+                    });
+                },
+                取消: function () {
+                },
+            }
+        });
+    }
+</script>

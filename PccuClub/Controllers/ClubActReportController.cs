@@ -235,14 +235,25 @@ namespace WebPccuClub.Controllers
 
             ViewBag.ddlAllSDGs = dbAccess.GetSDGs();
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            ViewBag.ddlStaticOrDynamic = dbAccess.GetStaticOrDynamic();
+            ViewBag.ddlActInOrOut = dbAccess.GetActInOrOut();
+            ViewBag.ddlActType = dbAccess.GetActType();
+            ViewBag.ddlUseITEquip = dbAccess.GetUseITEquip();
+            ViewBag.ddlPassport = dbAccess.GetPassport();
+            ViewBag.ddlAllSDGs = dbAccess.GetSDGs();
 
             //ClubActReportViewModel vm = new ClubActReportViewModel();
             vm.EditModel = dbAccess.GetEditData(id);
             vm.EditModel.LstActRundown = dbAccess.GetEditRundownData(id);
             vm.EditModel.LstProposal = dbAccess.GetEditProposalData(id);
             vm.EditModel.LstOutSideFile = dbAccess.GetEditOutSideFileData(id);
+            vm.EditModel.CancelDay = dbAccess.GetCancelDay().QueryFieldByDT("TripCancel");
 
-            return View(vm);
+            vm.EditModel.HasOutSide = "0";
+            if (vm.EditModel.LstOutSideFile.Count > 0)
+                vm.EditModel.HasOutSide = "1";
+            
+                return View(vm);
         }
 
         #region Jquery
@@ -633,5 +644,135 @@ namespace WebPccuClub.Controllers
             return RedirectToAction("ActFinish");
         }
 
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> EditOldData(ClubActReportViewModel vm)
+        {
+            try
+            {
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("File"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("ActOutSide", file);
+
+                            ActListFilesModel model = new ActListFilesModel();
+                            model.FileName = file.FileName;
+                            model.FilePath = strFilePath;
+
+                            vm.EditModel.LstOutSideFile.Add(model);
+                        }
+                        else if (Request.Form.Files[i].Name.Contains("Proposal"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("ActProposal", file);
+
+                            ActListFilesModel model = new ActListFilesModel();
+                            model.FileName = file.FileName;
+                            model.FilePath = strFilePath;
+
+                            vm.EditModel.LstProposal.Add(model);
+                        }
+                    }
+                }
+
+                dbAccess.DbaInitialTransaction();
+
+                string ActId = vm.EditModel.ActID;
+                string ActDetailId = vm.EditModel.ActDetailID;
+
+                var dbResult = dbAccess.UpdateActDetailData(vm, LoginUser);
+
+                if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
+                if (vm.EditModel.LstProposal.Count > 0)
+                {
+                    dbResult = dbAccess.InsertActProposalData(vm, ActId, ActDetailId, LoginUser, true);
+
+                    if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "修改失敗";
+                        return Json(vmRtn);
+                    }
+                }
+
+                if (vm.EditModel.HasOutSide == "1")
+                {
+                    dbResult = dbAccess.UpdateOutSideData(vm, ActId, ActDetailId, LoginUser);
+
+                    if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "修改失敗";
+                        return Json(vmRtn);
+                    }
+
+                    dbResult = dbAccess.InsertOutSideFileData(vm, ActId, ActDetailId, LoginUser, true);
+
+                    if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "修改失敗";
+                        return Json(vmRtn);
+                    }
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+        [Log(LogActionChineseName.行程取消)]
+        [ValidateInput(false)]
+        public IActionResult CancelRundown(string Ser)
+        {
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.CancelRundown(Ser);
+
+                if (!dbResult.isSuccess)
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "取消失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "取消失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
     }
 }

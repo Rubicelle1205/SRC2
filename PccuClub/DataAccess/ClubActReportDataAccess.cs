@@ -408,14 +408,18 @@ namespace WebPccuClub.DataAccess
 
         }
 
-        public DbExecuteInfo InsertActProposalData(ClubActReportViewModel vm, string ActId, string ActDetailId, UserInfo LoginUser)
+        public DbExecuteInfo InsertActProposalData(ClubActReportViewModel vm, string ActId, string ActDetailId, UserInfo LoginUser, bool IsEdit = false)
         {
             DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
             string CommendText = string.Empty;
 
-            List<ActListFilesModel> dataList = vm.CreateModel.LstProposal;
+            List<ActListFilesModel> dataList = new List<ActListFilesModel>();
+            if (IsEdit)
+                dataList = vm.EditModel.LstProposal;
+            else
+                dataList = vm.CreateModel.LstProposal;
 
 
             #region 參數設定
@@ -498,14 +502,19 @@ namespace WebPccuClub.DataAccess
             return ExecuteResult;
         }
 
-        public DbExecuteInfo InsertOutSideFileData(ClubActReportViewModel vm, string ActId, string ActDetailId, UserInfo LoginUser)
+        public DbExecuteInfo InsertOutSideFileData(ClubActReportViewModel vm, string ActId, string ActDetailId, UserInfo LoginUser, bool IsEdit = false)
         {
             DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
             string CommendText = string.Empty;
 
-            List<ActListFilesModel> dataList = vm.CreateModel.LstOutSideFile;
+            List<ActListFilesModel> dataList = new List<ActListFilesModel>();
+
+            if (IsEdit)
+                dataList = vm.EditModel.LstOutSideFile;
+            else
+                dataList = vm.CreateModel.LstOutSideFile;
 
 
             #region 參數設定
@@ -535,6 +544,114 @@ namespace WebPccuClub.DataAccess
             return ExecuteResult;
         }
         #endregion
+
+        #region 編輯
+
+        public DbExecuteInfo UpdateActDetailData(ClubActReportViewModel vm, UserInfo LoginUser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ActDetailID", vm.EditModel.ActDetailID);
+            parameters.Add("@ActName", vm.EditModel.ActName);
+            parameters.Add("@StaticOrDynamic", vm.EditModel.StaticOrDynamic);
+            parameters.Add("@ActInOrOut", vm.EditModel.ActInOrOut);
+            parameters.Add("@Capacity", vm.EditModel.Capacity);
+            parameters.Add("@ActType", vm.EditModel.ActType);
+            parameters.Add("@UseITEquip", vm.EditModel.UseITEquip);
+            parameters.Add("@ShortDesc", vm.EditModel.ShortDesc);
+            parameters.Add("@SDGs", vm.EditModel.SDGs);
+            parameters.Add("@PassPort", vm.EditModel.PassPort);
+
+            parameters.Add("@LoginID", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"UPDATE ActDetail 
+                                       SET ActName = @ActName, 
+                                            Capacity = @Capacity, 
+                                            ActType = @ActType, 
+                                            SDGs = @SDGs, 
+                                            StaticOrDynamic = @StaticOrDynamic, 
+                                            ActInOrOut = @ActInOrOut, 
+                                            UseITEquip = @UseITEquip, 
+                                            PassPort = @PassPort, 
+                                            ShortDesc = @ShortDesc, 
+                                            LastModifier = @LoginID, 
+                                            LastModified = GETDATE()
+                                     WHERE ActDetailId = @ActDetailID ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        public DbExecuteInfo UpdateOutSideData(ClubActReportViewModel vm, string ActId, string ActDetailId, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+            string CommendText = string.Empty;
+
+            #region 參數設定
+            parameters.Add("@ActID", ActId);
+            parameters.Add("@ActDetailId", ActDetailId);
+
+            parameters.Add("@LeaderName", vm.EditModel.LeaderName);
+            parameters.Add("@LeaderTel", vm.EditModel.LeaderTel);
+            parameters.Add("@LeaderPhone", vm.EditModel.LeaderPhone);
+            parameters.Add("@ManagerName", vm.EditModel.ManagerName);
+            parameters.Add("@ManagerTel", vm.EditModel.ManagerTel);
+            parameters.Add("@ManagerPhone", vm.EditModel.ManagerPhone);
+
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            CommendText = $@"UPDATE ActOutSideInfo 
+                                SET LeaderName = @LeaderName, 
+                                    LeaderTel = @LeaderTel, 
+                                    LeaderPhone = @LeaderPhone, 
+                                    ManagerName = @ManagerName, 
+                                    ManagerTel = @ManagerTel, 
+                                    ManagerPhone = @ManagerPhone, 
+                                    LastModifier = @LoginId, 
+                                    LastModified = GETDATE() 
+                              WHERE ActID = @ActID AND ActDetailId = @ActDetailId";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        /// <summary> 取消行程 </summary>
+        public DbExecuteInfo CancelRundown(string ser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string[] arr = ser.Split("|");
+
+            #region 參數設定
+            parameters.Add("@ActRundownID", arr[1]);
+            #endregion 參數設定
+
+            string CommendText = string.Empty;
+
+            if (arr[0] == "01")
+            {
+                CommendText = $@"UPDATE ActRundown SET RundownStatus = '02' WHERE ActRundownID = @ActRundownID ";
+            }
+            else
+            {
+                CommendText = $@"UPDATE ActRundownElse SET RundownStatus = '02' WHERE ActRundownID = @ActRundownID ";
+            }
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+        #endregion
+
 
         public List<SelectListItem> GetSchoolYear()
         {
@@ -579,5 +696,6 @@ namespace WebPccuClub.DataAccess
 
             return str;
         }
+
     }
 }
