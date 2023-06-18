@@ -113,64 +113,71 @@
                                     </tr>
                                     <tr>
                                         <th width="15%">
-                                            使用紀錄表<span class="required"></span><span class="mx-1"
-                                                                                     data-toggle="tooltip"
-                                                                                     data-bs-placement="top"
-                                                                                     title=""
-                                                                                     data-original-title="無限制檔案類型">
-                                                <i class="fa-regular fa-circle-question"
-                                                   aria-hidden="true"></i>
-                                            </span>
+                                            使用紀錄表<span class="required">*</span>
+                                            <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">若重新上傳將會覆蓋原始檔案...</span>
                                         </th>
                                         <td>
-                                            <label class="btn btn-outline-primary mb-0">
-                                                @Html.TextBoxFor(m => m.Handover0205Model.UseRecord, new { @style="display:none;", @class="form-control", type="file", accept=".docx,.doc,.odt,.pdf"})
-                                                </i> 上傳檔案
-                                            </label>
-                                            <span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                            <div class="d-block mb-1 item">
+                                                <label class="btn btn-outline-primary mb-0">
+                                                    @Html.TextBoxFor(m => m.Handover0205Model.UseRecord, new { @style="display:none;", @class="filesupload", type="file", accept=".pdf,.jpg,.jpeg,.png"})
+                                                    <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                                </label>
+                                                <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                            </div>
+                                            <br />
+                                            <div>
+                                                <a class="text-sm text-muted" href="../@Model.Handover0205Model.UseRecord" target="_blank">
+                                                    <i class="fa-regular fa-file mr-2"></i>@Model.Handover0205Model.UseRecordName
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th width="15%">
-                                            社團社產資料<span class="required">*</span><span class="mx-1"
-                                                                                       data-toggle="tooltip"
-                                                                                       data-bs-placement="top"
-                                                                                       title=""
-                                                                                       data-original-title="無限制檔案類型">
-                                                <i class="fa-regular fa-circle-question"
-                                                   aria-hidden="true"></i>
-                                            </span>
+                                            社團社產資料<span class="required">*</span>
+                                            <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">若重新上傳將會覆蓋原始檔案...</span>
                                         </th>
                                         <td>
-                                            <label class="btn btn-outline-primary mb-0">
-                                                @Html.TextBoxFor(m => m.Handover0205Model.ClubProperty, new { @style="display:none;", @class="form-control", type="file", accept=".docx,.doc,.odt,.pdf"})
-                                                </i> 上傳檔案
-                                            </label>
-                                            <!-- 若有檔案時 -->
-                                            <span class="text-sm mx-2 text-danger" id="filename">
-                                                <i class="fa-solid fa-circle-exclamation"></i> 若重新上傳將會覆蓋原始檔案...
-                                            </span>
+                                            <div class="d-block mb-1 item">
+                                                <label class="btn btn-outline-primary mb-0">
+                                                    @Html.TextBoxFor(m => m.Handover0205Model.ClubProperty, new { @style="display:none;", @class="filesupload", type="file", accept=".pdf,.jpg,.jpeg,.png"})
+                                                    <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                                </label>
+                                                <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                            </div>
+                                            <br />
+                                            <div>
+                                                <a class="text-sm text-muted" href="../@Model.Handover0205Model.ClubProperty" target="_blank">
+                                                    <i class="fa-regular fa-file mr-2"></i>@Model.Handover0205Model.ClubPropertyName
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th width="15%">
-                                            社團校產資料<span class="required"></span><span class="mx-1"
-                                                                                      data-toggle="tooltip"
-                                                                                      data-bs-placement="top"
-                                                                                      title=""
-                                                                                      data-original-title="無限制檔案類型">
-                                                <i class="fa-regular fa-circle-question"
-                                                   aria-hidden="true"></i>
-                                            </span>
+                                            社團校產資料<span class="required"></span>
+                                            <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">若重新上傳將會覆蓋原始檔案...</span>
                                         </th>
                                         <td>
-                                            <label class="btn btn-outline-primary mb-0">
-
-                                                @Html.TextBoxFor(m => m.Handover0205Model.ClubProperty, new { @style="display:none;", @class="form-control", type="file", accept=".docx,.doc,.odt,.pdf"})
-
-                                                </i> 上傳檔案
-                                            </label>
-                                            <span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                            <div class="d-block mb-1 item">
+                                                <label class="btn btn-outline-primary mb-0">
+                                                    @Html.TextBoxFor(m => m.Handover0205Model.SchoolProperty, new { @style="display:none;", @class="filesupload", type="file", accept=".pdf,.jpg,.jpeg,.png"})
+                                                    <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                                </label>
+                                                <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                            </div>
+                                            <br />
+                                            <div>
+                                                <a class="text-sm text-muted" href="../@Model.Handover0205Model.SchoolProperty" target="_blank">
+                                                    <i class="fa-regular fa-file mr-2"></i>@Model.Handover0205Model.SchoolPropertyName
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
 
@@ -327,4 +334,11 @@
         });
 
     }
+
+    $(".fa-circle-question").tooltip({ title: "僅接受 .pdf, .jpg, .jpeg, .png" });
+
+    $(document).on('change', ".filesupload", function (e) {
+        var filename = e.target.files[0].name;
+        $(this).closest('.item').find('.text-muted#filename').text(filename);
+    });
 </script>

@@ -145,17 +145,24 @@
                                 <tr>
                                     <th width="15%">
                                         成績單<span class="required">*</span>
-                                            <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
-                                            <br />
-                                               <span class="text-xs text-danger font-weight-normal">成績單請以連同本表以附件檢附，應為正本向學校申請之有效文件。</span>
-                                        </span>
+                                        <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                        <br />
+                                        <span class="text-xs text-danger font-weight-normal">成績單請以連同本表以附件檢附，應為正本向學校申請之有效文件。</span>
                                     </th>
                                     <td>
-                                        <label class="btn btn-outline-primary mb-0">
-                                                    @Html.TextBoxFor(m => m.Handover0103Model.Transcript, new { @style="display:none;", @class="form-control", type="file", accept=".pdf,.jpg,.jpeg,.png"})
-                                            <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
-                                        </label>
-                                        <span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                        <div class="d-block mb-1 item">
+                                            <label class="btn btn-outline-primary mb-0">
+                                                        @Html.TextBoxFor(m => m.Handover0103Model.Transcript, new { @style="display:none;", @class="filesupload", type="file", accept=".pdf,.jpg,.jpeg,.png"})
+                                                <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                            </label>
+                                            <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                        </div>
+                                        <br />
+                                        <div>
+                                            <a class="text-sm text-muted" href="../@Model.Handover0103Model.Transcript" target="_blank">
+                                                <i class="fa-regular fa-file mr-2"></i>@Model.Handover0103Model.TranscriptName
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
@@ -401,5 +408,13 @@
         $('@Html.NameFor(m => m.Handover0103Model.NoTwoPosition)').val("");
 
     }
+
+    $(document).ready(function () {
+        $(document).on('change', ".filesupload", function (e) {
+            var filename = e.target.files[0].name;
+            $(this).closest('.item').find('.text-muted#filename').text(filename);
+        });
+
+    });
 
 </script>

@@ -126,42 +126,54 @@
                                 </tr>
                                 <tr>
                                     <th width="15%">
-                                        當日會議記錄<span class="required">*</span><span class="mx-1"
-                                                                                   data-toggle="tooltip"
-                                                                                   data-bs-placement="top"
-                                                                                   title=""
-                                                                                   data-original-title="僅接受.docx、.doc、.odt、.pdf檔">
-                                            <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
-                                        </span>
+                                        當日會議記錄<span class="required">*</span>
+                                        <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                        <br />
+                                        <span class="text-xs text-danger font-weight-normal">若重新上傳將會覆蓋原始檔案...</span>
                                     </th>
                                     <td>
-                                        <label class="btn btn-outline-primary mb-0">
-                                                @Html.TextBoxFor(m => m.Handover0102Model.MeetingRecord, new { @style="display:none;", @class="form-control",  type="file", placeholder="當日會議記錄上傳", accept=".docx,.doc,.odt,.pdf" })
-                                            <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
-                                        </label><span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                        <div class="d-block mb-1 item">
+                                            <label class="btn btn-outline-primary mb-0">
+                                                    @Html.TextBoxFor(m => m.Handover0102Model.MeetingRecord, new { @style="display:none;", @class="filesupload", type="file", accept = ".docx,.doc,.odt,.pdf"})
+                                                <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                            </label>
+                                            <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                        </div>
+                                        <br />
+                                        <div>
+                                            <a class="text-sm text-muted" href="../@Model.Handover0102Model.MeetingRecord" target="_blank">
+                                                <i class="fa-regular fa-file mr-2"></i>@Model.Handover0102Model.MeetingRecordName
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th width="15%">
-                                        當日會議簽到表<span class="required">*</span><span class="mx-1"
-                                                                                    data-toggle="tooltip"
-                                                                                    data-bs-placement="top"
-                                                                                    title=""
-                                                                                    data-original-title="僅接受.docx、.doc、.odt、.pdf、.jpg、.jpeg、.png、.zip、.7z檔僅接受.docx、.doc、.odt、.pdf、.jpg、.jpeg、.png、.zip、.7z檔">
-                                            <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
-                                        </span>
+                                        當日會議簽到表<span class="required">*</span>
+                                        <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                        <br />
+                                        <span class="text-xs text-danger font-weight-normal">若重新上傳將會覆蓋原始檔案...</span>
                                     </th>
                                     <td>
-                                        <label class="btn btn-outline-primary mb-0">
-                                                @Html.TextBoxFor(m => m.Handover0102Model.MeetingSign, new { @style="display:none;", @class="form-control", @display="none", type="file", placeholder="當日會議簽到表上傳", accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z" })
-                                            <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
-                                        </label><span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                        <div class="d-block mb-1 item">
+                                            <label class="btn btn-outline-primary mb-0">
+                                                    @Html.TextBoxFor(m => m.Handover0102Model.MeetingSign, new { @style="display:none;", @class="filesupload", type="file", accept = ".docx,.doc,.odt,.pdf"})
+                                                <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                            </label>
+                                            <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                        </div>
+                                        <br />
+                                        <div>
+                                            <a class="text-sm text-muted" href="../@Model.Handover0102Model.MeetingSign" target="_blank">
+                                                <i class="fa-regular fa-file mr-2"></i>@Model.Handover0102Model.MeetingSignName
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         @Html.HiddenFor(m => m.Handover0102Model.HoID)
                         @Html.HiddenFor(m => m.Handover0102Model.IsEdit)
                         @Html.HiddenFor(m => m.Handover0102Model.HoDetailID)
@@ -214,7 +226,7 @@
 
         if (typeof MeetingRecord !== 'undefined') {
             var fileExtension = MeetingRecord.name.split('.').pop().toLowerCase();
-
+            
             if (fileExtension !== 'docx' && fileExtension !== 'doc' && fileExtension !== 'odt' && fileExtension !== 'pdf') {
                 $.alert("檔案類型不符合");
                 return;
@@ -231,11 +243,8 @@
 
         if (typeof MeetingSign !== 'undefined') {
             var fileExtension = MeetingSign.name.split('.').pop().toLowerCase();
-
-            if (fileExtension !== 'pdf' && fileExtension !== 'jpg' &&
-                fileExtension !== 'jpeg' && fileExtension !== 'png' &&
-                fileExtension !== 'zip' && fileExtension !== 'rar' &&
-                fileExtension !== '7z') {
+            
+            if (fileExtension !== 'docx' && fileExtension !== 'doc' && fileExtension !== 'odt' && fileExtension !== 'pdf') {
 
                 $.alert("檔案類型不符合");
                 return;
@@ -326,5 +335,14 @@
         $('#@Html.IdFor(m => m.Handover0102Model.Recorder)').val("");
         $('#@Html.IdFor(m => m.Handover0102Model.NewLeader)').val("");
     }
+
+
+    
+    $(".fa-circle-question").tooltip({ title: "僅接受 .docx, .doc, .odt, .pdf" });
+
+    $(document).on('change', ".filesupload", function (e) {
+        var filename = e.target.files[0].name;
+        $(this).closest('.item').find('.text-muted#filename').text(filename);
+    });
 
 </script>

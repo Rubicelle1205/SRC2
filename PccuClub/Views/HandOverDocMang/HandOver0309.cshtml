@@ -63,23 +63,25 @@
 
                                 <tr>
                                     <th width="15%">
-                                        存簿封面<span class="required">*</span><span class="mx-1"
-                                                                                 data-toggle="tooltip"
-                                                                                 data-bs-placement="top"
-                                                                                 title=""
-                                                                                 data-original-title="無限制檔案類型">
-                                            <i class="fa-regular fa-circle-question"
-                                               aria-hidden="true"></i>
-                                        </span>
+                                        存簿封面<span class="required">*</span>
+                                        <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                        <br />
+                                        <span class="text-xs text-danger font-weight-normal">若重新上傳將會覆蓋原始檔案...</span>
                                     </th>
                                     <td>
-                                        <label class="btn btn-outline-primary mb-0">
-                                                @Html.TextBoxFor(m => m.Handover0309Model.BookCover, new { @style="display:none;", @class="form-control", type="file", placeholder="請上傳存簿封面", accept=".jpg,.jpeg,.png," })
-                                            <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
-                                        </label>
-                                        <span class="text-sm mx-2 text-danger" id="filename">
-                                            <i class="fa-solid fa-circle-exclamation"></i> 若重新上傳將會覆蓋原始檔案...
-                                        </span>
+                                        <div class="d-block mb-1 item">
+                                            <label class="btn btn-outline-primary mb-0">
+                                                    @Html.TextBoxFor(m => m.Handover0309Model.BookCover, new { @style="display:none;", @class="filesupload", type="file", accept=".pdf,.jpg,.jpeg,.png"})
+                                                <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                            </label>
+                                            <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                        </div>
+                                        <br />
+                                        <div>
+                                            <a class="text-sm text-muted" href="../@Model.Handover0309Model.BookCover" target="_blank">
+                                                <i class="fa-regular fa-file mr-2"></i>@Model.Handover0309Model.BookCoverName
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
@@ -261,4 +263,14 @@
         });
 
     }
+
+
+    $(".fa-circle-question").tooltip({ title: "僅接受 .pdf, .jpg, .jpeg, .png" });
+
+    $(document).on('change', ".filesupload", function (e) {
+        var filename = e.target.files[0].name;
+        $(this).closest('.item').find('.text-muted#filename').text(filename);
+    });
+
+
 </script>

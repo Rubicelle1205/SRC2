@@ -138,10 +138,12 @@
                                             <span class="text-xs text-danger font-weight-normal">可上傳.jpeg,.jpg,.png</span>
                                         </th>
                                         <td style="display:flex;">
-                                            <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
-                                                @Html.TextBoxFor(m => m.EditModel.LogoPath, new { @type = "file", @class="file", accept = ".jpeg,.jpg,.png" })
-                                            </label>
-
+                                            <div class="d-block mb-1 item">
+                                                <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
+                                                    @Html.TextBoxFor(m => m.EditModel.LogoPath, new { @style="display:none;", @class="filesupload", type="file", accept = ".jpeg,.jpg,.png" })
+                                                </label>
+                                                <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                            </div>
                                             @if (LogoPath != null)
                                             {
                                                 <label class="upload_cover img-thumbnail" name="file1_prev">
@@ -156,9 +158,12 @@
                                             <span class="text-xs text-danger font-weight-normal">可上傳.jpeg,.jpg,.png</span>
                                         </th>
                                         <td style="display:flex;">
-                                            <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
-                                                @Html.TextBoxFor(m => m.EditModel.ActImgPath, new { @type = "file", @class="file", accept = ".jpeg,.jpg,.png" })
-                                            </label>
+                                            <div class="d-block mb-1 item">
+                                                <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
+                                                    @Html.TextBoxFor(m => m.EditModel.ActImgPath, new { @style="display:none;", @class="filesupload", type="file", accept = ".jpeg,.jpg,.png" })
+                                                </label>
+                                                <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                            </div>
 
                                             @if (ActImgPath != null)
                                             {
@@ -324,4 +329,10 @@
         });
 
     }
+
+    $(document).on('change', ".filesupload", function (e) {
+        var filename = e.target.files[0].name;
+        $(this).closest('.item').find('.text-muted#filename').text(filename);
+    });
+
 </script>

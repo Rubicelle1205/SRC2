@@ -456,8 +456,10 @@ namespace WebPccuClub.DataAccess
 			parameters.Add("@NewLeader", vm.Handover0102Model.NewLeader);
 			parameters.Add("@MeetingRecord", vm.Handover0102Model.MeetingRecord);
 			parameters.Add("@MeetingSign", vm.Handover0102Model.MeetingSign);
+            parameters.Add("@MeetingRecordName", vm.Handover0102Model.MeetingRecordName);
+            parameters.Add("@MeetingSignName", vm.Handover0102Model.MeetingSignName);
 
-			parameters.Add("@LoginId", LoginUser.LoginId);
+            parameters.Add("@LoginId", LoginUser.LoginId);
 			#endregion 參數設定
 
             string CommendText = $@"UPDATE HandOverDoc02 
@@ -478,6 +480,8 @@ namespace WebPccuClub.DataAccess
                                            NewLeader =@NewLeader,  
                                            MeetingRecord =@MeetingRecord,  
                                            MeetingSign =@MeetingSign,  
+                                           MeetingRecordName =@MeetingRecordName,  
+                                           MeetingSignName =@MeetingSignName,  
                                            LastModifier =@LoginId,
                                            LastModified=GETDATE()
                                      WHERE HoID =@HoID AND HoDetailID=@HoDetailID";
