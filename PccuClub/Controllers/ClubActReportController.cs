@@ -7,6 +7,7 @@ using NPOI.XSSF.Streaming.Values;
 using NPOI.XSSF.UserModel;
 using NPOI.XWPF.UserModel;
 using Org.BouncyCastle.Utilities;
+using PccuClub.WebAuth;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
@@ -29,6 +30,7 @@ namespace WebPccuClub.Controllers
         ClubActReportDataAccess dbAccess = new ClubActReportDataAccess();
 		ActListMangDataAccess dbAccess3 = new ActListMangDataAccess();
 		UploadUtil upload = new UploadUtil();
+        MailUtil mail = new MailUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
@@ -215,13 +217,17 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public async Task<IActionResult> ActFinish()
         {
+            HttpContext.Session.Remove("MyModel");
+
             return View();
         }
 
 		[Log(LogActionChineseName.新增)]
 		public async Task<IActionResult> ActFail()
 		{
-			return View();
+            HttpContext.Session.Remove("MyModel");
+
+            return View();
 		}
 		#endregion
 
@@ -634,6 +640,17 @@ namespace WebPccuClub.Controllers
 				}
 
                 dbAccess.DbaCommit();
+
+
+                string MailBody = GenMailBody(vm, LoginUser);
+                string LifeClass = dbAccess.GetClubLifeClass(LoginUser).QueryFieldByDT("LifeClass");
+                DataTable dtTeacher = dbAccess.GetTeacherByLifeClass(LifeClass);
+
+                foreach (DataRow dr in dtTeacher.Rows)
+                {
+                    mail.ExecuteSendMail(dr["EMail"].ToString(), "活動報備通知", MailBody, System.Net.Mail.MailPriority.High, null);
+                }
+
             }
             catch (Exception ex)
             {
@@ -643,6 +660,7 @@ namespace WebPccuClub.Controllers
 
             return RedirectToAction("ActFinish");
         }
+
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
@@ -774,5 +792,20 @@ namespace WebPccuClub.Controllers
 
             return Json(vmRtn);
         }
+
+
+        #region Private
+
+        private string GenMailBody(ClubActReportViewModel vm, UserInfo LoginUser)
+        {
+            string str = string.Empty;
+
+            str = $@"<p>您好:</p>
+                    <p>社團{LoginUser.LoginId}成立了新的活動報備 - {vm.CreateModel.ActName}</p>";
+
+            return str;
+        }
+
+        #endregion
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using DataAccess;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using PccuClub.WebAuth;
 using System.Data;
 using System.Drawing;
 using WebPccuClub.Global.Extension;
@@ -660,9 +661,48 @@ namespace WebPccuClub.Global
 			return ds.Tables[0];
 		}
 
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
-	}
+        public DataTable GetClubLifeClass(UserInfo LoginUser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			parameters.Add("@ClubId", LoginUser.LoginId);
+            #endregion
+
+            CommandText = $@"SELECT ClubId, LifeClass FROM ClubMang WHERE ClubId = @ClubId";
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            return ds.Tables[0];
+        }
+
+        public DataTable GetTeacherByLifeClass(string LifeClass)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@LifeClass", LifeClass);
+            #endregion
+
+            CommandText = $@"SELECT B.LoginId, B.EMail, A.LifeClass
+							   FROM MatchLifeClass A
+						  LEFT JOIN UserMain B ON B.LoginId = A.MatchID
+							  WHERE A.LifeClass = @LifeClass";
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            return ds.Tables[0];
+        }
+
+    }
 }

@@ -97,7 +97,7 @@ namespace WebPccuClub.Controllers
                 loginEntity.Issuccess = true;
                 loginEntity.Loginid = user.LoginId;
 
-                HttpContext.Session.SetObject("LoginUser", LoginUser);
+                HttpContext.Session.SetObject("FLoginUser", LoginUser);
 
                 UpdateLoginInfo(LoginUser);
                 InsertLoginLog(loginEntity);
@@ -176,7 +176,7 @@ namespace WebPccuClub.Controllers
                 LoginUser.LastModifier = user.LoginId;
                 loginEntity.Issuccess = true;
 
-                HttpContext.Session.SetObject("LoginUser", LoginUser);
+                HttpContext.Session.SetObject("FLoginUser", LoginUser);
 
                 UpdateLoginInfo(LoginUser);
                 InsertLoginLog(loginEntity);

@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Http
 
 @{
-    UserInfo LoginUser = Context.Session.GetObject<UserInfo>("LoginUser");
+    UserInfo LoginUser = Context.Session.GetObject<UserInfo>("FLoginUser");
 
     string UnitName = string.Empty;
     string LoginId = string.Empty;
