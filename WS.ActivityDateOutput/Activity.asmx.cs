@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 using System;
 using WebPccuClub.Models;
 using System.Security.Policy;
+using System.Configuration;
+using System.Data.SqlClient;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace WebPccuClub.WS.ActivityDateOuput
 {
@@ -18,38 +21,49 @@ namespace WebPccuClub.WS.ActivityDateOuput
     public class Activity : System.Web.Services.WebService
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
+        string connectionString = ConfigurationManager.ConnectionStrings["DefaultDatabase"].ConnectionString;
 
         [WebMethod]
         public string GetActivityData(string SDate, string EDate)
         {
-            string chkStr = ChkDate(SDate, EDate);
+            string startDate = string.Empty;
+            string endDate = string.Empty;
+
+            string chkStr = ChkDate(SDate, EDate, out startDate, out endDate);
 
             if (chkStr != "")
                 return chkStr;
 
-            DataTable dt = new DataTable();
+            string query = $@"SELECT ActPlaceID AS SpaceID, ActPlaceText AS SpaceName, [Date] + ' ' + STime + ':00:00' AS UnitBegin
+                                FROM ActRundown
+                               WHERE  1 = 1 
+                                 AND RundownStatus = '01' 
+                                 AND [Date] BETWEEN '{startDate}' AND '{endDate}' ";
 
-            dt.Columns.Add("SpaceID");
-            dt.Columns.Add("SpaceName");
-            dt.Columns.Add("UnitBegin");
 
-            for (int i = 0; i <= 3; i++)
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                DataRow dr = dt.NewRow();
+                connection.Open();
 
-                dr["SpaceID"] = "SP0000" + i.ToString();
-                dr["SpaceName"] = "恩100" + i.ToString();
-                dr["UnitBegin"] = "09:00";
-                dt.Rows.Add(dr);
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    SqlDataAdapter adapter = new SqlDataAdapter(command);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+
+                    return JsonConvert.SerializeObject(dataTable);
+                }
             }
-
-            return JsonConvert.SerializeObject(dt);
         }
 
-        private string ChkDate(string SDate, string EDate)
+        private string ChkDate(string SDate, string EDate, out string startDate, out string endDate)
         {
+            startDate = "";
+            endDate = "";
+
             DateTime d1 = new DateTime();
             DateTime d2 = new DateTime();
+
             string f1 = SDate.Length == 8 ? DateTime.TryParse(string.Format("{0}-{1}-{2}", SDate.Substring(0, 4), SDate.Substring(4, 2), SDate.Substring(6, 2)), out d1) ? string.Format("{0}-{1}-{2}", SDate.Substring(0, 4), SDate.Substring(4, 2), SDate.Substring(6, 2)) : "error" : "error";
             string f2 = EDate.Length == 8 ? DateTime.TryParse(string.Format("{0}-{1}-{2}", EDate.Substring(0, 4), EDate.Substring(4, 2), EDate.Substring(6, 2)), out d2) ? string.Format("{0}-{1}-{2}", EDate.Substring(0, 4), EDate.Substring(4, 2), EDate.Substring(6, 2)) : "error" : "error";
             string f3 = f1 != "error" && f2 != "error" ? GetDay(f1, f2) : "error";
@@ -66,6 +80,10 @@ namespace WebPccuClub.WS.ActivityDateOuput
                 vmRtn.ErrorMsg = "輸入期間超過90天限制";
                 return JsonConvert.SerializeObject(vmRtn);
             }
+
+            startDate = d1.ToString("yyyy-MM-dd 00:00:00");
+            endDate = d2.ToString("yyyy-MM-dd 23:59:59");
+
             return "";
         }
         private static string GetDay(string f1, string f2)
