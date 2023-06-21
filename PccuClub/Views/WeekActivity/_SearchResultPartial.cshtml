@@ -2,12 +2,13 @@
 
 @if (Model.ResultModel.Count > 0)
 {
+
     <div class="timetableInner d-flex">
         <div class="days-wrap d-flex">
-    @foreach (var item in Model.ResultModel)
-    {
-            <div class="dayItem d-flex">
-                <div class="date">@DateTime.Parse(item.Date).ToString("yyyy/MM/dd")</div>
+            @foreach (var item in Model.ResultModel)
+            {
+                <div class="dayItem d-flex">
+                    <div class="date">@DateTime.Parse(item.Date).ToString("yyyy/MM/dd")</div>
 
                     @foreach (var item2 in item.LstPlaceData)
                     {
@@ -31,8 +32,8 @@
                             }
                         </div>
                     }
-            </div>
-    }
+                </div>
+            }
         </div>
     </div>
 }
@@ -41,6 +42,17 @@
 
 <script>
 
-    
+    function timetableHeight() {
+        if ($(window).width() > 575) {
+            var maxHeight = 0;
+
+            $(".timetableWrapper .classItem").each(function () {
+                var thisH = $(this).height();
+                if (thisH > maxHeight) { maxHeight = thisH; }
+            });
+
+            $(".timetableWrapper .classItem").height(maxHeight);
+        }
+    }
 
 </script>
