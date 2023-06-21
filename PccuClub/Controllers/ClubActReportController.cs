@@ -113,23 +113,32 @@ namespace WebPccuClub.Controllers
         {
             ClubActReportViewModel vm3 = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
 
-            if (Request.Form.Files.Count > 0)
+
+            if (vm.CreateModel == null)
             {
-                for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                vm = vm3;
+            }
+            else
+            {
+                if (Request.Form.Files.Count > 0)
                 {
-                  if (Request.Form.Files[i].Name.Contains("Proposal"))
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
                     {
-                        var file = Request.Form.Files[i];
+                        if (Request.Form.Files[i].Name.Contains("Proposal"))
+                        {
+                            var file = Request.Form.Files[i];
 
-                        string strFilePath = await upload.UploadFileAsync("ActProposal", file);
+                            string strFilePath = await upload.UploadFileAsync("ActProposal", file);
 
-                        ActListFilesModel model = new ActListFilesModel();
-                        model.FileName = file.FileName;
-                        model.FilePath = strFilePath;
+                            ActListFilesModel model = new ActListFilesModel();
+                            model.FileName = file.FileName;
+                            model.FilePath = strFilePath;
 
-                        vm3.CreateModel.LstProposal.Add(model);
+                            vm3.CreateModel.LstProposal.Add(model);
+                        }
                     }
                 }
+
             }
 
             HttpContext.Session.SetObject("MyModel", vm3);
