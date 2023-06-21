@@ -331,8 +331,19 @@
     }
 
     $(document).on('change', ".filesupload", function (e) {
-        var filename = e.target.files[0].name;
-        $(this).closest('.item').find('.text-muted#filename').text(filename);
+        var file = e.target.files[0];
+
+        $(this).closest('.item').find('.text-muted#filename').text(file.name);
+        
+        var reader = new FileReader();
+        var $closestLabel = $(this).closest('label.upload_cover');
+
+        reader.onload = function (e) {
+            $closestLabel.css('background-image', 'url(' + e.target.result + ')');
+        };
+
+        reader.readAsDataURL(file);
+
     });
 
 </script>
