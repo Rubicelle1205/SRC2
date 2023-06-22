@@ -145,7 +145,7 @@ AND (@LifeClass IS NULL OR A.LifeClass = @LifeClass)
 
             string CommendText = string.Empty;
 
-            CommendText = $@"DELETE FUserMain WHERE FUserId = @OldFUserId";
+            CommendText = $@"UPDATE FUserMain SET IsEnable = 0 WHERE FUserId = @OldFUserId";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -219,11 +219,11 @@ AND (@LifeClass IS NULL OR A.LifeClass = @LifeClass)
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
-            string CommendText = string.Empty;
 
             #region 參數設定
             parameters.Add("@ClubId", vm.EditModel.ClubId);
-            parameters.Add("@FUserId", vm.EditModel.OldFUserId);
+            parameters.Add("@OldFUserId", vm.EditModel.OldFUserId);
+            parameters.Add("@FUserId", vm.EditModel.FUserId);
             parameters.Add("@IsEnable", vm.EditModel.IsEnable);
             parameters.Add("@UserName", vm.EditModel.UserName);
             parameters.Add("@Department", vm.EditModel.Department);
@@ -234,7 +234,16 @@ AND (@LifeClass IS NULL OR A.LifeClass = @LifeClass)
             parameters.Add("@LastModifier", LoginUser.LoginId);
             #endregion 參數設定
 
-            CommendText = $@"UPDATE FUserMain 
+
+            string CommendText = string.Empty;
+
+            CommendText = $@"UPDATE FUserMain SET IsEnable = 0 WHERE FUserId = @OldFUserId";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            if (ExecuteResult.isSuccess)
+            {
+                CommendText = $@"UPDATE FUserMain 
                                 SET UserName = @UserName,
                                     EMail = @EMail,
                                     CellPhone = @CellPhone,
@@ -245,8 +254,8 @@ AND (@LifeClass IS NULL OR A.LifeClass = @LifeClass)
                                     LastModified = GETDATE()
                               WHERE FUserId = @FUserId ";
 
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
+                ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+            }
             return ExecuteResult;
         }
 
