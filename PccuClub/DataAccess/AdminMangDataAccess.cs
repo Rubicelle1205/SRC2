@@ -215,6 +215,7 @@ AND (A.LoginId = @LoginId)";
                 parameters.Add("@Password", EncryptPw);
                 parameters.Add("@UserName", vm.EditModel.UserName.TrimStartAndEnd());
                 parameters.Add("@EMail", vm.EditModel.EMail.TrimStartAndEnd());
+                parameters.Add("@IsEnable", vm.EditModel.IsEnable == "True" ? "1" : "0");
                 parameters.Add("@Memo", vm.EditModel.Memo.TrimStartAndEnd());
 
                 parameters.Add("@LastModifier", LoginUser.LoginId);
@@ -224,6 +225,7 @@ AND (A.LoginId = @LoginId)";
                                 SET Password = @Password,
                                     UserName = @UserName,
                                     EMail = @EMail,
+                                    IsEnable = @IsEnable,
                                     Memo = @Memo,
                                     LastModifier = @LastModifier,
                                     LastModified = GETDATE()
@@ -236,6 +238,8 @@ AND (A.LoginId = @LoginId)";
                 parameters.Add("@LoginId", vm.EditModel.LoginId.TrimStartAndEnd());
                 parameters.Add("@UserName", vm.EditModel.UserName.TrimStartAndEnd());
                 parameters.Add("@EMail", vm.EditModel.EMail.TrimStartAndEnd());
+                parameters.Add("@IsEnable", vm.EditModel.IsEnable == "True" ? "1" : "0");
+
                 parameters.Add("@Memo", vm.EditModel.Memo.TrimStartAndEnd());
 
                 parameters.Add("@LastModifier", LoginUser.LoginId);
@@ -244,6 +248,7 @@ AND (A.LoginId = @LoginId)";
                 CommendText = $@"UPDATE UserMain 
                                 SET UserName = @UserName,
                                     EMail = @EMail,
+                                    IsEnable = @IsEnable,
                                     Memo = @Memo,
                                     LastModifier = @LastModifier,
                                     LastModified = GETDATE()

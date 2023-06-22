@@ -31,8 +31,8 @@ $(function () {
         if ((location.pathname).indexOf("Personal") >= 0 || (location.pathname).indexOf("AdminMang") >= 0 ||
             (location.pathname).indexOf("UserMang") >= 0 || (location.pathname).indexOf("ClubMang") >= 0 ) {
             // 密碼驗證
-            $('[id$=Password]').blur(function () {
-                var result = validatePasswd('[id$=Password]', '#passwdRules', 6, 15)
+            $('[id$=Pwd]').blur(function () {
+                var result = validatePasswd('[id$=Pwd]', '#passwdRules', 6, 15)
                 if (!result) {
                     $(this).addClass('is-invalid');
                     $('[name=post]').prop('disabled', true);
@@ -44,7 +44,7 @@ $(function () {
 
             // 密碼 明文、密文
             $('[id^=pwvisible]').click(function () {
-                var password = $(this).parents('td').find('input[id$=Password]');
+                var password = $(this).parents('td').find('input[id$=Pwd]');
                 var type = password.attr("type");
 
                 if (type === "text") {

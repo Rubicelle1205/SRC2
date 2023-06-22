@@ -85,8 +85,8 @@ namespace WebPccuClub.Controllers
                 if (!isAuth)
                 {
                     user.ErrorCount += 1;
-                    loginEntity.Memo = "密碼錯誤";
-                    throw new Exception("登入失敗，密碼錯誤!");
+                    loginEntity.Memo = "密碼錯誤或尚未啟用";
+                    throw new Exception("登入失敗，密碼錯誤或尚未啟用!");
                 }
 
                 HttpContext.Session.Clear();

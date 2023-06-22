@@ -146,7 +146,7 @@
     <script src="~/dist/js/adminlte.js"></script>
     <script src="~/ckeditor/ckeditor.js"></script>
     <script src="~/ckfinder/ckfinder.js"></script>
-    <script src="~/dist/js/backend.js"></script>
+    <script src=@string.Format("~/dist/js/backend.js?{0}", DateTime.Now.ToString("HHmmss"))></script>
 
     <script src="~/js/main.js"></script>
     <script src="~/js/BlockUI.js"></script>
