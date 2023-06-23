@@ -1,16 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NPOI.SS.Formula.Functions;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
-using System;
-using System.ComponentModel;
 using System.Data;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Reflection;
 using System.Web.Mvc;
-using System.Web.WebPages;
-using Utility;
 using WebPccuClub.DataAccess;
 using WebPccuClub.Global;
 using WebPccuClub.Models;
@@ -301,7 +293,25 @@ namespace WebPccuClub.Controllers
             return Json(vmRtn);
         }
 
-       
+        [ValidateInput(false)]
+        public IActionResult GetPlaceData(string selectedBuildId)
+        {
+            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstPlaceData = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>();
+
+            try
+            {
+                LstPlaceData = dbAccess.GetPlaceData(selectedBuildId);
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "取得資料失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(LstPlaceData);
+        }
 
         private string[] GetSelectedWeek(string[] arr)
         {
@@ -339,6 +349,8 @@ namespace WebPccuClub.Controllers
 
             return LstSelectedWeek.ToArray();
         }
+
+
 
         //檢核
         private bool ChkCanBatchData(PlaceSchoolMangViewModel vm, List<DateTime> dates, List<int> hours, out string msg)

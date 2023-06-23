@@ -120,6 +120,32 @@
 
 <script>
 
+    $(document).ready(function () {
+        $('#@Html.IdFor(m => m.BatchAddActModel.BuildId)').change(function () {
+            var selectedBuildId = $(this).val();
+            $('#@Html.IdFor(m => m.BatchAddActModel.PlaceID)').empty();
+
+            if (selectedBuildId) {
+                $.ajax({
+                    url: '@Url.Action("GetPlaceData")',
+                    type: 'POST',
+                    data: { selectedBuildId: selectedBuildId },
+                    success: function (response) {
+                        if (response && response.length > 0) {
+                            $('#@Html.IdFor(m => m.BatchAddActModel.PlaceID)').append('<option value="">請選擇場地</option>');
+                            for (var i = 0; i < response.length; i++) {
+                                $('#@Html.IdFor(m => m.BatchAddActModel.PlaceID)').append('<option value="' + response[i].value + '">' + response[i].text + '</option>');
+                            }
+                        }
+                        else { $.alert(result.errorMsg); }
+                    },
+                    error: function () {
+                    }
+                });
+            }
+        });
+    });
+
 
     function SaveData() {
 
@@ -175,7 +201,7 @@
                     $.confirm({
                         title: "",
                         content: "批次新增成功",
-                        buttons: {
+                        buttons: {   
                             確定: function () {
                                 window.location = $("#Back").attr("href");
                             },

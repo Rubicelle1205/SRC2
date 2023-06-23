@@ -26,14 +26,10 @@
                                 @Html.AntiForgeryToken()
 
                                 <div class="col-md-3 col-sm-6 mt-2">
-                                    <label>
-                                        @Html.LabelFor(m => m.ConditionModel.ShortName)
-                                    </label>
-                                    @Html.EditorFor(m => m.ConditionModel.ShortName)
+                                    @Html.TextBoxFor(m => m.ConditionModel.ShortName, new {@class="form-control", placeholder="請輸入簡稱"})
                                 </div>
-                                <div class="col-md-5 col-sm-6 mt-2">
-                                    <label>@Html.LabelFor(m => m.ConditionModel.Desc)</label>
-                                    @Html.EditorFor(m => m.ConditionModel.Desc)
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.TextBoxFor(m => m.ConditionModel.Desc, new {@class="form-control", placeholder="請輸入行政院國發會標準中文翻譯"})
                                 </div>
 
                                 <div class="col-md-12 mt-2 row">
@@ -98,4 +94,7 @@
         $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val("10");
     });
 
+
+    $('#@Html.IdFor(m => m.ConditionModel.ShortName)').tooltip({ title: "簡稱" });
+    $('#@Html.IdFor(m => m.ConditionModel.Desc)').tooltip({ title: "行政院國發會標準中文翻譯" });
 </script>

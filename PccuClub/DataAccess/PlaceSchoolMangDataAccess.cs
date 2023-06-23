@@ -315,7 +315,6 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
                                                 BrrowUnit, 
                                                 Capacity, 
                                                 CreateSource, 
-                                                PlaceSource,
                                                 Memo, 
                                                 Creator, 
                                                 Created, 
@@ -331,7 +330,6 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
                                                 @BorrowType, 
                                                 @LoginId, 
                                                 @Capacity, 
-                                                '01', 
                                                 '01', 
                                                 @Memo, 
                                                 @LoginId, 
@@ -596,7 +594,30 @@ AND (@PlaceName IS NULL OR A.PlaceName LIKE '%' + @PlaceName + '%') ";
             #region 參數設定
             #endregion
 
-            CommandText = @"SELECT PlaceId AS VALUE, PlaceName AS TEXT FROM PlaceSchoolMang";
+            CommandText = @"SELECT '-' AS VALUE, '-' AS TEXT";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetPlaceData(string BuildID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@BuildID", BuildID);
+
+            #endregion
+
+            CommandText = @"SELECT PlaceId AS VALUE, PlaceName AS TEXT FROM PlaceSchoolMang WHERE Buildid = @BuildID";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
