@@ -33,8 +33,8 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@ActHoldType", model.ActHoldType);
             parameters.Add("@CScheName", model.CScheName);
             parameters.Add("@SchoolYear", model.SchoolYear);
-            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
-            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
+            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy-MM-dd 00:00:00") : null);
+            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy-MM-dd 23:59:59") : null);
 
          
             #endregion

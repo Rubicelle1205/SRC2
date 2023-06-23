@@ -25,15 +25,12 @@
                             <div class="row">
                                 @Html.AntiForgeryToken()
 
-                                <div class="col-md-4 col-sm-6 mt-2">
-                                    <label>
-                                        @Html.LabelFor(m => m.ConditionModel.BuildName)
-                                    </label>
-                                    @Html.EditorFor(m => m.ConditionModel.BuildName)
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.TextBoxFor(m => m.ConditionModel.BuildName, new {@class="form-control", placeholder="請輸入樓館名稱"})
                                 </div>
-                                <div class="col-md-5 col-sm-6 mt-2">
-                                    <label>@Html.LabelFor(m => m.ConditionModel.Note)</label>
-                                    @Html.EditorFor(m => m.ConditionModel.Note)
+
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.TextBoxFor(m => m.ConditionModel.Note, new {@class="form-control", placeholder="請輸入備註"})
                                 </div>
 
                                 <div class="col-md-12 mt-2 row">
@@ -97,5 +94,8 @@
     $('input:reset').click(function (e) {
         $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val("10");
     });
+
+    $('#@Html.IdFor(m => m.ConditionModel.BuildName)').tooltip({ title: "樓館名稱" });
+    $('#@Html.IdFor(m => m.ConditionModel.Note)').tooltip({ title: "備註" });
 
 </script>
