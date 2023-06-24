@@ -135,6 +135,11 @@
         if (Sex == "") { $.alert("性別不可為空白"); return; }
         if (CellPhone == "") { $.alert("聯絡電話不可為空白"); return; }
 
+        if (SDuring > EDuring) {
+            $.alert("任職開始日期不可大於任職結束結束日期");
+            return false;
+        }
+
         data.append('@Html.NameFor(m => m.CreateModel.ClubID)', ClubID);
         data.append('@Html.NameFor(m => m.CreateModel.SchoolYear)', SchoolYear);
         data.append('@Html.NameFor(m => m.CreateModel.SDuring)', SDuring);

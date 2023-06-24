@@ -93,6 +93,17 @@
 
     function GoSearch() {
 
+        var fromDate = Date.parse($('#@(Html.IdFor(m => m.ConditionModel.From_ReleaseDate))').val());
+        var toDate = Date.parse($('#@(Html.IdFor(m => m.ConditionModel.To_ReleaseDate))').val());
+        if ((isNaN(fromDate) && !isNaN(toDate)) || (!isNaN(fromDate) && isNaN(toDate))) {
+            $.alert("時間區間未填");
+            return false;
+        }
+        if (fromDate > toDate) {
+            $.alert("開始日期不可大於結束日期");
+            return false;
+        }
+
         SendAjax({
             url: '@Url.Action("GetSearchResult")',
             data: $("#SearchForm").serialize(),
@@ -105,4 +116,16 @@
     function ExportSearchResult() {
         window.open('@Url.Action("ExportSearchResult")' + '?' + $("#SearchForm").serialize());
     }
+
+    $('#@Html.IdFor(m => m.ConditionModel.From_ReleaseDate)').tooltip({ title: "建立時間[起]" });
+    $('#@Html.IdFor(m => m.ConditionModel.To_ReleaseDate)').tooltip({ title: "建立時間[迄]" });
+    $('#@Html.IdFor(m => m.ConditionModel.SchoolYear)').tooltip({ title: "學年度" });
+    $('#@Html.IdFor(m => m.ConditionModel.ActVerify)').tooltip({ title: "審核狀態" });
+    $('#@Html.IdFor(m => m.ConditionModel.ClubID)').tooltip({ title: "社團代號" });
+    $('#@Html.IdFor(m => m.ConditionModel.ClubCName)').tooltip({ title: "社團名稱" });
+    $('#@Html.IdFor(m => m.ConditionModel.Organizer)').tooltip({ title: "主辦單位名稱" });
+    $('#@Html.IdFor(m => m.ConditionModel.AwdActName)').tooltip({ title: "活動名稱" });
+    $('#@Html.IdFor(m => m.ConditionModel.AwdType)').tooltip({ title: "獲獎類別" });
+    $('#@Html.IdFor(m => m.ConditionModel.AwdName)').tooltip({ title: "獎項名稱" });
+
 </script>
