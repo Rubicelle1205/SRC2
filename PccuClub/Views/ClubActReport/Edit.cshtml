@@ -2,6 +2,15 @@
 
 @{
     Layout = "_FrontLayout";
+    ViewBag.Title = "活動報備";
+
+    var ActName = null != Model.EditModel ? !string.IsNullOrEmpty(Model.EditModel.ActName) ? Model.EditModel.ActName : "" : "";
+
+    if (string.IsNullOrEmpty(ActName))
+    {
+        ViewBag.Title = string.Format("活動報備-{0}", ActName);
+    }
+
     List<SelectListItem> LstSDGs = ViewBag.ddlAllSDGs;
     string StrSDGs = string.Empty;
 
