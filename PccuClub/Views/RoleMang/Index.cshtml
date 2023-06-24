@@ -83,6 +83,18 @@
 
 <script>
     function GoSearch() {
+
+        var fromDate = Date.parse($('#@(Html.IdFor(m => m.ConditionModel.From_ReleaseDate))').val());
+        var toDate = Date.parse($('#@(Html.IdFor(m => m.ConditionModel.To_ReleaseDate))').val());
+        if ((isNaN(fromDate) && !isNaN(toDate)) || (!isNaN(fromDate) && isNaN(toDate))) {
+            $.alert("時間區間未填");
+            return false;
+        }
+        if (fromDate > toDate) {
+            $.alert("開始日期不可大於結束日期");
+            return false;
+        }
+
         SendAjax({
             url: '@Url.Action("GetSearchResult")',
             data: $("#SearchForm").serialize(),
