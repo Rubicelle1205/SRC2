@@ -154,6 +154,16 @@
         if (Holiday_STime == "") { $.alert("請輸入假日開始時間"); return; }
         if (Holiday_ETime == "") { $.alert("請輸入假日結束時間"); return; }
 
+        if (Normal_STime > Normal_ETime) {
+            $.alert("平日開始時間不可大於平日結束時間");
+            return false;
+        }
+
+        if (Holiday_STime > Holiday_ETime) {
+            $.alert("假日開始時間不可大於假日結束時間");
+            return false;
+        }
+
         data.append('@Html.NameFor(m => m.EditModel.BuildId)', BuildId);
         data.append('@Html.NameFor(m => m.EditModel.Floor)', Floor);
         data.append('@Html.NameFor(m => m.EditModel.PlaceID)', PlaceID);

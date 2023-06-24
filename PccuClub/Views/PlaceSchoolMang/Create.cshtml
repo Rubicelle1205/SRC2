@@ -157,6 +157,16 @@
         if (Holiday_STime == "") { $.alert("請輸入假日開始時間"); return; }
         if (Holiday_ETime == "") { $.alert("請輸入假日結束時間"); return; }
 
+        if (Normal_STime > Normal_ETime) {
+            $.alert("平日開始時間不可大於平日結束時間");
+            return false;
+        }
+
+        if (Holiday_STime > Holiday_ETime) {
+            $.alert("假日開始時間不可大於假日結束時間");
+            return false;
+        }
+
         data.append('@Html.NameFor(m => m.CreateModel.BuildId)', BuildId);
         data.append('@Html.NameFor(m => m.CreateModel.Floor)', Floor);
         data.append('@Html.NameFor(m => m.CreateModel.PlaceID)', PlaceID);
@@ -170,6 +180,7 @@
         data.append('@Html.NameFor(m => m.CreateModel.Capacity)', Capacity);
         data.append('@Html.NameFor(m => m.CreateModel.PlaceEquip)', PlaceEquip);
         data.append('@Html.NameFor(m => m.CreateModel.Memo)', Memo);
+
 
         SendAjax({
             url: '@Url.Action("SaveNewData")',
