@@ -96,6 +96,7 @@ namespace WebPccuClub.Controllers
                 LoginUser.LastModifier = user.LoginId;
                 loginEntity.Issuccess = true;
                 loginEntity.Loginid = user.LoginId;
+                LoginUser.SSOAccount = sSOUserInfo.Account;
 
                 HttpContext.Session.SetObject("FLoginUser", LoginUser);
 

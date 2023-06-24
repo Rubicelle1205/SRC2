@@ -91,6 +91,18 @@
 
 <script>
     function GoSearch() {
+        
+        var fromDate = Date.parse($('#@(Html.IdFor(m => m.ConditionModel.From_ReleaseDate))').val());
+        var toDate = Date.parse($('#@(Html.IdFor(m => m.ConditionModel.To_ReleaseDate))').val());
+        if ((isNaN(fromDate) && !isNaN(toDate)) || (!isNaN(fromDate) && isNaN(toDate))) {
+            $.alert("時間區間未填");
+            return false;
+        }
+        if (fromDate > toDate) {
+            $.alert("開始日期不可大於結束日期");
+            return false;
+        }
+
         SendAjax({
             url: '@Url.Action("GetSearchResult")',
             data: $("#SearchForm").serialize(),
@@ -118,8 +130,8 @@
         $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val("10");
     });
 
-    $('#@Html.IdFor(m => m.ConditionModel.From_ReleaseDate)').tooltip({ title: "更新時間[起]" });
-    $('#@Html.IdFor(m => m.ConditionModel.To_ReleaseDate)').tooltip({ title: "更新時間[迄]" });
+    $('#@Html.IdFor(m => m.ConditionModel.From_ReleaseDate)').tooltip({ title: "最後登入時間[起]" });
+    $('#@Html.IdFor(m => m.ConditionModel.To_ReleaseDate)').tooltip({ title: "最後登入時間[迄]" });
     $('#@Html.IdFor(m => m.ConditionModel.Clubid)').tooltip({ title: "單位代碼" });
     $('#@Html.IdFor(m => m.ConditionModel.UserName)').tooltip({ title: "使用者名稱" });
     $('#@Html.IdFor(m => m.ConditionModel.RoleId)').tooltip({ title: "身分" });

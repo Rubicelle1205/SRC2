@@ -134,6 +134,8 @@ namespace WebPccuClub.DataAccess
             parameters.Add("Lastmodified", dbEntity.LastModified);
             // 修改原因
             parameters.Add("Modifiedreason", dbEntity.ModifiedReason);
+
+            parameters.Add("SSOAccount", dbEntity.SSOAccount);
             #endregion 參數設定
 
 
@@ -148,7 +150,7 @@ namespace WebPccuClub.DataAccess
 						        Lastmodified=ISNULL(@Lastmodified,Lastmodified),
 						        Modifiedreason=ISNULL(@Modifiedreason,Modifiedreason)
 					        where
-						        FUserId = @Loginid";
+						        FUserId = @SSOAccount";
             }
             else
             {

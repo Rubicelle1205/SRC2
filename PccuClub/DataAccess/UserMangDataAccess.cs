@@ -79,7 +79,8 @@ AND (@LifeClass IS NULL OR A.LifeClass = @LifeClass)
             #endregion
 
             CommandText = $@"SELECT A.ClubId, A.ClubCName, A.ClubEName, 
-	                                C.FUserId, C.FUserId AS OldFUserId, C.UserName, C.EMail, CellPhone, C.Department, C.Created, C.LastLoginDate, C.Memo, C.IsEnable, C.LastModified
+	                                C.FUserId, C.FUserId AS OldFUserId, C.UserName, 
+                                    C.EMail, CellPhone, C.Department, C.Created, C.LastLoginDate, C.Memo, C.IsEnable, C.LastModified
                                FROM ClubMang A
                           LEFT JOIN ClubUser B on B.ClubId = A.ClubId
                           LEFT JOIN FUserMain C on C.FUserId = B.FUserId
