@@ -201,21 +201,24 @@
         }
 
         <div class="row justify-content-center mb-5">
+            
+                <div class="col-lg-3">
+                    @if (Model.CreateModel.HasOutSide == "1")
+                    {
+                    <form asp-action="Create4" method="post" enctype="multipart/form-data">
+                        <button class="btn btn-primary btn-outline btn-modern w-100 mb-2" type="submit"><i class="icon-arrow-left"></i>返回</button>
+                        @*<a href="@Url.Action("Create4")" class="btn btn-primary btn-outline btn-modern w-100 mb-2"><i class="icon-arrow-left"></i> 返回</a>*@
+                    </form>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("Create3")" class="btn btn-primary btn-outline btn-modern w-100 mb-2"><i class="icon-arrow-left"></i> 返回</a>
+                    }
+                </div>
             <div class="col-lg-3">
-                @if (Model.CreateModel.HasOutSide == "1")
-                {
-                    <a href="@Url.Action("Create4")" class="btn btn-primary btn-outline btn-modern w-100 mb-2"><i class="icon-arrow-left"></i> 返回</a>
-                }
-                else
-                {
-                    <a href="@Url.Action("Create3")" class="btn btn-primary btn-outline btn-modern w-100 mb-2"><i class="icon-arrow-left"></i> 返回</a>
-                }
-            </div>
-            <div class="col-lg-3">
-                <form asp-action="SaveData" method="post">
+                <form asp-action="SaveData" method="post" enctype="multipart/form-data">
                     <button class="submit-btn btn btn-primary btn-modern w-100 mb-2" type="submit">確認送出 <i class="icon-arrow-right"></i></button>
                 </form>
-
             </div>
         </div>
     </div>

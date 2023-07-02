@@ -118,6 +118,26 @@
 			InitBuildSelect($("[id ^= 'PlaceSource_']:checked").val());
 		});
 
+		var strRundown = $("#@Html.IdFor(m => m.CreateModel.strRundown)").val();
+
+		if(strRundown != "")
+		{
+			var dataArray = strRundown.split("|");
+
+			$.each(dataArray, function (index, item) {
+				var fields = item.split(",");
+				var PlaceSource = fields[0];
+				var $date = fields[1];
+				var start_hour = fields[2];
+				var end_hour = fields[3];
+				var placeID = fields[4];
+				var placetext = fields[5];
+
+				DrawTable(PlaceSource, $date, start_hour, end_hour, placeID, placetext);
+			});
+		}
+		
+
 	});
 
 	$(document).on('change', '#@Html.IdFor(m => m.CreateModel.ActDate)', function () {
@@ -192,6 +212,8 @@
 		if (start_hour == "") { $.alert("請選擇開始時間"); return false; }
 		if (end_hour == "") { $.alert("請選擇結束時間"); return false; }
 		if (placeID == "" || placeID == undefined) { $.alert("請輸入場地名稱"); return false; }
+
+		if (start_hour > end_hour) { $.alert("開始時間不可大於結束時間"); return false; }
 
 		var data = new FormData();
 

@@ -113,12 +113,7 @@ namespace WebPccuClub.Controllers
         {
             ClubActReportViewModel vm3 = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
 
-
-            if (vm.CreateModel == null)
-            {
-                vm = vm3;
-            }
-            else
+            if (Request.Form != null)
             {
                 if (Request.Form.Files.Count > 0)
                 {
@@ -138,11 +133,12 @@ namespace WebPccuClub.Controllers
                         }
                     }
                 }
-
             }
+			
 
-            HttpContext.Session.SetObject("MyModel", vm3);
-
+			HttpContext.Session.SetObject("MyModel", vm3);
+            
+            vm = vm3;
 			string[] arr = vm3.CreateModel.strRundown.Split("|");
 
 			foreach (string item in arr)
@@ -155,7 +151,7 @@ namespace WebPccuClub.Controllers
 				}
 			}
 
-			return RedirectToAction("ActCheck", vm3);
+			return View("ActCheck", vm3);
 			
         }
 
