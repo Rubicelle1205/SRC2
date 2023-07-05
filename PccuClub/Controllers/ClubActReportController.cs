@@ -151,7 +151,7 @@ namespace WebPccuClub.Controllers
 				}
 			}
 
-			return View("ActCheck", vm3);
+			return RedirectToAction("ActCheck", vm3);
 			
         }
 
