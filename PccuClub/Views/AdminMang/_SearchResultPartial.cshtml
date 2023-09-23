@@ -1,5 +1,11 @@
-﻿@model WebPccuClub.Models.AdminMangViewModel
+﻿@using PccuClub.WebAuth;
+@using WebPccuClub.Global.Extension;
+@using Microsoft.AspNetCore.Http
+@model WebPccuClub.Models.AdminMangViewModel
 
+@{
+    UserInfo LoginUser = Context.Session.GetObject<UserInfo>("LoginUser");
+}
 
 <!-- /.card-header -->
 <div class="card-body table-responsive p-0">
@@ -33,7 +39,11 @@
                                 <button type="submit" value="@item.LoginId" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
                             }
 
-                            <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel('@item.LoginId');">刪除</a>
+                            @if (item.LoginId != LoginUser.LoginId)
+                            {
+                                <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel('@item.LoginId');">刪除</a>
+                            }
+                            
                         </td>
                     </tr>
                 }
