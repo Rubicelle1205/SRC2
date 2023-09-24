@@ -137,16 +137,6 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
-                dbResult = dbAccess.InsertRole(vm, LoginUser);
-
-                if (!dbResult.isSuccess)
-                {
-                    dbAccess.DbaRollBack();
-                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "新增失敗";
-                    return Json(vmRtn);
-                }
-
                 dbAccess.DbaCommit();
             }
             catch (Exception ex)
@@ -238,32 +228,12 @@ namespace WebPccuClub.Controllers
 
                 dbAccess.DbaInitialTransaction();
 
-                var dbResult = dbAccess.DeleteFunData(Ser);
+                var dbResult = dbAccess.DeletetData(Ser);
 
                 if (!dbResult.isSuccess)
                 {
                     dbAccess.DbaRollBack();
                     vmRtn.ErrorCode =  (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "刪除失敗";
-                    return Json(vmRtn);
-                }
-
-                dbResult = dbAccess.DeletetUserRole(Ser);
-
-                if (!dbResult.isSuccess)
-                {
-                    dbAccess.DbaRollBack();
-                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "刪除失敗";
-                    return Json(vmRtn);
-                }
-
-                dbResult = dbAccess.DeletetData(Ser);
-
-                if (!dbResult.isSuccess)
-                {
-                    dbAccess.DbaRollBack();
-                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "刪除失敗";
                     return Json(vmRtn);
                 }
