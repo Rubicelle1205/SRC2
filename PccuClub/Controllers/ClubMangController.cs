@@ -55,6 +55,7 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlLifeClass = dbAccess.GetAllLifeClass();
             ViewBag.ddlClubClass = dbAccess.GetAllClubClass();
             ViewBag.ddlRoleClass = dbAccess.GetAllRoleClass();
+            ViewBag.ddlFrontShow = dbAccess.GetFrontShow();
 
             ClubMangViewModel vm = new ClubMangViewModel();
             vm.CreateModel = new ClubMangCreateModel();
@@ -71,6 +72,7 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlLifeClass = dbAccess.GetAllLifeClass();
             ViewBag.ddlClubClass = dbAccess.GetAllClubClass();
             ViewBag.ddlRoleClass = dbAccess.GetAllRoleClass();
+            ViewBag.ddlFrontShow = dbAccess.GetFrontShow();
 
             vm.EditModel = dbAccess.GetEditData(submitBtn);
 

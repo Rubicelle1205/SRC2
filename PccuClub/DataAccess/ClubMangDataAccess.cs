@@ -88,7 +88,7 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
             #endregion
 
             CommandText = $@"
-                            SELECT A.ClubId, A.ClubCName, A.ClubEName, A.SchoolYear, A.LifeClass, A.ClubClass, A.Address, A.EMail, A.Tel, 
+                            SELECT A.ClubId, A.ClubCName, A.ClubEName, A.SchoolYear, A.LifeClass, A.ClubClass, A.FrontShow, A.Address, A.EMail, A.Tel, 
                                    A.Social1, A.Social2, A.Social3, A.LogoPath, A.ActImgPath, A.ShortInfo, A.Memo, A.Created, A.LastModified, D.RoleId
                                FROM ClubMang A
 							   LEFT JOIN Code B ON B.Code = A.ClubClass AND B.Type = 'ClubClass'
@@ -121,6 +121,7 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
             parameters.Add("@SchoolYear", vm.CreateModel.SchoolYear);
             parameters.Add("@LifeClass", vm.CreateModel.LifeClass);
             parameters.Add("@ClubClass", vm.CreateModel.ClubClass);
+            parameters.Add("@FrontShow", vm.CreateModel.FrontShow);
             parameters.Add("@Address", vm.CreateModel.Address);
             parameters.Add("@Tel", vm.CreateModel.Tel);
             parameters.Add("@EMail", vm.CreateModel.EMail);
@@ -148,6 +149,7 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
                                                ,SchoolYear
                                                ,LifeClass
                                                ,ClubClass
+                                               ,FrontShow
                                                ,Address
                                                ,EMail
                                                ,Tel
@@ -172,6 +174,7 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
                                                ,@SchoolYear
                                                ,@LifeClass
                                                ,@ClubClass
+                                               ,@FrontShow
                                                ,@Address
                                                ,@EMail
                                                ,@Tel
@@ -247,6 +250,7 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
             parameters.Add("@SchoolYear", vm.EditModel.SchoolYear);
             parameters.Add("@LifeClass", vm.EditModel.LifeClass);
             parameters.Add("@ClubClass", vm.EditModel.ClubClass);
+            parameters.Add("@FrontShow", vm.EditModel.FrontShow);
             parameters.Add("@Address", vm.EditModel.Address);
             parameters.Add("@Tel", vm.EditModel.Tel);
             parameters.Add("@EMail", vm.EditModel.EMail);
@@ -273,6 +277,7 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
                                                 SchoolYear = @SchoolYear, 
                                                 LifeClass = @LifeClass, 
                                                 ClubClass = @ClubClass, 
+                                                FrontShow = @FrontShow, 
                                                 Address = @Address, 
                                                 Tel = @Tel, 
                                                 EMail = @EMail, 
@@ -289,7 +294,7 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 
             if (!string.IsNullOrEmpty(EncryptPw))
             {
-                CommendText = CommendText.Replace("%Password%", ",Password = @Password, ");
+                CommendText = CommendText.Replace("%Password%", "Password = @Password, ");
             }
 
             if (!string.IsNullOrEmpty(vm.EditModel.LogoPath))
@@ -339,52 +344,10 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@RoleId", ser);
+            parameters.Add("@ClubId", ser);
             #endregion 參數設定
 
-            string CommendText = $@"DELETE FROM SystemRole WHERE RoleId = @RoleId ";
-
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-            return ExecuteResult;
-        }
-
-        /// <summary>
-        /// 刪除角色資料
-        /// </summary>
-        /// <param name="ser"></param>
-        /// <returns></returns>
-        public DbExecuteInfo DeletetUserRole(string ser)
-        {
-            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
-            DBAParameter parameters = new DBAParameter();
-
-            #region 參數設定
-            parameters.Add("@RoleId", ser);
-            #endregion 參數設定
-
-            string CommendText = $@"DELETE FROM UserRole WHERE RoleId = @RoleId ";
-
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-            return ExecuteResult;
-        }
-
-        /// <summary>
-        /// 刪除功能資料
-        /// </summary>
-        /// <param name="ser"></param>
-        /// <returns></returns>
-        public DbExecuteInfo DeleteFunData(string ser)
-        {
-            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
-            DBAParameter parameters = new DBAParameter();
-
-            #region 參數設定
-            parameters.Add("@RoleId", ser);
-            #endregion 參數設定
-
-            string CommendText = $@"DELETE FROM SystemRoleFun WHERE RoleId = @RoleId ";
+            string CommendText = $@"DELETE FROM ClubMang WHERE ClubId = @ClubId ";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -538,6 +501,26 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
             }
 
             return LstItem;
+        }
+
+        public List<SelectListItem> GetFrontShow()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'YesOrNo'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
         }
     }
 }

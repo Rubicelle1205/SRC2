@@ -99,6 +99,12 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.FrontShow)</th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.FrontShow ,(List<SelectListItem>)ViewBag.ddlFrontShow,"請選擇前台顯示", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th width="15%">@Html.LabelFor(m => m.CreateModel.Address)</th>
                                         <td>@Html.TextBoxFor(m => m.CreateModel.Address, new {@class="form-control", placeholder="請輸入社辦地址"})</td>
                                     </tr>
@@ -197,6 +203,7 @@
         var ClubEName = $('#@Html.IdFor(m => m.CreateModel.ClubEName)').val();
         var LifeClass = $('#@Html.IdFor(m => m.CreateModel.LifeClass)').val();
         var ClubClass = $('#@Html.IdFor(m => m.CreateModel.ClubClass)').val();
+        var FrontShow = $('#@Html.IdFor(m => m.CreateModel.FrontShow)').val();
         var Address = $('#@Html.IdFor(m => m.CreateModel.Address)').val();
         var Tel = $('#@Html.IdFor(m => m.CreateModel.Tel)').val();
         var EMail = $('#@Html.IdFor(m => m.CreateModel.EMail)').val();
@@ -250,6 +257,10 @@
             return;
         }
 
+        if (FrontShow == "") {
+            $.alert("前台顯示不可為空");
+            return;
+        }
 
         var Logo = $('#@Html.IdFor(m => m.CreateModel.LogoPath)')[0].files[0];
         if (typeof Logo !== 'undefined') {
@@ -285,6 +296,7 @@
         data.append('@Html.NameFor(m => m.CreateModel.ClubEName)', ClubEName);
         data.append('@Html.NameFor(m => m.CreateModel.LifeClass)', LifeClass);
         data.append('@Html.NameFor(m => m.CreateModel.ClubClass)', ClubClass);
+        data.append('@Html.NameFor(m => m.CreateModel.FrontShow)', FrontShow);
         data.append('@Html.NameFor(m => m.CreateModel.Address)', Address);
         data.append('@Html.NameFor(m => m.CreateModel.Tel)', Tel);
         data.append('@Html.NameFor(m => m.CreateModel.EMail)', EMail);

@@ -35,6 +35,7 @@ namespace WebPccuClub.DataAccess
                                FROM ClubMang A
                           LEFT JOIN Code B ON B.Code = A.ClubClass AND B.Type = 'ClubClass' 
                               WHERE 1 = 1 
+                                AND A.FrontShow = '01'
                                 AND (@ClubClass IS NULL OR A.ClubClass = @ClubClass)";
 
             (DbExecuteInfo info, IEnumerable<ClubListResultModel> entitys) dbResult = DbaExecuteQuery<ClubListResultModel>(CommandText, parameters, true, DBAccessException);

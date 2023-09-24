@@ -30,7 +30,7 @@ namespace Utility
 
         public async Task<bool> ChkStudent(string StudentNo)
         {
-            var Result = await Stdsoap.isMyStudentAsync(StudentNo, StdaccessToken);
+            var Result = await Stdsoap.isMyStudentAsync("A8247954", @"zxcv!@#$\][p");
 
             bool BlnRtn = Result;
 

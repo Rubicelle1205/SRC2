@@ -164,6 +164,10 @@ namespace WebPccuClub.Models
         [DisplayName("社團分類")]
         public string? ClubClass { get; set; }
 
+        /// <summary>前台顯示</summary>
+        [DisplayName("前台顯示")]
+        public string? FrontShow { get; set; }
+
         /// <summary>社辦地址</summary>
         [DisplayName("社辦地址")]
         public string? Address { get; set; }
@@ -243,6 +247,10 @@ namespace WebPccuClub.Models
         /// <summary>社團分類</summary>
         [DisplayName("社團分類")]
         public string? ClubClass { get; set; }
+
+        /// <summary>前台顯示</summary>
+        [DisplayName("前台顯示")]
+        public string? FrontShow { get; set; }
 
         /// <summary>社辦地址</summary>
         [DisplayName("社辦地址")]
