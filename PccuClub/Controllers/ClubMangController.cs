@@ -99,7 +99,19 @@ namespace WebPccuClub.Controllers
         {
             try
             {
+
                 dbAccess.DbaInitialTransaction();
+
+                List<ClubMangResultModel> ResultModel = dbAccess.ChkClubExist(vm);
+
+                if (ResultModel.Count > 0)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = $"新增失敗，社團編號:{vm.CreateModel.ClubId} 已存在";
+                    return Json(vmRtn);
+                }
+
 
                 if (Request.Form.Files.Count > 0)
                 {

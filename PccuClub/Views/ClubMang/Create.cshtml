@@ -26,11 +26,7 @@
                                         <td>@Html.TextBoxFor(m => m.CreateModel.ClubId, new {@class="form-control", placeholder="請輸入社團代號"})</td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">
-                                            @Html.LabelFor(m => m.CreateModel.Pwd)
-                                            <br />
-                                            <span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
-                                        </th>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Pwd)<span class="required">*</span></th>
                                         <td>
                                             <div class="input-group">
                                                 @Html.PasswordFor(m => m.CreateModel.Pwd, new {@class="form-control", placeholder="請輸入密碼"})
@@ -41,11 +37,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">
-                                            @Html.LabelFor(m => m.CreateModel.ConformPwd)
-                                            <br />
-                                            <span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
-                                        </th>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ConformPwd)<span class="required">*</span></th>
                                         <td>
                                             <div class="input-group">
                                                 @Html.PasswordFor(m => m.CreateModel.ConformPwd, new {@class="form-control", placeholder="請再輸入一次密碼"})
@@ -79,7 +71,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ClubCName)</th>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ClubCName)<span class="required">*</span></th>
                                         <td>@Html.TextBoxFor(m => m.CreateModel.ClubCName, new {@class="form-control", placeholder="請輸入社團中文名稱"})</td>
                                     </tr>
                                     <tr>
@@ -87,19 +79,19 @@
                                         <td>@Html.TextBoxFor(m => m.CreateModel.ClubEName, new {@class="form-control", placeholder="請輸入社團英文名稱"})</td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.LifeClass)</th>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.LifeClass)<span class="required">*</span></th>
                                         <td>
                                             @Html.DropDownListFor(m => m.CreateModel.LifeClass ,(List<SelectListItem>)ViewBag.ddlLifeClass,"請選擇社團組別", new {@class = "form-control"})
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ClubClass)</th>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ClubClass)<span class="required">*</span></th>
                                         <td>
                                             @Html.DropDownListFor(m => m.CreateModel.ClubClass ,(List<SelectListItem>)ViewBag.ddlClubClass,"請選擇社團分類", new {@class = "form-control"})
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.FrontShow)</th>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.FrontShow)<span class="required">*</span></th>
                                         <td>
                                             @Html.DropDownListFor(m => m.CreateModel.FrontShow ,(List<SelectListItem>)ViewBag.ddlFrontShow,"請選擇前台顯示", new {@class = "form-control"})
                                         </td>

@@ -514,5 +514,32 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
 
             return new List<SelectListItem>();
         }
+
+        public List<ClubMangResultModel> ChkClubExist(ClubMangViewModel vm)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@ClubId", vm.CreateModel.ClubId);
+
+            #endregion
+
+            CommandText = $@"SELECT A.ClubId, A.ClubCName
+                               FROM ClubMang A
+                              WHERE 1 = 1
+                                AND A.ClubId = @ClubId
+";
+
+            (DbExecuteInfo info, IEnumerable<ClubMangResultModel> entitys) dbResult = DbaExecuteQuery<ClubMangResultModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ClubMangResultModel>();
+        }
     }
 }

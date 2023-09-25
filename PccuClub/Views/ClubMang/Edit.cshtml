@@ -88,7 +88,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubCName)</th>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubCName)<span class="required">*</span></th>
                                         <td>@Html.TextBoxFor(m => m.EditModel.ClubCName, new {@class="form-control", placeholder="請輸入社團中文名稱"})</td>
                                     </tr>
                                     <tr>
@@ -96,19 +96,19 @@
                                         <td>@Html.TextBoxFor(m => m.EditModel.ClubEName, new {@class="form-control", placeholder="請輸入社團英文名稱"})</td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.EditModel.LifeClass)</th>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.LifeClass)<span class="required">*</span></th>
                                         <td>
                                             @Html.DropDownListFor(m => m.EditModel.LifeClass ,(List<SelectListItem>)ViewBag.ddlLifeClass,"請選擇社團組別", new {@class = "form-control"})
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubClass)</th>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubClass)<span class="required">*</span></th>
                                         <td>
                                             @Html.DropDownListFor(m => m.EditModel.ClubClass ,(List<SelectListItem>)ViewBag.ddlClubClass,"請選擇社團分類", new {@class = "form-control"})
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.EditModel.FrontShow)</th>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.FrontShow)<span class="required">*</span></th>
                                         <td>
                                             @Html.DropDownListFor(m => m.EditModel.FrontShow ,(List<SelectListItem>)ViewBag.ddlFrontShow,"請選擇前台顯示", new {@class = "form-control"})
                                         </td>
