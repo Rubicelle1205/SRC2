@@ -206,30 +206,6 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
             return ExecuteResult;
         }
 
-        /// <summary> 新增角色 </summary>
-        public DbExecuteInfo InsertRole(ClubMangViewModel vm, UserInfo LoginUser)
-        {
-
-            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
-            DBAParameter parameters = new DBAParameter();
-
-            #region 參數設定
-            parameters.Add("@ClubId", vm.CreateModel.ClubId);
-            parameters.Add("@RoleId", vm.CreateModel.RoleId);
-            #endregion 參數設定
-
-            string CommendText = $@"INSERT INTO UserRole
-                                                (LoginId
-                                               ,RoleId)
-                                         VALUES
-                                               (@ClubId
-                                               ,@RoleId)";
-            
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-            return ExecuteResult;
-        }
-
         /// <summary> 修改資料 </summary>
         public DbExecuteInfo UpdateData(string EncryptPw, ClubMangViewModel vm, UserInfo LoginUser)
         {
@@ -324,9 +300,25 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
             parameters.Add("@RoleId", vm.EditModel.RoleId);
             #endregion 參數設定
 
-            string CommendText = $@"UPDATE UserRole 
-                                       SET RoleId = @RoleID 
-                                     WHERE LoginId = @ClubId ";
+            string CommendText = $@"IF EXISTS (SELECT 1
+                                         FROM UserRole 
+                                        WHERE LoginId = @ClubId)
+                                    
+                                BEGIN
+                                        UPDATE UserRole
+                                        SET LoginId = @ClubId
+                                           ,RoleId = @RoleId
+                                        WHERE LoginId = @ClubId;
+                                    END
+                                ELSE
+                                    BEGIN
+                                        INSERT INTO UserRole
+                                                (LoginId
+                                               ,RoleId)
+                                         VALUES
+                                               (@ClubId
+                                               ,@RoleId);
+                                    END";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
