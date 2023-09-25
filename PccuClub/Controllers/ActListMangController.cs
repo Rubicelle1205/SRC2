@@ -410,15 +410,16 @@ namespace WebPccuClub.Controllers
 
             if (vm.RundownModel.PlaceSource == "01")
             {
+                //20230925 後台不檢核此設定
                 //確認場地開放狀態
-                CanUse = dbAccess.ChkPlaceSchoolCanUse(vm);
+                //CanUse = dbAccess.ChkPlaceSchoolCanUse(vm);
 
-                if (!CanUse)
-                {
-                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "該場地目前不可使用";
-                    return Json(vmRtn);
-                }
+                //if (!CanUse)
+                //{
+                //    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                //    vmRtn.ErrorMsg = "該場地目前不可使用";
+                //    return Json(vmRtn);
+                //}
 
                 for (int j = int.Parse(vm.RundownModel.STime); j <= int.Parse(vm.RundownModel.ETime) - 1; j++)
                 {

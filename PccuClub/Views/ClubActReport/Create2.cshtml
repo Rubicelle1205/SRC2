@@ -35,14 +35,44 @@
 				<div class="infoItem">
 					<div class="tag">選擇地點<span class="req-star">*</span></div>
 					<div class="content warning-box">
-                        @foreach (SelectListItem item in LstPlaceSource)
-                        {
-						<div class="form-check form-check-inline">
-							@Html.RadioButtonFor(m => m.CreateModel.PlaceSource, item.Value, new { @id = string.Format("PlaceSource_{0}", item.Value), @class="form-check-input class_input_trigger" })
-                                <label for=@string.Format("PlaceSource_{0}", item.Value)>@item.Text</label>
-                            </div>
-                        }
 
+                    @switch (Model.CreateModel.ActInOrOut)
+                    {
+                        case "01":
+                            foreach (SelectListItem item in LstPlaceSource)
+                            {
+                                if (item.Value != "03")
+                                {
+                                    <div class="form-check form-check-inline">
+                                        @Html.RadioButtonFor(m => m.CreateModel.PlaceSource, item.Value, new { @id = string.Format("PlaceSource_{0}", item.Value), @class="form-check-input class_input_trigger" })
+                                        <label for=@string.Format("PlaceSource_{0}", item.Value)>@item.Text</label>
+                                    </div>
+                                }
+                            }
+                            break;
+                        case "02":
+                            foreach (SelectListItem item in LstPlaceSource)
+                            {
+                                if (item.Value == "03")
+                                {
+                                    <div class="form-check form-check-inline">
+                                        @Html.RadioButtonFor(m => m.CreateModel.PlaceSource, item.Value, new { @id = string.Format("PlaceSource_{0}", item.Value), @class="form-check-input class_input_trigger" })
+                                        <label for=@string.Format("PlaceSource_{0}", item.Value)>@item.Text</label>
+                                    </div>
+                                }
+                            }
+                            break;
+                        case "03":
+                            foreach (SelectListItem item in LstPlaceSource)
+                            {
+                                <div class="form-check form-check-inline">
+                                    @Html.RadioButtonFor(m => m.CreateModel.PlaceSource, item.Value, new { @id = string.Format("PlaceSource_{0}", item.Value), @class="form-check-input class_input_trigger" })
+                                    <label for=@string.Format("PlaceSource_{0}", item.Value)>@item.Text</label>
+                                </div>
+                            }
+                            break;
+                    }
+				
 						<div id="class_input_box"></div>
 						<div id="brrowTable"></div>
 					</div>
