@@ -81,8 +81,8 @@ namespace WebPccuClub.WS.ActivityDateOuput
                 return JsonConvert.SerializeObject(vmRtn);
             }
 
-            startDate = d1.ToString("yyyy-MM-dd 00:00:00");
-            endDate = d2.ToString("yyyy-MM-dd 23:59:59");
+            startDate = d1.ToString("yyyy-MM-dd");
+            endDate = d2.ToString("yyyy-MM-dd");
 
             return "";
         }
