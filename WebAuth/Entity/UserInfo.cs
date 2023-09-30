@@ -22,8 +22,17 @@ namespace PccuClub.WebAuth
         /// <summary> 單位名稱 </summary>
         public string UnitName { get; set; }
 
-		/// <summary> 帳號來源 </summary>
-		public string LoginSource { get; set; }
+        /// <summary> 社團ID </summary>
+        public string ClubId { get; set; }
+
+        /// <summary> 社團中文名稱 </summary>
+        public string ClubCName { get; set; }
+
+        /// <summary> 社團英文名稱 </summary>
+        public string ClubEName { get; set; }
+
+        /// <summary> 帳號來源 </summary>
+        public string LoginSource { get; set; }
 
 		/// <summary> 出生日期 </summary>
 		public DateTime? Birthday { get; set; }
@@ -47,7 +56,7 @@ namespace PccuClub.WebAuth
         public string SSORole { get; set; }
 
         /// <summary> SSO姓名 </summary>
-        public string SSO姓名 { get; set; }
+        public string SSOName { get; set; }
 
         /// <summary> SSO系級/單位 </summary>
         public string SSODepartment { get; set; }

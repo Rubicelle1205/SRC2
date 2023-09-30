@@ -94,9 +94,14 @@ namespace WebPccuClub.Controllers
                 LoginUser.LastLoginDate = DateTime.Now;
                 LoginUser.LastModified = DateTime.Now;
                 LoginUser.LastModifier = user.LoginId;
+
+                LoginUser.SSOAccount = sSOUserInfo.Account;
+                LoginUser.SSOName = sSOUserInfo.Name;
+                LoginUser.SSORole = sSOUserInfo.Role;
+                LoginUser.SSODepartment = sSOUserInfo.Department;
+
                 loginEntity.Issuccess = true;
                 loginEntity.Loginid = user.LoginId;
-                LoginUser.SSOAccount = sSOUserInfo.Account;
 
                 HttpContext.Session.SetObject("FLoginUser", LoginUser);
 
@@ -175,6 +180,7 @@ namespace WebPccuClub.Controllers
                 LoginUser.LastLoginDate = DateTime.Now;
                 LoginUser.LastModified = DateTime.Now;
                 LoginUser.LastModifier = user.LoginId;
+
                 loginEntity.Issuccess = true;
 
                 HttpContext.Session.SetObject("FLoginUser", LoginUser);
@@ -306,3 +312,4 @@ namespace WebPccuClub.Controllers
         #endregion
     }
 }
+

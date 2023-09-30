@@ -318,7 +318,10 @@ namespace WebPccuClub.Controllers
 			ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0101Model = new ClubHandover0101ViewModel();
 			vm.Handover0101Model.SchoolYear = PublicFun.GetNowSchoolYear();
-			if (!string.IsNullOrEmpty(id))
+            vm.Handover0101Model.ClubID = LoginUser.LoginId;
+            vm.Handover0101Model.ClubName = LoginUser.ClubCName;
+
+            if (!string.IsNullOrEmpty(id))
 			{
 				vm.Handover0101Model = dbAccess.GetHandover0101Data(id, LoginUser);
 				if (null != vm.Handover0101Model)
@@ -438,6 +441,8 @@ namespace WebPccuClub.Controllers
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0102Model = new ClubHandover0102ViewModel();
             vm.Handover0102Model.SchoolYear = PublicFun.GetNowSchoolYear();
+            vm.Handover0102Model.ClubID = LoginUser.LoginId;
+            vm.Handover0102Model.ClubName = LoginUser.ClubCName;
 
             if (!string.IsNullOrEmpty(id))
             {
@@ -583,9 +588,12 @@ namespace WebPccuClub.Controllers
 			ViewBag.ddldentityType = dbAccess.GetAllIdentityType();
 			ViewBag.ddlConform = dbAccess.GetAllConform();
 
-			ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0103Model = new ClubHandover0103ViewModel();
             vm.Handover0103Model.SchoolYear = PublicFun.GetNowSchoolYear();
+            vm.Handover0103Model.ClubID = LoginUser.LoginId;
+            vm.Handover0103Model.ClubCName = LoginUser.ClubCName;
+            vm.Handover0103Model.ClubEName = LoginUser.ClubEName;
 
             if (!string.IsNullOrEmpty(id))
             {
@@ -733,8 +741,11 @@ namespace WebPccuClub.Controllers
 			ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0204Model = new ClubHandover0204ViewModel();
 			vm.Handover0204Model.SchoolYear = PublicFun.GetNowSchoolYear();
+            vm.Handover0204Model.ClubID = LoginUser.LoginId;
+            vm.Handover0204Model.ClubName = LoginUser.ClubCName;
+            vm.Handover0204Model.NameOfClub = LoginUser.ClubEName;
 
-			if (!string.IsNullOrEmpty(id))
+            if (!string.IsNullOrEmpty(id))
 			{
 				vm.Handover0204Model = dbAccess.GetHandover0204Data(id, LoginUser);
                 if (null != vm.Handover0204Model)
@@ -856,8 +867,10 @@ namespace WebPccuClub.Controllers
 			ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0205Model = new ClubHandover0205ViewModel();
 			vm.Handover0205Model.SchoolYear = PublicFun.GetNowSchoolYear();
+            vm.Handover0205Model.ClubID = LoginUser.LoginId;
+            vm.Handover0205Model.ClubName = LoginUser.ClubCName;
 
-			if (!string.IsNullOrEmpty(id))
+            if (!string.IsNullOrEmpty(id))
 			{
 				vm.Handover0205Model = dbAccess.GetHandover0205Data(id, LoginUser);
                 if (null != vm.Handover0205Model)
@@ -1008,8 +1021,10 @@ namespace WebPccuClub.Controllers
 			ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0206Model = new ClubHandover0206ViewModel();
 			vm.Handover0206Model.SchoolYear = PublicFun.GetNowSchoolYear();
+            vm.Handover0206Model.ClubID = LoginUser.LoginId;
+            vm.Handover0206Model.ClubName = LoginUser.ClubCName;
 
-			if (!string.IsNullOrEmpty(id))
+            if (!string.IsNullOrEmpty(id))
 			{
 				vm.Handover0206Model = dbAccess.GetHandover0206Data(id, LoginUser);
                 if (null != vm.Handover0206Model)
@@ -1164,8 +1179,10 @@ namespace WebPccuClub.Controllers
 			ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0307Model = new ClubHandover0307ViewModel();
 			vm.Handover0307Model.SchoolYear = PublicFun.GetNowSchoolYear();
+            vm.Handover0307Model.ClubID = LoginUser.LoginId;
+            vm.Handover0307Model.ClubName = LoginUser.ClubCName;
 
-			if (!string.IsNullOrEmpty(id))
+            if (!string.IsNullOrEmpty(id))
 			{
 				vm.Handover0307Model = dbAccess.GetHandover0307Data(id, LoginUser);
                 if (null != vm.Handover0307Model)
@@ -1288,6 +1305,8 @@ namespace WebPccuClub.Controllers
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0308Model = new ClubHandover0308ViewModel();
             vm.Handover0308Model.SchoolYear = PublicFun.GetNowSchoolYear();
+            vm.Handover0308Model.ClubID = LoginUser.LoginId;
+            vm.Handover0308Model.ClubName = LoginUser.ClubCName;
 
             if (!string.IsNullOrEmpty(id))
             {
@@ -1411,8 +1430,10 @@ namespace WebPccuClub.Controllers
 			ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0309Model = new ClubHandover0309ViewModel();
 			vm.Handover0309Model.SchoolYear = PublicFun.GetNowSchoolYear();
+            vm.Handover0309Model.ClubID = LoginUser.LoginId;
+            vm.Handover0309Model.ClubName = LoginUser.ClubCName;
 
-			if (!string.IsNullOrEmpty(id))
+            if (!string.IsNullOrEmpty(id))
 			{
 				vm.Handover0309Model = dbAccess.GetHandover0309Data(id, LoginUser);
                 if (null != vm.Handover0309Model)

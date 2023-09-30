@@ -10,7 +10,7 @@ namespace PccuClub.WebAuth
         private AuthDataAccess dbAccess = new AuthDataAccess();
 
         /// <summary> 
-        /// 後台使用者登入
+        /// 使用者使用帳號登入
         /// </summary>
         /// <param name="LoginId">帳號</param>
         /// <param name="Pwd">密碼</param>
@@ -58,7 +58,7 @@ namespace PccuClub.WebAuth
         }
 
         /// <summary>
-        /// 使用者登入
+        /// 使用者使用SSO登入
         /// </summary>
         /// <param name="LoginId">帳號</param>
         /// <param name="oUser">使用者資訊</param>
@@ -151,11 +151,7 @@ namespace PccuClub.WebAuth
 
             return true;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="功能清單List">功能清單List</param>
-        /// <returns>驗證結果(True:驗證成功，False:驗證失敗)</returns>
+
 
         /// <summary>
         /// 取得功能清單
@@ -212,6 +208,5 @@ namespace PccuClub.WebAuth
             return Encrypt.Encrypt(str);
         }
 
-       
     }
 }
