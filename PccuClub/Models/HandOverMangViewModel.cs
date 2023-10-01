@@ -42,7 +42,11 @@ namespace WebPccuClub.Models
         /// <summary>交接狀態</summary>
         [DisplayName("交接狀態")]
         public string? HandOverStatus { get; set; }
-        
+
+        /// <summary>社團組別	</summary>
+        [DisplayName("社團組別")]
+        public string? LifeClass { get; set; }
+
         /// <summary>社團代號</summary>
         [DisplayName("社團代號")]
         public string? ClubID { get; set; }
@@ -75,6 +79,10 @@ namespace WebPccuClub.Models
         /// <summary>社團名稱</summary>
         [DisplayName("社團名稱")]
         public string? ClubCName { get; set; }
+
+        /// <summary>社團組別	</summary>
+        [DisplayName("社團組別")]
+        public string? LifeClass { get; set; }
 
         /// <summary>審核狀態</summary>
         [DisplayName("審核狀態")]

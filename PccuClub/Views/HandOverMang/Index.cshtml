@@ -34,6 +34,9 @@
                                     @Html.DropDownListFor(m => m.ConditionModel.HandOverStatus,(List<SelectListItem>)ViewBag.ddlHandOverStatus,"全部狀態", new {@class = "form-control"})
                                 </div>
                                 <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.DropDownListFor(m => m.ConditionModel.LifeClass,(List<SelectListItem>)ViewBag.ddlLifeClass,"全部社團組別", new {@class = "form-control"})
+                                </div>
+                                <div class="col-md-3 col-sm-6 mt-2">
                                     @Html.TextBoxFor(m => m.ConditionModel.ClubID, new {@class="form-control", placeholder="請輸入社團代號"})
                                 </div>
                                 <div class="col-md-3 col-sm-6 mt-2">

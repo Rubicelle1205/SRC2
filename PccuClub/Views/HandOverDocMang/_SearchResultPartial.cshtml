@@ -6,11 +6,12 @@
     <table class="table table-bordered table-hover text-nowrap">
         <thead>
             <tr class="text-center">
-                <th width="20%">
+                <th width="10%">
                     社團代號
                     <br />
                     <span class="text-sm text-secondary">學年度</span>
                 </th>
+                <th width="10%">社團組別</th>
                 <th width="20%">社團名稱</th>
                 <th width="20%">表單類型</th>
                 <th width="20%">建立時間</th>
@@ -30,6 +31,7 @@
                                 @item.SchoolYear
                             </span>
                         </td>
+                        <td class="text-center text-sm">@item.LifeClass</td>
                         <td class="text-center text-sm">@item.ClubCName</td>
                         <td class="text-center text-sm">
                             @item.DocTypeText

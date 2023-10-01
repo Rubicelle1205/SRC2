@@ -48,6 +48,10 @@ namespace WebPccuClub.Models
         [DisplayName("社團名稱")]
         public string? ClubCName { get; set; }
 
+        /// <summary>社團組別	</summary>
+        [DisplayName("社團組別")]
+        public string? LifeClass { get; set; }
+
         [DisplayName("起始日期")]
         public DateTime? From_ReleaseDate { get; set; }
 
@@ -72,6 +76,10 @@ namespace WebPccuClub.Models
         /// <summary>社團代號</summary>
         [DisplayName("社團代號")]
         public string? ClubID { get; set; }
+
+        /// <summary>社團組別	</summary>
+        [DisplayName("社團組別")]
+        public string? LifeClass { get; set; }
 
         /// <summary>社團名稱</summary>
         [DisplayName("社團名稱")]

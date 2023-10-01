@@ -29,6 +29,7 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@SchoolYear", model?.SchoolYear);
             parameters.Add("@DocType", model?.DocType);
             parameters.Add("@ClubID", model?.ClubID);
+            parameters.Add("@LifeClass", model?.LifeClass);
             parameters.Add("@ClubCName", model?.ClubCName);
             parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
             parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
@@ -36,16 +37,18 @@ namespace WebPccuClub.DataAccess
             #endregion
 
             CommandText = $@"SELECT A.HoID, A.HoDetailID, B.SchoolYear, B.ClubID, C.ClubCName, A.DocType, 
-                                    A.HandOverClass, E.Text AS HandOverClassText, D.Text AS DocTypeText, A.Created
+                                    A.HandOverClass, E.Text AS HandOverClassText, D.Text AS DocTypeText, C.LifeClass AS LifeClassCode, F.Text AS LifeClass, A.Created
                                FROM HandOverDocDetail A
                           LEFT JOIN HandOverMain B ON B.HoID = A.HoID
                           LEFT JOIN ClubMang C ON C.ClubId = B.ClubID
                           LEFT JOIN Code D ON D.Code = A.DocType AND D.Type = 'DocType'
                           LEFT JOIN Code E ON E.Code = A.HandOverClass AND E.Type = 'HandOverClass'
+                          LEFT JOIN Code F ON F.Code = C.LifeClass AND F.Type = 'LifeClass'
                               WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
 AND (@SchoolYear IS NULL OR B.SchoolYear = @SchoolYear)
 AND (@DocType IS NULL OR A.DocType = @DocType)
+AND (@LifeClass IS NULL OR C.LifeClass = @LifeClass)
 AND (@ClubID IS NULL OR B.ClubID LIKE '%' + @ClubID + '%') 
 AND (@ClubCName IS NULL OR C.ClubCName LIKE '%' + @ClubCName + '%') ";
 

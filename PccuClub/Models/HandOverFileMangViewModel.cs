@@ -41,7 +41,11 @@ namespace WebPccuClub.Models
         /// <summary>審核狀態</summary>
         [DisplayName("審核狀態")]
         public string? ActVerify { get; set; }
-        
+
+        /// <summary>社團組別	</summary>
+        [DisplayName("社團組別")]
+        public string? LifeClass { get; set; }
+
         /// <summary>社團代號</summary>
         [DisplayName("社團代號")]
         public string? ClubID { get; set; }
@@ -66,6 +70,10 @@ namespace WebPccuClub.Models
         /// <summary>學年度</summary>
         [DisplayName("學年度")]
         public string? SchoolYear { get; set; }
+
+        /// <summary>社團組別	</summary>
+        [DisplayName("社團組別")]
+        public string? LifeClass { get; set; }
 
         /// <summary>社團代號</summary>
         [DisplayName("社團代號")]

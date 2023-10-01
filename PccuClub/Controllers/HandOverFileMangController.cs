@@ -38,6 +38,7 @@ namespace WebPccuClub.Controllers
         {
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify();
+            ViewBag.ddlLifeClass = dbAccess.GetAllLifeClass();
 
             HandOverFileMangViewModel vm = new HandOverFileMangViewModel();
             vm.ConditionModel = new HandOverFileMangConditionModel();

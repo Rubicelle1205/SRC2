@@ -30,19 +30,22 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@ClubID", model.ClubID);
             parameters.Add("@ClubCName", model.ClubCName);
             parameters.Add("@HandOverStatus", model.HandOverStatus);
+            parameters.Add("@LifeClass", model.LifeClass);
             parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
             parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
 
             #endregion
 
-            CommandText = $@"SELECT A.HoID, A.ClubID, B.ClubCName, A.SchoolYear, A.HandOverStatus, C.Text AS HandOverStatusText, A.Created
+            CommandText = $@"SELECT A.HoID, A.ClubID, B.ClubCName, A.SchoolYear, A.HandOverStatus, B.LifeClass AS LifeClassCode, D.Text AS LifeClass, C.Text AS HandOverStatusText, A.Created
                                FROM HandOverMain A
                           LEFT JOIN ClubMang B ON B.ClubID = A.ClubID
                           LEFT JOIN Code C ON C.Code = A.HandOverStatus AND C.Type = 'HandOverStatus'
+                          LEFT JOIN Code D ON D.Code = B.LifeClass AND D.Type = 'LifeClass'
                               WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 AND (@HandOverStatus IS NULL OR A.HandOverStatus = @HandOverStatus)
+AND (@LifeClass IS NULL OR B.LifeClass = @LifeClass)
 AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') 
 AND (@ClubCName IS NULL OR B.ClubCName LIKE '%' + @ClubCName + '%') ";
 
