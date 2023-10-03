@@ -251,13 +251,14 @@ namespace WebPccuClub.Controllers
                     string PlaceID = arr2[4];
                     string PlaceText = arr2[5];
 
-                    if (LstRundown.Where(x => x.Date == Date && x.PlaceSource == PlaceSource).Count() > 0)
+                    //同天同地點同日期，但不同時段
+                    if (LstRundown.Where(x => x.Date == Date && x.PlaceSource == PlaceSource && x.PlaceID == PlaceID).Count() > 0)
                     {
                         for (int j = 0; j <= LstRundown.Count - 1; j++)
                         {
                             for (int k = int.Parse(STime); k <= int.Parse(ETime) - 1; k++)
                             {
-                                LstRundown[j].LstStime.Add(j);
+                                LstRundown[j].LstStime.Add(k);
                             }
                         }
                     }
