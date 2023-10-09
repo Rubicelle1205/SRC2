@@ -25,6 +25,7 @@ namespace WebPccuClub.Controllers
         ReturnViewModel vmRtn = new ReturnViewModel();
         MemberMangDataAccess dbAccess = new MemberMangDataAccess();
         UploadUtil upload = new UploadUtil();
+        AuthUtil StdService = new AuthUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
@@ -95,10 +96,32 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.新增儲存)]
         [ValidateInput(false)]
-        public IActionResult SaveNewData(MemberMangViewModel vm)
+        public async Task<IActionResult> SaveNewDataAsync(MemberMangViewModel vm)
         {
             try
             {
+                if (!string.IsNullOrEmpty(vm.CreateModel.SNo))
+                {
+                    bool isStudent = await StdService.ChkStudent(vm.CreateModel.SNo);
+
+                    if (!isStudent)
+                    {
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", vm.CreateModel.SNo);
+                        return Json(vmRtn);
+                    }
+                }
+
+                //判斷該學號是否已存在該年度與該社團
+                bool Bln = dbAccess.MemberInClub(vm.CreateModel.SNo, vm.CreateModel.ClubID, vm.CreateModel.SchoolYear);
+
+                if (Bln)
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = string.Format("學號:{0}已存在{1}年的此社團裡面", vm.CreateModel.SNo, vm.CreateModel.SchoolYear);
+                    return Json(vmRtn);
+                }
+
                 dbAccess.DbaInitialTransaction();
 
                 var dbResult = dbAccess.InsertData(vm, LoginUser);
@@ -126,10 +149,32 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
-        public IActionResult EditOldData(MemberMangViewModel vm)
+        public async Task<IActionResult> EditOldDataAsync(MemberMangViewModel vm)
         {
             try
             {
+                if (!string.IsNullOrEmpty(vm.EditModel.SNo))
+                {
+                    bool isStudent = await StdService.ChkStudent(vm.EditModel.SNo);
+
+                    if (!isStudent)
+                    {
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", vm.EditModel.SNo);
+                        return Json(vmRtn);
+                    }
+                }
+
+                //判斷該學號是否已存在該年度與該社團
+                bool Bln = dbAccess.MemberInClub(vm.EditModel.SNo, vm.EditModel.ClubID, vm.EditModel.SchoolYear);
+
+                if (Bln)
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = string.Format("學號:{0}已存在{1}年的{2}裡面", vm.EditModel.SNo, vm.EditModel.SchoolYear, vm.EditModel.ClubCName);
+                    return Json(vmRtn);
+                }
+
                 dbAccess.DbaInitialTransaction();
 
                 var dbResult = dbAccess.UpdateData(vm, LoginUser);
@@ -249,7 +294,7 @@ namespace WebPccuClub.Controllers
         }
 
         [LogAttribute(LogActionChineseName.匯入Excel)]
-        public IActionResult ImportExcel(MemberMangViewModel vm)
+        public async Task<IActionResult> ImportExcelAsync(MemberMangViewModel vm)
         {
             if (vm.File != null && vm.File.Length > 0)
             {
@@ -275,6 +320,7 @@ namespace WebPccuClub.Controllers
                 {
                     XSSFWorkbook workbook = new XSSFWorkbook(stream);
                     ISheet sheet = workbook.GetSheetAt(0);
+                    List<string> LstSNo = new List<string>();
 
                     for (int i = 1; i <= sheet.LastRowNum; i++)
                     {
@@ -293,6 +339,7 @@ namespace WebPccuClub.Controllers
 
                             List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstClubID = dbAccess.GetAllClub();
                             List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstSex = dbAccess.GetAllSex();
+                            
 
                             if (!LstClubID.Any(m => m.Value == row.GetCell(1)?.ToString()))
                             {
@@ -323,6 +370,44 @@ namespace WebPccuClub.Controllers
                             {
                                 vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                                 vmRtn.ErrorMsg = string.Format("檢核資料失敗:{0}", row.GetCell(9)?.ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
+
+                            //檢查學號
+                            if (!string.IsNullOrEmpty(row.GetCell(3)?.StringCellValue.TrimStartAndEnd()))
+                            {
+                                if (LstSNo.Any(x => x == row.GetCell(3)?.StringCellValue.TrimStartAndEnd()))
+                                {
+                                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                    vmRtn.ErrorMsg = string.Format("學號:{0}已重複", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
+                                    return Json(vmRtn);
+                                }
+
+                                LstSNo.Add(row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
+
+                                bool isStudent = await StdService.ChkStudent(row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
+
+                                if (!isStudent)
+                                {
+                                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                    vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
+                                    return Json(vmRtn);
+                                }
+
+                                //判斷該學號是否已存在該年度與該社團
+                                bool Bln = dbAccess.MemberInClub(row.GetCell(3)?.StringCellValue.TrimStartAndEnd(), row.GetCell(0)?.StringCellValue.TrimStartAndEnd(), row.GetCell(1)?.StringCellValue.TrimStartAndEnd());
+
+                                if (Bln)
+                                {
+                                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                    vmRtn.ErrorMsg = string.Format("學號:{0}已存在{1}年的此社團裡面", row.GetCell(3)?.StringCellValue.TrimStartAndEnd(), row.GetCell(0)?.StringCellValue.TrimStartAndEnd());
+                                    return Json(vmRtn);
+                                }
+                            }
+                            else
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("資料行{0}學號為空", i+1);
                                 return Json(vmRtn);
                             }
 

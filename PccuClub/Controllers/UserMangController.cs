@@ -81,14 +81,14 @@ namespace WebPccuClub.Controllers
             if(vm.EditModel == null)
                 RedirectToAction("Index");
 
-            //bool isStudent = await StdService.ChkStudent(vm.EditModel.FUserId);
+            bool isStudent = await StdService.ChkStudent(vm.EditModel.FUserId);
 
-            //if (!isStudent)
-            //{
-            //    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-            //    vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", vm.EditModel.FUserId);
-            //    return Json(vmRtn);
-            //}
+            if (!isStudent)
+            {
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", vm.EditModel.FUserId);
+                return Json(vmRtn);
+            }
 
             try
             {

@@ -108,8 +108,8 @@ AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
             parameters.Add("@Sex", vm.CreateModel.Sex);
             parameters.Add("@CellPhone", vm.CreateModel.CellPhone);
             parameters.Add("@Department", vm.CreateModel.Department);
-            parameters.Add("@SDuring", vm.CreateModel.SDuring);
-            parameters.Add("@EDuring", vm.CreateModel.EDuring);
+            parameters.Add("@SDuring", vm.CreateModel.SDuring?.ToString("yyyy-MM-dd"));
+            parameters.Add("@EDuring", vm.CreateModel.EDuring?.ToString("yyyy-MM-dd"));
             parameters.Add("@Memo", vm.CreateModel.Memo);
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
@@ -504,5 +504,7 @@ AND (@ClubName IS NULL OR B.ClubCName LIKE '%' + @ClubName + '%') ";
 
             return LstItem;
         }
+
+        
     }
 }

@@ -122,7 +122,6 @@
         if (SchoolYear == "") { $.alert("學年度不可為空白"); return; }
         if (SDuring == "") { $.alert("任職開始期間不可為空白"); return; }
         if (EDuring == "") { $.alert("任職結束期間不可為空白"); return; }
-        if (MemberName == "") { $.alert("職別不可為空白"); return; }
         if (UserName == "") { $.alert("姓名不可為空白"); return; }
         if (SNo == "") { $.alert("學號不可為空白"); return; }
         if (EMail == "") { $.alert("信箱不可為空白"); return; }
@@ -173,6 +172,17 @@
     }
 
     function Reset() {
- 
+       $('#@Html.IdFor(m => m.CreateModel.ClubID)').val("");
+$('#@Html.IdFor(m => m.CreateModel.SchoolYear)').val("");
+$('#@Html.IdFor(m => m.CreateModel.SDuring)').val("");
+$('#@Html.IdFor(m => m.CreateModel.EDuring)').val("");
+$('#@Html.IdFor(m => m.CreateModel.UserName)').val("");
+$('#@Html.IdFor(m => m.CreateModel.SNo)').val("");
+$('#@Html.IdFor(m => m.CreateModel.EMail)').val("");
+$('#@Html.IdFor(m => m.CreateModel.Department)').val("");
+$('#@Html.IdFor(m => m.CreateModel.Sex)').val("");
+$('#@Html.IdFor(m => m.CreateModel.CellPhone)').val("");
+$('#@Html.IdFor(m => m.CreateModel.Memo)').val("");
+
     }
 </script>

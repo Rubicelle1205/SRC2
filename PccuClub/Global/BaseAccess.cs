@@ -746,5 +746,30 @@ namespace WebPccuClub.Global
             return new List<SelectListItem>();
         }
 
+        public bool MemberInClub(string? sNo, string? clubID, string? schoolYear)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@SNo", sNo);
+            parameters.Add("@ClubID", clubID);
+            parameters.Add("@SchoolYear", schoolYear);
+            #endregion
+
+            CommandText = $@"SELECT Count(1) AS RCount
+							FROM MemberMang
+							WHERE SNo = @SNo AND ClubID = @ClubID AND SchoolYear = @SchoolYear";
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+			int RCount = 0;
+			bool Bln = int.TryParse(ds.Tables[0].Rows[0]["RCount"].ToString(), out RCount);
+
+            return RCount > 0;
+        }
+
     }
 }
