@@ -25,6 +25,7 @@ namespace WebPccuClub.Controllers
         ReturnViewModel vmRtn = new ReturnViewModel();
         CadreMangDataAccess dbAccess = new CadreMangDataAccess();
         UploadUtil upload = new UploadUtil();
+        AuthUtil StdService = new AuthUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
@@ -95,10 +96,22 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.新增儲存)]
         [ValidateInput(false)]
-        public IActionResult SaveNewData(CadreMangViewModel vm)
+        public async Task<IActionResult> SaveNewDataAsync(CadreMangViewModel vm)
         {
             try
             {
+                if (!string.IsNullOrEmpty(vm.CreateModel.SNo))
+                {
+                    bool isStudent = await StdService.ChkStudent(vm.CreateModel.SNo);
+
+                    if (!isStudent)
+                    {
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", vm.CreateModel.SNo);
+                        return Json(vmRtn);
+                    }
+                }
+
                 dbAccess.DbaInitialTransaction();
 
                 var dbResult = dbAccess.InsertData(vm, LoginUser);
@@ -126,10 +139,22 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
-        public IActionResult EditOldData(CadreMangViewModel vm)
+        public async Task<IActionResult> EditOldDataAsync(CadreMangViewModel vm)
         {
             try
             {
+                if (!string.IsNullOrEmpty(vm.EditModel.SNo))
+                {
+                    bool isStudent = await StdService.ChkStudent(vm.EditModel.SNo);
+
+                    if (!isStudent)
+                    {
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", vm.EditModel.SNo);
+                        return Json(vmRtn);
+                    }
+                }
+
                 dbAccess.DbaInitialTransaction();
 
                 var dbResult = dbAccess.UpdateData(vm, LoginUser);
@@ -250,7 +275,7 @@ namespace WebPccuClub.Controllers
         }
 
         [LogAttribute(LogActionChineseName.匯入Excel)]
-        public IActionResult ImportExcel(CadreMangViewModel vm)
+        public async Task<IActionResult> ImportExcelAsync(CadreMangViewModel vm)
         {
             if (vm.File != null && vm.File.Length > 0)
             {
@@ -324,6 +349,25 @@ namespace WebPccuClub.Controllers
                             {
                                 vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                                 vmRtn.ErrorMsg = string.Format("檢核資料失敗:{0}", row.GetCell(10).ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
+
+                            //檢查學號
+                            if (!string.IsNullOrEmpty(row.GetCell(3)?.StringCellValue.TrimStartAndEnd()))
+                            {
+                                bool isStudent = await StdService.ChkStudent(row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
+
+                                if (!isStudent)
+                                {
+                                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                    vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
+                                    return Json(vmRtn);
+                                }
+                            }
+                            else
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("資料行{0}學號為空", i + 1);
                                 return Json(vmRtn);
                             }
 
