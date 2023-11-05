@@ -146,9 +146,9 @@ AND (@LifeClass IS NULL OR A.LifeClass = @LifeClass)
 
             string CommendText = string.Empty;
 
-            CommendText = $@"UPDATE FUserMain SET IsEnable = 0 WHERE FUserId = @OldFUserId";
+            //CommendText = $@"UPDATE FUserMain SET IsEnable = 0 WHERE FUserId = @OldFUserId";
 
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+            //ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
             if (ExecuteResult.isSuccess)
             {

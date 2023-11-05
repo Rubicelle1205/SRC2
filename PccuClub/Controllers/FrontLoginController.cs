@@ -102,12 +102,15 @@ namespace WebPccuClub.Controllers
 
                 loginEntity.Issuccess = true;
                 loginEntity.Loginid = user.LoginId;
+                LoginUser.IP = loginEntity.Ip;
 
                 HttpContext.Session.SetObject("FLoginUser", LoginUser);
 
                 UpdateLoginInfo(LoginUser);
                 InsertLoginLog(loginEntity);
                 InsertActionLog(loginEntity, LoginUser);
+
+                dbAccess.WriteLog($"[SSO登入] guid:{guid}", LoginUser, enumLogConst.Information);
 
                 return RedirectToAction("Index", "ClubList");
             }
@@ -164,7 +167,6 @@ namespace WebPccuClub.Controllers
                 }
                 isAuth = auth.Login(vm.LoginID, vm.Pwd, out UserInfo LoginUser, "F");
 #endif
-
                 if (!isAuth)
                 {
                     user.ErrorCount += 1;
@@ -180,6 +182,7 @@ namespace WebPccuClub.Controllers
                 LoginUser.LastLoginDate = DateTime.Now;
                 LoginUser.LastModified = DateTime.Now;
                 LoginUser.LastModifier = user.LoginId;
+                LoginUser.IP = loginEntity.Ip;
 
                 loginEntity.Issuccess = true;
 
@@ -188,6 +191,8 @@ namespace WebPccuClub.Controllers
                 UpdateLoginInfo(LoginUser);
                 InsertLoginLog(loginEntity);
                 InsertActionLog(loginEntity, LoginUser);
+
+                dbAccess.WriteLog($"[帳號登入] LoginID:{vm.LoginID}, Pwd:{vm.Pwd}", LoginUser, enumLogConst.Information);
 
                 return RedirectToAction("Index", "ClubList");
             }

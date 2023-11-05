@@ -104,6 +104,8 @@ namespace WebPccuClub.Controllers
                 {
                     bool isStudent = await StdService.ChkStudent(vm.CreateModel.SNo);
 
+                    dbAccess.WriteLog("[API]判斷學生身分:" + isStudent.ToString(), LoginUser, enumLogConst.Information);
+
                     if (!isStudent)
                     {
                         vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
@@ -156,6 +158,8 @@ namespace WebPccuClub.Controllers
                 if (!string.IsNullOrEmpty(vm.EditModel.SNo))
                 {
                     bool isStudent = await StdService.ChkStudent(vm.EditModel.SNo);
+
+                    dbAccess.WriteLog("[API]判斷學生身分:" + isStudent.ToString(), LoginUser, enumLogConst.Information);
 
                     if (!isStudent)
                     {
@@ -386,6 +390,8 @@ namespace WebPccuClub.Controllers
                                 LstSNo.Add(row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
 
                                 bool isStudent = await StdService.ChkStudent(row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
+
+                                dbAccess.WriteLog("[API]判斷學生身分:" + isStudent.ToString(), LoginUser, enumLogConst.Information);
 
                                 if (!isStudent)
                                 {

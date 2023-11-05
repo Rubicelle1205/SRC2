@@ -75,10 +75,12 @@ namespace WebAuth.DataAccess
                             WHERE A.LoginId = @LoginId AND A.Password = @Password and A.IsEnable = 1";
             }
             else {
-                SQL = @"SELECT A.*, A.ClubId AS LoginId, A.ClubCName AS UserName, B.*, 'F' AS LoginSource
+                SQL = @"SELECT A.*, A.ClubId AS LoginId, E.UserName AS UserName, B.*, 'F' AS LoginSource
                              FROM ClubMang A
                         LEFT JOIN UserRole B ON B.LoginId = A.ClubId
                         LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
+						LEFT JOIN ClubUser D ON D.ClubId = A.ClubId
+						LEFT JOIN FUserMain E ON E.FUserId = D.FUserId
                             WHERE A.ClubId = @LoginId AND A.Password = @Password and A.IsEnable = 1";
             }
           

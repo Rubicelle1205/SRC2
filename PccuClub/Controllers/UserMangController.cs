@@ -12,6 +12,7 @@ using System.Web.Mvc;
 using Utility;
 using WebAuth.Entity;
 using WebPccuClub.DataAccess;
+using WebPccuClub.Entity;
 using WebPccuClub.Global;
 using WebPccuClub.Models;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
@@ -82,6 +83,8 @@ namespace WebPccuClub.Controllers
                 RedirectToAction("Index");
 
             bool isStudent = await StdService.ChkStudent(vm.EditModel.FUserId);
+
+            dbAccess.WriteLog("[API]判斷學生身分:" + isStudent.ToString(), LoginUser, enumLogConst.Information);
 
             if (!isStudent)
             {

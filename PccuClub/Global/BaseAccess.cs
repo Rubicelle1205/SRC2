@@ -1,9 +1,13 @@
 ﻿using Dapper;
 using DataAccess;
+using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis;
+using NPOI.SS.Formula.Eval;
 using PccuClub.WebAuth;
 using System.Data;
 using System.Drawing;
+using WebPccuClub.Entity;
 using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
 using X.PagedList;
@@ -65,6 +69,55 @@ namespace WebPccuClub.Global
         {
             // 直接回傳錯誤給上層處理好了...
             throw new Exception("[DAException]", DAException.SystemResult);
+        }
+
+		public virtual void WriteLog(string strMsg, UserInfo LoginUser, enumLogConst enumLog = enumLogConst.None)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            string CommandText = string.Empty;
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("Type", Enum.GetName(enumLog));
+            // 使用者帳號
+            parameters.Add("Loginid", LoginUser.LoginId);
+            // 使用者姓名
+            parameters.Add("LoginName", LoginUser.UserName);
+            // 角色姓名
+            parameters.Add("Time", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.sss"));
+            // 角色姓名
+            parameters.Add("RoleName", LoginUser.UserRole[0].RoleName);
+            // 登入IP
+            parameters.Add("IP", LoginUser.IP);
+            // 建立時間
+            parameters.Add("text", strMsg);
+            #endregion 參數設定
+
+            #region CommandText
+            CommandText = @"insert into Log_Record
+					        (
+								Type,
+								LoginId,
+								LoginName,
+								Time,
+								IP,
+								text
+					        )
+					        values
+					        (
+                                @Type,
+								@LoginId,
+								@LoginName,
+								@Time,
+								@IP,
+								@text
+					        )";
+
+            #endregion CommandText
+
+            ExecuteResult = DbaExecuteNonQuery(CommandText, parameters, true, DBAccessException);
+
         }
 
         #region Method
@@ -772,4 +825,16 @@ namespace WebPccuClub.Global
         }
 
     }
+
+	public enum enumLogConst 
+	{
+		None = 0,
+		Run = 1, 
+		Start = 2,
+		End = 3,
+		Information = 4,
+		Warning = 5,
+		Error = 6
+    }
+
 }

@@ -34,8 +34,11 @@ namespace PccuClub.WebAuth
         /// <summary> 帳號來源 </summary>
         public string LoginSource { get; set; }
 
-		/// <summary> 出生日期 </summary>
-		public DateTime? Birthday { get; set; }
+        /// <summary> IP </summary>
+        public string IP { get; set; }
+
+        /// <summary> 出生日期 </summary>
+        public DateTime? Birthday { get; set; }
 
         /// <summary> 性別(0:女，1:男) </summary>
         public int? Sex { get; set; }

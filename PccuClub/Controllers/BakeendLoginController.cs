@@ -97,6 +97,7 @@ namespace WebPccuClub.Controllers
                 user.LastLoginDate = DateTime.Now;
                 user.LastModified = DateTime.Now;
                 user.LastModifier = user.LoginId;
+                LoginUser.IP = loginEntity.Ip;
                 loginEntity.Issuccess = true;
 
                 HttpContext.Session.SetObject("LoginUser", LoginUser);
@@ -104,6 +105,8 @@ namespace WebPccuClub.Controllers
                 UpdateLoginInfo(user);
                 InsertLoginLog(loginEntity);
                 InsertActionLog(loginEntity, LoginUser);
+
+                dbAccess.WriteLog($"[帳號登入]帳號:{vm.LoginID}, Pwd:{vm.Pwd}", LoginUser, enumLogConst.Information);
 
                 return RedirectToAction("Index", "Home", new { area = "" });
             }
