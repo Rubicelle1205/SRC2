@@ -146,12 +146,6 @@ AND (@LifeClass IS NULL OR A.LifeClass = @LifeClass)
 
             string CommendText = string.Empty;
 
-            //CommendText = $@"UPDATE FUserMain SET IsEnable = 0 WHERE FUserId = @OldFUserId";
-
-            //ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-            if (ExecuteResult.isSuccess)
-            {
 
                 CommendText = $@"INSERT INTO FUserMain
                                                 (FUserId 
@@ -179,7 +173,7 @@ AND (@LifeClass IS NULL OR A.LifeClass = @LifeClass)
                                                 ,GETDATE())";
 
                 ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-            }
+            
             return ExecuteResult;
         }
 
