@@ -309,7 +309,7 @@ namespace WebPccuClub.Controllers
 				}
 			}
 
-
+            LstNewPlaceUsed2 = LstNewPlaceUsed2.OrderBy(x => x.PlaceName).OrderBy(x => x.STime).ToList();
 			vm.LstPlaceUsedModel = LstNewPlaceUsed2;
 
 

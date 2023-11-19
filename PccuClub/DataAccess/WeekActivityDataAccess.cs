@@ -62,7 +62,7 @@ namespace WebPccuClub.DataAccess
                           LEFT JOIN PlaceSchoolMang B on B.PlaceID = A.ActPlaceID
                           LEFT JOIN ActDetail C ON C.ActDetailId = A.ActDetailId
                           LEFT JOIN ClubMang D ON D.ClubId = C.BrrowUnit
-                              WHERE [date] between @SDate AND @EDate
+                              WHERE [date] between @SDate AND @EDate AND A.RundownStatus <> '02'
                            GROUP BY A.ActID,A.ActPlaceID, A.ActPlaceText, A.[Date], C.ActName, C.BrrowUnit, D.ClubCName";
 
             (DbExecuteInfo info, IEnumerable<WeekActClubData> entitys) dbResult = DbaExecuteQuery<WeekActClubData>(CommandText, parameters, true, DBAccessException);

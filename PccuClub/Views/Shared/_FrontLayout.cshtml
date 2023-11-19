@@ -247,3 +247,14 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('a, button, submit').click(function () {
+            $.blockUI({
+                message: "<i class='fa fa-spinner fa-pulse orange' style='font-size:600%'></i>",
+                //borderWidth:'0px' 和透明背景
+                css: { borderWidth: '0px', backgroundColor: 'transparent' },
+            });
+        });
+    });</script>
