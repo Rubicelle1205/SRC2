@@ -43,10 +43,12 @@ namespace WebPccuClub.Controllers
         public IActionResult Index()
         {
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            ViewBag.ddlOrderBy = dbAccess.GetOrderBy();
 
             ClubActReportViewModel vm = new ClubActReportViewModel();
             vm.ConditionModel = new ClubActReportConditionModel();
             vm.ConditionModel.SchoolYear = PublicFun.GetNowSchoolYear();
+            vm.ConditionModel.OrderBy = "DESC";
             return View(vm);
         }
 

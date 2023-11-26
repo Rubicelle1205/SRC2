@@ -48,6 +48,10 @@ namespace WebPccuClub.Models
         /// <summary>學年度</summary>
         [DisplayName("學年度")]
         public string? SchoolYear { get; set; }
+
+        /// <summary>排序</summary>
+        [DisplayName("排序")]
+        public string? OrderBy { get; set; }
     }
 
     public class ClubActReportResultModel

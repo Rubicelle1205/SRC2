@@ -28,6 +28,7 @@ namespace WebPccuClub.DataAccess
             #region 參數設定
             
             parameters.Add("@SchoolYear", model?.SchoolYear);
+            parameters.Add("@OrderBy", model?.OrderBy);
             parameters.Add("@LoginId", LoginUser.LoginId);
 
             #endregion
@@ -38,7 +39,8 @@ namespace WebPccuClub.DataAccess
                           LEFT JOIN Code C ON C.Code = A.ActVerify AND C.Type = 'ActVerify'
                               WHERE 1 = 1
                                 AND (@SchoolYear IS NULL OR B.SchoolYear = @SchoolYear)
-                                AND (@LoginId IS NULL OR B.BrrowUnit = @LoginId)";
+                                AND (@LoginId IS NULL OR B.BrrowUnit = @LoginId)
+                                { (!string.IsNullOrEmpty(model.OrderBy) ? " ORDER BY A.ActID " + model.OrderBy : " ORDER BY A.ActID DESC")}";
 
 
             (DbExecuteInfo info, IEnumerable<ClubActReportResultModel> entitys) dbResult = DbaExecuteQuery<ClubActReportResultModel>(CommandText, parameters, true, DBAccessException);

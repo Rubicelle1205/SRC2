@@ -13,19 +13,21 @@
         <h4 class="pageTitle">活動報備</h4>
         <hr>
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <form method="post" id="SearchForm" enctype="multipart/form-data" action="">
                     <div class="d-flex align-items-center mb-3">
                         <i class="fas fa-filter text-primary"></i>
                         @Html.DropDownListFor(m => m.ConditionModel.SchoolYear,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇", new {@class = "form-control ms-3"})
 
+                        @Html.DropDownListFor(m => m.ConditionModel.OrderBy,(List<SelectListItem>)ViewBag.ddlOrderBy,"請選擇", new {@class = "form-control ms-3"})
                     </div>
+
                     @Html.HiddenFor(m => m.ConditionModel.Page)
                     @Html.HiddenFor(m => m.ConditionModel.PageSize)
                     @Html.HiddenFor(m => m.ConditionModel.TotalCount)
                 </form>
             </div>
-            <div class="col-md-9">
+            <div class="col-md-6">
                 <div class="text-end mb-3">
                     <a class="btn btn-primary btn-modern border-0" href="@Url.Action("Create")">新增活動報備 <i class="fas fa-plus"></i></a>
                 </div>
@@ -53,6 +55,10 @@
     }
 
     $('#@Html.IdFor(m => m.ConditionModel.SchoolYear)').change(function (e) {
+        GoSearch();
+    });
+
+    $('#@Html.IdFor(m => m.ConditionModel.OrderBy)').change(function (e) {
         GoSearch();
     });
 

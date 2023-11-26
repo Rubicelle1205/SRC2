@@ -438,11 +438,33 @@ namespace WebPccuClub.Global
 			return new List<SelectListItem>();
 		}
 
-		#region Rundown 資料
+        public List<SelectListItem> GetOrderBy()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT 'ASC' AS VALUE, '正向排序' AS TEXT
+							 UNION
+							SELECT 'DESC' AS VALUE, '逆向排序' AS TEXT";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        #region Rundown 資料
 
 
-		/// <summary> 取得Rundown資料 </summary>
-		public List<ActListMangEditRundownModel> GetEditRundownData(string Ser)
+        /// <summary> 取得Rundown資料 </summary>
+        public List<ActListMangEditRundownModel> GetEditRundownData(string Ser)
 		{
 			string CommandText = string.Empty;
 			DataSet ds = new DataSet();
