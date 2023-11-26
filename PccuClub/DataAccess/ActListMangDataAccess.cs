@@ -53,6 +53,7 @@ AND (@ActId IS NULL OR A.ActId = @ActId)
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 AND (@ActVerify IS NULL OR B.ActVerify = @ActVerify)
 AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%') 
+AND (@ClubName IS NULL OR D.ClubCName LIKE '%' + @ClubName + '%')
 GROUP BY A.ActID, A.SchoolYear, A.ActName, B.ActVerify, C.Text, A.BrrowUnit, F.MinDate, F.MaxDate, B.Creator, D.ClubCName, A.Created";
 
 
