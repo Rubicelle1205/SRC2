@@ -45,6 +45,7 @@ namespace WebPccuClub.Controllers
         {
             FrontLoginViewModel vm = new FrontLoginViewModel();
             LoginLogEntity loginEntity = GetLoginLogEntity(vm);
+            string strResult = "";
 
             if (string.IsNullOrEmpty(guid))
                 return View(vm);
@@ -57,7 +58,11 @@ namespace WebPccuClub.Controllers
                 var result = await SSOAuth.GetSSOAuthData(guid);
 
                 if (result.bError)
+                {
+                    strResult = result.sMsg;
                     throw new Exception("登入轉換失敗，請使用帳號登入");
+                }
+                
 
                 SSOUserInfo sSOUserInfo = JsonConvert.DeserializeObject<SSOUserInfo>(result.JSONData);
 
@@ -126,7 +131,8 @@ namespace WebPccuClub.Controllers
             catch (Exception ex)
             {
                 loginEntity.Issuccess = false;
-                loginEntity.Memo = "[API回傳錯誤]" + ex.Message;
+                loginEntity.Memo = "[API回傳錯誤]" + strResult;
+
                 AlertMsg.Add(string.Format(@"{0}", "登入轉換失敗，請使用帳號登入"));
                 InsertLoginLog(loginEntity);
 
