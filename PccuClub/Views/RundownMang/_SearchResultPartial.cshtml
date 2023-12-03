@@ -3,19 +3,19 @@
 
 <!-- /.card-header -->
 <div class="card-body table-responsive p-0">
-    <table class="table table-bordered table-hover text-nowrap">
+    <table class="table table-bordered table-hover">
         <thead>
             <tr class="text-center">
-                <th width="5%">學年度</th>
-                <th width="15%">活動名稱<br /><span class="text-sm text-secondary">活動人數</span></th>
+                <th width="7%">學年度</th>
+                <th width="18%">活動名稱<br /><span class="text-sm text-secondary">活動人數</span></th>
                 <th width="10%">活動性質<br /></th>
                 <th width="10%">社團名稱<br /><span class="text-sm text-secondary">社團ID</span></th>
-                <th width="10%">地點類型</th>
+                <th width="12%">地點類型<br /><span class="text-sm text-secondary">地點名稱</span></th>
                 <th width="10%">使用日期<br /><span class="text-sm text-secondary">使用時間</span></th>
-                <th width="10%">審核狀態</th>
-                <th width="20%">行程狀態</th>
+                <th width="9%">審核狀態</th>
+                <th width="11%">行程狀態</th>
                 <th width="5%">建立時間</th>
-                <th width="5%">功能</th>
+                <th width="8%">功能</th>
             </tr>
         </thead>
         <tbody>
@@ -46,6 +46,10 @@
                         </td>
                         <td class="text-center text-sm">
                             @item.PlaceSourceText
+                            <br/>
+                            <span class="text-muted">
+                                @item.ActPlaceText
+                            </span>
                         </td>
                         <td class="text-center text-sm">
                             @item.Date.Value.ToString("yyyy/MM/dd")
@@ -92,9 +96,10 @@
                         {
                             <td class="text-center text-sm"></td>
                         }
-
+                        s
                         <td class="text-center text-sm">
-                            @using (Html.BeginForm("Edit", "ActListMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
+                            @*@using (Html.BeginForm("Edit|" + Context.Request.RouteValues["controller"], "ActListMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))*@
+                            @using (Html.BeginForm("Edit", "ActListMang", new RouteValueDictionary { { "BackUrl", Context.Request.RouteValues["controller"] } }, FormMethod.Post, false, new { style = "display: inline - flex; vertical - align: bottom; " }))
                             {
                                 <button type="submit" value="@item.ActID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
                             }

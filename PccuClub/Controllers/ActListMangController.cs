@@ -84,6 +84,8 @@ namespace WebPccuClub.Controllers
             vm.EditModel.LstProposal = dbAccess.GetEditProposalData(submitBtn);
             vm.EditModel.LstOutSideFile = dbAccess.GetEditOutSideFileData(submitBtn);
 
+            vm.EditModel.BackUrl = Request.Query["BackUrl"];
+
             return View(vm);
         }
 

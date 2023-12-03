@@ -139,7 +139,7 @@ namespace WebPccuClub.Models
 
         /// <summary>場地名稱</summary>
         [DisplayName("場地名稱")]
-        public string? PlaceText { get; set; }
+        public string? ActPlaceText { get; set; }
 
         /// <summary>活動日</summary>
         [DisplayName("活動日")]

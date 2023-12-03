@@ -415,6 +415,8 @@ namespace WebPccuClub.Models
         public string? ActID { get; set; }
         public string? ActDetailId { get; set; }
 
+        public string? BackUrl { get; set; }
+
         #region Step1
 
         /// <summary>社團代號</summary>

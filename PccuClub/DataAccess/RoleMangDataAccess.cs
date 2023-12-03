@@ -424,7 +424,7 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
             #region 參數設定
             #endregion
 
-            CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'LifeClass'";
+            CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'LifeClass' ORDER BY Code";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
