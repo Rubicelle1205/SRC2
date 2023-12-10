@@ -9,6 +9,7 @@ using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Runtime.ConstrainedExecution;
+using MathNet.Numerics.RootFinding;
 
 namespace WebPccuClub.DataAccess
 {
@@ -669,7 +670,7 @@ namespace WebPccuClub.DataAccess
             return LstItem;
         }
 
-        internal string? GetDefaultActName(UserInfo LoginUser)
+        public string? GetDefaultActName(UserInfo LoginUser)
         {
             string str = string.Empty;
 

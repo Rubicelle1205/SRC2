@@ -1,7 +1,7 @@
 ﻿@model WebPccuClub.Models.ActListMangViewModel
 
 @{
-
+    
 }
 
 @if (Model.CreateModel.PlaceSource == "01")
@@ -87,6 +87,22 @@ else
 
 
 <script>
+
+    $(function () {
+        $('#@Html.IdFor(m => m.CreateModel.PlaceName)').autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetSuggestPlace")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { 'PlaceSource': $("[id ^= 'PlaceSource_']:checked").val(), Prefix: request.term },
+                    success: function (data) {
+                        response(data);
+                    }
+                })
+            }
+        });
+    });
 
     $('#@Html.IdFor(m => m.CreateModel.Buildid)').on('change', function () {
             InitPlaceSelect($("[id ^= 'PlaceSource_']:checked").val(), $(this).val());

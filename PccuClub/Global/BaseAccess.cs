@@ -846,6 +846,31 @@ namespace WebPccuClub.Global
             return RCount > 0;
         }
 
+
+        public virtual DataTable GetPlaceName(string placeSource)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            if (placeSource == "02")
+            {
+                CommandText = $@"SELECT PlaceName FROM PlaceSchoolElseMang";
+            }
+            else if (placeSource == "03")
+            {
+                CommandText = $@"SELECT PlaceName FROM PlaceOutSideMang";
+            }
+
+            (DbExecuteInfo info, IEnumerable<RoleMangEditModel> entitys) dbResult = DbaExecuteQuery<RoleMangEditModel>(CommandText, parameters, true, DBAccessException);
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+            return ds.Tables[0];
+        }
     }
 
 	public enum enumLogConst 

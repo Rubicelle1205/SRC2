@@ -1,6 +1,7 @@
 ﻿using DataAccess;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NPOI.POIFS.Crypt.Dsig;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.Streaming.Values;
@@ -378,12 +379,31 @@ namespace WebPccuClub.Controllers
 
             vm.PlaceDataModel = dbAccess.GetPlaceData(PlaceSource, PlaceId);
 
-
-
             return PartialView("_PlaceDataPartial", vm);
         }
 
-		[ValidateInput(false)]
+        [ValidateInput(false)]
+        public IActionResult GetSuggestPlace(string PlaceSource, string Prefix)
+        {
+            List<string> LstPlaceName = new List<string>();
+
+            DataTable dt = dbAccess.GetPlaceName(PlaceSource);
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    LstPlaceName.Add(dr["PlaceName"].ToString());
+                }
+            }
+
+            var result = LstPlaceName.Where(x => x.ToLower().Contains(Prefix)).ToList().Take(5);
+
+            return Json(result);
+        }
+
+
+        [ValidateInput(false)]
 		public IActionResult ChkRundown(ActListMangViewModel vm)
 		{
 			bool CanUse = true;
