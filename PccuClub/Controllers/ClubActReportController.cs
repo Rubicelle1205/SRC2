@@ -397,7 +397,7 @@ namespace WebPccuClub.Controllers
                 }
             }
 
-            var result = LstPlaceName.Where(x => x.ToLower().Contains(Prefix)).ToList().Take(5);
+            var result = LstPlaceName.Where(x => x.ToLower().Contains(Prefix)).ToList().Take(10);
 
             return Json(result);
         }

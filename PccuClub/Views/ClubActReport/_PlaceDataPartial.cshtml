@@ -1,7 +1,7 @@
 ﻿@model WebPccuClub.Models.ActListMangViewModel
 
 @{
-    
+
 }
 
 @if (Model.CreateModel.PlaceSource == "01")
@@ -44,9 +44,9 @@
                                 </div>
                                 @foreach (var item in Model.PlaceDataModel)
                                 {
-                                <div class="item">
-                                    <span class="cell">@string.Format("{0}:00", item.Normal_STime) ～ @string.Format("{0}:00", item.Normal_ETime)</span>
-                                    <span class="cell">@string.Format("{0}:00", item.Holiday_STime) ～ @string.Format("{0}:00", item.Holiday_ETime)</span>
+                                    <div class="item">
+                                        <span class="cell">@string.Format("{0}:00", item.Normal_STime) ～ @string.Format("{0}:00", item.Normal_ETime)</span>
+                                        <span class="cell">@string.Format("{0}:00", item.Holiday_STime) ～ @string.Format("{0}:00", item.Holiday_ETime)</span>
                                         <span class="cell">@item.PlaceStatusText</span>
                                         @if (!string.IsNullOrEmpty(item.Capacity) && item.Capacity != "0")
                                         {
@@ -58,7 +58,7 @@
                                         }
                                         <span class="cell">@item.PlaceEquip</span>
                                         <span class="cell">@item.Memo</span>
-                                </div>
+                                    </div>
                                 }
                             </div>
                         </div>
@@ -105,14 +105,14 @@ else
     });
 
     $('#@Html.IdFor(m => m.CreateModel.Buildid)').on('change', function () {
-            InitPlaceSelect($("[id ^= 'PlaceSource_']:checked").val(), $(this).val());
-        });
+        InitPlaceSelect($("[id ^= 'PlaceSource_']:checked").val(), $(this).val());
+    });
 
 
     $('#@Html.IdFor(m => m.CreateModel.PlaceId)').change(function () {
         InitPlaceData($("[id ^= 'PlaceSource_']:checked").val(), $('#@Html.IdFor(m => m.CreateModel.Buildid)').val(), $(this).val());
     });
-        
+
     function InitPlaceSelect(PlaceSource, Buildid) {
 
         SendAjax({
@@ -123,7 +123,7 @@ else
             }
         });
 
-      
+
 
     }
 
