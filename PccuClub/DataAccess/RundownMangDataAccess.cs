@@ -130,8 +130,14 @@ AND(@ActName IS NULL OR C.ActName LIKE '%' + @ActName + '%') ";
 
             CommandText = $@"SELECT A.ActRundownID, A.ActID, C.SchoolYear, C.ActName, C.Capacity, C.ActType, E.ActTypeName AS ActTypeText, 
                                     A.PlaceSource, F.Text AS PlaceSourceText, A.ActPlaceText,
-                                    C.SDGs, C.BrrowUnit AS ClubiD, D.ClubCName, D.LifeClass, H.Text AS LifeClassText,
-                                    B.ActVerify, G.Text AS ActVerifyText, A.RundownStatus,
+                                    C.SDGs,
+
+									(SELECT STUFF((SELECT ', ' + SDGsMang.ShortName FROM SDGsMang WHERE ',' + CAST(ActDetail.SDGs AS varchar(max)) + ',' LIKE '%,' + CAST(SDGsMang.SDGID AS varchar) + ',%' FOR XML PATH(''), TYPE).value('.', 'VARCHAR(MAX)'), 1, 2, '') AS SDGsName
+                                       FROM ActDetail 
+                                      WHERE ActID = A.ActID) AS SDGsName,
+
+                                    C.BrrowUnit AS ClubiD, D.ClubCName, D.LifeClass, H.Text AS LifeClassText,
+                                    B.ActVerify, G.Text AS ActVerifyText, A.RundownStatus, I.Text AS RundownStatusText, 
                                     A.Date, A.STime, A.ETime, A.Created
                                FROM ActRundown A
                           LEFT JOIN ActMain B ON B.ActID = A.ActID
@@ -141,6 +147,7 @@ AND(@ActName IS NULL OR C.ActName LIKE '%' + @ActName + '%') ";
                           LEFT JOIN Code F ON F.Code = A.PlaceSource AND F.Type = 'PlaceSource'
                           LEFT JOIN Code G ON G.Code = B.ActVerify AND G.Type = 'ActVerify'
                           LEFT JOIN Code H ON H.Code = D.LifeClass AND H.Type = 'LifeClass'
+                          LEFT JOIN Code I ON I.Code = A.RundownStatus AND I.Type = 'RundownStatus'
                               WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
 AND (@SchoolYear IS NULL OR C.SchoolYear = @SchoolYear)

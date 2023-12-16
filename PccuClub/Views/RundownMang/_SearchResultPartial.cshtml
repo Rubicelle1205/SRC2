@@ -95,8 +95,7 @@
                         else
                         {
                             <td class="text-center text-sm"></td>
-                        }
-                        s
+                        }                        
                         <td class="text-center text-sm">
                             @*@using (Html.BeginForm("Edit|" + Context.Request.RouteValues["controller"], "ActListMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))*@
                             @using (Html.BeginForm("Edit", "ActListMang", new RouteValueDictionary { { "BackUrl", Context.Request.RouteValues["controller"] } }, FormMethod.Post, false, new { style = "display: inline - flex; vertical - align: bottom; " }))

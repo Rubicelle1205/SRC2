@@ -186,6 +186,10 @@ namespace WebPccuClub.Models
         [DisplayName("學年度")]
         public string? SchoolYear { get; set; }
 
+        /// <summary>活動編號</summary>
+        [DisplayName("活動編號")]
+        public string? ActID { get; set; }
+
         /// <summary>活動名稱</summary>
         [DisplayName("活動名稱")]
         public string? ActName { get; set; }
@@ -209,6 +213,14 @@ namespace WebPccuClub.Models
         /// <summary>地點類型</summary>
         [DisplayName("地點類型")]
         public string? PlaceSourceText { get; set; }
+
+        /// <summary>地點名稱</summary>
+        [DisplayName("地點名稱")]
+        public string? ActPlaceText { get; set; }
+
+        /// <summary>SDGs</summary>
+        [DisplayName("SDGs")]
+        public string? SDGsName { get; set; }
 
         /// <summary>活動日</summary>
         [DisplayName("活動日")]

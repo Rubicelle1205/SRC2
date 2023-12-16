@@ -108,7 +108,9 @@ namespace WebPccuClub.Controllers
             if (vm.ExcelModel != null && vm.ExcelModel.Count > 0)
             {
                 IWorkbook workbook = new XSSFWorkbook();
-                List<int> LstWidth = new List<int> { 20, 50, 20, 20, 20, 20, 20, 30, 30, 30, 30, 30, 50 };
+                List<int> LstWidth = new List<int> { 20, 30, 50, 20, 20, 
+                                                     20, 20, 20, 30, 40, 
+                                                     30, 30, 30, 30, 30, 50 };
 
                 ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
 
@@ -139,18 +141,21 @@ namespace WebPccuClub.Controllers
                     IRow dataRow = sheet.CreateRow(i + 1);
 
                     dataRow.CreateCell(0).SetCellValue(vm.ExcelModel[i].SchoolYear);
-                    dataRow.CreateCell(1).SetCellValue(vm.ExcelModel[i].ActName);
-                    dataRow.CreateCell(2).SetCellValue(vm.ExcelModel[i].Capacity);
-                    dataRow.CreateCell(3).SetCellValue(vm.ExcelModel[i].ActTypeText);
-                    dataRow.CreateCell(4).SetCellValue(vm.ExcelModel[i].ClubCName);
-                    dataRow.CreateCell(5).SetCellValue(vm.ExcelModel[i].ClubId);
-                    dataRow.CreateCell(6).SetCellValue(vm.ExcelModel[i].PlaceSourceText);
-                    dataRow.CreateCell(7).SetCellValue(vm.ExcelModel[i].Date.Value.ToString("yyyy/MM/dd"));
-                    dataRow.CreateCell(8).SetCellValue(string.Format("{0}:00", vm.ExcelModel[i].STime));
-                    dataRow.CreateCell(9).SetCellValue(string.Format("{0}:00", vm.ExcelModel[i].ETime));
-                    dataRow.CreateCell(10).SetCellValue(vm.ExcelModel[i].ActVerifyText);
-                    dataRow.CreateCell(11).SetCellValue(vm.ExcelModel[i].PlaceSourceText);
-                    dataRow.CreateCell(12).SetCellValue(vm.ExcelModel[i].Created.Value.ToString("yyyy/MM/dd HH:mm:ss"));
+                    dataRow.CreateCell(1).SetCellValue(vm.ExcelModel[i].ActID);
+                    dataRow.CreateCell(2).SetCellValue(vm.ExcelModel[i].ActName);
+                    dataRow.CreateCell(3).SetCellValue(vm.ExcelModel[i].Capacity);
+                    dataRow.CreateCell(4).SetCellValue(vm.ExcelModel[i].ActTypeText);
+                    dataRow.CreateCell(5).SetCellValue(vm.ExcelModel[i].ClubCName);
+                    dataRow.CreateCell(6).SetCellValue(vm.ExcelModel[i].ClubId);
+                    dataRow.CreateCell(7).SetCellValue(vm.ExcelModel[i].PlaceSourceText);
+                    dataRow.CreateCell(8).SetCellValue(vm.ExcelModel[i].ActPlaceText);
+                    dataRow.CreateCell(9).SetCellValue(vm.ExcelModel[i].SDGsName);
+                    dataRow.CreateCell(10).SetCellValue(vm.ExcelModel[i].Date.Value.ToString("yyyy/MM/dd"));
+                    dataRow.CreateCell(11).SetCellValue(string.Format("{0}:00", vm.ExcelModel[i].STime));
+                    dataRow.CreateCell(12).SetCellValue(string.Format("{0}:00", vm.ExcelModel[i].ETime));
+                    dataRow.CreateCell(13).SetCellValue(vm.ExcelModel[i].ActVerifyText);
+                    dataRow.CreateCell(14).SetCellValue(vm.ExcelModel[i].RundownStatusText);
+                    dataRow.CreateCell(15).SetCellValue(vm.ExcelModel[i].Created.Value.ToString("yyyy/MM/dd HH:mm:ss"));
 
                     foreach (var cell in dataRow.Cells)
                         cell.CellStyle = contentStyle;
