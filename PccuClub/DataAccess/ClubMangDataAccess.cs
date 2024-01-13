@@ -296,8 +296,17 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@ClubId", vm.EditModel.ClubId);
-            parameters.Add("@RoleId", vm.EditModel.RoleId);
+            if (vm.EditModel != null)
+            {
+                parameters.Add("@ClubId", vm.EditModel.ClubId);
+                parameters.Add("@RoleId", vm.EditModel.RoleId);
+            }
+            else if (vm.CreateModel != null)
+            {
+                parameters.Add("@ClubId", vm.CreateModel.ClubId);
+                parameters.Add("@RoleId", vm.CreateModel.RoleId);
+            }
+            
             #endregion 參數設定
 
             string CommendText = $@"IF EXISTS (SELECT 1

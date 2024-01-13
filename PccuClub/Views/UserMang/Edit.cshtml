@@ -117,6 +117,13 @@
         var CellPhone = $('#@Html.IdFor(m => m.EditModel.CellPhone)').val();
         var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
 
+        if (IsEnable == "") { $.alert("請選擇是否啟用"); return; }
+        if (FUserId == "") { $.alert("學校/人員代號不可為空白"); return; }
+        if (UserName == "") { $.alert("負責人姓名不可為空白"); return; }
+        if (Department == "") { $.alert("單位不可為空白"); return; }
+        if (EMail == "") { $.alert("信箱不可為空白"); return; }
+        if (CellPhone == "") { $.alert("連絡電話不可為空白"); return; }
+
         data.append('@Html.NameFor(m => m.EditModel.ClubId)', ClubId);
         data.append('@Html.NameFor(m => m.EditModel.OldFUserId)', OldFUserId);
         data.append('@Html.NameFor(m => m.EditModel.FUserId)', FUserId);
@@ -126,6 +133,7 @@
         data.append('@Html.NameFor(m => m.EditModel.EMail)', EMail);
         data.append('@Html.NameFor(m => m.EditModel.CellPhone)', CellPhone);
         data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
 
         SendAjax({
             url: '@Url.Action("EditOldData")',

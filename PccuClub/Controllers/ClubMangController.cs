@@ -151,6 +151,16 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
+                dbResult = dbAccess.UpdateRole(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
                 dbAccess.DbaCommit();
             }
             catch (Exception ex)

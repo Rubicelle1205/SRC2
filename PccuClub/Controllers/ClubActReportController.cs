@@ -202,7 +202,7 @@ namespace WebPccuClub.Controllers
 				vm4.CreateModel.LeaderName = vm.CreateModel.LeaderName;
 				vm4.CreateModel.LeaderTel = vm.CreateModel.LeaderTel;
 				vm4.CreateModel.LeaderPhone = vm.CreateModel.LeaderPhone;
-				vm4.CreateModel.ManagerName = vm.CreateModel.LeaderName;
+				vm4.CreateModel.ManagerName = vm.CreateModel.ManagerName;
 				vm4.CreateModel.ManagerTel = vm.CreateModel.ManagerTel;
 				vm4.CreateModel.ManagerPhone = vm.CreateModel.ManagerPhone;
                 vm4.CreateModel.HasOutSide = "1";
