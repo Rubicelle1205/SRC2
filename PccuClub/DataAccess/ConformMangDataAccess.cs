@@ -20,7 +20,7 @@ namespace WebPccuClub.DataAccess
             
             #endregion
 
-            CommandText = $@"SELECT PersonalConform, ActivityConform, ClubInfoConform, Creator, Created, LastModifier, LastModified, ModifiedReason
+            CommandText = $@"SELECT PersonalConform, ActivityConform, ClubInfoConform, ActFinishConform, Creator, Created, LastModifier, LastModified, ModifiedReason
                                FROM ConformMang";
 
             (DbExecuteInfo info, IEnumerable<ConformMangEditModel> entitys) dbResult = DbaExecuteQuery<ConformMangEditModel>(CommandText, parameters, true, DBAccessException);
@@ -40,14 +40,16 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@PersonalConform", model.PersonalConform.ToString().TrimStartAndEnd());
             parameters.Add("@ActivityConform", model.ActivityConform.ToString().TrimStartAndEnd());
             parameters.Add("@ClubInfoConform", model.ClubInfoConform.ToString().TrimStartAndEnd());
+            parameters.Add("@ActFinishConform", model.ActFinishConform.ToString().TrimStartAndEnd());
             parameters.Add("@LastModifier", userName);
             #endregion 參數設定
 
             string CommendText = $@"UPDATE ConformMang 
-                                       SET PersonalConform = @PersonalConform,
-                                           ActivityConform = @ActivityConform,
-                                           ClubInfoConform = @ClubInfoConform,
-                                           LastModified = GETDATE(),
+                                       SET PersonalConform = @PersonalConform, 
+                                           ActivityConform = @ActivityConform, 
+                                           ClubInfoConform = @ClubInfoConform, 
+                                           ActFinishConform = @ActFinishConform, 
+                                           LastModified = GETDATE(), 
                                            LastModifier = @LastModifier";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);

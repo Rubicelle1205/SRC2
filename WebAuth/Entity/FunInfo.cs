@@ -36,7 +36,7 @@ namespace WebAuth.Entity
         public bool IsVisIble { get; set; }
 
         /// <summary> 排序 </summary>
-        public int SortOrder { get; set; }
+        public string SortOrder { get; set; }
     }
 
 
