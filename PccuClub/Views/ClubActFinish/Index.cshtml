@@ -1,4 +1,4 @@
-﻿@model WebPccuClub.Models.ClubActReportViewModel
+﻿@model WebPccuClub.Models.ClubActFinishViewModel
 
 @{
     Layout = "_FrontLayout";
@@ -10,7 +10,7 @@
     @Html.Partial("_FrontRemindWrapper")
 
     <div class="contentWrapper">
-        <h4 class="pageTitle">活動報備</h4>
+        <h4 class="pageTitle">活動結案紀錄</h4>
         <hr>
         <div class="row">
             <div class="col-md-6">
@@ -19,7 +19,7 @@
                         <i class="fas fa-filter text-primary"></i>
                         @Html.DropDownListFor(m => m.ConditionModel.SchoolYear,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇", new {@class = "form-control ms-3"})
 
-                        @Html.DropDownListFor(m => m.ConditionModel.OrderBy,(List<SelectListItem>)ViewBag.ddlOrderBy,"請選擇", new {@class = "form-control ms-3"})
+                        @Html.DropDownListFor(m => m.ConditionModel.ActVerify,(List<SelectListItem>)ViewBag.ddlActVerify,"請選擇", new {@class = "form-control ms-3"})
                     </div>
 
                     @Html.HiddenFor(m => m.ConditionModel.Page)
@@ -34,7 +34,7 @@
             </div>
         </div>
 
-        <div id="SearchResultList" class="pagelist pagelist-icon2"></div>
+        <div id="SearchResultList" class="pagelist"></div>
 
     </div>
 </div>
@@ -58,7 +58,7 @@
         GoSearch();
     });
 
-    $('#@Html.IdFor(m => m.ConditionModel.OrderBy)').change(function (e) {
+    $('#@Html.IdFor(m => m.ConditionModel.ActVerify)').change(function (e) {
         GoSearch();
     });
 

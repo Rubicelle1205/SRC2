@@ -97,6 +97,40 @@ namespace WebPccuClub.DataAccess
             return null;
         }
 
+        /// <summary>
+        /// 取得活動結案資料
+        /// </summary>
+        /// <param name="submitBtn"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public ClubActReportClubActFinish GetClubActFinishData(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@ActID", Ser);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT A.ActID, B.ActDetailId, C.ClubId, C.ClubCName, B.ActName
+						 FROM ActMain A
+                         LEFT JOIN ActDetail B ON B.ActID = A.ActID
+						 LEFT JOIN ClubMang C ON C.ClubId = B.BrrowUnit
+                             WHERE 1 = 1
+							 AND (A.ActID = @ActID)";
+
+
+            (DbExecuteInfo info, IEnumerable<ClubActReportClubActFinish> entitys) dbResult = DbaExecuteQuery<ClubActReportClubActFinish>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList().FirstOrDefault();
+
+            return null;
+        }
+
         public ClubActReportConsentModel GetConsentData()
         {
             string CommandText = string.Empty;
@@ -656,19 +690,19 @@ namespace WebPccuClub.DataAccess
         #endregion
 
 
-        public List<SelectListItem> GetSchoolYear()
-        {
-            List<SelectListItem> LstItem = new List<SelectListItem>();
+        //public List<SelectListItem> GetSchoolYear()
+        //{
+        //    List<SelectListItem> LstItem = new List<SelectListItem>();
 
-            int NowSchoolYear = int.Parse(PublicFun.GetNowSchoolYear());
+        //    int NowSchoolYear = int.Parse(PublicFun.GetNowSchoolYear());
 
-            for (int i = NowSchoolYear - 2; i <= NowSchoolYear + 2; i++)
-            {
-                LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
-            }
+        //    for (int i = NowSchoolYear - 2; i <= NowSchoolYear + 2; i++)
+        //    {
+        //        LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
+        //    }
 
-            return LstItem;
-        }
+        //    return LstItem;
+        //}
 
         public string? GetDefaultActName(UserInfo LoginUser)
         {
@@ -700,5 +734,103 @@ namespace WebPccuClub.DataAccess
             return str;
         }
 
+        /// <summary> 新增結案資料 </summary>
+        public DbExecuteInfo InsertActFinishData(ClubActReportViewModel vm, UserInfo LoginUser, out DataTable dt)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ClubID", vm.ClubActFinish.ClubId);
+            parameters.Add("@ActID", vm.ClubActFinish.ActID);
+            parameters.Add("@ActDetailId", vm.ClubActFinish.ActDetailId);
+            parameters.Add("@ClubCName", vm.ClubActFinish.ClubCName);
+            parameters.Add("@Caseman", vm.ClubActFinish.Caseman);
+            parameters.Add("@Email", vm.ClubActFinish.Email);
+            parameters.Add("@Tel", vm.ClubActFinish.Tel);
+            parameters.Add("@ActDate", vm.ClubActFinish.ActDate);
+            parameters.Add("@ActName", vm.ClubActFinish.ActName);
+            parameters.Add("@Course", vm.ClubActFinish.Course);
+            parameters.Add("@ShortInfo", vm.ClubActFinish.ShortInfo);
+            parameters.Add("@ElseFile", vm.ClubActFinish.ElseFile);
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO ActFinish
+                                               (ActID
+                                               ,ActDetailId
+                                               ,ClubId
+                                               ,ClubCName
+                                               ,Caseman
+                                               ,Email
+                                               ,Tel
+                                               ,ActDate
+                                               ,ActName
+                                               ,Course
+                                               ,ShortInfo
+                                               ,ElseFile 
+                                               ,ActFinishVerify 
+                                               ,Creator
+                                               ,Created
+                                               ,LastModifier
+                                               ,LastModified)
+                                         OUTPUT Inserted.ActFinishId
+                                         VALUES
+                                               (@ActID, 
+                                                @ActDetailId, 
+                                                @ClubId, 
+                                                @ClubCName, 
+                                                @Caseman, 
+                                                @Email, 
+                                                @Tel, 
+                                                @ActDate, 
+                                                @ActName, 
+                                                @Course, 
+                                                @ShortInfo, 
+                                                @ElseFile,
+                                                '01', 
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE() )";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            dt = ds.Tables[0];
+
+            return ExecuteResult;
+        }
+
+        /// <summary> 新增資料 </summary>
+        public DbExecuteInfo InsertPersonData(string ActFinishId, List<ActFinishPersonModel> dataList, UserInfo LoginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommendText = $@"INSERT INTO ActFinishPerson
+                                               (ActFinishId
+                                               ,Name
+                                               ,SNO
+                                               ,Department
+                                               ,Creator
+                                               ,Created
+                                               ,LastModifier
+                                               ,LastModified)
+                                         VALUES
+                                               ('{ActFinishId}'
+                                               ,@Name
+                                               ,@SNO
+                                               ,@Department
+                                               ,'{LoginUser.LoginId}'
+                                               ,GETDATE()
+                                               ,'{LoginUser.LoginId}'
+                                               ,GETDATE())";
+
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+            return ExecuteResult;
+        }
     }
 }

@@ -80,6 +80,8 @@
         行程管理 = 65,
         前台活動報備 = 66,
         行程取消 = 67,
+        新增活動結案 = 68,
+        新增活動結案儲存 = 69,
     }
 
 	public enum DBActionChineseName

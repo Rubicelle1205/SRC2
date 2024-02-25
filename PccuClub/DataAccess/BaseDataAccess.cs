@@ -51,8 +51,12 @@ namespace WebPccuClub.DataAccess
 			{
 				CommendText = "SELECT ActivityConform AS Content FROM ConformMang ";
 			}
+            else if (ControllerName == "ClubActFinish")
+            {
+                CommendText = "SELECT ActFinishConform AS Content FROM ConformMang ";
+            }
 
-			DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+            DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
 
             if (ds != null && ds.Tables[0].Rows.Count > 0) {
                 str = ds.Tables[0].QueryFieldByDT("Content");

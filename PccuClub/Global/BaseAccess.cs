@@ -7,6 +7,7 @@ using NPOI.SS.Formula.Eval;
 using PccuClub.WebAuth;
 using System.Data;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using WebPccuClub.Entity;
 using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
@@ -16,6 +17,8 @@ namespace WebPccuClub.Global
 {
     public class BaseAccess : MsSqlDBAccess
     {
+        PublicFun PublicFun = new PublicFun();
+
         public BaseAccess() : base()
         { }
 
@@ -458,6 +461,31 @@ namespace WebPccuClub.Global
                 return dbResult.entitys.ToList();
 
             return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetSchoolYear(int type = 0)
+        {
+            List<SelectListItem> LstItem = new List<SelectListItem>();
+
+            int NowSchoolYear = int.Parse(PublicFun.GetNowSchoolYear());
+
+			if (type == 0)  //取得本學年度資料 (-2 ~ +2)
+            {
+				for (int i = NowSchoolYear - 2; i <= NowSchoolYear + 2; i++)
+				{
+					LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
+				}
+			}
+			else if (type == 1)  //取得本學年度資料 (-2)
+            {
+                for (int i = NowSchoolYear - 2; i <= NowSchoolYear; i++)
+                {
+                    LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}1", i) });
+                    LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}2", i) });
+                }
+            }
+
+            return LstItem;
         }
 
         #region Rundown 資料

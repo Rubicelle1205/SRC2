@@ -1,0 +1,118 @@
+﻿@model WebPccuClub.Models.ClubActFinishViewModel
+
+@{
+    Layout = "_FrontLayout";
+    ViewBag.Title = "活動結案紀錄";
+}
+
+@if (null != Model.EditModel)
+{
+    <div class="col-xxl-8">
+        <div class="contentWrapper">
+            <h4 class="pageTitle">@Model.EditModel.ActName</h4>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index")">活動結案紀錄</a></li>
+                    <li class="breadcrumb-item active">@Model.EditModel.ActName</li>
+                </ol>
+            </nav>
+            <hr>
+            <div class="mb-4">
+                <a id="Back" href="@Url.Action("Index")"><i class="fas fa-chevron-left"></i> 返回</a>
+            </div>
+
+            <div class="infoWrapper mb-4">
+                <div class="infoItem">
+                    <div class="tag">審核狀態</div>
+                    <div class="content">
+                        @if (Model.EditModel.ActFinishVerify == "01")
+                        {
+                            <div class="badge badge-primary">@Model.EditModel.ActVerifyText</div>
+                        }
+                        else if (Model.EditModel.ActFinishVerify == "02")
+                        {
+                            <div class="badge badge-success">@Model.EditModel.ActVerifyText</div>
+                        }
+                        else if (Model.EditModel.ActFinishVerify == "03")
+                        {
+                            <div class="badge badge-secondary">@Model.EditModel.ActVerifyText</div>
+                        }
+                        else if (Model.EditModel.ActFinishVerify == "04")
+                        {
+                            <div class="badge badge-info">@Model.EditModel.ActVerifyText</div>
+                        }
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">審核備註</div>
+                    <div class="content">@Model.EditModel.Memo</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">社團代碼</div>
+                    <div class="content">@Model.EditModel.ClubId</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動報備編號</div>
+                    <div class="content">@Model.EditModel.ActID</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主辦單位</div>
+                    <div class="content">@Model.EditModel.ClubCName</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">承辦人</div>
+                    <div class="content">@Model.EditModel.Caseman</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">聯絡Email</div>
+                    <div class="content">@Model.EditModel.Email</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">聯絡電話/分機</div>
+                    <div class="content">@Model.EditModel.Tel</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動名稱</div>
+                    <div class="content">@Model.EditModel.ActName</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動辦理時程</div>
+                    <div class="content">@Model.EditModel.Course</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動資訊簡述</div>
+                    <div class="content">@Model.EditModel.ShortInfo</div>
+                </div>
+            </div>
+
+            <div class="infoWrapper mb-5">
+                <div class="infoItem">
+                    <div class="tag">參與學號匯入</div>
+                    <div class="content">
+                        @if (null != Model.EditModel.PersonModel && Model.EditModel.PersonModel.Count > 0)
+                        {
+                            <div class="mb-1">
+                                <a class="text-decoration-underline" href="" onclick="ExportSearchResult(@Model.EditModel.ActFinishId)">參與學號</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">其他附件</div>
+                    <div class="content">
+                        <div class="mb-1">
+                            <a class="text-decoration-underline" href="../@Model.EditModel.ElseFile" target="_blank">其他附件</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+
+<script>
+    function ExportSearchResult(id) {
+        window.open('@Url.Action("ExportSearchResult")' + '?id=' + id);
+    }
+</script>

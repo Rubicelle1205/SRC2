@@ -273,6 +273,31 @@ namespace WebPccuClub.Controllers
                 return View(vm);
         }
 
+        [Log(LogActionChineseName.新增活動結案)]
+        public IActionResult CreateClubActFinish(string id, ClubActReportViewModel vm)
+        {
+            if (string.IsNullOrEmpty(id))
+                return RedirectToAction("Index");
+
+            vm.ClubActFinish = dbAccess.GetClubActFinishData(id);
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(1);
+
+            return View(vm);
+        }
+
+        [LogAttribute(LogActionChineseName.下載template檔案)]
+        public IActionResult DownloadTemplate()
+        {
+            string FileName = "學號匯入_template.xlsx";
+
+            string filePath = Path.Combine(hostingEnvironment.ContentRootPath, "Template", FileName);
+
+            byte[] fileContents = System.IO.File.ReadAllBytes(filePath);
+
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName);
+
+        }
+
         #region Jquery
 
         [ValidateInput(false)]
@@ -833,6 +858,96 @@ namespace WebPccuClub.Controllers
                 dbAccess.DbaRollBack();
                 vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                 vmRtn.ErrorMsg = "取消失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+        [Log(LogActionChineseName.新增活動結案儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> SaveActFinishNewData(ClubActReportViewModel vm)
+        {
+            try
+            {
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("ElseFile"))
+                        {
+                            var file = Request.Form.Files.GetFile("ClubActFinish.ElseFile");
+
+                            string strFilePath = await upload.UploadFileAsync("ActFinish", file);
+
+                            vm.ClubActFinish.ElseFile = strFilePath;
+                        }
+                    }
+                }
+
+
+                dbAccess.DbaInitialTransaction();
+                DataTable dt = new DataTable();
+
+                var dbResult = dbAccess.InsertActFinishData(vm, LoginUser, out dt);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                if (vm.File != null)
+                {
+                    string ActFinishId = dt.QueryFieldByDT("ActFinishId");
+                    List<ActFinishPersonModel> LstActFinishPersonDetail = new List<ActFinishPersonModel>();
+
+                    using (Stream stream = vm.File.OpenReadStream())
+                    {
+                        XSSFWorkbook workbook = new XSSFWorkbook(stream);
+                        ISheet sheet = workbook.GetSheetAt(0);
+
+                        for (int i = 1; i <= sheet.LastRowNum; i++)
+                        {
+                            IRow row = sheet.GetRow(i);
+
+                            row.GetCell(0).SetCellType(CellType.String);
+                            //row.GetCell(1).SetCellType(CellType.String);
+                            //row.GetCell(2).SetCellType(CellType.String);
+
+                            if (row != null)
+                            {
+                                ActFinishPersonModel excel = new ActFinishPersonModel
+                                {
+                                    //Department = row.GetCell(0).StringCellValue.TrimStartAndEnd(),
+                                    //Name = row.GetCell(1)?.StringCellValue.TrimStartAndEnd(),
+                                    SNO = row.GetCell(0)?.StringCellValue.TrimStartAndEnd()
+                                };
+
+                                LstActFinishPersonDetail.Add(excel);
+                            }
+                        }
+                    }
+                    dbResult = dbAccess.InsertPersonData(ActFinishId, LstActFinishPersonDetail, LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "新增失敗";
+                        return Json(vmRtn);
+                    }
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "新增失敗" + ex.Message;
                 return Json(vmRtn);
             }
 
