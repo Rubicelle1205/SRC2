@@ -34,10 +34,11 @@ namespace WebPccuClub.DataAccess
 
             #endregion
 
-            CommandText = $@"SELECT A.ActID, B.ActDetailId, B.ActName, B.SchoolYear, A.ActVerify, C.Text AS ActVerifyText, A.Created
+            CommandText = $@"SELECT A.ActID, B.ActDetailId, B.ActName, B.SchoolYear, A.ActVerify, C.Text AS ActVerifyText, A.Created, D.ActFinishId
                                FROM ActMain A
                           LEFT JOIN ActDetail B ON B.ActID = A.ActID
                           LEFT JOIN Code C ON C.Code = A.ActVerify AND C.Type = 'ActVerify'
+						  LEFT JOIN ActFinish D ON D.ActID = A.ActID AND D.ActDetailId = B.ActDetailId
                               WHERE 1 = 1
                                 AND (@SchoolYear IS NULL OR B.SchoolYear = @SchoolYear)
                                 AND (@LoginId IS NULL OR B.BrrowUnit = @LoginId)

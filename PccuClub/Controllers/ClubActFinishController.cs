@@ -54,7 +54,19 @@ namespace WebPccuClub.Controllers
         }
 
         [Log(LogActionChineseName.編輯)]
-        public IActionResult Edit(string id, ClubActFinishViewModel vm)
+        public IActionResult Detail(string id, ClubActFinishViewModel vm)
+        {
+            if (string.IsNullOrEmpty(id))
+                return RedirectToAction("Index");
+
+            vm.DetailModel = dbAccess.GetDetailData(id);
+            vm.DetailModel.PersonModel = dbAccess.GetPersonData(id);
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.編輯)]
+        public IActionResult EditModel(string id, ClubActFinishViewModel vm)
         {
             if (string.IsNullOrEmpty(id))
                 return RedirectToAction("Index");
@@ -142,5 +154,80 @@ namespace WebPccuClub.Controllers
 
         }
 
+        [LogAttribute(LogActionChineseName.匯出Excel)]
+        public IActionResult ExportALLSearchResult(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return RedirectToAction("Index");
+
+            if(id.Split("|").Length != 2)
+                return RedirectToAction("Index");
+
+            string year = id.Split("|")[0];
+            string verify = id.Split("|")[1] == "undefined" ? null : id.Split("|")[1];
+
+            string FileName = string.Format("{0}_{1}", "參與學號", DateTime.Now.ToString("yyyyMMdd"));
+
+            ClubActFinishViewModel vm = new ClubActFinishViewModel();
+            vm.ALLExcelModel = dbAccess.GetExportResult(year, verify, LoginUser);
+
+            if (vm.ALLExcelModel != null && vm.ALLExcelModel.Count > 0)
+            {
+                IWorkbook workbook = new XSSFWorkbook();
+                List<int> LstWidth = new List<int> { 20, 20, 80, 50 };
+
+                ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
+
+                var properties = typeof(ALLPersonModel).GetProperties();
+
+                //設定欄位
+                IRow headerRow = sheet.CreateRow(0);
+
+                XSSFCellStyle headStyle = ExcelUtil.GetDefaultHeaderStyle(workbook);
+
+                for (int i = 0; i <= properties.Length - 1; i++)
+                {
+                    var displayAttribute = (DisplayNameAttribute)properties[i].GetCustomAttribute(typeof(DisplayNameAttribute));
+                    var displayName = displayAttribute?.DisplayName ?? properties[i].Name;
+
+                    headerRow.CreateCell(i).SetCellValue(displayName);
+
+                    foreach (var cell in headerRow.Cells)
+                        cell.CellStyle = headStyle;
+
+                }
+
+                XSSFCellStyle contentStyle = ExcelUtil.GetDefaultContentStyle(workbook);
+
+                //設定資料
+                for (int i = 0; i <= vm.ALLExcelModel.Count - 1; i++)
+                {
+                    IRow dataRow = sheet.CreateRow(i + 1);
+
+                    dataRow.CreateCell(0).SetCellType(CellType.String);
+                    dataRow.CreateCell(1).SetCellType(CellType.String);
+                    dataRow.CreateCell(2).SetCellType(CellType.String);
+                    dataRow.CreateCell(3).SetCellType(CellType.String);
+
+                    dataRow.GetCell(0).SetCellValue(vm.ALLExcelModel[i].SchoolYear);
+                    dataRow.GetCell(1).SetCellValue(vm.ALLExcelModel[i].ActID);
+                    dataRow.GetCell(2).SetCellValue(vm.ALLExcelModel[i].ActName);
+                    dataRow.GetCell(3).SetCellValue(vm.ALLExcelModel[i].SNO);
+
+                    foreach (var cell in dataRow.Cells)
+                        cell.CellStyle = contentStyle;
+                }
+
+                MemoryStream ms = new MemoryStream();
+                workbook.Write(ms, true);
+                ms.Flush();
+                ms.Position = 0;
+
+                return File(ms, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName + ".xlsx");
+            }
+
+            return View("Index", vm);
+
+        }
     }
 }

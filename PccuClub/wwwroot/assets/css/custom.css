@@ -637,6 +637,15 @@ select.form-control {
 .pagelist.pagelist-icon2 .listItem .icon.end-icon:hover {
     background-color: #ffab6b;
 }
+
+.pagelist.pagelist-icon2 .listItem .icon.end-exist-icon {
+    background-color: #8181D7;
+}
+
+    .pagelist.pagelist-icon2 .listItem .icon.end-exist-icon:hover {
+        background-color: #5959C3;
+    }
+
 .pagelist.pagelist-icon2 .listItem .icon:hover {
     background-color: #ffcd38;
 }

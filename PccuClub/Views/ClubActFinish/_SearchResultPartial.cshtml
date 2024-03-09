@@ -4,7 +4,7 @@
 {
     foreach (var item in Model.ResultModel)
     {
-        <a href="@Url.Action("Edit", "ClubActFinish", new { id = item.ActFinishId })" class="listItem">
+        <a href="@Url.Action("Detail", "ClubActFinish", new { id = item.ActFinishId })" class="listItem">
             <div class="textbox">
                 <div class="serNum"> @item.ActID </div>
                 <div class="title">@item.ActName</div>

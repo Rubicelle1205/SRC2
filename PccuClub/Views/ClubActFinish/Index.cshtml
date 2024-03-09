@@ -29,7 +29,7 @@
             </div>
             <div class="col-md-6">
                 <div class="text-end mb-3">
-                    <a class="btn btn-primary btn-modern border-0" href="@Url.Action("Create")">新增活動報備 <i class="fas fa-plus"></i></a>
+                    <button class="btn btn-secondary-scale-2 btn-modern border-0" type="button" onclick="ExportALLSearchResult(@Model.ConditionModel.SchoolYear, @Model.ConditionModel.ActVerify)">匯出參與學號名冊</button>
                 </div>
             </div>
         </div>
@@ -71,4 +71,8 @@
         $("#@Html.IdFor(m => m.ConditionModel.Page)").val(e.target.value);
         GoSearch();
     });
+
+    function ExportALLSearchResult(year, verify){
+        window.open('@Url.Action("ExportALLSearchResult")' + '?id=' + year + "|" + verify);
+    };
 </script>

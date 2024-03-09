@@ -60,6 +60,40 @@ namespace WebPccuClub.DataAccess
         /// <param name="submitBtn"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
+        public ClubActFinishDetailModel GetDetailData(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@ActFinishId", Ser);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT A.ActFinishId, A.ActID, A.ActDetailId, A.ClubId, A.ClubCName, A.Caseman, A.Email, A.Tel, A.ActDate, A.ActName, A.Course, 
+                                    A.ShortInfo, A.ElseFile, A.ActFinishVerify, B.Text AS ActVerifyText
+                               FROM ActFinish A
+                          LEFT JOIN Code B ON B.Code = A.ActFinishVerify AND B.Type = 'ActVerify'
+                              WHERE 1 = 1
+                                AND (A.ActFinishId = @ActFinishId) ";
+
+
+            (DbExecuteInfo info, IEnumerable<ClubActFinishDetailModel> entitys) dbResult = DbaExecuteQuery<ClubActFinishDetailModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList().FirstOrDefault();
+
+            return null;
+        }
+
+        /// <summary>
+        /// 取得編輯資料
+        /// </summary>
+        /// <param name="submitBtn"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public ClubActFinishEditModel GetEditData(string Ser)
         {
             string CommandText = string.Empty;
@@ -76,6 +110,7 @@ namespace WebPccuClub.DataAccess
                                     A.ShortInfo, A.ElseFile, A.ActFinishVerify, B.Text AS ActVerifyText
                                FROM ActFinish A
                           LEFT JOIN Code B ON B.Code = A.ActFinishVerify AND B.Type = 'ActVerify'
+                              WHERE 1 = 1
                                 AND (A.ActFinishId = @ActFinishId) ";
 
 
@@ -150,7 +185,7 @@ namespace WebPccuClub.DataAccess
             return new List<SelectListItem>();
         }
 
-        internal List<PersonModel> GetExportResult(string id)
+        public List<PersonModel> GetExportResult(string id)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -176,6 +211,40 @@ namespace WebPccuClub.DataAccess
                 return dbResult.entitys.ToList();
 
             return new List<PersonModel>();
+        }
+
+        public List<ALLPersonModel> GetExportResult(string year, string verify, UserInfo LoginUser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@SchoolYear", year);
+            parameters.Add("@ActVerify", verify);
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion
+
+            CommandText = $@"SELECT C.SchoolYear, B.ActID, B.ActName, A.SNO
+                               FROM ActFinishPerson A
+                          LEFT JOIN ActFinish B ON B.ActFinishId = A.ActFinishId
+						  LEFT JOIN ActDetail C ON C.ActID = B.ActID AND C.ActDetailId = B.ActDetailId
+						  LEFT JOIN Code D ON D.Code = B.ActFinishVerify AND D.Type = 'ActVerify'
+                              WHERE 1 = 1
+                                AND (@SchoolYear IS NULL OR C.SchoolYear = @SchoolYear)
+                                AND (@LoginId IS NULL OR C.BrrowUnit = @LoginId)
+                                AND (@ActVerify IS NULL OR D.Code = @ActVerify) 
+                           ORDER BY B.Created, A.SNO ASC";
+
+
+            (DbExecuteInfo info, IEnumerable<ALLPersonModel> entitys) dbResult = DbaExecuteQuery<ALLPersonModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ALLPersonModel>();
         }
     }
 }

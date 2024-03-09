@@ -77,6 +77,10 @@ namespace WebPccuClub.Models
         /// <summary>報備日期</summary>
         [DisplayName("報備日期")]
         public DateTime? Created { get; set; }
+
+        /// <summary>活動結案ID</summary>
+        [DisplayName("活動結案ID")]
+        public string? ActFinishId { get; set; }
     }
 
     public class ClubActReportCreateModel

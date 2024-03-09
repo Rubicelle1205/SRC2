@@ -5,15 +5,15 @@
     ViewBag.Title = "活動結案紀錄";
 }
 
-@if (null != Model.EditModel)
+@if (null != Model.DetailModel)
 {
     <div class="col-xxl-8">
         <div class="contentWrapper">
-            <h4 class="pageTitle">@Model.EditModel.ActName</h4>
+            <h4 class="pageTitle">@Model.DetailModel.ActName</h4>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="@Url.Action("Index")">活動結案紀錄</a></li>
-                    <li class="breadcrumb-item active">@Model.EditModel.ActName</li>
+                    <li class="breadcrumb-item active">@Model.DetailModel.ActName</li>
                 </ol>
             </nav>
             <hr>
@@ -25,79 +25,63 @@
                 <div class="infoItem">
                     <div class="tag">審核狀態</div>
                     <div class="content">
-                        @if (Model.EditModel.ActFinishVerify == "01")
+                        @if (Model.DetailModel.ActFinishVerify == "01")
                         {
-                            <div class="badge badge-primary">@Model.EditModel.ActVerifyText</div>
+                            <div class="badge badge-primary">@Model.DetailModel.ActVerifyText</div>
                         }
-                        else if (Model.EditModel.ActFinishVerify == "02")
+                        else if (Model.DetailModel.ActFinishVerify == "02")
                         {
-                            <div class="badge badge-success">@Model.EditModel.ActVerifyText</div>
+                            <div class="badge badge-success">@Model.DetailModel.ActVerifyText</div>
                         }
-                        else if (Model.EditModel.ActFinishVerify == "03")
+                        else if (Model.DetailModel.ActFinishVerify == "03")
                         {
-                            <div class="badge badge-secondary">@Model.EditModel.ActVerifyText</div>
+                            <div class="badge badge-secondary">@Model.DetailModel.ActVerifyText</div>
                         }
-                        else if (Model.EditModel.ActFinishVerify == "04")
+                        else if (Model.DetailModel.ActFinishVerify == "04")
                         {
-                            <div class="badge badge-info">@Model.EditModel.ActVerifyText</div>
+                            <div class="badge badge-info">@Model.DetailModel.ActVerifyText</div>
                         }
                     </div>
                 </div>
                 <div class="infoItem">
                     <div class="tag">審核備註</div>
-                    <div class="content">@Model.EditModel.Memo</div>
+                    <div class="content">@Model.DetailModel.Memo</div>
                 </div>
                 <div class="infoItem">
                     <div class="tag">社團代碼</div>
-                    <div class="content">@Model.EditModel.ClubId</div>
+                    <div class="content">@Model.DetailModel.ClubId</div>
                 </div>
                 <div class="infoItem">
                     <div class="tag">活動報備編號</div>
-                    <div class="content">@Model.EditModel.ActID</div>
+                    <div class="content">@Model.DetailModel.ActID</div>
                 </div>
                 <div class="infoItem">
                     <div class="tag">主辦單位</div>
-
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.EditModel.ClubCName, new {@class="form-control", placeholder = "主辦單位"})
-                    </div>
+                    <div class="content">@Model.DetailModel.ClubCName</div>
                 </div>
                 <div class="infoItem">
                     <div class="tag">承辦人</div>
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.EditModel.Caseman, new {@class="form-control", placeholder = "承辦人"})
-                    </div>
+                    <div class="content">@Model.DetailModel.Caseman</div>
                 </div>
                 <div class="infoItem">
                     <div class="tag">聯絡Email</div>
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.EditModel.Email, new {@class="form-control", placeholder = "聯絡Email"})
-                    </div>
+                    <div class="content">@Model.DetailModel.Email</div>
                 </div>
                 <div class="infoItem">
                     <div class="tag">聯絡電話/分機</div>
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.EditModel.Tel, new {@class="form-control", placeholder = "聯絡電話/分機"})
-
-                    </div>
+                    <div class="content">@Model.DetailModel.Tel</div>
                 </div>
                 <div class="infoItem">
                     <div class="tag">活動名稱</div>
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.EditModel.ActName, new {@class="form-control", placeholder = "活動名稱"})
-                    </div>
+                    <div class="content">@Model.DetailModel.ActName</div>
                 </div>
                 <div class="infoItem">
                     <div class="tag">活動辦理時程</div>
-                    <div class="content">
-                        @Html.DropDownListFor(m => m.EditModel.Course ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇活動辦理時程", new {@class = "form-control"})
-                    </div>
+                    <div class="content">@Model.DetailModel.Course</div>
                 </div>
                 <div class="infoItem">
                     <div class="tag">活動資訊簡述</div>
-                    <div class="content">
-                        @Html.TextAreaFor(m => m.EditModel.ShortInfo, new {@class="form-control", rows="5", placeholder = "活動資訊簡述"})
-                    </div>
+                    <div class="content">@Model.DetailModel.ShortInfo</div>
                 </div>
             </div>
 
@@ -105,10 +89,10 @@
                 <div class="infoItem">
                     <div class="tag">參與學號匯入</div>
                     <div class="content">
-                        @if (null != Model.EditModel.PersonModel && Model.EditModel.PersonModel.Count > 0)
+                        @if (null != Model.DetailModel.PersonModel && Model.DetailModel.PersonModel.Count > 0)
                         {
                             <div class="mb-1">
-                                <a class="text-decoration-underline" href="" onclick="ExportSearchResult(@Model.EditModel.ActFinishId)">參與學號</a>
+                                <a class="text-decoration-underline" href="" onclick="ExportSearchResult(@Model.DetailModel.ActFinishId)">參與學號</a>
                             </div>
                         }
                     </div>
@@ -116,13 +100,13 @@
                 <div class="infoItem">
                     <div class="tag">其他附件</div>
                     <div class="content">
-                        @if (null != Model.EditModel.ElseFile)
+                        @if (null != Model.DetailModel.ElseFile)
                         {
                             <div class="mb-1">
-                                <a class="text-decoration-underline" href="../@Model.EditModel.ElseFile" target="_blank">其他附件</a>
+                                <a class="text-decoration-underline" href="../@Model.DetailModel.ElseFile" target="_blank">其他附件</a>
                             </div>
                         }
-                        ㄋ
+                        
                     </div>
                 </div>
             </div>
