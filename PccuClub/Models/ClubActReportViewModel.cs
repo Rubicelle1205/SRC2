@@ -359,13 +359,12 @@ namespace WebPccuClub.Models
 
 	public class ClubActReportClubActFinish
     {
-
         /// <summary>社團代碼</summary>
         [DisplayName("社團代碼")]
         public string? ClubId { get; set; }
 
         /// <summary>活動報備編號</summary>
-        [DisplayName("活動報備編號\r\n")]
+        [DisplayName("活動報備編號")]
         public string? ActID { get; set; }
 
         /// <summary>活動報備編號Detail</summary>

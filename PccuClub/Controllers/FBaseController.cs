@@ -19,7 +19,8 @@ namespace WebPccuClub.Controllers
 
         #region 共用屬性
         private const string strConst_LoginPageUrl = @"/FrontLogin";
-        private const string strConst_DefaultPageUrl = @"/FrontLogin/Index";
+        private const string strConst_FrontDefaultPageUrl = @"/FrontLogin/Index";
+        private const string strConst_BackDefaultPageUrl = @"/BakeendLogin/Index";
         private const string strConst_Timeout = "操作逾時，請重新登入！";
 		private const string strConst_NoLogin = "請先登入以操作此功能!!";
 		private const string strConst_NoAccess = "很抱歉 您無此頁面的存取權限！！";
@@ -178,7 +179,7 @@ namespace WebPccuClub.Controllers
 			var actionName = controller.ControllerContext.ActionDescriptor.ActionName;
 			var controllerAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetCustomAttributes(typeof(LogAttribute), false);
 			var actionAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetMethod(actionName)?.GetCustomAttributes(typeof(LogAttribute), false);
-
+            string functionSource = dbAccess.GetFunctionSource(controllerName);
 
 			if (LoginUser != null && (LoginUser.LoginSource == "F"))
 			{
@@ -197,7 +198,10 @@ namespace WebPccuClub.Controllers
 			{
                 if (controllerName != "ClubList" && controllerName != "WeekActivity" && controllerName != "ClubHandover")
                 {
-                    filterContext.Result = AlertMsgRedirect(strConst_NoLogin, SystemMenu.GetSubUrl() + strConst_DefaultPageUrl);
+                    if(functionSource != "B")
+                        filterContext.Result = AlertMsgRedirect(strConst_NoLogin, SystemMenu.GetSubUrl() + strConst_FrontDefaultPageUrl);
+                    else
+                        filterContext.Result = AlertMsgRedirect(strConst_NoLogin, SystemMenu.GetSubUrl() + strConst_BackDefaultPageUrl);
                 }
                 else {
                     if (!isAjaxRequest)
@@ -268,7 +272,7 @@ namespace WebPccuClub.Controllers
             StringBuilder siteMap = new StringBuilder();
             siteMap.Append("目前瀏覽頁面: ");
             // url 修改
-            string linkUrl = strConst_DefaultPageUrl;
+            string linkUrl = strConst_FrontDefaultPageUrl;
             string cssClass = stack.Count < 1 ? "selected" : "";
             siteMap.Append(@$"<a href='{linkUrl}' class='{cssClass}'>系統首頁</a>");
 

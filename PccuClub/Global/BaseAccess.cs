@@ -421,7 +421,32 @@ namespace WebPccuClub.Global
 			return new List<SelectListItem>();
 		}
 
-		public List<SelectListItem> GetAllClub()
+        public List<SelectListItem> GetAllActVerify(string type)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+			if(type == "1")
+                CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'ActVerify' AND Code <> '05'";
+			else
+				CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'ActVerify'";
+
+
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetAllClub()
 		{
 			string CommandText = string.Empty;
 			DataSet ds = new DataSet();

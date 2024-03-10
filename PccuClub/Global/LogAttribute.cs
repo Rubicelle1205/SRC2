@@ -82,6 +82,7 @@
         行程取消 = 67,
         新增活動結案 = 68,
         新增活動結案儲存 = 69,
+        活動結案管理 = 70,
     }
 
 	public enum DBActionChineseName

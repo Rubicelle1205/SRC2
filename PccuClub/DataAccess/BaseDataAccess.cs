@@ -64,5 +64,29 @@ namespace WebPccuClub.DataAccess
 
 			return str;
 		}
-	}
+
+        public string GetFunctionSource(string controllerName)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+            DataSet ds = new DataSet();
+
+            string str = "";
+            string CommendText = "";
+
+                CommendText = $@"SELECT B.BackOrFront
+                                   FROM SystemFun A
+                              LEFT JOIN SystemMenu B ON B.FunId = A.FunId
+                                  WHERE A.Url = '/' + '{controllerName}'";
+
+            DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                str = ds.Tables[0].QueryFieldByDT("BackOrFront");
+            }
+
+            return str;
+        }
+    }
 }
