@@ -147,17 +147,17 @@ namespace WebPccuClub.Models
 
     public class ActFinishMangCreateModel
     {
-        /// <summary>社團代碼</summary>
-        [DisplayName("社團代碼")]
+        /// <summary>社團代號</summary>
+        [DisplayName("社團代號")]
         public string? ClubId { get; set; }
 
         /// <summary>活動報備編號</summary>
         [DisplayName("活動報備編號")]
         public string? ActID { get; set; }
 
-        /// <summary>活動報備編號Detail</summary>
-        [DisplayName("活動報備編號Detail")]
-        public string? ActDetailId { get; set; }
+        ///// <summary>活動報備編號Detail</summary>
+        //[DisplayName("活動報備編號Detail")]
+        //public string? ActDetailId { get; set; }
 
         /// <summary>主辦單位</summary>
         [DisplayName("主辦單位")]
@@ -194,6 +194,14 @@ namespace WebPccuClub.Models
         /// <summary>其他附件</summary>
         [DisplayName("其他附件")]
         public string? ElseFile { get; set; }
+
+        /// <summary>審核狀態</summary>
+        [DisplayName("審核狀態")]
+        public string? ActFinishVerify { get; set; }
+
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
+        public string? Memo { get; set; }
     }
 
     public class ActFinishMangEditModel

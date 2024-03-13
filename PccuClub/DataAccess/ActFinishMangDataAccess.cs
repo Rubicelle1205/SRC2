@@ -299,6 +299,29 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
             return new List<ALLPersonModel>();
         }
 
-        
+        /// <summary>
+        /// 取得所有的活動報備
+        /// </summary>
+        /// <returns>活動報備編號(學年度|活動名稱) </returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public List<SelectListItem> GetAllActData()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT ActID AS VALUE, CONVERT(varchar, ActID) + ' ( ' + SchoolYear + ' | ' + ActName + ' )' AS TEXT FROM ActDetail";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
     }
 }

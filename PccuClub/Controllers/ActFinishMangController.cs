@@ -48,13 +48,15 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public IActionResult Create()
         {
+            
             ViewBag.ddlAllClub = dbAccess.GetAllClub();
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            ViewBag.ddlAllActData = dbAccess.GetAllActData();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(1);
             ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify();
 
             ActFinishMangViewModel vm = new ActFinishMangViewModel();
             vm.CreateModel = new ActFinishMangCreateModel();
-            //vm.CreateModel.SchoolYear = PublicFun.GetNowSchoolYear();
+            
             return View(vm);
         }
 
@@ -360,7 +362,7 @@ namespace WebPccuClub.Controllers
         [LogAttribute(LogActionChineseName.下載template檔案)]
         public IActionResult DownloadTemplate()
         {
-            string FileName = "獲獎名冊_template.xlsx";
+            string FileName = "學號匯入_template.xlsx";
 
             string filePath = Path.Combine(hostingEnvironment.ContentRootPath, "Template", FileName);
 
