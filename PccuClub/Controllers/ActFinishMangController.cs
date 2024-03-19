@@ -52,7 +52,7 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlAllClub = dbAccess.GetAllClub();
             ViewBag.ddlAllActData = dbAccess.GetAllActData();
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(1);
-            ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify();
+            ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify("1");
 
             ActFinishMangViewModel vm = new ActFinishMangViewModel();
             vm.CreateModel = new ActFinishMangCreateModel();
@@ -61,17 +61,18 @@ namespace WebPccuClub.Controllers
         }
 
         [Log(LogActionChineseName.編輯)]
-        public IActionResult Edit(string id, ActFinishMangViewModel vm)
+        public IActionResult Edit(string submitBtn, ActFinishMangViewModel vm)
         {
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
-            ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify();
+            ViewBag.ddlAllClub = dbAccess.GetAllClub();
+            ViewBag.ddlAllActData = dbAccess.GetAllActData();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(1);
+            ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify("1");
 
-            //ActFinishMangViewModel vm = new ActFinishMangViewModel();
-            vm.EditModel = dbAccess.GetEditData(id);
-            vm.DetailModel = dbAccess.GetDetailData(id);
+            vm.EditModel = dbAccess.GetEditData(submitBtn);
+            vm.DetailModel = dbAccess.GetDetailData(submitBtn);
             
             return View(vm);
         }
@@ -101,84 +102,87 @@ namespace WebPccuClub.Controllers
         [ValidateInput(false)]
         public async Task<IActionResult> SaveNewData(ActFinishMangViewModel vm)
         {
-            //try
-            //{
-            //    if (Request.Form.Files.Count > 0)
-            //    {
-            //        for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
-            //        {
-            //            if (Request.Form.Files[i].Name.Contains("Attachment"))
-            //            {
-            //                var file = Request.Form.Files.GetFile("CreateModel.Attachment");
+            try
+            {
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("ElseFile"))
+                        {
+                            var file = Request.Form.Files.GetFile("CreateModel.ElseFile");
 
-            //                string strFilePath = await upload.UploadFileAsync("Award", file);
+                            string strFilePath = await upload.UploadFileAsync("ActFinish", file);
 
-            //                //vm.CreateModel.Attachment = strFilePath;
-            //            }
-            //        }
-            //    }
+                            vm.CreateModel.ElseFile = strFilePath;
+                        }
+                    }
+                }
 
+                string ActDetailId = dbAccess.GetActDetailID(vm.CreateModel.ActID);
+                vm.CreateModel.ActDetailId = ActDetailId;
 
-            //    dbAccess.DbaInitialTransaction();
-            //    DataTable dt = new DataTable();
+                dbAccess.DbaInitialTransaction();
+                DataTable dt = new DataTable();
 
-            //    var dbResult = dbAccess.InsertData(vm, LoginUser, out dt);
+                var dbResult = dbAccess.InsertData(vm, LoginUser, out dt);
 
-            //    if (!dbResult.isSuccess)
-            //    {
-            //        dbAccess.DbaRollBack();
-            //        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-            //        vmRtn.ErrorMsg = "新增失敗";
-            //        return Json(vmRtn);
-            //    }
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
 
-            //    if (vm.File != null)
-            //    {
-            //        string AwdID = dt.QueryFieldByDT("AwdID");
-            //        List<AwdDetailModel> LstAwdDetail = new List<AwdDetailModel>();
+                if (vm.File != null)
+                {
+                    string ActFinishId = dt.QueryFieldByDT("ActFinishId");
+                    List<ActFinishPersonModel> LstActFinishPersonDetail = new List<ActFinishPersonModel>();
 
-            //        using (Stream stream = vm.File.OpenReadStream())
-            //        {
-            //            XSSFWorkbook workbook = new XSSFWorkbook(stream);
-            //            ISheet sheet = workbook.GetSheetAt(0);
+                    using (Stream stream = vm.File.OpenReadStream())
+                    {
+                        XSSFWorkbook workbook = new XSSFWorkbook(stream);
+                        ISheet sheet = workbook.GetSheetAt(0);
 
-            //            for (int i = 1; i <= sheet.LastRowNum; i++)
-            //            {
-            //                IRow row = sheet.GetRow(i);
+                        for (int i = 1; i <= sheet.LastRowNum; i++)
+                        {
+                            IRow row = sheet.GetRow(i);
 
-            //                if (row != null)
-            //                {
-            //                    AwdDetailModel excel = new AwdDetailModel
-            //                    {
-            //                        Department = row.GetCell(0)?.StringCellValue.TrimStartAndEnd(),
-            //                        Name = row.GetCell(1)?.StringCellValue.TrimStartAndEnd(),
-            //                        SNO = row.GetCell(2)?.StringCellValue.TrimStartAndEnd()
-            //                    };
+                            row.GetCell(0).SetCellType(CellType.String);
 
-            //                    LstAwdDetail.Add(excel);
-            //                }
-            //            }
-            //        }
-            //        //dbResult = dbAccess.InsertDetailData(AwdID, LstAwdDetail, LoginUser);
+                            if (row != null)
+                            {
+                                ActFinishPersonModel excel = new ActFinishPersonModel
+                                {
+                                    SNO = row.GetCell(0)?.StringCellValue.TrimStartAndEnd()
+                                };
 
-            //        if (!dbResult.isSuccess)
-            //        {
-            //            dbAccess.DbaRollBack();
-            //            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-            //            vmRtn.ErrorMsg = "新增失敗";
-            //            return Json(vmRtn);
-            //        }
-            //    }
+                                LstActFinishPersonDetail.Add(excel);
+                            }
+                        }
+                    }
 
-            //    dbAccess.DbaCommit();
-            //}
-            //catch (Exception ex)
-            //{
-            //    dbAccess.DbaRollBack();
-            //    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-            //    vmRtn.ErrorMsg = "新增失敗" + ex.Message;
-            //    return Json(vmRtn);
-            //}
+                    dbResult = dbAccess.InsertDetailData(ActFinishId, LstActFinishPersonDetail, LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "新增失敗";
+                        return Json(vmRtn);
+                    }
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "新增失敗" + ex.Message;
+                return Json(vmRtn);
+            }
 
             return Json(vmRtn);
         }
@@ -274,16 +278,25 @@ namespace WebPccuClub.Controllers
             {
                 dbAccess.DbaInitialTransaction();
 
-                //var dbResult = dbAccess.DeletetData(Ser);
+                var dbResult = dbAccess.DeletetData(Ser);
 
-                //if (!dbResult.isSuccess)
-                //{
-                //    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                //    vmRtn.ErrorMsg = "刪除失敗";
-                //    return Json(vmRtn);
-                //}
+                if (!dbResult.isSuccess)
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "刪除失敗";
+                    return Json(vmRtn);
+                }
 
-                //dbAccess.DbaCommit();
+                dbResult = dbAccess.DeletetPersonData(Ser);
+
+                if (!dbResult.isSuccess)
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "刪除失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
             }
             catch (Exception ex)
             {

@@ -914,15 +914,11 @@ namespace WebPccuClub.Controllers
                             IRow row = sheet.GetRow(i);
 
                             row.GetCell(0).SetCellType(CellType.String);
-                            //row.GetCell(1).SetCellType(CellType.String);
-                            //row.GetCell(2).SetCellType(CellType.String);
 
                             if (row != null)
                             {
                                 ActFinishPersonModel excel = new ActFinishPersonModel
                                 {
-                                    //Department = row.GetCell(0).StringCellValue.TrimStartAndEnd(),
-                                    //Name = row.GetCell(1)?.StringCellValue.TrimStartAndEnd(),
                                     SNO = row.GetCell(0)?.StringCellValue.TrimStartAndEnd()
                                 };
 
@@ -930,6 +926,7 @@ namespace WebPccuClub.Controllers
                             }
                         }
                     }
+
                     dbResult = dbAccess.InsertPersonData(ActFinishId, LstActFinishPersonDetail, LoginUser);
 
                     if (!dbResult.isSuccess)

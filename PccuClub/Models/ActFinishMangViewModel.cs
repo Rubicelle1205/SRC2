@@ -155,9 +155,9 @@ namespace WebPccuClub.Models
         [DisplayName("活動報備編號")]
         public string? ActID { get; set; }
 
-        ///// <summary>活動報備編號Detail</summary>
-        //[DisplayName("活動報備編號Detail")]
-        //public string? ActDetailId { get; set; }
+        /// <summary>活動報備編號Detail</summary>
+        [DisplayName("活動報備編號Detail")]
+        public string? ActDetailId { get; set; }
 
         /// <summary>主辦單位</summary>
         [DisplayName("主辦單位")]
@@ -208,16 +208,12 @@ namespace WebPccuClub.Models
     {
         public List<PersonModel> PersonModel = new List<PersonModel>();
 
-        /// <summary>結案代碼</summary>
-        [DisplayName("結案代碼")]
-        public string? ActFinishId { get; set; }
-
-        /// <summary>社團代碼</summary>
-        [DisplayName("社團代碼")]
+        /// <summary>社團代號</summary>
+        [DisplayName("社團代號")]
         public string? ClubId { get; set; }
 
         /// <summary>活動報備編號</summary>
-        [DisplayName("活動報備編號\r\n")]
+        [DisplayName("活動報備編號")]
         public string? ActID { get; set; }
 
         /// <summary>活動報備編號Detail</summary>
@@ -240,9 +236,9 @@ namespace WebPccuClub.Models
         [DisplayName("聯絡電話/分機")]
         public string? Tel { get; set; }
 
-        /// <summary>活動日期*</summary>
-        [DisplayName("活動日期*")]
-        public DateTime? ActDate { get; set; }
+        /// <summary>活動日期</summary>
+        [DisplayName("活動日期")]
+        public string? ActDate { get; set; }
 
         /// <summary>活動名稱</summary>
         [DisplayName("活動名稱")]
@@ -264,12 +260,8 @@ namespace WebPccuClub.Models
         [DisplayName("審核狀態")]
         public string? ActFinishVerify { get; set; }
 
-        /// <summary>審核狀態</summary>
-        [DisplayName("審核狀態")]
-        public string? ActVerifyText { get; set; }
-
-        /// <summary>審核備註</summary>
-        [DisplayName("審核備註")]
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
         public string? Memo { get; set; }
     }
 

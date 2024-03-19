@@ -505,8 +505,8 @@ namespace WebPccuClub.Global
             {
                 for (int i = NowSchoolYear - 2; i <= NowSchoolYear; i++)
                 {
-                    LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}1", i) });
-                    LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}2", i) });
+                    LstItem.Add(new SelectListItem() { Value = string.Format("{0}1", i), Text = string.Format("{0}1", i) });
+                    LstItem.Add(new SelectListItem() { Value = string.Format("{0}1", i), Text = string.Format("{0}2", i) });
                 }
             }
 
@@ -924,6 +924,31 @@ namespace WebPccuClub.Global
             DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
             return ds.Tables[0];
         }
+
+
+		public virtual string GetActDetailID(string ActID)
+		{
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@ActID", ActID);
+
+            #endregion
+
+            CommandText = $@"SELECT ActDetailId FROM ActDetail WHERE ActID = @ActID";
+
+            (DbExecuteInfo info, IEnumerable<RoleMangEditModel> entitys) dbResult = DbaExecuteQuery<RoleMangEditModel>(CommandText, parameters, true, DBAccessException);
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+         
+			return ds.Tables[0].QueryFieldByDT("ActDetailId");
+		}
+
+
     }
 
 	public enum enumLogConst 

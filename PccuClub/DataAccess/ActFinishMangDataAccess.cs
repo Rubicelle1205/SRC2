@@ -109,41 +109,7 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
         /// <summary>
         /// 取得編輯資料
         /// </summary>
-        /// <param name="submitBtn"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public ActFinishMangDetailModel GetDetailData(string Ser)
-        {
-            string CommandText = string.Empty;
-            DataSet ds = new DataSet();
-
-            DBAParameter parameters = new DBAParameter();
-
-            parameters.Add("@ActFinishId", Ser);
-
-            #region 參數設定
-            #endregion
-
-            CommandText = $@"SELECT A.ActFinishId, A.ActID, A.ActDetailId, A.ClubId, A.ClubCName, A.Caseman, A.Email, A.Tel, A.ActDate, A.ActName, A.Course, 
-                                    A.ShortInfo, A.ElseFile, A.ActFinishVerify, B.Text AS ActVerifyText
-                               FROM ActFinish A
-                          LEFT JOIN Code B ON B.Code = A.ActFinishVerify AND B.Type = 'ActVerify'
-                              WHERE 1 = 1
-                                AND (A.ActFinishId = @ActFinishId) ";
-
-
-            (DbExecuteInfo info, IEnumerable<ActFinishMangDetailModel> entitys) dbResult = DbaExecuteQuery<ActFinishMangDetailModel>(CommandText, parameters, true, DBAccessException);
-
-            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
-                return dbResult.entitys.ToList().FirstOrDefault();
-
-            return null;
-        }
-
-        /// <summary>
-        /// 取得編輯資料
-        /// </summary>
-        /// <param name="submitBtn"></param>
+        /// <param name="Ser"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         public ActFinishMangEditModel GetEditData(string Ser)
@@ -159,7 +125,7 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
             #endregion
 
             CommandText = $@"SELECT A.ActFinishId, A.ActID, A.ActDetailId, A.ClubId, A.ClubCName, A.Caseman, A.Email, A.Tel, A.ActDate, A.ActName, A.Course, 
-                                    A.ShortInfo, A.ElseFile, A.ActFinishVerify, B.Text AS ActVerifyText
+                                    A.ShortInfo, A.ElseFile, A.ActFinishVerify, B.Text AS ActVerifyText, A.Memo
                                FROM ActFinish A
                           LEFT JOIN Code B ON B.Code = A.ActFinishVerify AND B.Type = 'ActVerify'
                               WHERE 1 = 1
@@ -167,6 +133,39 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
 
 
             (DbExecuteInfo info, IEnumerable<ActFinishMangEditModel> entitys) dbResult = DbaExecuteQuery<ActFinishMangEditModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList().FirstOrDefault();
+
+            return null;
+        }
+
+
+        /// <summary>
+        /// 取得編輯資料
+        /// </summary>
+        /// <param name="Ser"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public ActFinishMangDetailModel GetDetailData(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@ActFinishId", Ser);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT A.SNO
+                               FROM ActFinishPerson A
+                              WHERE 1 = 1
+                                AND (A.ActFinishId = @ActFinishId) ";
+
+
+            (DbExecuteInfo info, IEnumerable<ActFinishMangDetailModel> entitys) dbResult = DbaExecuteQuery<ActFinishMangDetailModel>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList().FirstOrDefault();
@@ -322,6 +321,150 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
                 return dbResult.entitys.ToList();
 
             return new List<SelectListItem>();
+        }
+
+        /// <summary> 新增資料 </summary>
+        public DbExecuteInfo InsertData(ActFinishMangViewModel vm, UserInfo LoginUser, out DataTable dt)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ActID", vm.CreateModel.ActID);
+            parameters.Add("@ActDetailId", vm.CreateModel.ActDetailId);
+            parameters.Add("@ClubId", vm.CreateModel.ClubId);
+            parameters.Add("@ClubCName", vm.CreateModel.ClubCName);
+            parameters.Add("@Caseman", vm.CreateModel.Caseman);
+            parameters.Add("@Email", vm.CreateModel.Email);
+            parameters.Add("@Tel", vm.CreateModel.Tel);
+            parameters.Add("@ActDate", vm.CreateModel.ActDate);
+            parameters.Add("@ActName", vm.CreateModel.ActName);
+            parameters.Add("@Course", vm.CreateModel.Course);
+            parameters.Add("@ShortInfo", vm.CreateModel.ShortInfo);
+            parameters.Add("@ElseFile", vm.CreateModel.ElseFile);
+            parameters.Add("@ActFinishVerify", vm.CreateModel.ActFinishVerify);
+            parameters.Add("@Memo", vm.CreateModel.Memo);
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO ActFinish
+                                               (ActID
+                                               ,ActDetailId
+                                               ,ClubId
+                                               ,ClubCName
+                                               ,Caseman
+                                               ,Email
+                                               ,Tel
+                                               ,ActDate
+                                               ,ActName
+                                               ,Course
+                                               ,ShortInfo
+                                               ,ElseFile
+                                               ,ActFinishVerify
+                                               ,Memo
+                                               ,Creator
+                                               ,Created
+                                               ,LastModifier
+                                               ,LastModified)
+                                         OUTPUT Inserted.ActFinishId
+                                         VALUES
+                                               (@ActID, 
+                                                @ActDetailId, 
+                                                @ClubId, 
+                                                @ClubCName, 
+                                                @Caseman, 
+                                                @Email, 
+                                                @Tel, 
+                                                @ActDate, 
+                                                @ActName, 
+                                                @Course, 
+                                                @ShortInfo, 
+                                                @ElseFile, 
+                                                @ActFinishVerify, 
+                                                @Memo, 
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE())";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            dt = ds.Tables[0];
+
+            return ExecuteResult;
+        }
+
+        public DbExecuteInfo InsertDetailData(string ActFinishId, List<ActFinishPersonModel> dataList, UserInfo LoginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommendText = $@"INSERT INTO ActFinishPerson
+                                               (ActFinishId
+                                               ,Name
+                                               ,SNO
+                                               ,Department
+                                               ,Creator
+                                               ,Created
+                                               ,LastModifier
+                                               ,LastModified)
+                                         VALUES
+                                               ('{ActFinishId}'
+                                               ,@Name
+                                               ,@SNO
+                                               ,@Department
+                                               ,'{LoginUser.LoginId}'
+                                               ,GETDATE()
+                                               ,'{LoginUser.LoginId}'
+                                               ,GETDATE())";
+
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+            return ExecuteResult;
+        }
+
+        /// <summary>
+        /// 刪除資料
+        /// </summary>
+        /// <param name="ser"></param>
+        /// <returns></returns>
+        public DbExecuteInfo DeletetData(string ser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ActFinishId", ser);
+            #endregion 參數設定
+
+            string CommendText = $@"DELETE FROM ActFinish WHERE ActFinishId = @ActFinishId ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        /// <summary>
+        /// 刪除資料
+        /// </summary>
+        /// <param name="ser"></param>
+        /// <returns></returns>
+        public DbExecuteInfo DeletetPersonData(string ser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ActFinishId", ser);
+            #endregion 參數設定
+
+            string CommendText = $@"DELETE FROM ActFinishPerson WHERE ActFinishId = @ActFinishId ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
         }
     }
 }

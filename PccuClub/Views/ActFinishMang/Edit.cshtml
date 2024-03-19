@@ -25,50 +25,50 @@
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ClubId)<span class="required">*</span></th>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubId)<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.CreateModel.ClubId ,(List<SelectListItem>)ViewBag.ddlAllClub,"請選擇社團", new {@class = "form-control"})
+                                            @Html.DropDownListFor(m => m.EditModel.ClubId ,(List<SelectListItem>)ViewBag.ddlAllClub,"請選擇社團", new {@class = "form-control"})
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ActID)<span class="required">*</span></th>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ActID)<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.CreateModel.ActID ,(List<SelectListItem>)ViewBag.ddlAllActData,"請選擇活動報備編號", new {@class = "form-control"})
+                                            @Html.DropDownListFor(m => m.EditModel.ActID ,(List<SelectListItem>)ViewBag.ddlAllActData,"請選擇活動報備編號", new {@class = "form-control"})
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ClubCName)<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.CreateModel.ClubCName, new {@class = "form-control"})</td>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubCName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ClubCName, new {@class = "form-control"})</td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Caseman)<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.CreateModel.Caseman, new {@class = "form-control"})</td>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Caseman)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Caseman, new {@class = "form-control"})</td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Email)<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.CreateModel.Email, new {@class = "form-control"})</td>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Email)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Email, new {@class = "form-control"})</td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Tel)<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.CreateModel.Tel, new {@class = "form-control"})</td>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Tel)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Tel, new {@class = "form-control"})</td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ActDate)<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.CreateModel.ActDate, new {@class = "form-control", type="date"})</td>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ActDate)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ActDate, new {@class = "form-control", type="date"})</td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ActName)<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.CreateModel.ActName, new {@class = "form-control"})</td>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ActName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ActName, new {@class = "form-control"})</td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Course)<span class="required">*</span></th>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Course)<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.CreateModel.Course ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇活動辦理時程", new {@class = "form-control"})
+                                            @Html.DropDownListFor(m => m.EditModel.Course ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇活動辦理時程", new {@class = "form-control"})
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ShortInfo)<span class="required">*</span></th>
-                                        <td>@Html.TextAreaFor(m => m.CreateModel.ShortInfo, new {@class="form-control", rows="5", placeholder="請輸入活動資訊簡述"})</td>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ShortInfo)<span class="required">*</span></th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.ShortInfo, new {@class="form-control", rows="5", placeholder="請輸入活動資訊簡述"})</td>
                                     </tr>
                                     <tr class="table-warning">
                                         <td colspan="2">
@@ -109,11 +109,12 @@
                                         </th>
                                         <td>
                                             <label class="btn btn-outline-primary mb-0">
-                                                @Html.TextBoxFor(m => m.CreateModel.ElseFile, new{ @class="filesupload", type="file", style="display:none;", accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z"})
+                                                @Html.TextBoxFor(m => m.EditModel.ElseFile, new{ @class="filesupload", type="file", style="display:none;", accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z"})
                                                 <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
                                             </label>
-                                            <span id="filename2" class="text-sm mx-2 text-muted">尚未選擇檔案...
-                                                
+                                            <span id="filename2" class="text-sm mx-2 text-muted">
+                                                尚未選擇檔案...
+
                                             </span>
                                         </td>
                                     </tr>
@@ -130,17 +131,17 @@
                                     <tr>
                                         <th width="15%">審核狀態<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.CreateModel.ActFinishVerify ,(List<SelectListItem>)ViewBag.ddlAllActVerify,"請選擇審核狀態", new {@class = "form-control"})
+                                            @Html.DropDownListFor(m => m.EditModel.ActFinishVerify ,(List<SelectListItem>)ViewBag.ddlAllActVerify,"請選擇審核狀態", new {@class = "form-control"})
                                         </td>
                                     </tr>
                                     <tr>
                                         <th width="15%">備註<span class="required"></span></th>
-                                        <td>@Html.TextAreaFor(m => m.CreateModel.Memo, new {@class="form-control", rows="5", placeholder="請輸入備註"})</td>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class="form-control", rows="5", placeholder="請輸入備註"})</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <div class="card-footer d-flex justify-content-end">
                             <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
                             <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
@@ -162,11 +163,11 @@
 
     $(document).ready(function () {
         $('#updFile').change(function (e) {
-            
+
             var file = e.target.files[0];
             var geekss = file.name;
             $('#filename').text(geekss);
-            
+
             var reader = new FileReader();
 
             reader.onload = function (e) {
@@ -193,7 +194,7 @@
         });
     });
 
-    $('#@Html.IdFor(m => m.CreateModel.ElseFile)').change(function (e) {
+    $('#@Html.IdFor(m => m.EditModel.ElseFile)').change(function (e) {
         var geekss = e.target.files[0].name;
         $('#filename2').text(geekss);
     });
@@ -201,20 +202,20 @@
     function SaveData() {
 
         var data = new FormData()
-        var ClubId = $('#@Html.IdFor(m => m.CreateModel.ClubId)').val();
-        var ActID = $('#@Html.IdFor(m => m.CreateModel.ActID)').val();
-        var ClubCName = $('#@Html.IdFor(m => m.CreateModel.ClubCName)').val();
-        var Caseman = $('#@Html.IdFor(m => m.CreateModel.Caseman)').val();
-        var Email = $('#@Html.IdFor(m => m.CreateModel.Email)').val();
-        var Tel = $('#@Html.IdFor(m => m.CreateModel.Tel)').val();
-        var ActDate = $('#@Html.IdFor(m => m.CreateModel.ActDate)').val();
-        var ActName = $('#@Html.IdFor(m => m.CreateModel.ActName)').val();
-        var Course = $('#@Html.IdFor(m => m.CreateModel.Course)').val();
-        var ShortInfo = $('#@Html.IdFor(m => m.CreateModel.ShortInfo)').val();
-        var ActFinishVerify = $('#@Html.IdFor(m => m.CreateModel.ActFinishVerify)').val();
-        var Memo = $('#@Html.IdFor(m => m.CreateModel.Memo)').val();
+        var ClubId = $('#@Html.IdFor(m => m.EditModel.ClubId)').val();
+        var ActID = $('#@Html.IdFor(m => m.EditModel.ActID)').val();
+        var ClubCName = $('#@Html.IdFor(m => m.EditModel.ClubCName)').val();
+        var Caseman = $('#@Html.IdFor(m => m.EditModel.Caseman)').val();
+        var Email = $('#@Html.IdFor(m => m.EditModel.Email)').val();
+        var Tel = $('#@Html.IdFor(m => m.EditModel.Tel)').val();
+        var ActDate = $('#@Html.IdFor(m => m.EditModel.ActDate)').val();
+        var ActName = $('#@Html.IdFor(m => m.EditModel.ActName)').val();
+        var Course = $('#@Html.IdFor(m => m.EditModel.Course)').val();
+        var ShortInfo = $('#@Html.IdFor(m => m.EditModel.ShortInfo)').val();
+        var ActFinishVerify = $('#@Html.IdFor(m => m.EditModel.ActFinishVerify)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
 
-        var ElseFile = $('#@Html.IdFor(m => m.CreateModel.ElseFile)')[0].files[0];
+        var ElseFile = $('#@Html.IdFor(m => m.EditModel.ElseFile)')[0].files[0];
         if (typeof ElseFile !== 'undefined') {
             var fileExtension = ElseFile.name.split('.').pop().toLowerCase();
 
@@ -223,7 +224,7 @@
                 return;
             }
 
-            data.append('@Html.NameFor(m => m.CreateModel.ElseFile)', ElseFile);
+            data.append('@Html.NameFor(m => m.EditModel.ElseFile)', ElseFile);
         }
 
         var File = $('#updFile')[0].files[0];
@@ -251,18 +252,18 @@
         if (ShortInfo == "") { $.alert("活動資訊簡述不可為空白"); return; }
         if (ActFinishVerify == "") { $.alert("審核狀態不可為空白"); return; }
 
-        data.append('@Html.NameFor(m => m.CreateModel.ClubId)', ClubId);
-        data.append('@Html.NameFor(m => m.CreateModel.ActID)', ActID);
-        data.append('@Html.NameFor(m => m.CreateModel.ClubCName)', ClubCName);
-        data.append('@Html.NameFor(m => m.CreateModel.Caseman)', Caseman);
-        data.append('@Html.NameFor(m => m.CreateModel.Email)', Email);
-        data.append('@Html.NameFor(m => m.CreateModel.Tel)', Tel);
-        data.append('@Html.NameFor(m => m.CreateModel.ActDate)', ActDate);
-        data.append('@Html.NameFor(m => m.CreateModel.ActName)', ActName);
-        data.append('@Html.NameFor(m => m.CreateModel.Course)', Course);
-        data.append('@Html.NameFor(m => m.CreateModel.ShortInfo)', ShortInfo);
-        data.append('@Html.NameFor(m => m.CreateModel.ActFinishVerify)', ActFinishVerify);
-        data.append('@Html.NameFor(m => m.CreateModel.Memo)', Memo);
+        data.append('@Html.NameFor(m => m.EditModel.ClubId)', ClubId);
+        data.append('@Html.NameFor(m => m.EditModel.ActID)', ActID);
+        data.append('@Html.NameFor(m => m.EditModel.ClubCName)', ClubCName);
+        data.append('@Html.NameFor(m => m.EditModel.Caseman)', Caseman);
+        data.append('@Html.NameFor(m => m.EditModel.Email)', Email);
+        data.append('@Html.NameFor(m => m.EditModel.Tel)', Tel);
+        data.append('@Html.NameFor(m => m.EditModel.ActDate)', ActDate);
+        data.append('@Html.NameFor(m => m.EditModel.ActName)', ActName);
+        data.append('@Html.NameFor(m => m.EditModel.Course)', Course);
+        data.append('@Html.NameFor(m => m.EditModel.ShortInfo)', ShortInfo);
+        data.append('@Html.NameFor(m => m.EditModel.ActFinishVerify)', ActFinishVerify);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
 
 
         SendAjax({
