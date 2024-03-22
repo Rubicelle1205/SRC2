@@ -83,6 +83,7 @@
         新增活動結案 = 68,
         新增活動結案儲存 = 69,
         活動結案管理 = 70,
+        參與學號名冊 = 71,
     }
 
 	public enum DBActionChineseName

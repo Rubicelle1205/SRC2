@@ -115,6 +115,10 @@
         window.open('@Url.Action("ExportSearchResult")' + '?' + $("#SearchForm").serialize());
     }
 
+    function ExportAllSNOResult() {
+        window.open('@Url.Action("ExportAllSNOResult")' + '?' + $("#SearchForm").serialize());
+    }
+
     $('#@Html.IdFor(m => m.ConditionModel.From_ReleaseDate)').tooltip({ title: "建立時間[起]" });
     $('#@Html.IdFor(m => m.ConditionModel.To_ReleaseDate)').tooltip({ title: "建立時間[迄]" });
     $('#@Html.IdFor(m => m.ConditionModel.SchoolYear)').tooltip({ title: "學年度" });

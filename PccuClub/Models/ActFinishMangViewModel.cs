@@ -22,7 +22,9 @@ namespace WebPccuClub.Models
 
         public List<ActFinishMangExcelModel> ExcelModel { get; set; }
 
-        public List<ALLPersonModel> ALLExcelModel { get; set; }
+        public List<PersonModel> PersonModel { get; set; }
+
+        public List<ALLPersonModel> ALLPersonModel { get; set; }
 
     }
 
@@ -207,6 +209,10 @@ namespace WebPccuClub.Models
     public class ActFinishMangEditModel
     {
         public List<PersonModel> PersonModel = new List<PersonModel>();
+
+        /// <summary>結案代號</summary>
+        [DisplayName("結案代號")]
+        public string? ActFinishId { get; set; }
 
         /// <summary>社團代號</summary>
         [DisplayName("社團代號")]

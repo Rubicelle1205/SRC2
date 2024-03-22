@@ -63,7 +63,7 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
         }
 
         /// <summary>取得Excel資料</summary>
-        internal List<ActFinishMangExcelModel> GetExportResult(ActFinishMangConditionModel model, UserInfo loginUser)
+        public List<ActFinishMangExcelModel> GetExportResult(ActFinishMangConditionModel model)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -147,7 +147,7 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
         /// <param name="Ser"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public ActFinishMangDetailModel GetDetailData(string Ser)
+        public List<PersonModel> GetDetailData(string Ser)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -165,41 +165,12 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
                                 AND (A.ActFinishId = @ActFinishId) ";
 
 
-            (DbExecuteInfo info, IEnumerable<ActFinishMangDetailModel> entitys) dbResult = DbaExecuteQuery<ActFinishMangDetailModel>(CommandText, parameters, true, DBAccessException);
-
-            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
-                return dbResult.entitys.ToList().FirstOrDefault();
-
-            return null;
-        }
-
-        /// <summary> 取得學號資料 </summary>
-        public List<PersonModel> GetPersonData(string id)
-        {
-            string CommandText = string.Empty;
-            DataSet ds = new DataSet();
-
-            DBAParameter parameters = new DBAParameter();
-
-            #region 參數設定
-
-            parameters.Add("@ActFinishId", id);
-
-            #endregion
-
-            CommandText = $@"SELECT A.ActFinishPersonId, A.ActFinishId, A.SNO
-                               FROM ActFinishPerson A
-                              WHERE 1 = 1
-                                AND ActFinishId = @ActFinishId
-                           ORDER BY A.ActFinishPersonId";
-
-
             (DbExecuteInfo info, IEnumerable<PersonModel> entitys) dbResult = DbaExecuteQuery<PersonModel>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList();
 
-            return new List<PersonModel>();
+            return null;
         }
 
         public List<SelectListItem> GetSchoolYear()
@@ -216,27 +187,7 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
             return LstItem;
         }
 
-        public List<SelectListItem> GetActVerify()
-        {
-            string CommandText = string.Empty;
-            DataSet ds = new DataSet();
-
-            DBAParameter parameters = new DBAParameter();
-
-            #region 參數設定
-            #endregion
-
-            CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code WHERE Type = 'ActVerify' AND Code <> '05'";
-
-            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
-
-            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
-                return dbResult.entitys.ToList();
-
-            return new List<SelectListItem>();
-        }
-
-        public List<PersonModel> GetExportResult(string id)
+        public List<PersonModel> GetPersonData(string id)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -264,7 +215,7 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
             return new List<PersonModel>();
         }
 
-        public List<ALLPersonModel> GetExportResult(string year, string verify, UserInfo LoginUser)
+        public List<ALLPersonModel> GetALLPersonResult(ActFinishMangConditionModel model)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -273,21 +224,31 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
 
             #region 參數設定
 
-            parameters.Add("@SchoolYear", year);
-            parameters.Add("@ActVerify", verify);
-            parameters.Add("@LoginId", LoginUser.LoginId);
+            parameters.Add("@SchoolYear", model?.SchoolYear);
+            parameters.Add("@ActVerify", model?.ActVerify);
+            parameters.Add("@ClubID", model?.ClubId);
+            parameters.Add("@ClubCName", model?.ClubCName);
+            parameters.Add("@ActID", model?.ActID);
+            parameters.Add("@ActName", model?.ActName);
+            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy-MM-dd 00:00:00") : null);
+            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy-MM-dd 23:59:59") : null);
+
             #endregion
 
-            CommandText = $@"SELECT C.SchoolYear, B.ActID, B.ActName, A.SNO
-                               FROM ActFinishPerson A
-                          LEFT JOIN ActFinish B ON B.ActFinishId = A.ActFinishId
-						  LEFT JOIN ActDetail C ON C.ActID = B.ActID AND C.ActDetailId = B.ActDetailId
-						  LEFT JOIN Code D ON D.Code = B.ActFinishVerify AND D.Type = 'ActVerify'
+            CommandText = $@"SELECT B.SchoolYear, A.ActID, A.ActName, E.SNO
+                               FROM ActFinish A
+                          LEFT JOIN ActDetail B ON B.ActID = A.ActID AND B.ActDetailId = A.ActDetailId
+                          LEFT JOIN ActMain C ON C.ActID = B.ActID
+                          LEFT JOIN Code D ON D.Code = A.ActFinishVerify AND D.Type = 'ActVerify'
+                          LEFT JOIN ActFinishPerson E ON E.ActFinishId = A.ActFinishId
                               WHERE 1 = 1
-                                AND (@SchoolYear IS NULL OR C.SchoolYear = @SchoolYear)
-                                AND (@LoginId IS NULL OR C.BrrowUnit = @LoginId)
-                                AND (@ActVerify IS NULL OR D.Code = @ActVerify) 
-                           ORDER BY B.Created, A.SNO ASC";
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
+AND (@SchoolYear IS NULL OR B.SchoolYear = @SchoolYear)
+AND (@ActVerify IS NULL OR A.ActFinishVerify = @ActVerify)
+AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') 
+AND (@ClubCName IS NULL OR A.ClubCName LIKE '%' + @ClubCName + '%') 
+AND (@ActID IS NULL OR A.ActID LIKE '%' + @ActID + '%') 
+AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
 
 
             (DbExecuteInfo info, IEnumerable<ALLPersonModel> entitys) dbResult = DbaExecuteQuery<ALLPersonModel>(CommandText, parameters, true, DBAccessException);
@@ -338,7 +299,7 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
             parameters.Add("@Caseman", vm.CreateModel.Caseman);
             parameters.Add("@Email", vm.CreateModel.Email);
             parameters.Add("@Tel", vm.CreateModel.Tel);
-            parameters.Add("@ActDate", vm.CreateModel.ActDate);
+            parameters.Add("@ActDate", vm.CreateModel.ActDate.Value.ToString("yyyy-MM-dd"));
             parameters.Add("@ActName", vm.CreateModel.ActName);
             parameters.Add("@Course", vm.CreateModel.Course);
             parameters.Add("@ShortInfo", vm.CreateModel.ShortInfo);
@@ -395,7 +356,7 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
             return ExecuteResult;
         }
 
-        public DbExecuteInfo InsertDetailData(string ActFinishId, List<ActFinishPersonModel> dataList, UserInfo LoginUser)
+        public DbExecuteInfo InsertDetailData(string ActFinishId, List<PersonModel> dataList, UserInfo LoginUser)
         {
 
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
@@ -403,24 +364,82 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
 
             string CommendText = $@"INSERT INTO ActFinishPerson
                                                (ActFinishId
-                                               ,Name
                                                ,SNO
-                                               ,Department
                                                ,Creator
                                                ,Created
                                                ,LastModifier
                                                ,LastModified)
                                          VALUES
                                                ('{ActFinishId}'
-                                               ,@Name
                                                ,@SNO
-                                               ,@Department
                                                ,'{LoginUser.LoginId}'
                                                ,GETDATE()
                                                ,'{LoginUser.LoginId}'
                                                ,GETDATE())";
 
             ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+            return ExecuteResult;
+        }
+
+        public DbExecuteInfo UpdateData(ActFinishMangViewModel vm, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ActID", vm.EditModel.ActID);
+            parameters.Add("@ClubId", vm.EditModel.ClubId);
+            parameters.Add("@ClubCName", vm.EditModel.ClubCName);
+            parameters.Add("@Caseman", vm.EditModel.Caseman);
+            parameters.Add("@Email", vm.EditModel.Email);
+            parameters.Add("@Tel", vm.EditModel.Tel);
+            parameters.Add("@ActDate", vm.EditModel.ActDate);
+            parameters.Add("@ActName", vm.EditModel.ActName);
+            parameters.Add("@Course", vm.EditModel.Course);
+            parameters.Add("@ShortInfo", vm.EditModel.ShortInfo);
+            parameters.Add("@ElseFile", vm.EditModel.ElseFile);
+            parameters.Add("@ActFinishVerify", vm.EditModel.ActFinishVerify);
+            parameters.Add("@Memo", vm.EditModel.Memo);
+            parameters.Add("@LoginId", LoginUser.LoginId);
+
+            parameters.Add("@ActFinishId", vm.EditModel.ActFinishId);
+            #endregion 參數設定
+
+            string CommendText = $@"UPDATE ActFinish
+                                       SET ClubId = @ClubId, 
+                                           ActID = @ActID, 
+                                           ClubCName = @ClubCName, 
+                                           Caseman = @Caseman, 
+                                           Email = @Email, 
+                                           Tel = @Tel, 
+                                           ActDate = @ActDate, 
+                                           ActName = @ActName, 
+                                           Course = @Course, 
+                                           ShortInfo = @ShortInfo, 
+                                           ElseFile = @ElseFile, 
+                                           ActFinishVerify = @ActFinishVerify, 
+                                           Memo = @Memo, 
+                                           LastModifier = '{LoginUser.LoginId}',
+                                           LastModified = GETDATE()
+                                     WHERE ActFinishId = @ActFinishId";
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        public DbExecuteInfo EditDetailData(string ActFinishId, List<PersonModel> dataList, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            ExecuteResult = DeletetPersonData(ActFinishId);
+
+            if(ExecuteResult.isSuccess)
+                ExecuteResult = InsertDetailData(ActFinishId, dataList, LoginUser);
 
             return ExecuteResult;
         }
@@ -466,5 +485,6 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
 
             return ExecuteResult;
         }
+
     }
 }

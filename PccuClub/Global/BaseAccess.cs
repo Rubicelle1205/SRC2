@@ -506,7 +506,7 @@ namespace WebPccuClub.Global
                 for (int i = NowSchoolYear - 2; i <= NowSchoolYear; i++)
                 {
                     LstItem.Add(new SelectListItem() { Value = string.Format("{0}1", i), Text = string.Format("{0}1", i) });
-                    LstItem.Add(new SelectListItem() { Value = string.Format("{0}1", i), Text = string.Format("{0}2", i) });
+                    LstItem.Add(new SelectListItem() { Value = string.Format("{0}2", i), Text = string.Format("{0}2", i) });
                 }
             }
 

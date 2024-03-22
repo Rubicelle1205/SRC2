@@ -87,11 +87,19 @@
                                                 <input id="updFile" name="updFile" style="display:none;" class="filesupload" type="file" accept=".xlsx">
                                                 <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
                                             </label><span id="filename" class="text-sm mx-2 text-muted">尚未選擇檔案...</span>
+                                            
+                                            @if (null != Model.EditModel.PersonModel && Model.EditModel.PersonModel.Count > 0)
+                                            {
+                                                <div>
+                                                    <a class="text-sm text-muted" href="@Url.Action("ExportPersonData")?id=@string.Format(Model.EditModel.ActFinishId)" target="_blank"><i class="fa-regular fa-file mr-2"></i>參與學號名冊.xlsx</a>
+                                                </div>
+                                            }
+                                            
                                         </td>
                                     </tr>
                                     <tr>
                                         <th width="15%">
-                                            上傳預覽<span class="required"></span><br /><span class="text-xs text-danger font-weight-normal"></span></span>
+                                            上傳預覽<span class="required"></span><br /><span class="text-xs text-danger font-weight-normal"></span>
                                         </th>
                                         <td>
                                             <div id="excelPreview"></div>
@@ -114,8 +122,13 @@
                                             </label>
                                             <span id="filename2" class="text-sm mx-2 text-muted">
                                                 尚未選擇檔案...
-
                                             </span>
+                                            @if (!string.IsNullOrEmpty(Model.EditModel.ElseFile))
+                                            {
+                                                <div>
+                                                    <a class="text-sm text-muted" href="@Html.DisplayFor(m => m.EditModel.ElseFile)" target="_blank"><i class="fa-regular fa-file mr-2"></i>附件下載</a>
+                                                </div>
+                                            }
                                         </td>
                                     </tr>
                                 </tbody>
@@ -141,6 +154,8 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        @Html.HiddenFor(m => m.EditModel.ActFinishId)
 
                         <div class="card-footer d-flex justify-content-end">
                             <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
@@ -202,6 +217,7 @@
     function SaveData() {
 
         var data = new FormData()
+        var ActFinishId = $('#@Html.IdFor(m => m.EditModel.ActFinishId)').val();
         var ClubId = $('#@Html.IdFor(m => m.EditModel.ClubId)').val();
         var ActID = $('#@Html.IdFor(m => m.EditModel.ActID)').val();
         var ClubCName = $('#@Html.IdFor(m => m.EditModel.ClubCName)').val();
@@ -253,6 +269,8 @@
         if (ActFinishVerify == "") { $.alert("審核狀態不可為空白"); return; }
 
         data.append('@Html.NameFor(m => m.EditModel.ClubId)', ClubId);
+
+        data.append('@Html.NameFor(m => m.EditModel.ActFinishId)', ActFinishId);
         data.append('@Html.NameFor(m => m.EditModel.ActID)', ActID);
         data.append('@Html.NameFor(m => m.EditModel.ClubCName)', ClubCName);
         data.append('@Html.NameFor(m => m.EditModel.Caseman)', Caseman);
@@ -267,7 +285,7 @@
 
 
         SendAjax({
-            url: '@Url.Action("SaveNewData")',
+            url: '@Url.Action("EditOldData")',
             data: data,
             processData: false,
             contentType: false,
@@ -275,7 +293,7 @@
                 if (result.errorCode == 0) {
                     $.confirm({
                         title: "",
-                        content: "新增成功",
+                        content: "修改成功",
                         buttons: {
                             確定: function () {
                                 window.location = $("#Back").attr("href");
