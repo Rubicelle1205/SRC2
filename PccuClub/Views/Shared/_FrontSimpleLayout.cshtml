@@ -110,7 +110,7 @@
                                         <img src="~/images/front/logo_circle.png" class="img-fluid" alt="" />
                                     </a>
                                 </div>
-                                <a href="@Url.Action("Index","ClubList")" class="headerTitle">中國文化大學社團資訊系統</a>
+                                <a href="@Url.Action("Index","ClubList")" class="headerTitle">中國文化大學學務資訊系統</a>
                             </div>
                         </div>
                     </div>
@@ -119,29 +119,6 @@
                     <div class="header-container container h-auto">
                         <div class="header-row">
                             <div class="header-column justify-content-end">
-                                <div class="header-row">
-                                    <div class="header-nav header-nav-line header-nav-bottom-line header-nav-bottom-line-effect-1">
-                                        <div class="header-nav-main header-nav-main-text-capitalize header-nav-main-square header-nav-main-arrows header-nav-main-dropdown-no-borders header-nav-main-effect-2 header-nav-main-sub-effect-1">
-                                            <nav class="collapse">
-                                                <ul class="nav nav-pills" id="mainNav">
-                                                    @if (LoginUser != null)
-                                                    {
-                                                        @Html.Raw(headHtml)
-                                                        <li>
-                                                            <a class="nav-link" href="@logouturl">
-                                                                登出<i class="fas fa-sign-out-alt ms-1"></i>
-                                                            </a>
-                                                        </li>
-                                                    }
-                                                </ul>
-                                            </nav>
-                                        </div>
-                                    </div>
-                                    <button class="btn header-btn-collapse-nav" data-bs-toggle="collapse"
-                                            data-bs-target=".header-nav-main nav">
-                                        <i class="fas fa-bars"></i>
-                                    </button>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -195,9 +172,6 @@
 <script src="~/js/main.js"></script>
 <script src="~/js/BlockUI.js"></script>
 <script src="~/js/solvento.pagebar.js"></script>
-@*
-<link rel="stylesheet" href="~/dist/css/adminlte.css">
-<link rel="stylesheet" href="~/dist/css/backend.css">*@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>

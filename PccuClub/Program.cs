@@ -46,6 +46,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=ClubList}/{action=Index}/{id?}");
+    pattern: "{controller=MenuFront}/{action=Index}/{id?}");
 
 app.Run();

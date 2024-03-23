@@ -20,6 +20,7 @@ namespace WebPccuClub.Controllers
         #region 共用屬性
         private const string strConst_LoginPageUrl = @"/FrontLogin";
         private const string strConst_FrontDefaultPageUrl = @"/FrontLogin/Index";
+        private const string strConst_FrontMenu = @"/MenuFront/Index";
         private const string strConst_BackDefaultPageUrl = @"/BakeendLogin/Index";
         private const string strConst_Timeout = "操作逾時，請重新登入！";
 		private const string strConst_NoLogin = "請先登入以操作此功能!!";
@@ -199,14 +200,14 @@ namespace WebPccuClub.Controllers
                 if (controllerName != "ClubList" && controllerName != "WeekActivity" && controllerName != "ClubHandover")
                 {
                     if(functionSource != "B")
-                        filterContext.Result = AlertMsgRedirect(strConst_NoLogin, SystemMenu.GetSubUrl() + strConst_FrontDefaultPageUrl);
+                        filterContext.Result = AlertMsgRedirect(strConst_NoLogin, SystemMenu.GetSubUrl() + strConst_FrontMenu);
                     else
                         filterContext.Result = AlertMsgRedirect(strConst_NoLogin, SystemMenu.GetSubUrl() + strConst_BackDefaultPageUrl);
                 }
                 else {
                     if (!isAjaxRequest)
                     {
-                        if (controllerName != "ClubList" && controllerName != "WeekActivity" && controllerName != "ClubHandover")
+                        if (controllerName != "ClubList" && controllerName != "WeekActivity" && controllerName != "ClubHandover" && controllerName != "MenuFront")
                         {
                             filterContext.Result = AlertMsgRedirect(strConst_Timeout, SystemMenu.GetSubUrl() + strConst_LoginPageUrl);
                         }
