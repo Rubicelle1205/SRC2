@@ -57,12 +57,13 @@ namespace WebPccuClub.Controllers
             {
                 var result = await SSOAuth.GetSSOAuthData(guid);
 
+                dbAccess.WriteLog($"[SSO登入][Result]" + result.JSONData, null, enumLogConst.Information);
+
                 if (result.bError)
                 {
                     strResult = result.sMsg;
                     throw new Exception("登入轉換失敗，請使用帳號登入");
                 }
-                
 
                 SSOUserInfo sSOUserInfo = JsonConvert.DeserializeObject<SSOUserInfo>(result.JSONData);
 

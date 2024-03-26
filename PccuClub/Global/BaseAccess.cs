@@ -74,7 +74,7 @@ namespace WebPccuClub.Global
             throw new Exception("[DAException]", DAException.SystemResult);
         }
 
-		public virtual void WriteLog(string strMsg, UserInfo LoginUser, enumLogConst enumLog = enumLogConst.None)
+		public virtual void WriteLog(string strMsg, UserInfo LoginUser = null, enumLogConst enumLog = enumLogConst.None)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             string CommandText = string.Empty;
@@ -83,22 +83,30 @@ namespace WebPccuClub.Global
 
             #region 參數設定
             parameters.Add("Type", Enum.GetName(enumLog));
-            // 使用者帳號
-            parameters.Add("Loginid", LoginUser.LoginId);
-            // 使用者姓名
-            parameters.Add("LoginName", LoginUser.UserName);
-            // 角色姓名
-            parameters.Add("Time", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.sss"));
-            // 角色姓名
-            parameters.Add("RoleName", LoginUser.UserRole[0].RoleName);
-            // 登入IP
-            parameters.Add("IP", LoginUser.IP);
+
+			if (null != LoginUser)
+			{
+                // 使用者帳號
+                parameters.Add("Loginid", LoginUser.LoginId);
+                // 使用者姓名
+                parameters.Add("LoginName", LoginUser.UserName);
+                // 角色姓名
+                parameters.Add("Time", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.sss"));
+                // 角色姓名
+                parameters.Add("RoleName", LoginUser.UserRole[0].RoleName);
+                // 登入IP
+                parameters.Add("IP", LoginUser.IP);
+            }
+            
             // 建立時間
             parameters.Add("text", strMsg);
             #endregion 參數設定
 
             #region CommandText
-            CommandText = @"insert into Log_Record
+            
+			if (null != LoginUser)
+			{
+                CommandText = @"insert into Log_Record
 					        (
 								Type,
 								LoginId,
@@ -116,6 +124,20 @@ namespace WebPccuClub.Global
 								@IP,
 								@text
 					        )";
+            }
+			else
+			{
+                CommandText = @"insert into Log_Record
+					        (
+								Type,
+								text
+					        )
+					        values
+					        (
+                                @Type,
+								@text
+					        )";
+            }
 
             #endregion CommandText
 
