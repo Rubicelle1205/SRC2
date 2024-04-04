@@ -1,5 +1,35 @@
-﻿@{
+﻿@using PccuClub.WebAuth;
+
+@{
     Layout = "_FrontSimpleLayout";
+
+    string SSOName = "";
+    string SSORole = "";
+
+    UserInfo LoginUser = (UserInfo)ViewBag.LoginUser;
+
+
+    @if (null != LoginUser)
+    {
+        SSOName = LoginUser.SSOName;
+
+        switch (LoginUser.SSORole)
+        {
+            case "student":
+                SSORole = "同學";
+                break;
+
+            case "staff":
+                SSORole = "同仁";
+                break;
+
+            case "teacher":
+                SSORole = "老師";
+                break;
+        
+        }
+    }
+
 }
 
 <div role="main" class="main">
@@ -10,7 +40,7 @@
                 <div class="card border-radius bg-color-light">
                     <div class="card-body">
                         <h4 class="card-title mb-4 pb-2 text-6">
-                            <!--老師|同仁|學生-->歡迎！<small class="text-yellow font-weight-normal ms-2">Welcome</small>
+                            @SSOName @SSORole 歡迎！<small class="text-yellow font-weight-normal ms-2">Welcome</small>
                         </h4>
                         <div class="pagelist">
                             <!--依照身分權限顯示-->

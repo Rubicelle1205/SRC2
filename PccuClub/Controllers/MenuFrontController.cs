@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NPOI.SS.Formula.Functions;
+using PccuClub.WebAuth;
 using WebPccuClub.DataAccess;
 using WebPccuClub.Global;
+using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
 using Controller = Microsoft.AspNetCore.Mvc.Controller;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
@@ -25,9 +27,10 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.首頁)]
         public IActionResult Index()
         {
-            SDGsMangViewModel vm = new SDGsMangViewModel();
-            vm.ConditionModel = new SDGsMangConditionModel();
-            return View(vm);
+            ViewBag.LoginUser = HttpContext.Session.GetObject<UserInfo>("FLoginUser");
+            
+
+            return View();
         }
     }
 }

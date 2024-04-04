@@ -44,7 +44,7 @@ namespace WebPccuClub.Controllers
         }
 
         /// <summary> 登入使用者 </summary>
-        protected UserInfo LoginUser
+        public UserInfo LoginUser
         {
             get
             { return HttpContext.Session.GetObject<UserInfo>("LoginUser"); }

@@ -45,7 +45,12 @@ namespace WebPccuClub.Controllers
         {
             FrontLoginViewModel vm = new FrontLoginViewModel();
             LoginLogEntity loginEntity = GetLoginLogEntity(vm);
+            DbExecuteInfo dbResult = new DbExecuteInfo();
+            UserInfo user = new UserInfo();
+            UserInfo LoginUser = new UserInfo();
+
             string strResult = "";
+            
 
             if (string.IsNullOrEmpty(guid))
                 return View(vm);
@@ -67,23 +72,54 @@ namespace WebPccuClub.Controllers
 
                 SSOUserInfo sSOUserInfo = JsonConvert.DeserializeObject<SSOUserInfo>(result.JSONData);
 
-				var dbResult = dbAccess.InsertNewUser(sSOUserInfo);
-
-				if (!dbResult.isSuccess)
-				{
-					dbAccess.DbaRollBack();
-					throw new Exception("新增帳號失敗!");
-				}
-
-				if (!auth.GetUserByFUserID(sSOUserInfo.Account, out UserInfo user))
+                //寫入使用者與確認帳號登入
+                switch (sSOUserInfo.Role)
                 {
-                    loginEntity.Memo = "帳號不存在";
-                    throw new Exception("登入失敗，帳號不存在!");
+                    case "student":
+                        dbResult = dbAccess.InsertFrontNewUser(sSOUserInfo);
+                        break;
+
+                    case "staff":
+                        dbResult = dbAccess.InsertBackendNewUser(sSOUserInfo);
+                        break;
+                    
+                    case "teacher":
+                        dbResult = dbAccess.InsertBackendNewUser(sSOUserInfo);
+                        break;
+
+                    default:
+                        throw new Exception("取得角色失敗!" + result.JSONData);
+                }
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    throw new Exception("新增帳號失敗!");
+                }
+
+                if (sSOUserInfo.Role == "student")
+                {
+                    if (!auth.GetUserByFUserID(sSOUserInfo.Account, out user))
+                    {
+                        loginEntity.Memo = "帳號不存在";
+                        throw new Exception("登入失敗，帳號不存在!");
+                    }
+                }
+                else
+                {
+                    if (!auth.GetUserMain(sSOUserInfo.Account, out user))
+                    {
+                        loginEntity.Memo = "帳號不存在";
+                        throw new Exception("登入失敗，帳號不存在!");
+                    }
                 }
 
 				bool isAuth = false;
 
-                isAuth = auth.FLogin(sSOUserInfo.Account, out UserInfo LoginUser);
+                if (sSOUserInfo.Role == "student")
+                    isAuth = auth.SSOLogin(sSOUserInfo.Account, out LoginUser);
+                else
+                    isAuth = auth.SSOLogin(sSOUserInfo.Account, out LoginUser);
 
                 if (!isAuth)
                 {
@@ -118,26 +154,26 @@ namespace WebPccuClub.Controllers
 
                 dbAccess.WriteLog($"[SSO登入] guid:{guid}", LoginUser, enumLogConst.Information);
 
-                return RedirectToAction("Index", "ClubList");
+                return RedirectToAction("Index", "MenuFront");
             }
             catch (FaultException)
             {
                 loginEntity.Issuccess = false;
                 loginEntity.Memo = "[API錯誤]登入轉換失敗";
-                AlertMsg.Add(string.Format(@"{0}", "登入轉換失敗，請使用帳號登入"));
+                AlertMsg.Add(string.Format(@"{0}", "登入轉換失敗，請稍後再試"));
                 InsertLoginLog(loginEntity);
 
-                return View("Index", vm);
+                return RedirectToAction("Index", "MenuFront");
             }
             catch (Exception ex)
             {
                 loginEntity.Issuccess = false;
-                loginEntity.Memo = "[API回傳錯誤]" + strResult;
+                loginEntity.Memo = "[API回傳錯誤]" + ex.Message;
 
-                AlertMsg.Add(string.Format(@"{0}", "登入轉換失敗，請使用帳號登入"));
+                AlertMsg.Add(string.Format(@"{0}", "登入轉換失敗，請稍後再試"));
                 InsertLoginLog(loginEntity);
 
-                return View("Index", vm);
+                return RedirectToAction("Index", "MenuFront");
             }
         }
 

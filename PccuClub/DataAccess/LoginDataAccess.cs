@@ -198,7 +198,7 @@ namespace WebPccuClub.DataAccess
             return ExecuteResult;
         }
 
-		public DbExecuteInfo InsertNewUser(SSOUserInfo sSOUserInfo)
+		public DbExecuteInfo InsertFrontNewUser(SSOUserInfo sSOUserInfo)
 		{
 			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
 			string CommandTxt = string.Empty;
@@ -250,5 +250,57 @@ namespace WebPccuClub.DataAccess
 
 			return ExecuteResult;
 		}
-	}
+
+        public DbExecuteInfo InsertBackendNewUser(SSOUserInfo sSOUserInfo)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            string CommandTxt = string.Empty;
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            // 登入帳號
+            parameters.Add("LoginId", sSOUserInfo.Account);
+            parameters.Add("UserName", sSOUserInfo.Name);
+            parameters.Add("Department", sSOUserInfo.Department);
+
+            #endregion
+
+            CommandTxt = $@"IF EXISTS (SELECT 1
+                                         FROM UserMain 
+                                        WHERE LoginId = @LoginId)
+                                    
+                                BEGIN
+                                        UPDATE UserMain
+                                        SET UserName = @UserName
+                                           ,Department = @Department
+                                           ,LastModifier = @LoginId
+                                           ,LastModified = GETDATE() 
+                                        WHERE LoginId = @LoginId;
+                                    END
+                                ELSE
+                                    BEGIN
+                                        INSERT INTO UserMain
+                                                  (LoginId
+                                                   ,UserName
+                                                   ,Department
+                                                   ,IsEnable
+                                                   ,Creator
+                                                   ,Created
+                                                   ,LastModifier
+                                                   ,LastModified )
+                                            VALUES (@LoginId
+                                                   ,@UserName
+                                                   ,@Department
+                                                   ,1
+                                                   ,@LoginId
+                                                   ,GETDATE()
+                                                   ,@LoginId
+                                                   ,GETDATE() );
+                                    END";
+
+            ExecuteResult = DbaExecuteNonQuery(CommandTxt, parameters, true, DBAccessException);
+
+            return ExecuteResult;
+        }
+    }
 }

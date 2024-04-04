@@ -80,14 +80,62 @@ namespace PccuClub.WebAuth
                 { return false; }
 
                 // 查詢使用者角色
-                (DbExecuteInfo Info, IEnumerable<RoleInfo> entitys) reolResult = dbAccess.SelectRoleInfo(LoginUser.LoginId);
+                (DbExecuteInfo Info, IEnumerable<RoleInfo> entitys) roleResult = dbAccess.SelectRoleInfo(LoginUser.LoginId);
                 if (!mainResult.Info.isSuccess)
                 { return false; }
 
-				if (reolResult.entitys.ToList().Count == 0)
+				if (roleResult.entitys.ToList().Count == 0)
 				{ return false; }
 
-				LoginUser.UserRole = reolResult.entitys.ToList();
+				LoginUser.UserRole = roleResult.entitys.ToList();
+
+                // 查詢角色功能
+                (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = dbAccess.SelectFunInfo(LoginUser.LoginId, "F");
+                if (!funResult.Info.isSuccess)
+                { return false; }
+                LoginUser.UserRoleFun = funResult.entitys.ToList();
+
+                oUser = LoginUser;
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 新版使用者使用SSO登入(對應學生、老師、同仁)
+        /// </summary>
+        /// <param name="LoginId">帳號</param>
+        /// <param name="oUser">使用者資訊</param>
+        /// <returns>驗證結果(True:驗證成功，False:驗證失敗)</returns>
+        public bool SSOLogin(string FUserId, out UserInfo oUser)
+        {
+            oUser = null;
+            try
+            {
+                UserInfo LoginUser = new UserInfo();
+
+                // 查詢基本資料
+                (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectFUserMain(FUserId);
+                if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0 || mainResult.entitys.Count() > 1)
+                { return false; }
+
+                LoginUser = mainResult.entitys.First();
+                if (LoginUser == null)
+                { return false; }
+
+                // 查詢使用者角色
+                (DbExecuteInfo Info, IEnumerable<RoleInfo> entitys) roleResult = dbAccess.SelectRoleInfo(LoginUser.LoginId);
+                if (!mainResult.Info.isSuccess)
+                { return false; }
+
+                if (roleResult.entitys.ToList().Count == 0)
+                { return false; }
+
+                LoginUser.UserRole = roleResult.entitys.ToList(); 
 
                 // 查詢角色功能
                 (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = dbAccess.SelectFunInfo(LoginUser.LoginId, "F");

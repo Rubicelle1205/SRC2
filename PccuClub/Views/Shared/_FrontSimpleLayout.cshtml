@@ -2,34 +2,6 @@
 @using WebPccuClub.Global.Extension;
 @using Microsoft.AspNetCore.Http
 
-@{
-    UserInfo LoginUser = Context.Session.GetObject<UserInfo>("FLoginUser");
-
-    string UnitName = string.Empty;
-    string LoginId = string.Empty;
-    string LoginName = string.Empty;
-    string LastLoginDate = string.Empty;
-
-    if (LoginUser != null)
-    {
-        UnitName = LoginUser.UserRole[0].RoleName != null ? LoginUser.UserRole[0].RoleName : "訪客";
-        LoginId = LoginUser.LoginId;
-        LoginName = LoginUser.UserName;
-        LastLoginDate = LoginUser.LastLoginDate.Value.ToString("yyyy/MM/dd HH:mm");
-    }
-    string baseurl = SystemMenu.GetSubUrl();
-    string homeurl = $"{baseurl}/ClubList";
-    string logouturl = $@"{baseurl}/FrontLogin/Logout";
-
-    var router = Context.Request.RouteValues;
-    var path = router["controller"];
-
-    //string sitemap = LoginUser.GetUserSiteMap(path);
-    string headHtml = LoginUser.CreateFrontUserHeadMenu(baseurl, path);
-    string menuHtml = LoginUser.CreateFrontUserMenu(baseurl, path);
-}
-
-
 <html lang="zh-TW">
 
 <head>
