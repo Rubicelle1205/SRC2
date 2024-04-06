@@ -64,6 +64,9 @@ namespace PccuClub.WebAuth
         /// <summary> SSO系級/單位 </summary>
         public string SSODepartment { get; set; }
 
+        /// <summary>使用者類型</summary>
+        public string UserType { get; set; }
+
         /// <summary> 最後登入時間 </summary>
         public DateTime? LastLoginDate { get; set; }
 

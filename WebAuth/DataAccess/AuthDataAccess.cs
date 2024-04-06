@@ -15,12 +15,13 @@ namespace WebAuth.DataAccess
             DBAParameter parameter = new DBAParameter();
             parameter.Add("@FUserId", FUserId);
 
-            string SQL = @"SELECT A.FUserId AS LoginId, A.UserName, C.ClubId AS LoginId, A.EMail, A.CellPhone, A.Department, C.ClubId, C.ClubCName, C.ClubEName, C.SchoolYear, C.LifeClass, C.ClubClass, 'F' AS LoginSource
+            string SQL = @"SELECT A.FUserId, A.UserName, C.ClubId AS LoginId, A.EMail, A.CellPhone, A.Department, 
+                                  C.ClubId, C.ClubCName, C.ClubEName, C.SchoolYear, C.LifeClass, C.ClubClass, 'F' AS LoginSource
                              FROM FUserMain A
                         LEFT JOIN ClubUser B ON B.FUserId = A.FUserId
                         LEFT JOIN ClubMang C ON C.ClubId = B.ClubId
-                        LEFT JOIN UserRole D ON D.LoginId = C.ClubId AND D.SystemCode = '02'
-                        LEFT JOIN SystemRole E ON E.RoleId = D.RoleId AND E.SystemCode = '02'
+                        LEFT JOIN UserRole D ON D.LoginId = C.ClubId
+                        LEFT JOIN SystemRole E ON E.RoleId = D.RoleId
                             WHERE A.FUserId = @FUserId AND A.IsEnable = 1
  ";
 
@@ -51,8 +52,8 @@ namespace WebAuth.DataAccess
 
             string SQL = @"SELECT A.*, C.RoleName AS UnitName
                              FROM UserMain A
-                        LEFT JOIN UserRole B ON B.LoginId = A.LoginId AND B.SystemCode = '02'
-                        LEFT JOIN SystemRole C ON C.RoleId = B.RoleId AND C.SystemCode = '02'
+                        LEFT JOIN UserRole B ON B.LoginId = A.LoginId
+                        LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
                             WHERE A.LoginId = @LoginId ";
 
             (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) result = dbAccess.DbaExecuteQuery<UserInfo>(SQL, parameter, false, null);
@@ -70,15 +71,15 @@ namespace WebAuth.DataAccess
             if (LoginFrom == "B"){
                 SQL = @"SELECT A.*, C.RoleName AS UnitName, 'B' AS LoginSource
                              FROM UserMain A
-                        LEFT JOIN UserRole B ON B.LoginId = A.LoginId AND B.SystemCode = '02'
-                        LEFT JOIN SystemRole C ON C.RoleId = B.RoleId AND C.SystemCode = '02'
+                        LEFT JOIN UserRole B ON B.LoginId = A.LoginId
+                        LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
                             WHERE A.LoginId = @LoginId AND A.Password = @Password AND A.IsEnable = 1";
             }
             else {
                 SQL = @"SELECT A.*, A.ClubId AS LoginId, ISNULL(E.UserName, '') AS UserName, B.*, 'F' AS LoginSource
                              FROM ClubMang A
-                        LEFT JOIN UserRole B ON B.LoginId = A.ClubId AND B.SystemCode = '02'
-                        LEFT JOIN SystemRole C ON C.RoleId = B.RoleId AND C.SystemCode = '02'
+                        LEFT JOIN UserRole B ON B.LoginId = A.ClubId
+                        LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
 						LEFT JOIN ClubUser D ON D.ClubId = A.ClubId
 						LEFT JOIN FUserMain E ON E.FUserId = D.FUserId
                             WHERE A.ClubId = @LoginId AND A.Password = @Password and A.IsEnable = 1";
@@ -93,14 +94,13 @@ namespace WebAuth.DataAccess
         public (DbExecuteInfo Info, IEnumerable<RoleInfo> entityList) SelectRoleInfo(string LoginId)
         {
             DBAParameter parameter = new DBAParameter();
+            
             parameter.Add("@LoginId", LoginId);
-            string SQL = @"--declare @LoginId nvarchar(30)
-                           --set @LoginId=''
-
-                           SELECT SR.RoleId, SR.RoleName
-                           FROM SystemRole SR
-                           INNER join UserRole R on R.RoleId = SR.RoleId AND R.SystemCode = '02'
-                           WHERE R.LoginId = @LoginId"
+            
+            string SQL = @"SELECT B.LoginId, A.RoleId, A.RoleName
+                             FROM SystemRole A
+                       INNER JOIN UserRole B on B.RoleId = A.RoleId
+                            WHERE B.LoginId = @LoginId"
             ;
             (DbExecuteInfo Info, IEnumerable<RoleInfo> entitys) result = dbAccess.DbaExecuteQuery<RoleInfo>(SQL, parameter, false, null);
             return result;
@@ -113,17 +113,17 @@ namespace WebAuth.DataAccess
             parameter.Add("@LoginId", LoginId);
             parameter.Add("@BackOrFront", BackOrFront);
 
-            string SQL = @"SELECT SM.MenuNode, SM.MenuName, SM.MenuUpNode, SM.IconTag, F.Url, SM.IsEnable, SM.IsVisIble, SM.SortOrder
-                           FROM SystemRole SR
-                           INNER JOIN UserRole R on R.RoleId = SR.RoleId AND R.SystemCode = '02'
-                           INNER JOIN SystemRoleFun RF on RF.RoleId = R.RoleId AND RF.SystemCode = '02'
-                           INNER JOIN SystemMenu SM on SM.MenuNode = RF.MenuNode AND SM.SystemCode = '02'
-                           INNER JOIN SystemFun F on F.FunId = SM.FunId AND F.SystemCode = '02'
-                           WHERE 1 = 1
-                             AND R.LoginId = @LoginId 
-                             AND SM.BackOrFront = @BackOrFront
-                             AND SM.IsEnable = 1
-                        ORDER BY SM.SortOrder";
+            string SQL = @"SELECT D.MenuNode, D.MenuName, D.MenuUpNode, D.IconTag, E.Url, D.IsEnable, D.IsVisIble, D.SortOrder, D.SystemCode
+                             FROM SystemRole A
+                       INNER JOIN UserRole B on B.RoleId = A.RoleId
+                       INNER JOIN SystemRoleFun C on C.RoleId = B.RoleId
+                       INNER JOIN SystemMenu D on D.MenuNode = C.MenuNode
+                       INNER JOIN SystemFun E on E.FunId = D.FunId
+                            WHERE 1 = 1
+                              AND B.LoginId = @LoginId
+							  AND D.BackOrFront = @BackOrFront
+                              AND D.IsEnable = 1
+                         ORDER BY D.SortOrder";
 
             (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) result = dbAccess.DbaExecuteQuery<FunInfo>(SQL, parameter, false, null);
 
@@ -138,10 +138,10 @@ namespace WebAuth.DataAccess
 
             string SQL = @"SELECT SM.MenuNode, SM.MenuName, SM.MenuUpNode, SM.IconTag, F.Url, SM.IsEnable, SM.IsVisIble, SM.SortOrder
                            FROM SystemRole SR
-                           INNER JOIN UserRole R ON R.RoleId = SR.RoleId AND R.SystemCode = '02'
-                           INNER JOIN SystemRoleFun RF ON RF.RoleId = R.RoleId AND RF.SystemCode = '02'
-                           INNER JOIN SystemMenu SM ON SM.MenuNode = RF.MenuNode AND SM.SystemCode = '02'
-                           INNER JOIN SystemFun F ON F.FunId=SM.FunId AND F.SystemCode = '02'
+                           INNER JOIN UserRole R ON R.RoleId = SR.RoleId
+                           INNER JOIN SystemRoleFun RF ON RF.RoleId = R.RoleId
+                           INNER JOIN SystemMenu SM ON SM.MenuNode = RF.MenuNode
+                           INNER JOIN SystemFun F ON F.FunId=SM.FunId
                            WHERE 1 = 1
                            AND (@BackOrFront IS NULL OR SM.BackOrFront = @BackOrFront) ";
 
@@ -153,8 +153,6 @@ namespace WebAuth.DataAccess
         public (DbExecuteInfo Info, IEnumerable<RoleFunInfo> entitys) SelectAllFunInfo()
         {
             DBAParameter parameter = new DBAParameter();
-
-            
 
             string SQL = @"select * from SystemRoleFun ";
 

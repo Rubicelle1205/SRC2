@@ -128,7 +128,7 @@ namespace WebPccuClub.Controllers
 
             BakeendLoginViewModel vm = new BakeendLoginViewModel();
 
-            return View("Index", vm);
+            return RedirectToAction("Index", "MenuFront");
         }
 
         /// <summary> 忘記密碼 </summary>

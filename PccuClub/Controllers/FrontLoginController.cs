@@ -97,29 +97,29 @@ namespace WebPccuClub.Controllers
                     throw new Exception("新增帳號失敗!");
                 }
 
-                if (sSOUserInfo.Role == "student")
-                {
-                    if (!auth.GetUserByFUserID(sSOUserInfo.Account, out user))
-                    {
-                        loginEntity.Memo = "帳號不存在";
-                        throw new Exception("登入失敗，帳號不存在!");
-                    }
-                }
-                else
-                {
-                    if (!auth.GetUserMain(sSOUserInfo.Account, out user))
-                    {
-                        loginEntity.Memo = "帳號不存在";
-                        throw new Exception("登入失敗，帳號不存在!");
-                    }
-                }
+                //if (sSOUserInfo.Role == "student")
+                //{
+                //    if (!auth.GetUserByFUserID(sSOUserInfo.Account, out user))
+                //    {
+                //        loginEntity.Memo = "帳號不存在";
+                //        throw new Exception("登入失敗，帳號不存在!");
+                //    }
+                //}
+                //else
+                //{
+                //    if (!auth.GetUserMain(sSOUserInfo.Account, out user))
+                //    {
+                //        loginEntity.Memo = "帳號不存在";
+                //        throw new Exception("登入失敗，帳號不存在!");
+                //    }
+                //}
 
 				bool isAuth = false;
 
                 if (sSOUserInfo.Role == "student")
-                    isAuth = auth.SSOLogin(sSOUserInfo.Account, out LoginUser);
+                    isAuth = auth.SSOLogin(sSOUserInfo.Account, out LoginUser, "F");
                 else
-                    isAuth = auth.SSOLogin(sSOUserInfo.Account, out LoginUser);
+                    isAuth = auth.SSOLogin(sSOUserInfo.Account, out LoginUser, "B");
 
                 if (!isAuth)
                 {
@@ -143,7 +143,7 @@ namespace WebPccuClub.Controllers
                 LoginUser.SSODepartment = sSOUserInfo.Department;
 
                 loginEntity.Issuccess = true;
-                loginEntity.Loginid = user.LoginId;
+                loginEntity.Loginid = LoginUser.SSOAccount;
                 LoginUser.IP = loginEntity.Ip;
 
                 HttpContext.Session.SetObject("FLoginUser", LoginUser);
@@ -256,7 +256,7 @@ namespace WebPccuClub.Controllers
 
             FrontLoginViewModel vm = new FrontLoginViewModel();
 
-            return View("Index", vm);
+            return RedirectToAction("Index", "MenuFront");
         }
 
         /// <summary> 取得驗證碼 </summary>

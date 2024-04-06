@@ -189,7 +189,7 @@ namespace WebPccuClub.Controllers
                 {
                     LoginID = LoginUser.LoginId,
                     UserName = LoginUser.UserName,
-                    RoleName = string.Join(",", LoginUser.UserRole[0].RoleName),
+                    RoleName = string.Join(",", LoginUser.UserRole.Count > 0 ? LoginUser.UserRole[0].RoleName: ""),
                     IP = filterContext.HttpContext.Connection?.RemoteIpAddress?.ToString(),
                     FunName = controllerAttributes != null ? (controllerAttributes.FirstOrDefault() as LogAttribute)?.LogDisplayName : controller.ControllerContext.ActionDescriptor.ControllerName,
                     ActionName = actionAttributes != null ? (actionAttributes.FirstOrDefault() as LogAttribute)?.LogDisplayName : controller.ControllerContext.ActionDescriptor.ActionName

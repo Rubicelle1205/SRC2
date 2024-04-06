@@ -91,7 +91,7 @@ namespace WebPccuClub.Global
                 // 使用者姓名
                 parameters.Add("LoginName", LoginUser.UserName);
                 // 角色姓名
-                parameters.Add("RoleName", LoginUser.UserRole[0].RoleName);
+                parameters.Add("RoleName", LoginUser.UserRole.Count > 0 ? LoginUser.UserRole[0].RoleName: "");
                 // 登入IP
                 parameters.Add("IP", LoginUser.IP);
             }

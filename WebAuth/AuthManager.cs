@@ -111,7 +111,7 @@ namespace PccuClub.WebAuth
         /// <param name="LoginId">帳號</param>
         /// <param name="oUser">使用者資訊</param>
         /// <returns>驗證結果(True:驗證成功，False:驗證失敗)</returns>
-        public bool SSOLogin(string FUserId, out UserInfo oUser)
+        public bool SSOLogin(string LoginId, out UserInfo oUser, string LoginType)
         {
             oUser = null;
             try
@@ -119,7 +119,8 @@ namespace PccuClub.WebAuth
                 UserInfo LoginUser = new UserInfo();
 
                 // 查詢基本資料
-                (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectFUserMain(FUserId);
+                (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = LoginType == "F" ? dbAccess.SelectFUserMain(LoginId) : dbAccess.SelectUserMain(LoginId);
+                
                 if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0 || mainResult.entitys.Count() > 1)
                 { return false; }
 
@@ -132,13 +133,10 @@ namespace PccuClub.WebAuth
                 if (!mainResult.Info.isSuccess)
                 { return false; }
 
-                if (roleResult.entitys.ToList().Count == 0)
-                { return false; }
-
                 LoginUser.UserRole = roleResult.entitys.ToList(); 
 
                 // 查詢角色功能
-                (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = dbAccess.SelectFunInfo(LoginUser.LoginId, "F");
+                (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = LoginType == "F" ? dbAccess.SelectFunInfo(LoginUser.LoginId, "F") : dbAccess.SelectFunInfo(LoginUser.LoginId, "B");
                 if (!funResult.Info.isSuccess)
                 { return false; }
                 LoginUser.UserRoleFun = funResult.entitys.ToList();

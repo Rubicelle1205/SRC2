@@ -182,13 +182,13 @@ namespace WebPccuClub.Controllers
 			var actionAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetMethod(actionName)?.GetCustomAttributes(typeof(LogAttribute), false);
             string functionSource = dbAccess.GetFunctionSource(controllerName);
 
-			if (LoginUser != null && (LoginUser.LoginSource == "F"))
+			if (LoginUser != null && (LoginUser.LoginSource == "F") && (LoginUser.UserRoleFun.Count > 0))
 			{
 				LogViewModel logModel = new LogViewModel()
 				{
 					LoginID = LoginUser.LoginId,
 					UserName = LoginUser.UserName,
-					RoleName = string.Join(",", LoginUser.UserRole[0].RoleName),
+					RoleName = string.Join(",", LoginUser.UserRole.Count > 0 ? LoginUser.UserRole[0].RoleName : ""),
 					IP = filterContext.HttpContext.Connection?.RemoteIpAddress?.ToString(),
 					FunName = controllerAttributes != null ? (controllerAttributes.FirstOrDefault() as LogAttribute)?.LogDisplayName : controller.ControllerContext.ActionDescriptor.ControllerName,
 					ActionName = actionAttributes != null ? (actionAttributes.FirstOrDefault() as LogAttribute)?.LogDisplayName : controller.ControllerContext.ActionDescriptor.ActionName
@@ -200,9 +200,9 @@ namespace WebPccuClub.Controllers
                 if (controllerName != "ClubList" && controllerName != "WeekActivity" && controllerName != "ClubHandover")
                 {
                     if(functionSource != "B")
-                        filterContext.Result = AlertMsgRedirect(strConst_NoLogin, SystemMenu.GetSubUrl() + strConst_FrontMenu);
+                        filterContext.Result = AlertMsgRedirect(strConst_NoAccess, SystemMenu.GetSubUrl() + strConst_FrontMenu);
                     else
-                        filterContext.Result = AlertMsgRedirect(strConst_NoLogin, SystemMenu.GetSubUrl() + strConst_BackDefaultPageUrl);
+                        filterContext.Result = AlertMsgRedirect(strConst_NoAccess, SystemMenu.GetSubUrl() + strConst_FrontMenu);
                 }
                 else {
                     if (!isAjaxRequest)
@@ -243,6 +243,7 @@ namespace WebPccuClub.Controllers
                 TempData["WEBSOL_ALERT_MESSAGE"] = AlertMsg;
             }
         }
+
 
         /// <summary>
         /// 建立 SiteMap

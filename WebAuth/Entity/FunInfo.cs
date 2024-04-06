@@ -37,6 +37,9 @@ namespace WebAuth.Entity
 
         /// <summary> 排序 </summary>
         public string SortOrder { get; set; }
+
+        /// <summary> 系統代碼 </summary>
+        public string SystemCode { get; set; }
     }
 
 

@@ -69,7 +69,7 @@ namespace WebPccuClub.DataAccess
             // 使用者姓名
             parameters.Add("UserName", LoginUser.UserName);
             // 角色姓名
-            parameters.Add("RoleName", LoginUser.UserRole[0].RoleName);
+            parameters.Add("RoleName", LoginUser.UserRole.Count > 0 ? LoginUser.UserRole[0].RoleName: "");
             // 登入IP
             parameters.Add("IP", thisEntity.Ip);
             // 功能
@@ -283,6 +283,7 @@ namespace WebPccuClub.DataAccess
                                                   (LoginId
                                                    ,UserName
                                                    ,Department
+                                                   ,UserType
                                                    ,IsEnable
                                                    ,Creator
                                                    ,Created
@@ -291,6 +292,7 @@ namespace WebPccuClub.DataAccess
                                             VALUES (@LoginId
                                                    ,@UserName
                                                    ,@Department
+                                                   ,'01'
                                                    ,1
                                                    ,@LoginId
                                                    ,GETDATE()

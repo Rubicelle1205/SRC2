@@ -90,7 +90,7 @@ namespace WebPccuClub.Global
             // 角色姓名
             parameters.Add("Time", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.sss"));
             // 角色姓名
-            parameters.Add("RoleName", LoginUser.UserRole[0].RoleName);
+            parameters.Add("RoleName", LoginUser.UserRole.Count > 0 ? LoginUser.UserRole[0].RoleName : "");
             // 登入IP
             parameters.Add("IP", LoginUser.IP);
             // 建立時間

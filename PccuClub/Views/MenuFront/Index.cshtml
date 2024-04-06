@@ -8,7 +8,6 @@
 
     UserInfo LoginUser = (UserInfo)ViewBag.LoginUser;
 
-
     @if (null != LoginUser)
     {
         SSOName = LoginUser.SSOName;
@@ -26,10 +25,8 @@
             case "teacher":
                 SSORole = "老師";
                 break;
-        
         }
     }
-
 }
 
 <div role="main" class="main">
@@ -38,44 +35,56 @@
         <div class="row justify-content-center">
             <div class="col-xxl-8 col-xl-8">
                 <div class="card border-radius bg-color-light">
+
                     <div class="card-body">
-                        <h4 class="card-title mb-4 pb-2 text-6">
-                            @SSOName @SSORole 歡迎！<small class="text-yellow font-weight-normal ms-2">Welcome</small>
-                        </h4>
-                        <div class="pagelist">
-                            <!--依照身分權限顯示-->
-                            <a href="club/index.html" class="listItem">
-                                <!-- target="_blank" -->
-                                <div class="textbox ">
-                                    <div class="title font-weight-bold mb-0">社團報備/結案</div>
-                                    <p class="fs-90percent mb-0">維護社團相關資訊，如活動報備、結案管理、幹部名冊</p>
-                                </div>
-                                <div class="icon"><i class="fas fa-chevron-right"></i></div>
-                            </a>
-                            <a href="borrowing/index.html" class="listItem">
-                                <!-- target="_blank" -->
-                                <div class="textbox ">
-                                    <div class="title font-weight-bold mb-0">資源借用</div>
-                                    <p class="fs-90percent mb-0">借用社團器材、海報欄位、學位服、醫療器材...等</p>
-                                </div>
-                                <div class="icon"><i class="fas fa-chevron-right"></i></div>
-                            </a>
-                            <a href="counselling/index.html" class="listItem">
-                                <!-- target="_blank" -->
-                                <div class="textbox ">
-                                    <div class="title font-weight-bold mb-0">輔導諮商</div>
-                                    <p class="fs-90percent mb-0">填寫初談表單</p>
-                                </div>
-                                <div class="icon"><i class="fas fa-chevron-right"></i></div>
-                            </a>
-                            <a href="@Url.Action("Index", "MenuBackend")" class="listItem">
-                                <div class="textbox ">
-                                    <div class="title font-weight-bold mb-0">管理者後台</div>
-                                    <p class="fs-90percent mb-0"></p>
-                                </div>
-                                <div class="icon"><i class="fas fa-chevron-right"></i></div>
-                            </a>
-                        </div>
+                        @if (null != LoginUser)
+                        {
+                            <h4 class="card-title mb-4 pb-2 text-6">
+                                @SSOName @SSORole 歡迎！<small class="text-yellow font-weight-normal ms-2">Welcome</small>
+                            </h4>
+                            <div class="pagelist">
+                                <a href="@Url.Action("Index", "ClubList")" class="listItem">
+                                    <div class="textbox ">
+                                        <div class="title font-weight-bold mb-0">社團報備/結案</div>
+                                        <p class="fs-90percent mb-0">維護社團相關資訊，如活動報備、結案管理、幹部名冊</p>
+                                    </div>
+                                    <div class="icon"><i class="fas fa-chevron-right"></i></div>
+                                </a>
+                                <a href="borrowing/index.html" class="listItem">
+                                    <!-- target="_blank" -->
+                                    <div class="textbox ">
+                                        <div class="title font-weight-bold mb-0">資源借用</div>
+                                        <p class="fs-90percent mb-0">借用社團器材、海報欄位、學位服、醫療器材...等</p>
+                                    </div>
+                                    <div class="icon"><i class="fas fa-chevron-right"></i></div>
+                                </a>
+                                <a href="counselling/index.html" class="listItem">
+                                    <!-- target="_blank" -->
+                                    <div class="textbox ">
+                                        <div class="title font-weight-bold mb-0">輔導諮商</div>
+                                        <p class="fs-90percent mb-0">填寫初談表單</p>
+                                    </div>
+                                    <div class="icon"><i class="fas fa-chevron-right"></i></div>
+                                </a>
+                                @if (LoginUser.SSORole != "student")
+                                {
+                                    <a href="@Url.Action("Index", "MenuBackend")" class="listItem">
+                                        <div class="textbox ">
+                                            <div class="title font-weight-bold mb-0">管理者後台</div>
+                                            <p class="fs-90percent mb-0"></p>
+                                        </div>
+                                        <div class="icon"><i class="fas fa-chevron-right"></i></div>
+                                    </a>
+                                }
+
+                            </div>
+                        }
+                        else
+                        {
+                            <h4 class="card-title mb-4 pb-2 text-6">
+                                請透過專區登入後使用！<small class="text-yellow font-weight-normal ms-2">Thanks</small>
+                            </h4>
+                        }
                     </div>
                 </div>
             </div>
