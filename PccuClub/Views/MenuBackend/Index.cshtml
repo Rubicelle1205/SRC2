@@ -19,13 +19,13 @@
                     {
                         @if (LoginUser.UserType == "03")
                         {
-                            <a href="init.html" class="list-group-item list-group-item-action">
+                            <a href="@Url.Action("Index", "HyperHome")" class="list-group-item list-group-item-action">
                                 <i class="fa-solid fa-id-badge"></i> 身分權限
                             </a>
                         }
                         @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "02"))
                         {
-                            <a href="club/init.html" class="list-group-item list-group-item-action">
+                            <a href="@Url.Action("Index", "Home")" class="list-group-item list-group-item-action">
                                 <i class="fa-solid fa-cubes"></i> 社團系統
                             </a>
                         }

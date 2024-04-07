@@ -28,9 +28,12 @@ namespace WebPccuClub.Controllers
         public IActionResult Index()
         {
             UserInfo LoginUser = HttpContext.Session.GetObject<UserInfo>("FLoginUser");
-            
-            if(LoginUser != null)
+
+            if (LoginUser != null)
+            {
                 LoginUser.LoginSource = "F";
+                HttpContext.Session.SetObject("FLoginUser", LoginUser);
+            }
 
             ViewBag.LoginUser = LoginUser;
 
