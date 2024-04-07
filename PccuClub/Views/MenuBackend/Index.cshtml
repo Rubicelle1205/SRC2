@@ -15,38 +15,43 @@
                 <p class="font-weight-normal text-center">後台入口選單</p>
                 <div class="list-group text-center text-lg">
                     <!--只顯示有使用權限的功能項目-->
-                    @if (LoginUser.UserType == "03")
+                    @if (null != LoginUser)
                     {
-                        <a href="init.html" class="list-group-item list-group-item-action">
-                            <i class="fa-solid fa-id-badge"></i> 身分權限
-                        </a>
-                    }
-                    @if(LoginUser.UserRoleFun.Any(x => x.SystemCode == "02"))
-                    {
-                        <a href="club/init.html" class="list-group-item list-group-item-action">
-                            <i class="fa-solid fa-cubes"></i> 社團系統
-                        </a>
-                    }
-                    @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "03"))
-                    {
-                        <a href="case/init.html" class="list-group-item list-group-item-action">
-                            <i class="fa-solid fa-user-secret"></i> 案件系統
-                        </a>
-                    }
-                    @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "04"))
-                    {
-                        <a href="borrowing/init.html" class="list-group-item list-group-item-action">
-                            <i class="fa-solid fa-boxes-packing"></i> 借用資源
-                        </a>
-                    }
-                    @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "05"))
-                    {
-                        <a href="counselling/init.html" class="list-group-item list-group-item-action">
-                            <i class="fa-solid fa-heart-pulse"></i> 輔導諮商
-                        </a>
-                    }
+                        @if (LoginUser.UserType == "03")
+                        {
+                            <a href="init.html" class="list-group-item list-group-item-action">
+                                <i class="fa-solid fa-id-badge"></i> 身分權限
+                            </a>
+                        }
+                        @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "02"))
+                        {
+                            <a href="club/init.html" class="list-group-item list-group-item-action">
+                                <i class="fa-solid fa-cubes"></i> 社團系統
+                            </a>
+                        }
+                        @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "03"))
+                        {
+                            <a href="case/init.html" class="list-group-item list-group-item-action">
+                                <i class="fa-solid fa-user-secret"></i> 案件系統
+                            </a>
+                        }
+                        @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "04"))
+                        {
+                            <a href="borrowing/init.html" class="list-group-item list-group-item-action">
+                                <i class="fa-solid fa-boxes-packing"></i> 借用資源
+                            </a>
+                        }
+                        @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "05"))
+                        {
+                            <a href="counselling/init.html" class="list-group-item list-group-item-action">
+                                <i class="fa-solid fa-heart-pulse"></i> 輔導諮商
+                            </a>
+                        }
 
-                    <a href="@Url.Action("Index", "MenuFront")" class="list-group-item list-group-item-warning">返回前台主選單</a>
+                        <a href="@Url.Action("Index", "MenuFront")" class="list-group-item list-group-item-warning">返回前台主選單</a>
+                    
+                    }
+                    
                 </div>
             </div>
         </div>

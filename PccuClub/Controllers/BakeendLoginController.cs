@@ -100,7 +100,7 @@ namespace WebPccuClub.Controllers
                 LoginUser.IP = loginEntity.Ip;
                 loginEntity.Issuccess = true;
 
-                HttpContext.Session.SetObject("LoginUser", LoginUser);
+                HttpContext.Session.SetObject("FLoginUser", LoginUser);
 
                 UpdateLoginInfo(user);
                 InsertLoginLog(loginEntity);

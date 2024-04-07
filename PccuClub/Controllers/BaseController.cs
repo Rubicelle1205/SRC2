@@ -47,9 +47,9 @@ namespace WebPccuClub.Controllers
         public UserInfo LoginUser
         {
             get
-            { return HttpContext.Session.GetObject<UserInfo>("LoginUser"); }
+            { return HttpContext.Session.GetObject<UserInfo>("FLoginUser"); }
             set
-            { HttpContext.Session.SetObject("LoginUser", value); }
+            { HttpContext.Session.SetObject("FLoginUser", value); }
         }
 
         #endregion
@@ -300,7 +300,7 @@ namespace WebPccuClub.Controllers
         /// <param name="funtionname">功能名稱</param>
         public virtual bool FuntionVisiable(string funtionname)
         {
-            UserInfo LoginUser = HttpContext.Session.GetObject<UserInfo>("LoginUser");
+            UserInfo LoginUser = HttpContext.Session.GetObject<UserInfo>("FLoginUser");
             List<FunInfo> rootMenu = LoginUser.UserRoleFun.FindAll(f => f.MenuName == funtionname);
             return (LoginUser.isSupervisor() || rootMenu.Count() > 0) ? true : false;
         }

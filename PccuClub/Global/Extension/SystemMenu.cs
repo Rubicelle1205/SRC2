@@ -42,58 +42,58 @@ namespace WebPccuClub.Global.Extension
 
             if (thisUser.LoginSource == "B")
             {
-				string suburl = GetSubUrl();
-				string funUrl = string.IsNullOrEmpty(rootMenu.Url) ? "#" : rootMenu.Url;
-				string leftHtml = "";
+                string suburl = GetSubUrl();
+                string funUrl = string.IsNullOrEmpty(rootMenu.Url) ? "#" : rootMenu.Url;
+                string leftHtml = "";
 
-				string sitemap = GetUserSiteMap(thisUser, routeurl);
-				string[] arr = sitemap.Split("|");
-				string RouteUpNode = thisUser.UserRoleFun.Find(f => f.MenuNode == arr[0]) == null ? arr[0] : thisUser.UserRoleFun.Find(f => f.MenuNode == arr[0]).MenuNode;
-				string RouteFunUrl = thisUser.UserRoleFun.Find(f => f.MenuNode == arr[1]) == null ? arr[1] : thisUser.UserRoleFun.Find(f => f.MenuNode == arr[1]).Url;
+                string sitemap = GetUserSiteMap(thisUser, routeurl);
+                string[] arr = sitemap.Split("|");
+                string RouteUpNode = thisUser.UserRoleFun.Find(f => f.MenuNode == arr[0]) == null ? arr[0] : thisUser.UserRoleFun.Find(f => f.MenuNode == arr[0]).MenuNode;
+                string RouteFunUrl = thisUser.UserRoleFun.Find(f => f.MenuNode == arr[1]) == null ? arr[1] : thisUser.UserRoleFun.Find(f => f.MenuNode == arr[1]).Url;
 
-				if (subMenus.Count > 0)
-				{
-					if (funUrl == "#" && rootMenu.MenuNode == RouteUpNode)
-					{
-						MenuBuilder.Append($@"<li class='nav-item menu-open'><a href='{baseurl}{funUrl}' class='nav-link active' target='_self'><i class='{rootMenu.IconTag}' aria-hidden='true'></i><p>{rootMenu.MenuName}<i class='right fas fa-angle-left'></i></p></a>");
-					}
-					else
-					{
-						MenuBuilder.Append($@"<li class='nav-item'><a href='{baseurl}{funUrl}' class='nav-link' target='_self'><i class='{rootMenu.IconTag}' aria-hidden='true'></i><p>{rootMenu.MenuName}<i class='right fas fa-angle-left'></i></p></a>");
-					}
+                if (subMenus.Count > 0)
+                {
+                    if (funUrl == "#" && rootMenu.MenuNode == RouteUpNode)
+                    {
+                        MenuBuilder.Append($@"<li class='nav-item menu-open'><a href='{baseurl}{funUrl}' class='nav-link active' target='_self'><i class='{rootMenu.IconTag}' aria-hidden='true'></i><p>{rootMenu.MenuName}<i class='right fas fa-angle-left'></i></p></a>");
+                    }
+                    else
+                    {
+                        MenuBuilder.Append($@"<li class='nav-item'><a href='{baseurl}{funUrl}' class='nav-link' target='_self'><i class='{rootMenu.IconTag}' aria-hidden='true'></i><p>{rootMenu.MenuName}<i class='right fas fa-angle-left'></i></p></a>");
+                    }
 
 
-					MenuBuilder.Append(@"<ul class='nav nav-treeview'>");
-					foreach (FunInfo fun in subMenus)
-					{
-						StringBuilder thisSubFun = BuildUserMenu(fun, thisUser, baseurl, routeurl);
-						MenuBuilder.Append(thisSubFun.ToString());
-					}
-					MenuBuilder.Append(@"</ul></li>");
-				}
-				else
-				{
-					if (routeurl == "Home")
-					{
-						leftHtml = $@"<li class='nav-item'><a href='{baseurl}{funUrl}' class='nav-link active' target='_self'><i class='{rootMenu.IconTag}' aria-hidden='true'></i><p>{rootMenu.MenuName}</p></a></li>";
-					}
-					else
-					{
-						if (RouteFunUrl == funUrl)
-						{
-							leftHtml = $@"<li class='nav-item'><a href='{baseurl}{funUrl}' class='nav-link active' target='_self'><i class='{rootMenu.IconTag}'></i><p>{rootMenu.MenuName}</p></a></li>";
-						}
-						else
-						{
-							leftHtml = $@"<li class='nav-item'><a href='{baseurl}{funUrl}' class='nav-link' target='_self'><i class='{rootMenu.IconTag}'></i><p>{rootMenu.MenuName}</p></a></li>";
-						}
-					}
+                    MenuBuilder.Append(@"<ul class='nav nav-treeview'>");
+                    foreach (FunInfo fun in subMenus)
+                    {
+                        StringBuilder thisSubFun = BuildUserMenu(fun, thisUser, baseurl, routeurl);
+                        MenuBuilder.Append(thisSubFun.ToString());
+                    }
+                    MenuBuilder.Append(@"</ul></li>");
+                }
+                else
+                {
+                    if (routeurl == "Home")
+                    {
+                        leftHtml = $@"<li class='nav-item'><a href='{baseurl}{funUrl}' class='nav-link active' target='_self'><i class='{rootMenu.IconTag}' aria-hidden='true'></i><p>{rootMenu.MenuName}</p></a></li>";
+                    }
+                    else
+                    {
+                        if (RouteFunUrl == funUrl)
+                        {
+                            leftHtml = $@"<li class='nav-item'><a href='{baseurl}{funUrl}' class='nav-link active' target='_self'><i class='{rootMenu.IconTag}'></i><p>{rootMenu.MenuName}</p></a></li>";
+                        }
+                        else
+                        {
+                            leftHtml = $@"<li class='nav-item'><a href='{baseurl}{funUrl}' class='nav-link' target='_self'><i class='{rootMenu.IconTag}'></i><p>{rootMenu.MenuName}</p></a></li>";
+                        }
+                    }
 
-					MenuBuilder.Append(leftHtml);
+                    MenuBuilder.Append(leftHtml);
 
-				}
-			}
-
+                }
+            }
+            
             return MenuBuilder;
         }
 

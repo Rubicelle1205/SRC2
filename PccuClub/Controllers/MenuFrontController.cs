@@ -27,8 +27,13 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.首頁)]
         public IActionResult Index()
         {
-            ViewBag.LoginUser = HttpContext.Session.GetObject<UserInfo>("FLoginUser");
+            UserInfo LoginUser = HttpContext.Session.GetObject<UserInfo>("FLoginUser");
             
+            if(LoginUser != null)
+                LoginUser.LoginSource = "F";
+
+            ViewBag.LoginUser = LoginUser;
+
 
             return View();
         }
