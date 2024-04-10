@@ -3,11 +3,18 @@
 @using WebPccuClub.Global.Extension;
 @{
     UserInfo LoginUser = Context.Session.GetObject<UserInfo>("FLoginUser");
-    string[] arr = Model.Split("|");
-    string UpFunName = LoginUser.UserRoleFun.Find(f => f.MenuNode == arr[0]) == null ? arr[0] : LoginUser.UserRoleFun.Find(f => f.MenuNode == arr[0]).MenuName;
-    string FunMenu = arr[1];
-    string FunName = LoginUser.UserRoleFun.Find(f => f.MenuNode == arr[1]).MenuName;
 
+    string[] arr = Model.Split("|");
+    string UpFunName = string.Empty;
+    string FunMenu = string.Empty;
+    string FunName = string.Empty;
+
+    if (arr.Length == 2)
+    {
+        UpFunName = LoginUser.UserRoleFun.Find(f => f.MenuNode == arr[0]) == null ? arr[0] : LoginUser.UserRoleFun.Find(f => f.MenuNode == arr[0]).MenuName;
+        FunMenu = arr[1];
+        FunName = LoginUser.UserRoleFun.Find(f => f.MenuNode == arr[1]).MenuName;
+    }
 
     string actionName = ViewContext.RouteData.Values["action"].ToString().ToUpper().Contains("UPLOAD") ? 
                         "匯入" : ViewContext.RouteData.Values["action"].ToString().ToUpper().Contains("BATCHADDACT") ?

@@ -1,0 +1,32 @@
+﻿@{
+    Layout = "_BackendLayout";
+
+}
+
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body table-responsive-sm">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th width="15%">IP</th>
+                            <td>@ViewBag.IP</td>
+                        </tr>
+                        <tr>
+                            <th width="15%">可用權限</th>
+                            <td>@ViewBag.Fun</td>
+                        </tr>
+                        <tr>
+                            <th width="15%">帳號</th>
+                            <td>@ViewBag.LoginID</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->

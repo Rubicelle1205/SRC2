@@ -33,6 +33,28 @@ namespace WebPccuClub.DataAccess
             return ExecuteResult;
         }
 
+        public string GetSystemCode(string Url)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+            DataSet ds = new DataSet();
+
+            string str = "";
+            string CommendText = "";
+
+            CommendText = $@"SELECT A.SystemCode
+                                   FROM SystemFun A
+                                  WHERE A.Url = '/' + '{Url}'";
+
+            DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                str = ds.Tables[0].QueryFieldByDT("SystemCode");
+            }
+
+            return str;
+        }
 
 		public string GetRemind(string ControllerName)
 		{
@@ -88,5 +110,7 @@ namespace WebPccuClub.DataAccess
 
             return str;
         }
+
+
     }
 }

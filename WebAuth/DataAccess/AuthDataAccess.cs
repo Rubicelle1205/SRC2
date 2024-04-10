@@ -113,7 +113,7 @@ namespace WebAuth.DataAccess
             parameter.Add("@LoginId", LoginId);
             parameter.Add("@BackOrFront", BackOrFront);
 
-            string SQL = @"SELECT D.MenuNode, D.MenuName, D.MenuUpNode, D.IconTag, E.Url, D.IsEnable, D.IsVisIble, D.SortOrder, D.SystemCode
+            string SQL = @"SELECT D.MenuNode, D.MenuName, D.MenuUpNode, D.IconTag, E.Url, D.IsEnable, D.IsVisIble, D.SortOrder, D.BackOrFront, D.SystemCode
                              FROM SystemRole A
                        INNER JOIN UserRole B on B.RoleId = A.RoleId
                        INNER JOIN SystemRoleFun C on C.RoleId = B.RoleId

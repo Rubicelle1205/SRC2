@@ -40,6 +40,9 @@ namespace WebAuth.Entity
 
         /// <summary> 系統代碼 </summary>
         public string SystemCode { get; set; }
+
+        /// <summary> 前台or後台 </summary>
+        public string BackOrFront { get; set; }
     }
 
 

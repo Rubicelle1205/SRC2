@@ -34,6 +34,9 @@ namespace PccuClub.WebAuth
         /// <summary> 帳號來源 </summary>
         public string LoginSource { get; set; }
 
+        /// <summary> 登入系統代碼 </summary>
+        public string LoginSystemCode { get; set; }
+
         /// <summary> IP </summary>
         public string IP { get; set; }
 

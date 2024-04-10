@@ -108,7 +108,7 @@ namespace WebPccuClub.Controllers
 
                 dbAccess.WriteLog($"[帳號登入]帳號:{vm.LoginID}, Pwd:{vm.Pwd}", LoginUser, enumLogConst.Information);
 
-                return RedirectToAction("Index", "Home", new { area = "" });
+                return RedirectToAction("Index", "MenuBackend", new { area = "" });
             }
             catch (Exception ex)
             {

@@ -31,6 +31,7 @@ namespace WebPccuClub.Controllers
 
         public List<string> AlertMsg = new List<string>();
 
+
         /// <summary> 目前所在功能 </summary>
         public string MenuNode
         {
@@ -180,9 +181,20 @@ namespace WebPccuClub.Controllers
             ModelState.Clear();
 
             var controller = (ControllerBase)filterContext.Controller;
+            var controllerName = controller.ControllerContext.ActionDescriptor.ControllerName;
             var actionName = controller.ControllerContext.ActionDescriptor.ActionName;
             var controllerAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetCustomAttributes(typeof(LogAttribute), false);
             var actionAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetMethod(actionName)?.GetCustomAttributes(typeof(LogAttribute), false);
+            string SystemCode = dbAccess.GetSystemCode(controllerName);
+
+            if (LoginUser != null)
+            {
+                UserInfo thisUser = HttpContext.Session.GetObject<UserInfo>("FLoginUser");
+                thisUser.LoginSystemCode = SystemCode;
+                thisUser.LoginSource = "B";
+                HttpContext.Session.SetObject("FLoginUser", thisUser);
+            }
+
             if (LoginUser != null && (controllerAttributes?.Any() ?? false) && (actionAttributes?.Any() ?? false))
             {
                 LogViewModel logModel = new LogViewModel()
