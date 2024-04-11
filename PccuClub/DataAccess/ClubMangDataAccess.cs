@@ -482,7 +482,7 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
             #region 參數設定
             #endregion
 
-            CommandText = @"SELECT RoleId AS VALUE, RoleName AS TEXT FROM SystemRole WHERE RoleId <> 'supervisor' ";
+            CommandText = @"SELECT RoleId AS VALUE, RoleName AS TEXT FROM SystemRole WHERE RoleId <> 'hyperuser' AND SystemCode = '02' ";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 

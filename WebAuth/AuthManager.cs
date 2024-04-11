@@ -121,7 +121,7 @@ namespace PccuClub.WebAuth
                 // 查詢基本資料
                 (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = LoginType == "F" ? dbAccess.SelectFUserMain(LoginId) : dbAccess.SelectUserMain(LoginId);
                 
-                if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0 || mainResult.entitys.Count() > 1)
+                if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0)
                 { return false; }
 
                 LoginUser = mainResult.entitys.First();

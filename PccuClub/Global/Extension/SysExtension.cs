@@ -19,7 +19,7 @@ namespace WebPccuClub.Global.Extension
 
         /// <summary> 使用者是否為管理者角色 </summary>
         public static bool isSupervisor(this UserInfo user)
-            => user.UserRole.Find(r => r.RoleId == "supervisor") != null;
+            => user.UserType == "03";
 
         /// <summary> DataSet 是否有資料 (無資料:true，有:False) </summary>
         public static bool IsNullOrEmpty(this DataSet ds)
