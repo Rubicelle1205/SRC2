@@ -368,7 +368,9 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
             CommandText = $@"SELECT A.MenuNode AS VALUE, B.MenuName AS TEXT 
                               FROM SystemRoleFun A
                          LEFT JOIN SystemMenu B ON B.MenuNode = A.MenuNode
-                             WHERE B.MenuUpNode <> '-1'
+                         LEFT JOIN SystemFun C ON C.FunId = B.FunId
+                             WHERE C.url <> ''
+                               AND B.MenuName <> '初始頁'
                                AND A.RoleId =  '{RoldId}' ";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
@@ -392,7 +394,9 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
             CommandText = @"SELECT A.MenuNode AS VALIE, B.Text + '-' + A.MenuName AS TEXT
                               FROM SystemMenu A
                          LEFT JOIN Code B ON B.Code = A.SystemCode AND B.Type = 'SystemCode'
-                             WHERE MenuUpNode <> '-1'
+                         LEFT JOIN SystemFun C ON C.FunId = A.FunId
+                             WHERE C.url <> ''
+                               AND A.MenuName <> '初始頁'
                           ORDER BY B.Code";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
@@ -413,10 +417,13 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
             #region 參數設定
             #endregion
 
-            CommandText = @"SELECT A.MenuNode AS VALUE, A.MenuName AS TEXT, A.BackOrFront AS [GROUP], A.SystemCode, B.Text AS SystemName
+            CommandText = @"SELECT A.MenuNode AS VALUE, A.MenuName AS TEXT, A.BackOrFront AS [GROUP], A.SystemCode, B.Text AS SystemCodeText, C.Url
                               FROM SystemMenu A
                          LEFT JOIN Code B ON B.Code = A.SystemCode AND B.Type = 'SystemCode'
-                             WHERE A.MenuUpNode <> '-1'";
+						 LEFT JOIN SystemFun C ON C.FunId = A.FunId
+                             WHERE C.Url <> ''
+                               AND A.MenuName <> '初始頁'
+";
 
             (DbExecuteInfo info, IEnumerable<FunSelectedItem> entitys) dbResult = DbaExecuteQuery<FunSelectedItem>(CommandText, parameters, true, DBAccessException);
 

@@ -150,5 +150,7 @@ namespace WebPccuClub.Models
         public string Value { get; set; }
         public string Text { get; set; }
         public string Group { get; set; }
+        public string SystemCode { get; set; }
+        public string SystemCodeText { get; set; }
     }
 }

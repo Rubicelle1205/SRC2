@@ -302,7 +302,9 @@ AND (@ActHoldType IS NULL OR A.ActHoldType = @ActHoldType) ";
             CommandText = $@"SELECT A.MenuNode AS VALUE, B.MenuName AS TEXT 
                               FROM SystemRoleFun A
                          LEFT JOIN SystemMenu B ON B.MenuNode = A.MenuNode
-                             WHERE B.MenuUpNode <> '-1'
+                         LEFT JOIN SystemFun C ON C.FunId = B.FunId
+                             WHERE C.url <> ''
+                               AND B.MenuName <> '初始頁'
                                AND A.RoleId =  '{RoldId}' ";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);

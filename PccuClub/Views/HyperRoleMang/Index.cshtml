@@ -36,11 +36,11 @@
                                     <input type="date" class="form-control" id="@Html.IdFor(m => m.ConditionModel.To_ReleaseDate)" name="@Html.NameFor(m => m.ConditionModel.To_ReleaseDate)">
                                 </div>
 
-                                <div class="col-md-6 col-sm-6 mt-2">
+                                <div class="col-md-3 col-sm-6 mt-2">
                                     @Html.DropDownListFor(m => m.ConditionModel.SystemCode,(List<SelectListItem>)ViewBag.ddlSystemCode,"請選擇子系統", new {@class = "form-control"})
                                 </div>
 
-                                <div class="col-md-6 col-sm-6 mt-2">
+                                <div class="col-md-3 col-sm-6 mt-2">
                                     @Html.DropDownListFor(m => m.ConditionModel.MenuNode,(List<SelectListItem>)ViewBag.ddlFunInfo,"請選擇權限", new {@class = "form-control"})
                                 </div>
                                 
