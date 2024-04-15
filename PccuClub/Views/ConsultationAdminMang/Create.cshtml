@@ -33,20 +33,6 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">是否為Hyperuser<span class="required">*</span><br><span class="text-xs text-danger font-weight-normal"></span></th>
-                                        <td>
-                                            @if (Model.CreateModel.UserType == "03")
-                                            {
-                                                @Html.DropDownListFor(m => m.CreateModel.UserType ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇是否為Hyperuser", new {@class = "form-control", @defaults="01"})
-                                            }
-                                            else
-                                            {
-                                                @Html.DropDownListFor(m => m.CreateModel.UserType ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇是否為Hyperuser", new {@class = "form-control", @defaults="02"})
-                                            }
-
-                                        </td>
-                                    </tr>
-                                    <tr>
                                         <th width="10%">
                                             角色<span class="required"></span><br><span class="text-xs text-danger font-weight-normal"></span>
                                         </th>
@@ -143,7 +129,6 @@
 
         var data = new FormData()
 
-        var UserType = $('#@Html.IdFor(m => m.CreateModel.UserType)').val();
         var IsEnable = $('#@Html.IdFor(m => m.CreateModel.IsEnable)').val();
         var UserName = $('#@Html.IdFor(m => m.CreateModel.UserName)').val();
         var LoginId = $('#@Html.IdFor(m => m.CreateModel.LoginId)').val();
@@ -152,50 +137,8 @@
         var ConformPwd = $('#@Html.IdFor(m => m.CreateModel.ConformPwd)').val();
         var Memo = $('#@Html.IdFor(m => m.CreateModel.Memo)').val();
 
-        var RoleClub = $('#@Html.IdFor(m => m.CreateModel.RoleClub)').val();
-        var RoleCase = $('#@Html.IdFor(m => m.CreateModel.RoleCase)').val();
-        var RoleBorrow = $('#@Html.IdFor(m => m.CreateModel.RoleBorrow)').val();
         var RoleConsultation = $('#@Html.IdFor(m => m.CreateModel.RoleConsultation)').val();
 
-        var selectedValues = [];
-        $(".custom-control-input-outline").each(function () {
-            if ($(this).is(":checked")) {
-                selectedValues.push($(this).val());
-            }
-        });
-
-        if (selectedValues.includes("02")) {
-            if (RoleClub == "") {
-                $.alert("社團系統角色不可為空");
-                return;
-            }
-        }
-
-        if (selectedValues.includes("03")) {
-            if (RoleCase == "") {
-                $.alert("案件系統角色不可為空");
-                return;
-            }
-        }
-
-        if (selectedValues.includes("04")) {
-            if (RoleBorrow == "") {
-                $.alert("資源系統角色不可為空");
-                return;
-            }
-        }
-
-        if (selectedValues.includes("05")) {
-            if (RoleConsultation == "") {
-                $.alert("輔導諮商系統角色不可為空");
-                return;
-            }
-        }
-
-        if (UserType == "") {
-            $.alert("是否為Hyperuser不可為空");
-            return;
-        }
         if (IsEnable == "") {
             $.alert("啟用不可為空");
             return;
@@ -224,7 +167,6 @@
             }
         }
 
-        data.append('@Html.NameFor(m => m.CreateModel.UserType)', UserType);
         data.append('@Html.NameFor(m => m.CreateModel.IsEnable)', IsEnable);
         data.append('@Html.NameFor(m => m.CreateModel.UserName)', UserName);
         data.append('@Html.NameFor(m => m.CreateModel.LoginId)', LoginId);
@@ -232,9 +174,6 @@
         data.append('@Html.NameFor(m => m.CreateModel.Pwd)', Pwd);
         data.append('@Html.NameFor(m => m.CreateModel.Memo)', Memo);
 
-        data.append('@Html.NameFor(m => m.CreateModel.RoleClub)', RoleClub);
-        data.append('@Html.NameFor(m => m.CreateModel.RoleCase)', RoleCase);
-        data.append('@Html.NameFor(m => m.CreateModel.RoleBorrow)', RoleBorrow);
         data.append('@Html.NameFor(m => m.CreateModel.RoleConsultation)', RoleConsultation);
 
         SendAjax({

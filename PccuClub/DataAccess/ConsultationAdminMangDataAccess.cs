@@ -107,7 +107,6 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@UserType", vm.CreateModel.UserType == "01" ? "03" : "01");
             parameters.Add("@IsEnable", vm.CreateModel.IsEnable);
             parameters.Add("@LoginId", vm.CreateModel.LoginId.TrimStartAndEnd());
             parameters.Add("@Password", EncryptPw);
@@ -135,7 +134,7 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
                                                 ,@Password
                                                 ,@UserName
                                                 ,@EMail
-                                                ,@UserType
+                                                ,'01'
                                                 ,@Memo
                                                 ,@IsEnable
                                                 ,@LastModifier
@@ -158,69 +157,9 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
 
             #region 參數設定
             parameters.Add("@LoginId", vm.CreateModel.LoginId.TrimStartAndEnd());
-
-            parameters.Add("@RoleClub", vm.CreateModel.RoleClub);
-            parameters.Add("@RoleCase", vm.CreateModel.RoleCase);
-            parameters.Add("@RoleBorrow", vm.CreateModel.RoleBorrow);
             parameters.Add("@RoleConsultation", vm.CreateModel.RoleConsultation);
 
             #endregion 參數設定
-
-            #region HyperUser
-
-            CommendText = $@"DELETE FROM UserRole WHERE LoginId = @LoginId AND SystemCode = '01'";
-
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-            if (vm.EditModel.UserType == "01")
-            {
-                CommendText = $@"INSERT INTO UserRole (LoginId, RoleId, SystemCode) VALUES (@LoginId, 'hyperuser', '01')";
-
-                ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-                if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
-            }
-
-            #endregion
-
-            #region 社團
-
-            if (!string.IsNullOrEmpty(vm.CreateModel.RoleClub))
-            {
-                CommendText = $@"INSERT INTO UserRole (LoginId, RoleId, SystemCode) VALUES (@LoginId, @RoleClub, '02')";
-
-                ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-                if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
-            }
-
-            #endregion
-
-            #region 案件系統
-
-            if (!string.IsNullOrEmpty(vm.CreateModel.RoleCase))
-            {
-                CommendText = $@"INSERT INTO UserRole (LoginId, RoleId, SystemCode) VALUES (@LoginId, @RoleCase, '03')";
-
-                ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-                if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
-            }
-
-            #endregion
-
-            #region 資源借用
-
-            if (!string.IsNullOrEmpty(vm.CreateModel.RoleBorrow))
-            {
-                CommendText = $@"INSERT INTO UserRole (LoginId, RoleId, SystemCode) VALUES (@LoginId, @RoleBorrow, '04')";
-
-                ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-                if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
-            }
-
-            #endregion
 
             #region 輔導諮商
 

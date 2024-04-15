@@ -44,12 +44,12 @@ namespace Utility
                     sResultData.bResultIsValid = true;
                     break;
                 case "supervisor_teacher":
-                    sResultData.JSONData = "{\"Account\":\"supervisor\",\"Role\":\"teacher\",\"Name\":\"張書飄\",\"Department\":\"課外活動組\"}";
+                    sResultData.JSONData = "{\"Account\":\"SSOAccount\",\"Role\":\"teacher\",\"Name\":\"張書飄\",\"Department\":\"課外活動組\"}";
                     sResultData.bError = false;
                     sResultData.bResultIsValid = true;
                     break;
                 case "supervisor_staff":
-                    sResultData.JSONData = "{\"Account\":\"supervisor\",\"Role\":\"staff\",\"Name\":\"張書飄\",\"Department\":\"課外活動組\"}";
+                    sResultData.JSONData = "{\"Account\":\"SSOAccount\",\"Role\":\"staff\",\"Name\":\"張書飄\",\"Department\":\"課外活動組\"}";
                     sResultData.bError = false;
                     sResultData.bResultIsValid = true;
                     break;
