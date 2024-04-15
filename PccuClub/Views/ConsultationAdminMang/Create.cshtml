@@ -1,0 +1,265 @@
+﻿@using PccuClub.WebAuth;
+@using WebPccuClub.Global.Extension;
+@using Microsoft.AspNetCore.Http
+@model WebPccuClub.Models.ConsultationAdminMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+    var LstAllFunInfo = ViewBag.ddlFunInfo;
+    List<SelectListItem> LstSystemCode = ViewBag.ddlSystemCode;
+}
+
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body table-responsive-sm">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                            <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                        </h6>
+                        @if (null != Model.CreateModel)
+                        {
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.IsEnable)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.IsEnable ,(List<SelectListItem>)ViewBag.ddlIsEnable,"是否啟用", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">是否為Hyperuser<span class="required">*</span><br><span class="text-xs text-danger font-weight-normal"></span></th>
+                                        <td>
+                                            @if (Model.CreateModel.UserType == "03")
+                                            {
+                                                @Html.DropDownListFor(m => m.CreateModel.UserType ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇是否為Hyperuser", new {@class = "form-control", @defaults="01"})
+                                            }
+                                            else
+                                            {
+                                                @Html.DropDownListFor(m => m.CreateModel.UserType ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇是否為Hyperuser", new {@class = "form-control", @defaults="02"})
+                                            }
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">
+                                            角色<span class="required"></span><br><span class="text-xs text-danger font-weight-normal"></span>
+                                        </th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.RoleConsultation ,(List<SelectListItem>)ViewBag.ddlRoleConsultation,"請選擇角色", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.UserName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.UserName, new {@class="form-control", placeholder="請輸入管理員名稱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.LoginId)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.LoginId, new {@class="form-control", placeholder="請輸入管理員帳號"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.EMail)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.EMail, new {@class="form-control", placeholder="請輸入管理員信箱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            @Html.LabelFor(m => m.CreateModel.Pwd)
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
+                                        </th>
+                                        <td>
+                                            <div class="input-group">
+                                                @Html.PasswordFor(m => m.CreateModel.Pwd, new {@class="form-control", placeholder="請輸入密碼"})
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text" id="pwvisible1"><i class="fa-solid fa-eye-slash"></i></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            @Html.LabelFor(m => m.CreateModel.ConformPwd)
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
+                                        </th>
+                                        <td>
+                                            <div class="input-group">
+                                                @Html.PasswordFor(m => m.CreateModel.ConformPwd, new {@class="form-control", placeholder="請再輸入一次密碼"})
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text" id="pwvisible2"><i class="fa-solid fa-eye-slash"></i></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">密碼規則</th>
+                                        <td class="text-muted text-sm">
+                                            <ul class="m-0" id="passwdRules">
+                                                <li id="isValidLength">長度需介於6 ~ 15位</li>
+                                                <li id="isContainsUpperOrLowercase">至少包含一大寫或小寫英文字母</li>
+                                                <li id="isContainsNumber">至少包含一數字</li>
+                                                <li id="isPassedOverall">符合上述所有規則，且不可夾帶任何特殊符號</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Memo)</th>
+                                        <td>@Html.TextAreaFor(m => m.CreateModel.Memo, new {@class="form-control", placeholder="請輸入備註", rows="6"})</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                            @Html.HiddenFor(m => m.CreateModel.LoginId)
+                        }
+
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer d-flex justify-content-end">
+                        <button type="button" name="submitBtn" class="btn btn-success" onclick="SaveEditData()">儲存</button>
+                    </div>
+                </div>
+                <!-- /.card -->
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    function SaveEditData() {
+
+        var data = new FormData()
+
+        var UserType = $('#@Html.IdFor(m => m.CreateModel.UserType)').val();
+        var IsEnable = $('#@Html.IdFor(m => m.CreateModel.IsEnable)').val();
+        var UserName = $('#@Html.IdFor(m => m.CreateModel.UserName)').val();
+        var LoginId = $('#@Html.IdFor(m => m.CreateModel.LoginId)').val();
+        var EMail = $('#@Html.IdFor(m => m.CreateModel.EMail)').val();
+        var Pwd = $('#@Html.IdFor(m => m.CreateModel.Pwd)').val();
+        var ConformPwd = $('#@Html.IdFor(m => m.CreateModel.ConformPwd)').val();
+        var Memo = $('#@Html.IdFor(m => m.CreateModel.Memo)').val();
+
+        var RoleClub = $('#@Html.IdFor(m => m.CreateModel.RoleClub)').val();
+        var RoleCase = $('#@Html.IdFor(m => m.CreateModel.RoleCase)').val();
+        var RoleBorrow = $('#@Html.IdFor(m => m.CreateModel.RoleBorrow)').val();
+        var RoleConsultation = $('#@Html.IdFor(m => m.CreateModel.RoleConsultation)').val();
+
+        var selectedValues = [];
+        $(".custom-control-input-outline").each(function () {
+            if ($(this).is(":checked")) {
+                selectedValues.push($(this).val());
+            }
+        });
+
+        if (selectedValues.includes("02")) {
+            if (RoleClub == "") {
+                $.alert("社團系統角色不可為空");
+                return;
+            }
+        }
+
+        if (selectedValues.includes("03")) {
+            if (RoleCase == "") {
+                $.alert("案件系統角色不可為空");
+                return;
+            }
+        }
+
+        if (selectedValues.includes("04")) {
+            if (RoleBorrow == "") {
+                $.alert("資源系統角色不可為空");
+                return;
+            }
+        }
+
+        if (selectedValues.includes("05")) {
+            if (RoleConsultation == "") {
+                $.alert("輔導諮商系統角色不可為空");
+                return;
+            }
+        }
+
+        if (UserType == "") {
+            $.alert("是否為Hyperuser不可為空");
+            return;
+        }
+        if (IsEnable == "") {
+            $.alert("啟用不可為空");
+            return;
+        }
+        if (UserName == "") {
+            $.alert("管理者名稱不可為空");
+            return;
+        }
+        if (LoginId == "") {
+            $.alert("管理者帳號不可為空");
+            return;
+        }
+        if (EMail == "") {
+            $.alert("管理者信箱不可為空");
+            return;
+        }
+        if (Pwd != "") {
+            if (ConformPwd == "") {
+                $.alert("確認密碼不可為空");
+                return;
+            }
+
+            if (Pwd != ConformPwd) {
+                $.alert("密碼與確認密碼需相符");
+                return;
+            }
+        }
+
+        data.append('@Html.NameFor(m => m.CreateModel.UserType)', UserType);
+        data.append('@Html.NameFor(m => m.CreateModel.IsEnable)', IsEnable);
+        data.append('@Html.NameFor(m => m.CreateModel.UserName)', UserName);
+        data.append('@Html.NameFor(m => m.CreateModel.LoginId)', LoginId);
+        data.append('@Html.NameFor(m => m.CreateModel.EMail)', EMail);
+        data.append('@Html.NameFor(m => m.CreateModel.Pwd)', Pwd);
+        data.append('@Html.NameFor(m => m.CreateModel.Memo)', Memo);
+
+        data.append('@Html.NameFor(m => m.CreateModel.RoleClub)', RoleClub);
+        data.append('@Html.NameFor(m => m.CreateModel.RoleCase)', RoleCase);
+        data.append('@Html.NameFor(m => m.CreateModel.RoleBorrow)', RoleBorrow);
+        data.append('@Html.NameFor(m => m.CreateModel.RoleConsultation)', RoleConsultation);
+
+        SendAjax({
+            url: '@Url.Action("SaveNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+    }
+</script>
