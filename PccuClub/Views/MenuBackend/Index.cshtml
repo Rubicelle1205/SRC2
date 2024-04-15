@@ -43,7 +43,7 @@
                         }
                         @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "05"))
                         {
-                            <a href="counselling/init.html" class="list-group-item list-group-item-action">
+                            <a href="@Url.Action("Index", "ConsultationHome")" class="list-group-item list-group-item-action">
                                 <i class="fa-solid fa-heart-pulse"></i> 輔導諮商
                             </a>
                         }
