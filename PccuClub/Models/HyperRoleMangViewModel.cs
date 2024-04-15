@@ -115,6 +115,10 @@ namespace WebPccuClub.Models
         [DisplayName("角色說明")]
         public string? Comment { get; set; }
 
+        /// <summary>所屬子系統</summary>
+        [DisplayName("所屬子系統")]
+        public string? SystemCode { get; set; }
+
         [DisplayName("更新時間")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm:ss}")]
         public DateTime? LastModified { get; set; }
@@ -143,6 +147,10 @@ namespace WebPccuClub.Models
         /// <summary>角色說明</summary>
         [DisplayName("角色說明")]
         public string? Comment { get; set; }
+
+        /// <summary>所屬子系統</summary>
+        [DisplayName("所屬子系統")]
+        public string? SystemCode { get; set; }
 
         [DisplayName("建立時間")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm:ss}")]

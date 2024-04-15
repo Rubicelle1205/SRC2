@@ -36,6 +36,12 @@
                                         <td>@Html.TextAreaFor(m => m.CreateModel.Comment, new {@class="form-control", rows="6"})</td>
                                     </tr>
                                     <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.SystemCode)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.SystemCode ,(List<SelectListItem>)ViewBag.ddlSystemCode,"請選擇所屬子系統", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th width="15%">權限<span class="required">*</span></th>
                                         <td>
                                             <div class="row p-2">
@@ -103,6 +109,7 @@
         var RoleId = $('#@Html.IdFor(m => m.CreateModel.RoleId)').val();
         var RoleName = $('#@Html.IdFor(m => m.CreateModel.RoleName)').val();
         var Comment = $('#@Html.IdFor(m => m.CreateModel.Comment)').val();
+        var SystemCode = $('#@Html.IdFor(m => m.CreateModel.SystemCode)').val();
 
         var selectedValues = [];
         $(".custom-control-input-outline").each(function () {
@@ -114,8 +121,10 @@
         data.append('@Html.NameFor(m => m.CreateModel.RoleId)', RoleId);
         data.append('@Html.NameFor(m => m.CreateModel.RoleName)', RoleName);
         data.append('@Html.NameFor(m => m.CreateModel.Comment)', Comment);
+        data.append('@Html.NameFor(m => m.CreateModel.SystemCode)', SystemCode);
         data.append('@Html.NameFor(m => m.CreateModel.strFunInfo)', selectedValues);
 
+      
         if (RoleId == "") {
             $.alert("角色ID不可為空");
             return;
@@ -123,6 +132,11 @@
 
         if (RoleName == "") {
             $.alert("角色名稱不可為空");
+            return;
+        }
+
+        if (SystemCode == "") {
+            $.alert("請選擇所屬子系統");
             return;
         }
 

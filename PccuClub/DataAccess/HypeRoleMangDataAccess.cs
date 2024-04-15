@@ -75,7 +75,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             #endregion
 
             CommandText = $@"
-                            SELECT RoleId, RoleName, Comment, IsEnable, Creator, Created, LastModifier, LastModified, ModifiedReason
+                            SELECT RoleId, RoleName, Comment, SystemCode, IsEnable, Creator, Created, LastModifier, LastModified, ModifiedReason
                               FROM SystemRole
                              WHERE 1 = 1
                                AND RoleId = @RoleId";
@@ -100,6 +100,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             parameters.Add("@RoleId", vm.CreateModel.RoleId.TrimStartAndEnd());
             parameters.Add("@RoleName", vm.CreateModel.RoleName.TrimStartAndEnd());
             parameters.Add("@Comment", vm.CreateModel.Comment.TrimStartAndEnd());
+            parameters.Add("@SystemCode", vm.CreateModel.SystemCode);
 
             parameters.Add("@LastModifier", LoginUser.LoginId);
             #endregion 參數設定
@@ -108,6 +109,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
                                                (RoleId
                                                ,RoleName
                                                ,Comment
+                                               ,SystemCode
                                                ,IsEnable
                                                ,Creator
                                                ,Created
@@ -118,6 +120,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
                                                (@RoleId
                                                ,@RoleName
                                                ,@Comment
+                                               ,@SystemCode
                                                ,1
                                                ,@LastModifier
                                                ,GETDATE()
@@ -195,6 +198,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             parameters.Add("@RoleId", vm.EditModel.RoleId);
             parameters.Add("@RoleName", vm.EditModel.RoleName.TrimStartAndEnd());
             parameters.Add("@Comment", vm.EditModel.Comment.TrimStartAndEnd());
+            parameters.Add("@SystemCode", vm.EditModel.SystemCode);
 
             parameters.Add("@LastModifier", LoginUser.LoginId);
                 #endregion 參數設定
@@ -202,6 +206,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
                 CommendText = $@"UPDATE SystemRole 
                                            SET RoleName = @RoleName, 
                                                Comment = @Comment, 
+                                               SystemCode = @SystemCode, 
                                                LastModifier = @LastModifier, 
                                                LastModified = GETDATE()
                                          WHERE RoleId = @RoleId ";
@@ -513,6 +518,44 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
                 return dbResult.entitys.ToList();
 
             return new List<SelectListItem>();
+        }
+
+        public string[] GetDefaultPage(string[] arr)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+            string strMenuNode = string.Empty;
+
+            for (int i = 0; i <= arr.Length - 1; i++)
+            {
+                if (i != arr.Length - 1)
+                {
+                    strMenuNode = strMenuNode + string.Format("'{0}',", arr[i]);
+                }
+                else
+                {
+                    strMenuNode = strMenuNode + string.Format("'{0}'", arr[i]);
+                }
+            }
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT MenuNode 
+                               FROM SystemMenu
+                              WHERE 1 = 1
+                                AND MenuName = '初始頁'
+                                AND SystemCode IN (SELECT DISTINCT SystemCode
+                                                     FROM SystemMenu
+                                                    WHERE 1 = 1
+                                                      AND MenuNode IN ({strMenuNode}))";
+
+            (DbExecuteInfo info, IEnumerable<HyperRoleMangEditModel> entitys) dbResult = DbaExecuteQuery<HyperRoleMangEditModel>(CommandText, parameters, true, DBAccessException);
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+            return ds.DataSetToStringArray("MenuNode");
         }
     }
 }

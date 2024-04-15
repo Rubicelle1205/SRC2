@@ -395,5 +395,23 @@ namespace WebPccuClub.Global.Extension
 
             return expressionProvider.GetExpressionText(expression);
         }
+
+        public static string[] DataSetToStringArray(this DataSet ds, string ColumnName)
+        {
+            List<string> results = new List<string>();
+
+            foreach (DataTable table in ds.Tables)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    if (table.Columns.Contains(ColumnName) && row[ColumnName] != DBNull.Value)
+                    {
+                        results.Add(row[ColumnName].ToString());
+                    }
+                }
+            }
+
+            return results.ToArray();
+        }
     }
 }

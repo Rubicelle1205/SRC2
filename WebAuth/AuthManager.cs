@@ -28,7 +28,7 @@ namespace PccuClub.WebAuth
 
                 // 查詢基本資料
                 (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectUserMain(LoginId, EncryptPwd, LoginFrom);
-                if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0 || mainResult.entitys.Count() > 1)
+                if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0)
                 { return false; }
 
                 LoginUser = mainResult.entitys.First();
@@ -72,7 +72,7 @@ namespace PccuClub.WebAuth
 
                 // 查詢基本資料
                 (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectFUserMain(FUserId);
-                if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0 || mainResult.entitys.Count() > 1)
+                if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0)
                 { return false; }
 
                 LoginUser = mainResult.entitys.First();
@@ -162,7 +162,7 @@ namespace PccuClub.WebAuth
 
             // 查詢基本資料
             (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectUserMain(LoginId);
-            if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0 || mainResult.entitys.Count() > 1)
+            if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0)
             { return false; }
 
             oUser = mainResult.entitys.First();
@@ -176,7 +176,7 @@ namespace PccuClub.WebAuth
 
             // 查詢基本資料
             (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectFUserMain(FUserId);
-            if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0 || mainResult.entitys.Count() > 1)
+            if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0)
             { return false; }
 
             oUser = mainResult.entitys.First();
@@ -190,7 +190,7 @@ namespace PccuClub.WebAuth
 
             // 查詢基本資料
             (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectFLoginUserMain(ClubId);
-            if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0 || mainResult.entitys.Count() > 1)
+            if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0)
             { return false; }
 
             oUser = mainResult.entitys.First();

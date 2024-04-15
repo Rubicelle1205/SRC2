@@ -48,6 +48,7 @@ namespace WebPccuClub.Controllers
         public IActionResult Create()
         {
             ViewBag.ddlFunInfo = dbAccess.GetAllFunInfo2();
+            ViewBag.ddlSystemCode = dbAccess.GetAllSystemCode();
 
             HyperRoleMangViewModel vm = new HyperRoleMangViewModel();
             vm.CreateModel = new HyperRoleMangCreateModel();
@@ -61,6 +62,7 @@ namespace WebPccuClub.Controllers
                 return RedirectToAction("Index");
 
             ViewBag.ddlFunInfo = dbAccess.GetAllFunInfo2();
+            ViewBag.ddlSystemCode = dbAccess.GetAllSystemCode();
 
             vm.EditModel = dbAccess.GetEditData(submitBtn);
             vm.EditModel.LstFunItem = dbAccess.GetUserFunInfo(vm.EditModel.RoleId);
@@ -163,7 +165,9 @@ namespace WebPccuClub.Controllers
                             arr = arr.Concat(new string[] { dr["MenuUpNode"].ToString() }).ToArray();
                         }
 
-                        arr = arr.Concat(new string[] { "202303180000001" }).ToArray();
+                        //加入各系統初始頁
+                        string [] arr2 = dbAccess.GetDefaultPage(arr);
+                        arr = arr.Concat(arr2).ToArray();
 
                         dbResult = dbAccess.UpdateFunData(vm, arr);
 
@@ -189,6 +193,7 @@ namespace WebPccuClub.Controllers
 
             return Json(vmRtn);
         }
+
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
@@ -223,7 +228,9 @@ namespace WebPccuClub.Controllers
                             arr = arr.Concat(new string[] { dr["MenuUpNode"].ToString() }).ToArray();
                         }
 
-                        arr = arr.Concat(new string[] { "202303180000001" }).ToArray();
+                        //加入各系統初始頁
+                        string[] arr2 = dbAccess.GetDefaultPage(arr);
+                        arr = arr.Concat(arr2).ToArray();
 
                         dbResult = dbAccess.UpdateFunData(vm, arr);
 
@@ -312,6 +319,7 @@ namespace WebPccuClub.Controllers
         }
 
         #region Method
+
 
         #endregion
     }

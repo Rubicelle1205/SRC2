@@ -47,6 +47,12 @@
                                         <td>@Html.TextAreaFor(m => m.EditModel.Comment, new {@class="form-control", rows="6"})</td>
                                     </tr>
                                     <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.SystemCode)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.SystemCode ,(List<SelectListItem>)ViewBag.ddlSystemCode,"請選擇所屬子系統", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th width="15%">權限<span class="required">*</span></th>
                                         <td>
                                             <div class="row p-2">
@@ -236,6 +242,7 @@
         var RoleId = $('#@Html.IdFor(m => m.EditModel.RoleId)').val();
         var RoleName = $('#@Html.IdFor(m => m.EditModel.RoleName)').val();
         var Comment = $('#@Html.IdFor(m => m.EditModel.Comment)').val();
+        var SystemCode = $('#@Html.IdFor(m => m.EditModel.SystemCode)').val();
 
         var selectedValues = [];
         $(".custom-control-input-outline").each(function () {
@@ -247,10 +254,16 @@
         data.append('@Html.NameFor(m => m.EditModel.RoleId)', RoleId);
         data.append('@Html.NameFor(m => m.EditModel.RoleName)', RoleName);
         data.append('@Html.NameFor(m => m.EditModel.Comment)', Comment);
+        data.append('@Html.NameFor(m => m.EditModel.SystemCode)', SystemCode);
         data.append('@Html.NameFor(m => m.EditModel.strFunInfo)', selectedValues);
 
         if (RoleName == "") {
             $.alert("角色名稱不可為空");
+            return;
+        }
+
+        if (SystemCode == "") {
+            $.alert("請選擇所屬子系統");
             return;
         }
 
