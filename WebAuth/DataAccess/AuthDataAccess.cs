@@ -45,16 +45,32 @@ namespace WebAuth.DataAccess
             return result;
         }
 
-        public (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) SelectUserMain(string LoginId)
+        public (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) SelectUserMain(string LoginId, bool isSSO)
         {
             DBAParameter parameter = new DBAParameter();
-            parameter.Add("@LoginId", LoginId);
+            string SQL = string.Empty;
+            
+            if (isSSO)
+            {
+                parameter.Add("@SSOAccount", LoginId);
 
-            string SQL = @"SELECT A.*, C.RoleName AS UnitName
-                             FROM UserMain A
-                        LEFT JOIN UserRole B ON B.LoginId = A.LoginId
-                        LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
-                            WHERE A.LoginId = @LoginId ";
+                SQL = @"SELECT A.*, C.RoleName AS UnitName
+                      FROM UserMain A
+                 LEFT JOIN UserRole B ON B.LoginId = A.LoginId
+                 LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
+                     WHERE A.SSOAccount = @SSOAccount ";
+            }
+            else
+            {
+                parameter.Add("@LoginId", LoginId);
+
+                SQL = @"SELECT A.*, C.RoleName AS UnitName
+                      FROM UserMain A
+                 LEFT JOIN UserRole B ON B.LoginId = A.LoginId
+                 LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
+                     WHERE A.LoginId = @LoginId ";
+            }
+            
 
             (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) result = dbAccess.DbaExecuteQuery<UserInfo>(SQL, parameter, false, null);
 
@@ -157,6 +173,28 @@ namespace WebAuth.DataAccess
             string SQL = @"select * from SystemRoleFun ";
 
             (DbExecuteInfo Info, IEnumerable<RoleFunInfo> entitys) result = dbAccess.DbaExecuteQuery<RoleFunInfo>(SQL, parameter, false, null);
+
+            return result;
+        }
+
+        public (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) CheckBackendNewUser(SSOUserInfo sSOUserInfo)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            string CommandTxt = string.Empty;
+            DBAParameter parameter = new DBAParameter();
+
+            #region 參數設定
+            // 登入帳號
+            parameter.Add("SSOAccount", sSOUserInfo.Account);
+
+            #endregion
+
+            CommandTxt = $@"SELECT 1
+                              FROM UserMain 
+                             WHERE SSOAccount = @SSOAccount
+";
+
+            (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) result = dbAccess.DbaExecuteQuery<UserInfo>(CommandTxt, parameter, false, null);
 
             return result;
         }

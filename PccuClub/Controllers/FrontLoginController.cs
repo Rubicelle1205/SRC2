@@ -46,6 +46,7 @@ namespace WebPccuClub.Controllers
             FrontLoginViewModel vm = new FrontLoginViewModel();
             LoginLogEntity loginEntity = GetLoginLogEntity(vm);
             DbExecuteInfo dbResult = new DbExecuteInfo();
+            bool hasSSOData = false;
             UserInfo user = new UserInfo();
             UserInfo LoginUser = new UserInfo();
 
@@ -77,42 +78,40 @@ namespace WebPccuClub.Controllers
                 {
                     case "student":
                         dbResult = dbAccess.InsertFrontNewUser(sSOUserInfo);
+
+                        if (!dbResult.isSuccess)
+                        {
+                            dbAccess.DbaRollBack();
+                            throw new Exception("新增帳號失敗!");
+                        }
+
                         break;
 
                     case "staff":
-                        dbResult = dbAccess.InsertBackendNewUser(sSOUserInfo);
+                        hasSSOData = auth.CheckBackendNewUser(sSOUserInfo);
+
+                        if (!hasSSOData)
+                        {
+                            AlertMsg.Add("登入失敗，請確定是否已完成人員設定!");
+                            throw new Exception("登入失敗，請確定是否已完成人員設定!");
+                        }
+
                         break;
                     
                     case "teacher":
-                        dbResult = dbAccess.InsertBackendNewUser(sSOUserInfo);
+                        hasSSOData = auth.CheckBackendNewUser(sSOUserInfo);
+
+                        if (!hasSSOData)
+                        {
+                            AlertMsg.Add("登入失敗，請確定是否已完成人員設定!");
+                            throw new Exception("登入失敗，請確定是否已完成人員設定!");
+                        }
+
                         break;
 
                     default:
-                        throw new Exception("取得角色失敗!" + result.JSONData);
+                        throw new Exception("Json角色錯誤!" + result.JSONData);
                 }
-
-                if (!dbResult.isSuccess)
-                {
-                    dbAccess.DbaRollBack();
-                    throw new Exception("新增帳號失敗!");
-                }
-
-                //if (sSOUserInfo.Role == "student")
-                //{
-                //    if (!auth.GetUserByFUserID(sSOUserInfo.Account, out user))
-                //    {
-                //        loginEntity.Memo = "帳號不存在";
-                //        throw new Exception("登入失敗，帳號不存在!");
-                //    }
-                //}
-                //else
-                //{
-                //    if (!auth.GetUserMain(sSOUserInfo.Account, out user))
-                //    {
-                //        loginEntity.Memo = "帳號不存在";
-                //        throw new Exception("登入失敗，帳號不存在!");
-                //    }
-                //}
 
 				bool isAuth = false;
 

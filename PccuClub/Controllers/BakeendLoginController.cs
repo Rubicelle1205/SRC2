@@ -80,8 +80,7 @@ namespace WebPccuClub.Controllers
                 }
                 isAuth = auth.Login(vm.LoginID, vm.Pwd, out UserInfo LoginUser, "B");
 #endif
-
-
+                
                 if (!isAuth)
                 {
                     user.ErrorCount += 1;

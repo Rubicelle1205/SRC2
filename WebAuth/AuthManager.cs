@@ -1,4 +1,5 @@
 ﻿using DataAccess;
+using MathNet.Numerics.RootFinding;
 using Utility;
 using WebAuth.DataAccess;
 using WebAuth.Entity;
@@ -111,7 +112,7 @@ namespace PccuClub.WebAuth
         /// <param name="LoginId">帳號</param>
         /// <param name="oUser">使用者資訊</param>
         /// <returns>驗證結果(True:驗證成功，False:驗證失敗)</returns>
-        public bool SSOLogin(string LoginId, out UserInfo oUser, string LoginType)
+        public bool SSOLogin(string SSOAccount, out UserInfo oUser, string LoginType)
         {
             oUser = null;
             try
@@ -119,7 +120,7 @@ namespace PccuClub.WebAuth
                 UserInfo LoginUser = new UserInfo();
 
                 // 查詢基本資料
-                (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = LoginType == "F" ? dbAccess.SelectFUserMain(LoginId) : dbAccess.SelectUserMain(LoginId);
+                (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = LoginType == "F" ? dbAccess.SelectFUserMain(SSOAccount) : dbAccess.SelectUserMain(SSOAccount, true);
                 
                 if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0)
                 { return false; }
@@ -161,7 +162,7 @@ namespace PccuClub.WebAuth
             oUser = null;
 
             // 查詢基本資料
-            (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectUserMain(LoginId);
+            (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.SelectUserMain(LoginId, false);
             if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0)
             { return false; }
 
@@ -254,5 +255,21 @@ namespace PccuClub.WebAuth
             return Encrypt.Encrypt(str);
         }
 
+        public bool CheckBackendNewUser(SSOUserInfo sSOUserInfo)
+        {
+            try
+            {
+                // 查詢後台 SSO 身分
+                (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.CheckBackendNewUser(sSOUserInfo);
+                if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0)
+                { return false; }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
