@@ -35,7 +35,7 @@ namespace WebPccuClub.DataAccess
 
             #endregion
 
-            CommandText = $@"SELECT A.LoginId, A.UserName, A.Memo, A.IsEnable, A.LastModified, 
+            CommandText = $@"SELECT A.LoginId, A.UserName, A.Memo, A.IsEnable, A.LastModified,
                                     B.RoleId, C.RoleName, F.Text AS EnableText
                                FROM UserMain A
                           LEFT JOIN UserRole B ON B.LoginId = A.LoginId
@@ -70,7 +70,7 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
             #endregion
 
             CommandText = $@"
-                            SELECT A.LoginId, A.UserName, A.EMail, A.UserType, A.Memo, A.IsEnable, A.Created, A.LastModified, 
+                            SELECT A.LoginId, A.UserName, A.EMail, A.UserType, A.Memo, A.IsEnable, A.Created, A.LastModified, A.SSOAccount, 
 	                               B.RoleId AS RoleClub, F.RoleName AS RoleClubText, C.RoleId AS RoleCase, G.RoleName AS RoleCaseText, 
 	                               D.RoleId AS RoleBorrow, H.RoleName AS RoleBorrowText, E.RoleId AS RoleConsultation, I.RoleName AS RoleConsultationText, 
 	                               J.Text AS EnableText
@@ -114,6 +114,7 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
             parameters.Add("@UserName", vm.CreateModel.UserName.TrimStartAndEnd());
             parameters.Add("@EMail", vm.CreateModel.EMail.TrimStartAndEnd());
             parameters.Add("@Memo", vm.CreateModel.Memo.TrimStartAndEnd());
+            parameters.Add("@SSOAccount", vm.CreateModel.SSOAccount.TrimStartAndEnd());
 
             parameters.Add("@LastModifier", LoginUser.LoginId);
             #endregion 參數設定
@@ -121,6 +122,7 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
             string CommendText = $@"INSERT INTO UserMain
                                                 (LoginId
                                                 ,Password
+                                                ,SSOAccount
                                                 ,UserName
                                                 ,EMail
                                                 ,UserType
@@ -133,6 +135,7 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
                                             VALUES
                                                  (@LoginId
                                                 ,@Password
+                                                ,@SSOAccount
                                                 ,@UserName
                                                 ,@EMail
                                                 ,@UserType
@@ -257,6 +260,7 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
                 parameters.Add("@IsEnable", vm.EditModel.IsEnable);
                 parameters.Add("@LoginId", vm.EditModel.LoginId.TrimStartAndEnd());
                 parameters.Add("@Password", EncryptPw);
+                parameters.Add("@SSOAccount", vm.EditModel.SSOAccount.TrimStartAndEnd());
                 parameters.Add("@UserName", vm.EditModel.UserName.TrimStartAndEnd());
                 parameters.Add("@EMail", vm.EditModel.EMail.TrimStartAndEnd());
                 parameters.Add("@IsEnable", vm.EditModel.IsEnable == "True" ? "1" : "0");
@@ -268,6 +272,7 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
 
                 CommendText = $@"UPDATE UserMain 
                                 SET Password = @Password,
+                                    SSOAccount = @SSOAccount,
                                     UserName = @UserName,
                                     EMail = @EMail,
                                     IsEnable = @IsEnable,
@@ -283,17 +288,23 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
                 parameters.Add("@IsEnable", vm.EditModel.IsEnable);
                 parameters.Add("@LoginId", vm.EditModel.LoginId.TrimStartAndEnd());
                 parameters.Add("@UserName", vm.EditModel.UserName.TrimStartAndEnd());
+                parameters.Add("@SSOAccount", vm.EditModel.SSOAccount.TrimStartAndEnd());
                 parameters.Add("@EMail", vm.EditModel.EMail.TrimStartAndEnd());
                 parameters.Add("@IsEnable", vm.EditModel.IsEnable == "True" ? "1" : "0");
-                parameters.Add("@UserType", vm.EditModel.UserType == "01" ? "03" : "01");
+
+                if(vm.EditModel.UserType != "undefined")
+                    parameters.Add("@UserType", vm.EditModel.UserType == "01" ? "03" : "01");
 
                 parameters.Add("@Memo", vm.EditModel.Memo.TrimStartAndEnd());
 
                 parameters.Add("@LastModifier", LoginUser.LoginId);
                 #endregion 參數設定
 
-                CommendText = $@"UPDATE UserMain 
+                if (vm.EditModel.UserType != "undefined")
+                {
+                    CommendText = $@"UPDATE UserMain 
                                 SET UserName = @UserName,
+                                    SSOAccount = @SSOAccount,
                                     EMail = @EMail,
                                     IsEnable = @IsEnable,
                                     UserType = @UserType,
@@ -301,6 +312,20 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
                                     LastModifier = @LastModifier,
                                     LastModified = GETDATE()
                               WHERE LoginID = @LoginId ";
+                }
+                else 
+                {
+                    CommendText = $@"UPDATE UserMain 
+                                SET UserName = @UserName,
+                                    SSOAccount = @SSOAccount,
+                                    EMail = @EMail,
+                                    IsEnable = @IsEnable,
+                                    Memo = @Memo,
+                                    LastModifier = @LastModifier,
+                                    LastModified = GETDATE()
+                              WHERE LoginID = @LoginId ";
+                }
+                
             }
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
@@ -620,6 +645,37 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
             return new List<SelectListItem>();
         }
 
+        public List<string> GetFunData(HyperAdminMangEditModel vm)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@LoginId", vm.LoginId);
+
+            #endregion
+
+            CommandText = @"SELECT DISTINCT D.SystemCode
+                             FROM SystemRole A
+                       INNER JOIN UserRole B on B.RoleId = A.RoleId
+                       INNER JOIN SystemRoleFun C on C.RoleId = B.RoleId
+                       INNER JOIN SystemMenu D on D.MenuNode = C.MenuNode
+                       INNER JOIN SystemFun E on E.FunId = D.FunId
+                            WHERE 1 = 1
+                              AND B.LoginId = @LoginId
+                              AND D.IsEnable = 1
+                         ORDER BY D.SystemCode";
+
+            (DbExecuteInfo info, IEnumerable<string> entitys) dbResult = DbaExecuteQuery<string>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<string>();
+        }
         #endregion
 
     }

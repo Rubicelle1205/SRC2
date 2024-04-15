@@ -47,13 +47,13 @@
                                             <th width="15%">是否為Hyperuser<span class="required">*</span><br><span class="text-xs text-danger font-weight-normal"></span></th>
                                             <td>
 
-                                                if (Model.EditModel.UserType == "03")
+                                                @if (Model.EditModel.UserType == "03")
                                                 {
-                                                @Html.DropDownListFor(m => m.EditModel.UserType ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇是否為Hyperuser", new {@class = "form-control", @defaults="01"})
+                                                    @Html.DropDownListFor(m => m.EditModel.UserType ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇是否為Hyperuser", new {@class = "form-control", @defaults="01"})
                                                 }
                                                 else
                                                 {
-                                                @Html.DropDownListFor(m => m.EditModel.UserType ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇是否為Hyperuser", new {@class = "form-control", @defaults="02"})
+                                                    @Html.DropDownListFor(m => m.EditModel.UserType ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇是否為Hyperuser", new {@class = "form-control", @defaults="02"})
                                                 }
 
                                             </td>
@@ -115,6 +115,10 @@
                                         <td>
                                             @Html.DropDownListFor(m => m.EditModel.RoleConsultation ,(List<SelectListItem>)ViewBag.ddlRoleConsultation,"無使用權限", new {@class = "form-control"})
                                         </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.SSOAccount)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.SSOAccount, new {@class="form-control", placeholder="請輸入學校/人員代號"})</td>
                                     </tr>
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.UserName)<span class="required">*</span></th>
@@ -209,6 +213,7 @@
         var IsEnable  = $('#@Html.IdFor(m => m.EditModel.IsEnable)').val();
         var UserName = $('#@Html.IdFor(m => m.EditModel.UserName)').val();
         var LoginId = $('#@Html.IdFor(m => m.EditModel.LoginId)').val();
+        var SSOAccount = $('#@Html.IdFor(m => m.EditModel.SSOAccount)').val();
         var EMail = $('#@Html.IdFor(m => m.EditModel.EMail)').val();
         var Pwd = $('#@Html.IdFor(m => m.EditModel.Pwd)').val();
         var ConformPwd = $('#@Html.IdFor(m => m.EditModel.ConformPwd)').val();
@@ -270,6 +275,10 @@
             $.alert("管理者帳號不可為空");
             return;
         }
+        if (SSOAccount == "") {
+            $.alert("學校/人員代號不可為空");
+            return;
+        }
         if (EMail == "") {
             $.alert("管理者信箱不可為空");
             return;
@@ -290,6 +299,7 @@
         data.append('@Html.NameFor(m => m.EditModel.IsEnable)', IsEnable);
         data.append('@Html.NameFor(m => m.EditModel.UserName)', UserName);
         data.append('@Html.NameFor(m => m.EditModel.LoginId)', LoginId);
+        data.append('@Html.NameFor(m => m.EditModel.SSOAccount)', SSOAccount);
         data.append('@Html.NameFor(m => m.EditModel.EMail)', EMail);
         data.append('@Html.NameFor(m => m.EditModel.Pwd)', Pwd);
         data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);

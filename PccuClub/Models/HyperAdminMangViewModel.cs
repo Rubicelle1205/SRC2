@@ -119,6 +119,10 @@ namespace WebPccuClub.Models
         [DisplayName("密碼")]
         public string? ConformPwd { get; set; }
 
+        /// <summary>學校/人員代號</summary>
+        [DisplayName("學校/人員代號")]
+        public string? SSOAccount { get; set; }
+
         /// <summary>管理員名稱</summary>
         [DisplayName("管理員名稱")]
         public string? UserName { get; set; }
@@ -203,6 +207,10 @@ namespace WebPccuClub.Models
         /// <summary>使用者類型</summary>
         [DisplayName("使用者類型")]
         public string? UserType { get; set; }
+
+        /// <summary>學校/人員代號</summary>
+        [DisplayName("學校/人員代號")]
+        public string? SSOAccount { get; set; }
 
         /// <summary>角色-社團系統</summary>
         [DisplayName("角色-社團系統")]

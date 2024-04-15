@@ -104,6 +104,10 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.SSOAccount)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.SSOAccount, new {@class="form-control", placeholder="請輸入學校/人員代號"})</td>
+                                    </tr>
+                                    <tr>
                                         <th width="15%">@Html.LabelFor(m => m.CreateModel.UserName)<span class="required">*</span></th>
                                         <td>@Html.TextBoxFor(m => m.CreateModel.UserName, new {@class="form-control", placeholder="請輸入管理員名稱"})</td>
                                     </tr>
@@ -196,6 +200,7 @@
         var IsEnable = $('#@Html.IdFor(m => m.CreateModel.IsEnable)').val();
         var UserName = $('#@Html.IdFor(m => m.CreateModel.UserName)').val();
         var LoginId = $('#@Html.IdFor(m => m.CreateModel.LoginId)').val();
+        var SSOAccount = $('#@Html.IdFor(m => m.CreateModel.SSOAccount)').val();
         var EMail = $('#@Html.IdFor(m => m.CreateModel.EMail)').val();
         var Pwd = $('#@Html.IdFor(m => m.CreateModel.Pwd)').val();
         var ConformPwd = $('#@Html.IdFor(m => m.CreateModel.ConformPwd)').val();
@@ -245,6 +250,10 @@
             $.alert("是否為Hyperuser不可為空");
             return;
         }
+        if (SSOAccount == "") {
+            $.alert("學校/人員代號不可為空");
+            return;
+        }
         if (IsEnable == "") {
             $.alert("啟用不可為空");
             return;
@@ -277,6 +286,7 @@
         data.append('@Html.NameFor(m => m.CreateModel.IsEnable)', IsEnable);
         data.append('@Html.NameFor(m => m.CreateModel.UserName)', UserName);
         data.append('@Html.NameFor(m => m.CreateModel.LoginId)', LoginId);
+        data.append('@Html.NameFor(m => m.EditModel.SSOAccount)', SSOAccount);
         data.append('@Html.NameFor(m => m.CreateModel.EMail)', EMail);
         data.append('@Html.NameFor(m => m.CreateModel.Pwd)', Pwd);
         data.append('@Html.NameFor(m => m.CreateModel.Memo)', Memo);

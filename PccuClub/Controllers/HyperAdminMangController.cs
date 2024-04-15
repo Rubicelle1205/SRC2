@@ -80,7 +80,7 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlRoleConsultation = dbAccess.GetRoleData("05");
 
             vm.EditModel = dbAccess.GetEditData(submitBtn);
-            vm.EditModel.LstCanUseFun = LoginUser.UserRoleFun.Where(x => !string.IsNullOrEmpty(x.SystemCode)).Select(x => x.SystemCode).Distinct().ToList();
+            vm.EditModel.LstCanUseFun = dbAccess.GetFunData(vm.EditModel);
 
             return View(vm);
         }
