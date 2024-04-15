@@ -49,7 +49,6 @@ namespace WebPccuClub.Controllers
         public IActionResult Create()
         {
             ViewBag.ddlIsEnable = dbAccess.GetIsEnable();
-            ViewBag.ddlYesOrNo = dbAccess.GetYesOrNo();
 
             ViewBag.ddlRoleConsultation = dbAccess.GetRoleData("05");
 
@@ -65,12 +64,10 @@ namespace WebPccuClub.Controllers
                 return RedirectToAction("Index");
 
             ViewBag.ddlIsEnable = dbAccess.GetIsEnable();
-            ViewBag.ddlYesOrNo = dbAccess.GetYesOrNo();
 
             ViewBag.ddlRoleConsultation = dbAccess.GetRoleData("05");
 
             vm.EditModel = dbAccess.GetEditData(submitBtn);
-            vm.EditModel.LstCanUseFun = LoginUser.UserRoleFun.Where(x => !string.IsNullOrEmpty(x.SystemCode)).Select(x => x.SystemCode).Distinct().ToList();
 
             return View(vm);
         }

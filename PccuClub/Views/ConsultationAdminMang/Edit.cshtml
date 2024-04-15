@@ -50,6 +50,10 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.SSOAccount)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.SSOAccount, new {@class="form-control", placeholder="請輸入學校/人員代號"})</td>
+                                    </tr>
+                                    <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.UserName)<span class="required">*</span></th>
                                         <td>@Html.TextBoxFor(m => m.EditModel.UserName, new {@class="form-control", placeholder="請輸入管理員名稱"})</td>
                                     </tr>
@@ -138,7 +142,6 @@
 
         var data = new FormData()
 
-        var UserType = $('#@Html.IdFor(m => m.EditModel.UserType)').val();
         var IsEnable  = $('#@Html.IdFor(m => m.EditModel.IsEnable)').val();
         var UserName = $('#@Html.IdFor(m => m.EditModel.UserName)').val();
         var LoginId = $('#@Html.IdFor(m => m.EditModel.LoginId)').val();
@@ -146,53 +149,21 @@
         var Pwd = $('#@Html.IdFor(m => m.EditModel.Pwd)').val();
         var ConformPwd = $('#@Html.IdFor(m => m.EditModel.ConformPwd)').val();
         var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+        var SSOAccount = $('#@Html.IdFor(m => m.EditModel.SSOAccount)').val();
 
-        var RoleClub = $('#@Html.IdFor(m => m.EditModel.RoleClub)').val();
-        var RoleCase = $('#@Html.IdFor(m => m.EditModel.RoleCase)').val();
-        var RoleBorrow = $('#@Html.IdFor(m => m.EditModel.RoleBorrow)').val();
         var RoleConsultation = $('#@Html.IdFor(m => m.EditModel.RoleConsultation)').val();
 
-        var selectedValues = [];
-        $(".custom-control-input-outline").each(function () {
-            if ($(this).is(":checked")) {
-                selectedValues.push($(this).val());
-            }
-        });
 
-        if(selectedValues.includes("02")) {
-            if (RoleClub == "") {
-                $.alert("社團系統角色不可為空");
-                return;
-            }
-        }
-
-        if(selectedValues.includes("03")) {
-            if (RoleCase == "") {
-                $.alert("案件系統角色不可為空");
-                return;
-            }
-        }
-
-        if(selectedValues.includes("04")) {
-            if (RoleBorrow == "") {
-                $.alert("資源系統角色不可為空");
-                return;
-            }
-        }
-
-        if (selectedValues.includes("05")) {
-            if (RoleConsultation == "") {
-                $.alert("輔導諮商系統角色不可為空");
-                return;
-            }
-        }
-
-        if (UserType == "") {
-            $.alert("是否為Hyperuser不可為空");
+        if (RoleConsultation == "") {
+            $.alert("輔導諮商系統角色不可為空");
             return;
         }
         if (IsEnable == "") {
             $.alert("啟用不可為空");
+            return;
+        }
+        if (SSOAccount == "") {
+            $.alert("學校/人員代號不可為空");
             return;
         }
         if (UserName == "") {
@@ -219,17 +190,14 @@
             }
         }
         
-        data.append('@Html.NameFor(m => m.EditModel.UserType)', UserType);
         data.append('@Html.NameFor(m => m.EditModel.IsEnable)', IsEnable);
         data.append('@Html.NameFor(m => m.EditModel.UserName)', UserName);
+        data.append('@Html.NameFor(m => m.EditModel.SSOAccount)', SSOAccount);
         data.append('@Html.NameFor(m => m.EditModel.LoginId)', LoginId);
         data.append('@Html.NameFor(m => m.EditModel.EMail)', EMail);
         data.append('@Html.NameFor(m => m.EditModel.Pwd)', Pwd);
         data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
 
-        data.append('@Html.NameFor(m => m.EditModel.RoleClub)', RoleClub);
-        data.append('@Html.NameFor(m => m.EditModel.RoleCase)', RoleCase);
-        data.append('@Html.NameFor(m => m.EditModel.RoleBorrow)', RoleBorrow);
         data.append('@Html.NameFor(m => m.EditModel.RoleConsultation)', RoleConsultation);
 
         SendAjax({

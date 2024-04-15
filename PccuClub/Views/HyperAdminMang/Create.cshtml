@@ -35,15 +35,7 @@
                                     <tr>
                                         <th width="15%">是否為Hyperuser<span class="required">*</span><br><span class="text-xs text-danger font-weight-normal"></span></th>
                                         <td>
-                                            @if (Model.CreateModel.UserType == "03")
-                                            {
-                                                @Html.DropDownListFor(m => m.CreateModel.UserType ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇是否為Hyperuser", new {@class = "form-control", @defaults="01"})
-                                            }
-                                            else
-                                            {
-                                                @Html.DropDownListFor(m => m.CreateModel.UserType ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇是否為Hyperuser", new {@class = "form-control", @defaults="02"})
-                                            }
-
+                                            @Html.DropDownListFor(m => m.CreateModel.UserType ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇是否為Hyperuser", new {@class = "form-control"})
                                         </td>
                                     </tr>
                                     <tr>

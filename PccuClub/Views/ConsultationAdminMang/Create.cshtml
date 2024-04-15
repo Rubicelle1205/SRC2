@@ -41,6 +41,10 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.SSOAccount)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.SSOAccount, new {@class="form-control", placeholder="請輸入學校/人員代號"})</td>
+                                    </tr>
+                                    <tr>
                                         <th width="15%">@Html.LabelFor(m => m.CreateModel.UserName)<span class="required">*</span></th>
                                         <td>@Html.TextBoxFor(m => m.CreateModel.UserName, new {@class="form-control", placeholder="請輸入管理員名稱"})</td>
                                     </tr>
@@ -136,7 +140,7 @@
         var Pwd = $('#@Html.IdFor(m => m.CreateModel.Pwd)').val();
         var ConformPwd = $('#@Html.IdFor(m => m.CreateModel.ConformPwd)').val();
         var Memo = $('#@Html.IdFor(m => m.CreateModel.Memo)').val();
-
+        var SSOAccount = $('#@Html.IdFor(m => m.CreateModel.SSOAccount)').val();
         var RoleConsultation = $('#@Html.IdFor(m => m.CreateModel.RoleConsultation)').val();
 
         if (IsEnable == "") {
@@ -149,6 +153,10 @@
         }
         if (LoginId == "") {
             $.alert("管理者帳號不可為空");
+            return;
+        }
+        if (SSOAccount == "") {
+            $.alert("學校/人員代號不可為空");
             return;
         }
         if (EMail == "") {
@@ -173,6 +181,7 @@
         data.append('@Html.NameFor(m => m.CreateModel.EMail)', EMail);
         data.append('@Html.NameFor(m => m.CreateModel.Pwd)', Pwd);
         data.append('@Html.NameFor(m => m.CreateModel.Memo)', Memo);
+        data.append('@Html.NameFor(m => m.CreateModel.SSOAccount)', SSOAccount);
 
         data.append('@Html.NameFor(m => m.CreateModel.RoleConsultation)', RoleConsultation);
 

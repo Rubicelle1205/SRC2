@@ -42,13 +42,14 @@ namespace WebPccuClub.DataAccess
                           LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
                           LEFT JOIN CODE F ON F.Code = A.IsEnable AND F.Type = 'Enable'
                               WHERE 1 = 1
+AND B.SystemCode = '05'
+OR B.RoleId is null 
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.LastModified BETWEEN @FromDate AND @ToDate" : " ")}
 {(model.LoginId != null ? " AND A.LoginId LIKE '%' + @LoginId + '%'" : " ")}
 {(model.UserName != null ? " AND A.UserName LIKE '%' + @UserName + '%'" : " ")}
 AND (@RoleId IS NULL OR B.RoleId = @RoleId)
 AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
 ";
-
             (DbExecuteInfo info, IEnumerable<ConsultationAdminMangResultModel> entitys) dbResult = DbaExecuteQuery<ConsultationAdminMangResultModel>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
@@ -70,7 +71,7 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
             #endregion
 
             CommandText = $@"
-                            SELECT A.LoginId, A.UserName, A.EMail, A.UserType, A.Memo, A.IsEnable, A.Created, A.LastModified, 
+                            SELECT A.LoginId, A.UserName, A.EMail, A.UserType, A.Memo, A.IsEnable, A.Created, A.LastModified, A.SSOAccount, 
 	                               B.RoleId AS RoleClub, F.RoleName AS RoleClubText, C.RoleId AS RoleCase, G.RoleName AS RoleCaseText, 
 	                               D.RoleId AS RoleBorrow, H.RoleName AS RoleBorrowText, E.RoleId AS RoleConsultation, I.RoleName AS RoleConsultationText, 
 	                               J.Text AS EnableText
@@ -198,8 +199,8 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
                 parameters.Add("@Password", EncryptPw);
                 parameters.Add("@UserName", vm.EditModel.UserName.TrimStartAndEnd());
                 parameters.Add("@EMail", vm.EditModel.EMail.TrimStartAndEnd());
+                parameters.Add("@SSOAccount", vm.EditModel.SSOAccount.TrimStartAndEnd());
                 parameters.Add("@IsEnable", vm.EditModel.IsEnable == "True" ? "1" : "0");
-                parameters.Add("@UserType", vm.EditModel.UserType == "01" ? "03" : "01");
                 parameters.Add("@Memo", vm.EditModel.Memo.TrimStartAndEnd());
 
                 parameters.Add("@LastModifier", LoginUser.LoginId);
@@ -209,8 +210,8 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
                                 SET Password = @Password,
                                     UserName = @UserName,
                                     EMail = @EMail,
+                                    SSOAccount = @SSOAccount,
                                     IsEnable = @IsEnable,
-                                    UserType = @UserType,
                                     Memo = @Memo,
                                     LastModifier = @LastModifier,
                                     LastModified = GETDATE()
@@ -223,8 +224,8 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
                 parameters.Add("@LoginId", vm.EditModel.LoginId.TrimStartAndEnd());
                 parameters.Add("@UserName", vm.EditModel.UserName.TrimStartAndEnd());
                 parameters.Add("@EMail", vm.EditModel.EMail.TrimStartAndEnd());
+                parameters.Add("@SSOAccount", vm.EditModel.SSOAccount.TrimStartAndEnd());
                 parameters.Add("@IsEnable", vm.EditModel.IsEnable == "True" ? "1" : "0");
-                parameters.Add("@UserType", vm.EditModel.UserType == "01" ? "03" : "01");
 
                 parameters.Add("@Memo", vm.EditModel.Memo.TrimStartAndEnd());
 
@@ -234,8 +235,8 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
                 CommendText = $@"UPDATE UserMain 
                                 SET UserName = @UserName,
                                     EMail = @EMail,
+                                    SSOAccount = @SSOAccount,
                                     IsEnable = @IsEnable,
-                                    UserType = @UserType,
                                     Memo = @Memo,
                                     LastModifier = @LastModifier,
                                     LastModified = GETDATE()
@@ -264,89 +265,6 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
             parameters.Add("@RoleConsultation", vm.EditModel.RoleConsultation);
 
             #endregion 參數設定
-
-            #region HyperUser
-
-            CommendText = $@"DELETE FROM UserRole WHERE LoginId = @LoginId AND SystemCode = '01'";
-
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-            if (vm.EditModel.UserType == "01")
-            {
-                CommendText = $@"INSERT INTO UserRole (LoginId, RoleId, SystemCode) VALUES (@LoginId, 'hyperuser', '01')";
-
-                ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-                if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
-            }
-
-            #endregion
-
-            #region 社團
-
-            if (!string.IsNullOrEmpty(vm.EditModel.RoleClub))
-            {
-                CommendText = $@"IF EXISTS (SELECT 1 FROM UserRole WHERE 1 = 1 AND LoginId = @LoginId AND SystemCode = '02')
-                                     BEGIN
-                                            UPDATE UserRole
-                                            SET RoleId = @RoleClub
-                                            WHERE LoginId = @LoginId  AND SystemCode = '02';
-                                        END
-                                    ELSE
-                                        BEGIN
-                                            INSERT INTO UserRole (LoginId, RoleId, SystemCode) VALUES (@LoginId, @RoleClub, '02');
-                                        END";
-
-                ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-                if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
-            }
-
-            #endregion
-
-            #region 案件系統
-
-            if (!string.IsNullOrEmpty(vm.EditModel.RoleCase))
-            {
-                CommendText = $@"IF EXISTS (SELECT 1 FROM UserRole WHERE 1 = 1 AND LoginId = @LoginId AND SystemCode = '03')
-                                     BEGIN
-                                            UPDATE UserRole
-                                            SET RoleId = @RoleCase
-                                            WHERE LoginId = @LoginId  AND SystemCode = '03';
-                                        END
-                                    ELSE
-                                        BEGIN
-                                            INSERT INTO UserRole (LoginId, RoleId, SystemCode) VALUES (@LoginId, @RoleCase, '03');
-                                        END";
-
-                ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-                if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
-            }
-
-            #endregion
-
-            #region 資源借用
-
-            if (!string.IsNullOrEmpty(vm.EditModel.RoleBorrow))
-            {
-                CommendText = $@"IF EXISTS (SELECT 1 FROM UserRole WHERE 1 = 1 AND LoginId = @LoginId AND SystemCode = '04')
-                                     BEGIN
-                                            UPDATE UserRole
-                                            SET RoleId = @RoleBorrow
-                                            WHERE LoginId = @LoginId  AND SystemCode = '04';
-                                        END
-                                    ELSE
-                                        BEGIN
-                                            INSERT INTO UserRole (LoginId, RoleId, SystemCode) VALUES (@LoginId, @RoleBorrow, '04');
-                                        END";
-
-                ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-                if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
-            }
-
-            #endregion
 
             #region 輔導諮商
 

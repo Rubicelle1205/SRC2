@@ -353,17 +353,20 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
 
             #region HyperUser
 
-            CommendText = $@"DELETE FROM UserRole WHERE LoginId = @LoginId AND SystemCode = '01'";
-
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-            if (vm.EditModel.UserType == "01")
+            if (vm.EditModel.UserType != "undefined")
             {
-                CommendText = $@"INSERT INTO UserRole (LoginId, RoleId, SystemCode) VALUES (@LoginId, 'hyperuser', '01')";
+                CommendText = $@"DELETE FROM UserRole WHERE LoginId = @LoginId AND SystemCode = '01'";
 
                 ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
-                if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
+                if (vm.EditModel.UserType == "01")
+                {
+                    CommendText = $@"INSERT INTO UserRole (LoginId, RoleId, SystemCode) VALUES (@LoginId, 'hyperuser', '01')";
+
+                    ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+                    if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
+                }
             }
 
             #endregion
@@ -659,13 +662,13 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
             #endregion
 
             CommandText = @"SELECT DISTINCT D.SystemCode
-                             FROM SystemRole A
-                       INNER JOIN UserRole B on B.RoleId = A.RoleId
+                             FROM UserRole A
+                       INNER JOIN SystemRole B on B.RoleId = A.RoleId
                        INNER JOIN SystemRoleFun C on C.RoleId = B.RoleId
                        INNER JOIN SystemMenu D on D.MenuNode = C.MenuNode
                        INNER JOIN SystemFun E on E.FunId = D.FunId
                             WHERE 1 = 1
-                              AND B.LoginId = @LoginId
+                              AND A.LoginId = @LoginId
                               AND D.IsEnable = 1
                          ORDER BY D.SystemCode";
 
