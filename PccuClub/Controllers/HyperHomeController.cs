@@ -24,7 +24,7 @@ namespace WebPccuClub.Controllers
 
             string strFun = string.Empty;
 
-            List<FunInfo> LstFunInfo = LoginUser.UserRoleFun.Where(x => x.SystemCode == "01").ToList();
+            List<FunInfo> LstFunInfo = LoginUser.UserRoleFun.Where(x => x.SystemCode == "01" && x.Url != "").ToList();
 
             for(int i = 0; i <= LstFunInfo.Count -1; i++)
             {
