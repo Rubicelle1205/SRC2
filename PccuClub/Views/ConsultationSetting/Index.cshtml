@@ -1,0 +1,123 @@
+﻿@model WebPccuClub.Models.ConsultationSettingViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body table-responsive-sm">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                        </h6>
+
+                        <table class="table table-bordered">
+                            <tbody>
+                                <!--修改時才顯示 (start)-->
+                                <tr>
+                                    <th width="10%">建立時間</th>
+                                    <td>@Html.DisplayFor(m => m.EditModel.Created)</td>
+                                </tr>
+                                <tr>
+                                    <th width="10%">更新時間</th>
+                                    <td>@Html.DisplayFor(m => m.EditModel.LastModified)</td>
+                                </tr>
+                                <!--修改時才顯示 (end)-->
+                                <tr>
+                                    <th width="10%">
+                                        初談預約通知用信箱<span class="required">*</span><br /><span class="text-xs text-danger font-weight-normal"></span>
+                                    </th>
+                                    <td>
+                                        <div class="alert alert-default-warning mb-1"
+                                             role="alert">
+                                            <i class="fa-solid fa-triangle-exclamation"></i>
+                                            若學生填寫預約表單時有勾選自我傷害、自殺、傷害他人等情況，則發信通知上述設定信箱
+                                        </div>
+                                        @Html.TextAreaFor(m => m.EditModel.NotifyMail, new {@class="form-control", @type="text", @plaeholder="請輸入初談預約通知用信箱", @rows="2"})
+                                        <small class="form-text text-muted">
+                                            若有多組email，請以逗號,區隔。例如：test@gmail.com,test@yahoo.com.tw
+                                        </small>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="10%">
+                                        派案學號萬用碼<span class="required">*</span><br /><span class="text-xs text-danger font-weight-normal"></span>
+                                    </th>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.EditModel.UniversalCode, new {@class="form-control", @type="text", @plaeholder="請輸入派案學號萬用碼"})
+                                        <small class="form-text text-muted">
+                                            若有派案以外的使用需求可使用此萬用碼，例如：心理師需要借用諮商空間
+                                        </small>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th width="10%">備註<span class="required"></span></th>
+                                    <td>
+                                        @Html.TextAreaFor(m => m.EditModel.Memo, new {@class="form-control", @rows="5" })
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer d-flex justify-content-end">
+                        <button type="button" class="btn btn-success" onclick="SaveEditData()">儲存</button>
+                    </div>
+                </div>
+                <!-- /.card -->
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+
+<script>
+
+    function SaveEditData() {
+        var data = new FormData()
+        var UniversalCode = $('#@Html.IdFor(m => m.EditModel.UniversalCode)').val();
+        var NotifyMail = $('#@Html.IdFor(m => m.EditModel.NotifyMail)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+        data.append('@Html.NameFor(m => m.EditModel.UniversalCode)', UniversalCode);
+        data.append('@Html.NameFor(m => m.EditModel.NotifyMail)', NotifyMail);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                location.reload();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+
+            },
+            error: function (result) {
+                alert(response.responseText);
+            }
+        });
+
+    }
+
+</script>
