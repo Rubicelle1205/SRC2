@@ -74,7 +74,9 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             #endregion
 
             CommandText = $@"
-                            SELECT RoleId, RoleName, Comment, SystemCode, IsEnable, Creator, Created, LastModifier, LastModified, ModifiedReason
+                            SELECT RoleId, RoleName, Comment, SystemCode, 
+	                     CASE WHEN SystemRoleCode = '02' THEN '01' ELSE '02' END AS SystemRoleCode, 
+	                               IsEnable, Creator, Created, LastModifier, LastModified, ModifiedReason
                               FROM SystemRole
                              WHERE 1 = 1
                                AND RoleId = @RoleId";
@@ -98,6 +100,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             #region 參數設定
             parameters.Add("@RoleId", vm.CreateModel.RoleId.TrimStartAndEnd());
             parameters.Add("@RoleName", vm.CreateModel.RoleName.TrimStartAndEnd());
+            parameters.Add("@SystemRoleCode", vm.CreateModel.SystemRoleCode.TrimStartAndEnd() == "01" ? "02" : "01");
             parameters.Add("@Comment", vm.CreateModel.Comment.TrimStartAndEnd());
 
             parameters.Add("@LastModifier", LoginUser.LoginId);
@@ -106,6 +109,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             string CommendText = $@"INSERT INTO SystemRole
                                                (RoleId
                                                ,RoleName
+                                               ,SystemRoleCode
                                                ,Comment
                                                ,SystemCode
                                                ,IsEnable
@@ -117,6 +121,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
                                          VALUES
                                                (@RoleId
                                                ,@RoleName
+                                               ,@SystemRoleCode
                                                ,@Comment
                                                ,'05'
                                                ,1
@@ -165,12 +170,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
                     {
                         parameters.Add("@MenuNode", arrFun[i].ToString());
 
-                        CommendText = $@"INSERT INTO SystemRoleFun
-                                               (RoleId
-                                               ,MenuNode)
-                                         VALUES
-                                               (@RoleId
-                                               ,@MenuNode)";
+                        CommendText = $@"INSERT INTO SystemRoleFun (RoleId, MenuNode, SystemCode) VALUES (@RoleId, @MenuNode, '05')";
 
                         ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -195,6 +195,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
 
             parameters.Add("@RoleId", vm.EditModel.RoleId);
             parameters.Add("@RoleName", vm.EditModel.RoleName.TrimStartAndEnd());
+            parameters.Add("@SystemRoleCode", vm.EditModel.SystemRoleCode.TrimStartAndEnd() == "01" ? "02" : "01");
             parameters.Add("@Comment", vm.EditModel.Comment.TrimStartAndEnd());
 
             parameters.Add("@LastModifier", LoginUser.LoginId);
@@ -202,6 +203,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
 
             CommendText = $@"UPDATE SystemRole 
                                 SET RoleName = @RoleName, 
+                                    SystemRoleCode = @SystemRoleCode, 
                                     Comment = @Comment, 
                                     SystemCode = '05', 
                                     LastModifier = @LastModifier, 
@@ -517,6 +519,26 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
 
             DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
             return ds.DataSetToStringArray("MenuNode");
+        }
+
+        public List<SelectListItem> GetYesOrNo()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code WHERE Type = 'YesOrNo'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
         }
     }
 }

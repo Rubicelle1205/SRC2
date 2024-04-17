@@ -47,6 +47,7 @@ namespace WebPccuClub.Controllers
         public IActionResult Create()
         {
             ViewBag.ddlFunInfo = dbAccess.GetAllFunInfo2();
+            ViewBag.ddlYesOrNo = dbAccess.GetYesOrNo();
 
             ConsultationRoleMangViewModel vm = new ConsultationRoleMangViewModel();
             vm.CreateModel = new ConsultationRoleMangCreateModel();
@@ -60,6 +61,7 @@ namespace WebPccuClub.Controllers
                 return RedirectToAction("Index");
 
             ViewBag.ddlFunInfo = dbAccess.GetAllFunInfo2();
+            ViewBag.ddlYesOrNo = dbAccess.GetYesOrNo();
 
             vm.EditModel = dbAccess.GetEditData(submitBtn);
             vm.EditModel.LstFunItem = dbAccess.GetUserFunInfo(vm.EditModel.RoleId);
@@ -159,7 +161,10 @@ namespace WebPccuClub.Controllers
 
                         foreach (DataRow dr in dt.Rows)
                         {
-                            arr = arr.Concat(new string[] { dr["MenuUpNode"].ToString() }).ToArray();
+                            string MenuUpNode = dr["MenuUpNode"].ToString();
+
+                            if (MenuUpNode != "-1")
+                                arr = arr.Concat(new string[] { dr["MenuUpNode"].ToString() }).ToArray();
                         }
 
                         //加入各系統初始頁
@@ -222,7 +227,10 @@ namespace WebPccuClub.Controllers
 
                         foreach(DataRow dr in dt.Rows)
                         {
-                            arr = arr.Concat(new string[] { dr["MenuUpNode"].ToString() }).ToArray();
+                            string MenuUpNode = dr["MenuUpNode"].ToString();
+                            
+                            if (MenuUpNode != "-1")
+                                arr = arr.Concat(new string[] { dr["MenuUpNode"].ToString() }).ToArray();
                         }
 
                         //加入各系統初始頁

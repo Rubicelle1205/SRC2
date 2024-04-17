@@ -43,6 +43,12 @@
                                         <td>@Html.TextBoxFor(m => m.EditModel.RoleName, new {@class="form-control", placeholder="請輸入名稱"})</td>
                                     </tr>
                                     <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.SystemRoleCode)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.SystemRoleCode ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇是否為心理師", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.Comment)</th>
                                         <td>@Html.TextAreaFor(m => m.EditModel.Comment, new {@class="form-control", rows="6"})</td>
                                     </tr>
@@ -169,6 +175,7 @@
 
         var RoleId = $('#@Html.IdFor(m => m.EditModel.RoleId)').val();
         var RoleName = $('#@Html.IdFor(m => m.EditModel.RoleName)').val();
+        var SystemRoleCode = $('#@Html.IdFor(m => m.EditModel.SystemRoleCode)').val();
         var Comment = $('#@Html.IdFor(m => m.EditModel.Comment)').val();
 
         var selectedValues = [];
@@ -178,15 +185,21 @@
             }
         });
 
-        data.append('@Html.NameFor(m => m.EditModel.RoleId)', RoleId);
-        data.append('@Html.NameFor(m => m.EditModel.RoleName)', RoleName);
-        data.append('@Html.NameFor(m => m.EditModel.Comment)', Comment);
-        data.append('@Html.NameFor(m => m.EditModel.strFunInfo)', selectedValues);
-
-        if (RoleName == "") {
+         if (RoleName == "") {
             $.alert("角色名稱不可為空");
             return;
         }
+
+        if (SystemRoleCode == "") {
+            $.alert("角色種類不可為空");
+            return;
+        }
+
+        data.append('@Html.NameFor(m => m.EditModel.RoleId)', RoleId);
+        data.append('@Html.NameFor(m => m.EditModel.RoleName)', RoleName);
+        data.append('@Html.NameFor(m => m.EditModel.SystemRoleCode)', SystemRoleCode);
+        data.append('@Html.NameFor(m => m.EditModel.Comment)', Comment);
+        data.append('@Html.NameFor(m => m.EditModel.strFunInfo)', selectedValues);
 
         SendAjax({
             url: '@Url.Action("EditOldData")',
