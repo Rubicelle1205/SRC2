@@ -9,7 +9,7 @@ using WebPccuClub.Models;
 
 namespace WebPccuClub.Controllers
 {
-    [LogAttribute(LogActionChineseName.場地同意書)]
+    [LogAttribute(LogActionChineseName.諮商設定)]
     public class ConsultationSettingController : BaseController
     {
         ReturnViewModel vmRtn = new ReturnViewModel();

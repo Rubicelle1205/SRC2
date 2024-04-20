@@ -86,6 +86,8 @@
         參與學號名冊 = 71,
         前台Menu頁 = 72,
         後台Menu頁 = 73,
+        諮商設定 = 74,
+        心理師維護 = 75,
     }
 
 	public enum DBActionChineseName

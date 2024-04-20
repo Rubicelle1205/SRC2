@@ -272,7 +272,7 @@ var permission_arr = {
 
 $(function () {
 
-    if ((location.pathname).indexOf("admin") >= 0) {
+    if ((location.pathname).indexOf("ConsultationPsyMang") >= 0) {
         //###############以下為通用fun#######################//
 
         //避免任何場合下ENTER送出
@@ -465,7 +465,7 @@ $(function () {
             $("[name=permission_id]").html(option);
         }
 
-        if ((location.pathname).indexOf("/counselling_mang") >= 0) {
+        if ((location.pathname).indexOf("/ConsultationPsyMang") >= 0) {
 
             if ($('#view-calendar').length > 0) {
                 // 有排案的[日期]：若有資料則點擊日期時 hasEvent=true
@@ -826,7 +826,7 @@ $(function () {
             }
         }
 
-        if ((location.pathname).indexOf("/room_mang") >= 0 || (location.pathname).indexOf("/psychologist_mang") >= 0) {
+        if ((location.pathname).indexOf("/room_mang") >= 0 || (location.pathname).indexOf("/ConsultationPsyMang") >= 0) {
             var model = getUrlParam("model") !== "" ? getUrlParam("model") : "add";
 
             /* 套件範例: https://duoani.github.io/jquery.scheduler/example/ */
@@ -867,31 +867,27 @@ $(function () {
                 // var parseStr = $.fn.scheduler.util.parse(str); // 取得當前選擇的所有時段(格式同initData)
             }
 
-            if ($('#psychologist-schedule-table').length > 0) {
-                // 初始資料
-                var initData = {
-                    1: [8, 9, 10, 11, 19, 20, 21, 22],
-                    2: [8, 9, 10, 11, 15, 16, 17, 19, 20, 21, 22],
-                    3: [8, 9, 10, 11, 15, 16, 17, 19, 20, 21, 22],
-                    4: [8, 9, 10, 11, 15, 16, 17],
-                    5: [13, 14, 15, 16, 17, 19, 20, 21, 22],
-                };
+            //if ($('#psychologist-schedule-table').length > 0) {
+            //    // 初始資料
+            //    var initData = {
+            //        1: [8, 9, 10, 11, 19, 20, 21, 22],
+            //        2: [8, 9, 10, 11, 15, 16, 17, 19, 20, 21, 22],
+            //        3: [8, 9, 10, 11, 15, 16, 17, 19, 20, 21, 22],
+            //        4: [8, 9, 10, 11, 15, 16, 17],
+            //        5: [13, 14, 15, 16, 17, 19, 20, 21, 22],
+            //    };
 
-                if (model === "add") {
-                    initData = {}
-                }
+            //    $('#psychologist-schedule-table').scheduler({
+            //        data: initData, // 初始資料
+            //        locale: 'language', // 本地化文字
+            //        footer: true, // 是否顯示footer
+            //        onSelect: function (newData) {
+            //            // console.log(newData); // 列出當前選擇的所有時段(格式同initData)
+            //        }
+            //    });
 
-                $('#psychologist-schedule-table').scheduler({
-                    data: initData, // 初始資料
-                    locale: 'language', // 本地化文字
-                    footer: true, // 是否顯示footer
-                    onSelect: function (newData) {
-                        // console.log(newData); // 列出當前選擇的所有時段(格式同initData)
-                    }
-                });
-
-                // var parseStr = $.fn.scheduler.util.parse(str); // 取得當前選擇的所有時段(格式同initData)
-            }
+            //    // var parseStr = $.fn.scheduler.util.parse(str); // 取得當前選擇的所有時段(格式同initData)
+            //}
 
             /* 套件範例: https://github.com/artsy/day-schedule-selector */
             // $("#day-schedule").dayScheduleSelector({
