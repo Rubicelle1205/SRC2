@@ -4,6 +4,7 @@ using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.ComponentModel;
+using System.Data;
 using System.Reflection;
 using System.Text.Json;
 using System.Web.Mvc;
@@ -15,15 +16,15 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WebPccuClub.Controllers
 {
-    [LogAttribute(LogActionChineseName.心理師維護)]
-    public class ConsultationPsyMangController : BaseController
+    [LogAttribute(LogActionChineseName.諮商空間維護)]
+    public class ConsultationSpaceMangController : BaseController
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
-        ConsultationPsyMangDataAccess dbAccess = new ConsultationPsyMangDataAccess();
+        ConsultationSpaceMangDataAccess dbAccess = new ConsultationSpaceMangDataAccess();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
-        public ConsultationPsyMangController(IHostingEnvironment _hostingEnvironment)
+        public ConsultationSpaceMangController(IHostingEnvironment _hostingEnvironment)
         {
             hostingEnvironment = _hostingEnvironment;
         }
@@ -32,21 +33,23 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.首頁)]
         public IActionResult Index()
         {
-            ConsultationPsyMangViewModel vm = new ConsultationPsyMangViewModel();
-            vm.ConditionModel = new ConsultationPsyMangConditionModel();
+            ConsultationSpaceMangViewModel vm = new ConsultationSpaceMangViewModel();
+            vm.ConditionModel = new ConsultationSpaceMangConditionModel();
             return View(vm);
         }
 
         [Log(LogActionChineseName.新增)]
         public IActionResult Create()
         {
-            ConsultationPsyMangViewModel vm = new ConsultationPsyMangViewModel();
-            vm.CreateModel = new ConsultationPsyMangCreateModel();
+            ConsultationSpaceMangViewModel vm = new ConsultationSpaceMangViewModel();
+            vm.CreateModel = new ConsultationSpaceMangCreateModel();
+            vm.CreateModel.strAppointmentTime = TransToStr(vm.CreateModel.LstAppointmentTimeModel);
+
             return View(vm);
         }
 
         [Log(LogActionChineseName.編輯)]
-        public IActionResult Edit(string submitBtn, ConsultationPsyMangViewModel vm)
+        public IActionResult Edit(string submitBtn, ConsultationSpaceMangViewModel vm)
         {
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
@@ -59,7 +62,7 @@ namespace WebPccuClub.Controllers
         }
 
         [LogAttribute(LogActionChineseName.查詢)]
-        public IActionResult GetSearchResult(ConsultationPsyMangViewModel vm)
+        public IActionResult GetSearchResult(ConsultationSpaceMangViewModel vm)
         {
             vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel).ToList();
 
@@ -72,9 +75,52 @@ namespace WebPccuClub.Controllers
             return PartialView("_SearchResultPartial", vm);
         }
 
+        [Log(LogActionChineseName.新增儲存)]
+        [ValidateInput(false)]
+        public IActionResult SaveNewData(ConsultationSpaceMangViewModel vm)
+        {
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                DataTable dt = new DataTable();
+                var dbResult = dbAccess.InsertData(vm, LoginUser, out dt);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                string ID = dt.QueryFieldByDT("ID");
+                dbResult = dbAccess.UpdateAppointmentTime(vm, LoginUser, ID);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "新增失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
-        public IActionResult EditOldData(ConsultationPsyMangViewModel vm)
+        public IActionResult EditOldData(ConsultationSpaceMangViewModel vm)
         {
             try
             {
@@ -132,15 +178,12 @@ namespace WebPccuClub.Controllers
 
                 dbResult = dbAccess.DeletetAppointmentTimeMangData(Ser);
 
-                if (!dbResult.isSuccess)
+                if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
                 {
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "刪除失敗";
                     return Json(vmRtn);
                 }
-
-
-
 
                 dbAccess.DbaCommit();
             }
@@ -153,18 +196,6 @@ namespace WebPccuClub.Controllers
             }
 
             return Json(vmRtn);
-        }
-
-        public IActionResult DownloadTemplate()
-        {
-            string FileName = "SDGs維護_template.xlsx";
-
-            string filePath = Path.Combine(hostingEnvironment.ContentRootPath, "Template", FileName);
-
-            byte[] fileContents = System.IO.File.ReadAllBytes(filePath);
-
-            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName);
-
         }
 
         private string? TransToStr(List<AppointmentTimeModel> model)

@@ -106,7 +106,8 @@ namespace WebPccuClub.DataAccess
 
             CommandText = $@"SELECT ID, Type, Week, Hour
                                FROM AppointmentTimeMang
-                              WHERE 1 = 1
+                              WHERE 1 = 1 
+                                AND Type = '01' 
                                 AND ID = @ID ";
 
 
@@ -126,7 +127,7 @@ namespace WebPccuClub.DataAccess
 
             #region 參數設定
             parameters.Add("@Memo", vm.EditModel.Memo);
-            parameters.Add("@LoginId", LoginUser.LoginId);
+            parameters.Add("@LoginId", vm.EditModel.LoginID);
             #endregion 參數設定
 
             string CommendText = $@"IF EXISTS (SELECT 1
@@ -162,7 +163,7 @@ namespace WebPccuClub.DataAccess
 
             #region 參數設定
 
-            parameters.Add("@ID", LoginUser.LoginId);
+            parameters.Add("@ID", vm.EditModel.LoginID);
 
             #endregion
 
@@ -251,7 +252,7 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@LoginID", ser);
             #endregion 參數設定
 
-            string CommendText = $@"DELETE FROM AppointmentTimeMang WHERE ID = @LoginID ";
+            string CommendText = $@"DELETE FROM AppointmentTimeMang WHERE ID = @LoginID AND Type = '01' ";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 

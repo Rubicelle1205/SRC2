@@ -88,6 +88,7 @@
         後台Menu頁 = 73,
         諮商設定 = 74,
         心理師維護 = 75,
+        諮商空間維護 = 76,
     }
 
 	public enum DBActionChineseName
