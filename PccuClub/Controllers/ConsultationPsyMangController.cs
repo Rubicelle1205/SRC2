@@ -54,30 +54,6 @@ namespace WebPccuClub.Controllers
             vm.EditModel.LstAppointmentTimeModel = dbAccess.GetApppoointemntTime(submitBtn);
             vm.EditModel.strAppointmentTime = TransToStr(vm.EditModel.LstAppointmentTimeModel);
 
-            var data = new Dictionary<string, List<int>>();
-
-            List<int> Lsthours = new List<int>();
-            List<string> LstWeekModel = vm.EditModel.LstAppointmentTimeModel.Select(x => x.Week).Distinct().ToList();
-
-            foreach (string item in LstWeekModel)
-            {
-                string week = item;
-
-                List<AppointmentTimeModel> LstHourModel = vm.EditModel.LstAppointmentTimeModel.Where(x => x.Week == week).ToList();
-
-                foreach (AppointmentTimeModel item2 in LstHourModel)
-                {
-                    Lsthours.Add(int.Parse(item2.Hour));
-                }
-
-                data.Add(week, Lsthours);
-            }
-
-
-
-            vm.EditModel.strAppointmentTime = JsonSerializer.Serialize(data);
-
-
             return View(vm);
         }
 
@@ -153,6 +129,18 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
+                dbResult = dbAccess.DeletetAppointmentTimeMangData(Ser);
+
+                if (!dbResult.isSuccess)
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "刪除失敗";
+                    return Json(vmRtn);
+                }
+
+
+
+
                 dbAccess.DbaCommit();
             }
             catch (Exception ex)
@@ -178,13 +166,30 @@ namespace WebPccuClub.Controllers
 
         }
 
-        private string? TransToStr(List<AppointmentTimeModel> models)
+        private string? TransToStr(List<AppointmentTimeModel> model)
         {
-            var groupedByWeek = models.GroupBy(t => t.Week).ToDictionary(g => g.Key, g => g.Select(t => t.Hour).ToList());
+            if (null == model)
+                return "{}";
+            
+            var data = new Dictionary<string, List<int>>();
+            
+            List<string> LstWeekModel = model.Select(x => x.Week).Distinct().ToList();
 
-            return string.Join(", ", groupedByWeek.OrderBy(wh => wh.Key).Select(wh => $"{wh.Key}: [{string.Join(", ", wh.Value)}]"));
+            foreach (string item in LstWeekModel)
+            {
+                string week = item;
+                List<int> Lsthours = new List<int>();
+                List<AppointmentTimeModel> LstHourModel = model.Where(x => x.Week == week).ToList();
 
+                foreach (AppointmentTimeModel item2 in LstHourModel)
+                {
+                    Lsthours.Add(int.Parse(item2.Hour));
+                }
 
+                data.Add(week, Lsthours);
+            }
+
+            return JsonSerializer.Serialize(data);
         }
 
     }

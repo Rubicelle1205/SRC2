@@ -176,10 +176,9 @@ namespace WebPccuClub.DataAccess
                     return ExecuteResult;
             }
 
-            //2 : 8,9,10,11,12,13,14,15 | 3 : 8,9,10,11,12,13,14,15 | 4 : 8,9,10,11,12,13,14,15 | 5 : 8,9,10,11,12,13,14,15 | 6 : 8,9,10,11,12,13,14,15
-
-            if (vm.EditModel.strAppointmentTime.Length > 0)
+            if (null != vm.EditModel.strAppointmentTime && vm.EditModel.strAppointmentTime.Length > 0)
             {
+                List<AppointmentTimeModel> Lstdata = new List<AppointmentTimeModel>();
                 string[] arr1 = vm.EditModel.strAppointmentTime.Trim().Split("|");
 
                 for (int i = 0; i <= arr1.Length - 1; i++)
@@ -195,7 +194,7 @@ namespace WebPccuClub.DataAccess
                         TimeModel.Type = "01";
                         TimeModel.Week = arr2[0].Trim().ToString();
                         TimeModel.Hour = arr3[j].Trim().ToString();
-                        vm.EditModel.LstAppointmentTimeModel.Add(TimeModel);
+                        Lstdata.Add(TimeModel);
                     }
                 }
 
@@ -210,7 +209,7 @@ namespace WebPccuClub.DataAccess
                                                ,@Week
                                                ,@Hour)";
 
-                ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, vm.EditModel.LstAppointmentTimeModel, false, DBAccessException, null);
+                ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, Lstdata, false, DBAccessException, null);
 
             }
 
@@ -228,10 +227,31 @@ namespace WebPccuClub.DataAccess
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@SDGID", ser);
+            parameters.Add("@LoginID", ser);
             #endregion 參數設定
 
-            string CommendText = $@"DELETE FROM ConsultationPsyMang WHERE LoginID = @LoginID ";
+            string CommendText = $@"DELETE FROM PsychologistMang WHERE LoginID = @LoginID ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        /// <summary>
+        /// 刪除可預約時間資料
+        /// </summary>
+        /// <param name="ser"></param>
+        /// <returns></returns>
+        public DbExecuteInfo DeletetAppointmentTimeMangData(string ser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@LoginID", ser);
+            #endregion 參數設定
+
+            string CommendText = $@"DELETE FROM AppointmentTimeMang WHERE ID = @LoginID ";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
