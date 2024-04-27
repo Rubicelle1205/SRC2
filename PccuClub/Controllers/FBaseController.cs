@@ -30,6 +30,10 @@ namespace WebPccuClub.Controllers
         {
 
         };
+        public List<string> LstFreeAccessController = new List<string>()
+        {
+            "ClubList", "WeekActivity", "ClubHandover", "MenuFront", "ConsultationApply"
+        };
 
 
         public List<string> AlertMsg = new List<string>();
@@ -207,7 +211,7 @@ namespace WebPccuClub.Controllers
 			}
 			else
 			{
-                if (controllerName != "ClubList" && controllerName != "WeekActivity" && controllerName != "ClubHandover")
+                if (!LstFreeAccessController.Contains(controllerName))
                 {
                     if(functionSource != "B")
                         filterContext.Result = AlertMsgRedirect(strConst_NoAccess, SystemMenu.GetSubUrl() + strConst_FrontMenu);
@@ -217,14 +221,14 @@ namespace WebPccuClub.Controllers
                 else {
                     if (!isAjaxRequest)
                     {
-                        if (controllerName != "ClubList" && controllerName != "WeekActivity" && controllerName != "ClubHandover" && controllerName != "MenuFront")
+                        if (!LstFreeAccessController.Contains(controllerName))
                         {
                             filterContext.Result = AlertMsgRedirect(strConst_Timeout, SystemMenu.GetSubUrl() + strConst_LoginPageUrl);
                         }
                     }
                     else
                     {
-                        if (controllerName != "ClubList" && controllerName != "WeekActivity" && controllerName != "ClubHandover")
+                        if (!LstFreeAccessController.Contains(controllerName))
                         {
                             ReturnViewModel vmRtn = new ReturnViewModel();
                             vmRtn.ErrorCode = 1;

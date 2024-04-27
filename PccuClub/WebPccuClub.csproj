@@ -46,6 +46,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\js\custom_counselling.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="Views\ActFinishMang\Edit.cshtml">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
