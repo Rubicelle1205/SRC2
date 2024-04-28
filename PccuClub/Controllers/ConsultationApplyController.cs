@@ -6,6 +6,8 @@ using WebPccuClub.DataAccess;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using System.Web.Mvc;
 using System.Data;
+using Utility;
+using PccuClub.WebAuth;
 
 namespace WebPccuClub.Controllers
 {
@@ -14,6 +16,7 @@ namespace WebPccuClub.Controllers
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
         ConsultationApplyDataAccess dbAccess = new ConsultationApplyDataAccess();
+        MailUtil mail = new MailUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
@@ -65,6 +68,22 @@ namespace WebPccuClub.Controllers
 
                 dbAccess.DbaCommit();
 
+                if (vm.CreateModel.strCounsellingStatus.Contains("01") || vm.CreateModel.strCounsellingStatus.Contains("02") || vm.CreateModel.strCounsellingStatus.Contains("03"))
+                {
+                    DataTable dtReceiver = dbAccess.GetConsultationReceiver();
+                    string MailBody = GenMailBody(vm, LoginUser);
+                    string Receiver = dtReceiver.QueryFieldByDT("NotifyMail");
+
+                    if (!string.IsNullOrEmpty(Receiver))
+                    {
+                        string [] arrReceiver = Receiver.Trim().TrimStartAndEnd().Split(',');
+
+                        for (int i = 0; i <= arrReceiver.Length - 1; i++)
+                        {
+                            mail.ExecuteSendMail(arrReceiver[i].ToString(), "諮商緊急通知", MailBody, System.Net.Mail.MailPriority.High, null);
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -77,6 +96,16 @@ namespace WebPccuClub.Controllers
             return Json(vmRtn);
 
 
+        }
+
+        private string GenMailBody(ConsultationApplyViewModel vm, UserInfo loginUser)
+        {
+            string str = string.Empty;
+
+            str = $@"<p>您好:</p>
+                    <p>收到諮商申請，學生：{vm.CreateModel.Name} 有負面想法，請盡早安排諮商</p>";
+
+            return str;
         }
     }
 }

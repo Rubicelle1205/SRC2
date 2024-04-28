@@ -1,0 +1,98 @@
+﻿@model WebPccuClub.Models.ConsultationFirstTalkMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+    List<FunSelectedItem> LstAllFunInfo = ViewBag.ddlFunInfo;
+    List<FunSelectedItem> FList = LstAllFunInfo.Where(x => x.Group == "F").OrderBy(x => x.SystemCode).ToList();
+    List<FunSelectedItem> BList = LstAllFunInfo.Where(x => x.Group == "B").OrderBy(x => x.SystemCode).ToList();
+    List<string> FListShowed = new List<string>();
+    List<string> BListShowed = new List<string>();
+    List<string> ListSystemCode = new List<string>() {"01", "02", "03", "04", "05" };
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body table-responsive-sm">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                            <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                        </h6>
+                        @if (null != Model.EditModel)
+                        {
+                        }
+
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer d-flex justify-content-end">
+                        <button type="button" name="submitBtn" class="btn btn-success" onclick="SaveEditData()">儲存</button>
+                    </div>
+                </div>
+                <!-- /.card -->
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    function SaveEditData() {
+
+        var data = new FormData()
+
+
+
+        var selectedValues = [];
+        $(".custom-control-input-outline").each(function () {
+            if ($(this).is(":checked")) {
+                selectedValues.push($(this).val());
+            }
+        });
+
+
+
+        if (RoleName == "") {
+            $.alert("角色名稱不可為空");
+            return;
+        }
+
+        if (SystemCode == "") {
+            $.alert("請選擇所屬子系統");
+            return;
+        }
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+    }
+</script>

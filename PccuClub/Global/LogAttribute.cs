@@ -90,6 +90,7 @@
         心理師維護 = 75,
         諮商空間維護 = 76,
         諮商初談申請表 = 77,
+        初談預約管理 = 78,
     }
 
 	public enum DBActionChineseName

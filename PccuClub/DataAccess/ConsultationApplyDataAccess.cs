@@ -45,6 +45,7 @@ namespace WebPccuClub.DataAccess
                                                ,Citizenship
                                                ,CitizenshipName
                                                ,CounsellingStatus
+                                               ,FirstTalkStatus
                                                ,Creator
                                                ,Created
                                                ,LastModifier
@@ -59,6 +60,7 @@ namespace WebPccuClub.DataAccess
                                                ,@Citizenship
                                                ,@CitizenshipName
                                                ,@CounsellingStatus
+                                               ,'01'
                                                ,@LoginId
                                                ,GETDATE()
                                                ,@LoginId
@@ -191,6 +193,26 @@ namespace WebPccuClub.DataAccess
                 return dbResult.entitys.ToList();
 
             return new List<SelectListItem>();
+        }
+
+        public DataTable GetConsultationReceiver()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            
+            #endregion
+
+            CommandText = $@"SELECT NotifyMail
+							   FROM ConsultationSetting 
+";
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            return ds.Tables[0];
         }
     }
 }
