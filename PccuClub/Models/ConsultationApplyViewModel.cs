@@ -30,6 +30,10 @@ namespace WebPccuClub.Models
         [DisplayName("電話")]
 		public string? Tel { get; set; }
 
+        /// <summary>性別</summary>
+        [DisplayName("性別")]
+        public string? Sex { get; set; }
+
         /// <summary>國籍</summary>
         [DisplayName("國籍")]
 		public string? Citizenship { get; set; }

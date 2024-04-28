@@ -26,6 +26,7 @@ namespace WebPccuClub.Controllers
         {
             ViewBag.ddlAllNational = dbAccess.GetAllNational();
             ViewBag.ddlCounsellingStatus = dbAccess.GetAllCounsellingStatus();
+            ViewBag.ddlSex = dbAccess.GetddlSex();
 
             ConsultationApplyViewModel vm = new ConsultationApplyViewModel();
             vm.CreateModel = new ConsultationApplyCreateModel();

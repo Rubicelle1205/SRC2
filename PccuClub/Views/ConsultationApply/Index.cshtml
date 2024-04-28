@@ -6,6 +6,7 @@
 
     List<SelectListItem> LstNational = ViewBag.ddlAllNational;
     List<SelectListItem> LstCounsellingStatus = ViewBag.ddlCounsellingStatus;
+    List<SelectListItem> LstSex = ViewBag.ddlSex;
 }
 
 <head>
@@ -44,6 +45,19 @@
                         @Html.TextBoxFor(m => m.CreateModel.Tel, new { @class="form-control w-auto", @placeholder="電話"})
                     </div>
                 </div>
+            <div class="infoItem">
+                <div class="tag">性別<span class="req-star">*</span></div>
+                <div class="content warning-box">
+
+                    @foreach (SelectListItem item in LstSex)
+                    {
+                        <div class="form-check form-check-inline">
+                            @Html.RadioButtonFor(m => m.CreateModel.Sex, item.Value, new { @id = string.Format("Sex_{0}", item.Value), @class="form-check-input" })
+                            <label for=@string.Format("Sex_{0}", item.Value)>@item.Text</label>
+                        </div>
+                    }
+                </div>
+            </div>
                 <div class="infoItem">
                     <div class="tag">國籍<span class="req-star">*</span></div>
                     <div class="content warning-box">
@@ -152,6 +166,7 @@
         var Tel = $('#@Html.IdFor(m => m.CreateModel.Tel)').val();
         var Citizenship = $("[id ^= 'Citizenship_']:checked").val()
         var CitizenshipName = $('#@Html.IdFor(m => m.CreateModel.CitizenshipName)').val();
+        var Sex = $("[id ^= 'Sex_']:checked").val()
         var strAppointmentTime = getStrTime();
 
         var selectedValues = [];
@@ -166,6 +181,7 @@
         if (SNO == "") { $.alert("學號不可為空白"); return false; }
         if (Tel == "") { $.alert("電話不可為空白"); return false; }
         if (Citizenship == undefined) { $.alert("國籍不可為空白"); return false; }
+        if (Sex == undefined) { $.alert("性別不可為空白"); return false; }
 
         if (Citizenship == "02") {
             if (CitizenshipName == "") { $.alert("國家名稱不可為空白"); return false; }
@@ -181,6 +197,7 @@
         data.append('@Html.NameFor(m => m.CreateModel.Department)', Department);
         data.append('@Html.NameFor(m => m.CreateModel.SNO)', SNO);
         data.append('@Html.NameFor(m => m.CreateModel.Tel)', Tel);
+        data.append('@Html.NameFor(m => m.CreateModel.Sex)', Sex);
         data.append('@Html.NameFor(m => m.CreateModel.Citizenship)', Citizenship);
         data.append('@Html.NameFor(m => m.CreateModel.CitizenshipName)', CitizenshipName);
         data.append('@Html.NameFor(m => m.CreateModel.strCounsellingStatus)', selectedValues);

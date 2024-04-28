@@ -16,44 +16,6 @@ namespace WebPccuClub.DataAccess
 
     public class ConsultationApplyDataAccess : BaseAccess
     {
-
-        /// <summary>
-        /// 取得編輯資料
-        /// </summary>
-        /// <param name="submitBtn"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public ConsultationApplyCreateModel GetEditData(string ClubId)
-        {
-            string CommandText = string.Empty;
-            DataSet ds = new DataSet();
-
-            DBAParameter parameters = new DBAParameter();
-
-            parameters.Add("@ClubId", ClubId);
-
-            #region 參數設定
-            #endregion
-
-            CommandText = $@"
-                            SELECT A.ClubId, A.ClubCName, A.ClubEName, A.SchoolYear, A.LifeClass, C.Text AS LifeClassText, A.ClubClass, B.Text AS ClubClassText, A.Address, A.EMail, A.Tel, 
-                                   A.Social1, A.Social2, A.Social3, A.LogoPath, A.ActImgPath, A.ShortInfo, A.Memo, A.Created, A.LastModified, D.RoleId
-                               FROM ClubMang A
-							   LEFT JOIN Code B ON B.Code = A.ClubClass AND B.Type = 'ClubClass'
-							   LEFT JOIN Code C ON C.Code = A.LifeClass AND C.Type = 'LifeClass'
-                               LEFT JOIN UserRole D ON D.LoginId = A.ClubId
-                              WHERE 1 = 1
-                               AND A.ClubId = @ClubId";
-
-
-            (DbExecuteInfo info, IEnumerable<ConsultationApplyCreateModel> entitys) dbResult = DbaExecuteQuery<ConsultationApplyCreateModel>(CommandText, parameters, true, DBAccessException);
-
-            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
-                return dbResult.entitys.ToList().FirstOrDefault();
-
-            return null;
-        }
-
         /// <summary> 新增資料 </summary>
         public DbExecuteInfo InsertData(ConsultationApplyViewModel vm, UserInfo LoginUser, out DataTable dt)
         {
@@ -66,6 +28,7 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@Department", vm.CreateModel.Department);
             parameters.Add("@SNO", vm.CreateModel.SNO);
             parameters.Add("@Tel", vm.CreateModel.Tel);
+            parameters.Add("@Sex", vm.CreateModel.Sex);
             parameters.Add("@Citizenship", vm.CreateModel.Citizenship);
             parameters.Add("@CitizenshipName", vm.CreateModel.CitizenshipName);
             parameters.Add("@CounsellingStatus", vm.CreateModel.strCounsellingStatus);
@@ -78,6 +41,7 @@ namespace WebPccuClub.DataAccess
                                                ,Department
                                                ,SNO
                                                ,Tel
+                                               ,Sex
                                                ,Citizenship
                                                ,CitizenshipName
                                                ,CounsellingStatus
@@ -91,6 +55,7 @@ namespace WebPccuClub.DataAccess
                                                ,@Department
                                                ,@SNO
                                                ,@Tel
+                                               ,@Sex
                                                ,@Citizenship
                                                ,@CitizenshipName
                                                ,@CounsellingStatus
@@ -208,5 +173,24 @@ namespace WebPccuClub.DataAccess
             return new List<SelectListItem>();
         }
 
+        public List<SelectListItem> GetddlSex()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS Value, Text AS Text FROM code WHERE Type = 'Sex'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
     }
 }
