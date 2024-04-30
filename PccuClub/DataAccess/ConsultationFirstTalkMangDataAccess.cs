@@ -112,12 +112,15 @@ AND (@FirstTalkStatus IS NULL OR A.FirstTalkStatus = @FirstTalkStatus)
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT ID, Name, Department, SNO, Tel, Sex, Citizenship, CitizenshipName, CounsellingStatus, Psychologist,
-                                    FirstTalkStatus, FirstTalkTime, AssignCaseMan, AssignCaseTime, Memo, 
-                                    Creator, Created, LastModifier, LastModified
-                               FROM ConsultationFirstTalkMang
+            CommandText = $@"SELECT A.ID, A.Name, A.Department, A.SNO, A.Tel, A.Sex, B.Text AS SexText, A.Citizenship, C.Text AS CitizenshipText, A.CitizenshipName, A.CounsellingStatus, A.Psychologist,
+                                    A.FirstTalkStatus, A.FirstTalkTime, A.AssignCaseMan, D.UserName AS AssignCaseManText, A.AssignCaseTime, A.Memo, 
+                                    A.Creator, A.Created, A.LastModifier, A.LastModified
+                               FROM ConsultationFirstTalkMang A
+							   LEFT JOIN Code B ON B.Code = A.Sex AND B.Type = 'Sex'
+							   LEFT JOIN Code C ON C.Code = A.Citizenship AND C.Type = 'Citizenship'
+                               LEFT JOIN UserMain D on D.LoginId = A.AssignCaseMan
                               WHERE 1 = 1
-                                AND ID = @ID 
+                                AND A.ID = @ID 
 ";
 
 

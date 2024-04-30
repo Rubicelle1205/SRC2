@@ -1,11 +1,13 @@
 ﻿using DataAccess;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.ComponentModel;
 using System.Reflection;
 using System.Text.Json;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using Utility;
 using WebPccuClub.DataAccess;
@@ -48,10 +50,12 @@ namespace WebPccuClub.Controllers
 
             ViewBag.ddlPsy = dbAccess.GetddlPsy();
             ViewBag.ddlFirstTalkStatus = dbAccess.GetddlFirstTalkStatus();
+            ViewBag.ddlCounsellingStatus = dbAccess.GetddlCounsellingStatus();
 
             vm.EditModel = dbAccess.GetEditData(submitBtn);
             vm.EditModel.LstAppointmentTimeModel = dbAccess.GetApppoointemntTime(submitBtn);
-            vm.EditModel.strAppointmentTime = TransToStr(vm.EditModel.LstAppointmentTimeModel);
+            vm.EditModel.strAppointmentTime = TransToStr2(vm.EditModel.LstAppointmentTimeModel);
+            ViewBag.Schedule = JsonConvert.DeserializeObject<Dictionary<string, List<int>>>(vm.EditModel.strAppointmentTime);
 
             return View(vm);
         }
@@ -82,8 +86,12 @@ namespace WebPccuClub.Controllers
             try
             {
                 dbAccess.DbaInitialTransaction();
+                var dbResult = new DbExecuteInfo();
 
-                var dbResult = dbAccess.UpdateDataFirst(vm, LoginUser);
+                if(string.IsNullOrEmpty(vm.EditModel.AssignCaseMan))
+                    dbResult = dbAccess.UpdateDataFirst(vm, LoginUser);
+                else
+                    dbResult = dbAccess.UpdateDataSecond(vm, LoginUser);
 
                 if (!dbResult.isSuccess)
                 {
@@ -237,9 +245,44 @@ namespace WebPccuClub.Controllers
                 data.Add(week, Lsthours);
             }
 
-            return JsonSerializer.Serialize(data);
+            return System.Text.Json.JsonSerializer.Serialize(data);
         }
 
+        private string? TransToStr2(List<AppointmentTimeModel> model)
+        {
+            if (null == model)
+                return "{}";
+
+            var data = new Dictionary<string, List<int>>();
+
+            List<string> LstHourModel = model.Select(x => x.Hour).Distinct().ToList();
+
+            for (int i = 9; i <= 15; i++)
+            {
+                if (!LstHourModel.Contains(i.ToString()))
+                {
+                    LstHourModel.Add(i.ToString());
+                }
+            }
+
+            LstHourModel = LstHourModel.OrderBy(n => int.Parse(n)).ToList();
+
+            foreach (string item in LstHourModel)
+            {
+                string hour = item;
+                List<int> LstWeeks = new List<int>();
+                List<AppointmentTimeModel> LstWeekModel = model.Where(x => x.Hour == hour).ToList();
+
+                foreach (AppointmentTimeModel item2 in LstWeekModel)
+                {
+                    LstWeeks.Add(int.Parse(item2.Week));
+                }
+
+                data.Add(hour, LstWeeks);
+            }
+
+            return System.Text.Json.JsonSerializer.Serialize(data);
+        }
 
         private string? TransCounsellingStatusCodeToText(string? strCode)
         {

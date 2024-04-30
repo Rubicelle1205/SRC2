@@ -272,7 +272,7 @@ var permission_arr = {
 
 $(function () {
 
-    if ((location.pathname).indexOf("ConsultationPsyMang") >= 0) {
+    if ((location.pathname).indexOf("ConsultationPsyMang") >= 0 || (location.pathname).indexOf("ConsultationFirstTalkMang") >= 0) {
         //###############以下為通用fun#######################//
 
         //避免任何場合下ENTER送出
@@ -435,10 +435,10 @@ $(function () {
             $("#national_id").html(checkbox)
         }
 
-        if ($("[name=finish_time]").length > 0) {
+        if ($("[for=finish_time]").length > 0) {
             // 結案時間
             datetimepicker_option.format = "YYYY-MM-DD HH:mm";
-            $('[name=finish_time]').daterangepicker({
+            $('[for=finish_time]').daterangepicker({
                 // minDate: now_time(),
                 autoUpdateInput: false,
                 singleDatePicker: true,
@@ -448,7 +448,7 @@ $(function () {
                 locale: datetimepicker_option,
             });
 
-            $('[name=finish_time]').on('apply.daterangepicker', function (ev, picker) {
+            $('[for=finish_time]').on('apply.daterangepicker', function (ev, picker) {
                 $(this).val(picker.startDate.format('YYYY-MM-DD HH:mm'));
             });
         }
@@ -943,8 +943,8 @@ $(function () {
         }
 
         // 是否結案/完成。若[是]，則須填寫結案時間
-        if ($("[name=is_finish]").length > 0) {
-            $("[name=is_finish]").change(function () {
+        if ($("[for=is_finish]").length > 0) {
+            $("[for=is_finish]").change(function () {
                 var val = $("option:selected", this).val();
                 console.log(val)
                 if (val === "是") {
