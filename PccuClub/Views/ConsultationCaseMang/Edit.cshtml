@@ -1,0 +1,182 @@
+﻿@model WebPccuClub.Models.ConsultationCaseMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<head>
+    <script src="~/js/backend_counselling.js"></script>
+</head>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-md-12">
+                <form action="" enctype="multipart/form-data" id="form" method="post">
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <!--修改時才顯示 (start)-->
+                                    <tr>
+                                        <th width="10%">建立時間</th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.Created)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">更新時間</th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.LastModified)</td>
+                                    </tr>
+                                    <!--修改時才顯示 (end)-->
+                                    <tr>
+                                        <th width="10%">姓名<span class="required"></span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.Name)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">諮商時間<span class="required"></span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.TalkDate)  @Html.DisplayFor(m => m.EditModel.TalkSTime) ~ @Html.DisplayFor(m => m.EditModel.TalkETime)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">使用空間<span class="required"></span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.RoomIDText)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">負責心理師<span class="required"></span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.PsychologistText)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-body table-responsive-sm">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">是否完成初談<span class="required">*</span></th>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    @if (Model.EditModel.AssignCaseStatus == "04")
+                                                    {
+                                                        List<SelectListItem> LstAssignCase = ViewBag.ddlAssignCase;
+                                                        LstAssignCase.RemoveAt(0);
+                                                        LstAssignCase.RemoveAt(0);
+                                                        LstAssignCase.RemoveAt(0);
+                                                        ViewBag.ddlAssignCase = LstAssignCase;
+                                                    }
+                                                    @Html.DropDownListFor(m => m.EditModel.AssignCaseStatus ,(List<SelectListItem>)ViewBag.ddlAssignCase,"請選擇派案狀態", new {@class = "form-control"})
+                                                    <div class="input-group p-0 hide">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">結案時間</span>
+                                                        </div>
+                                                        @Html.TextBoxFor(m => m.EditModel.FinishCaseTime, new {@class = "form-control", @placeholder="請點擊並選擇結案時間", @for="finish_time"})
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="alert alert-default-danger mb-0"
+                                                         role="alert">
+                                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                                        若一旦取消，將不可退回其他狀態。
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">備註<span class="required"></span></th>
+                                        <td>
+                                            @Html.TextAreaFor(m => m.EditModel.Memo, new {@class="form-control", placeholder="請輸入備註", rows="6"})
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        @Html.HiddenFor(m => m.EditModel.ID)
+                        <!-- /.card-body -->
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" onclick="SaveEditData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </form>
+                <!-- /.form -->
+            </div> 
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    $(document).ready(function () {
+
+        var selecter = $('#@Html.IdFor(m => m.EditModel.AssignCaseStatus)');
+
+        selecter.change(function () {
+            if (selecter.val() == "03") {
+                $("[for=finish_time]").parents('div:first').removeClass("hide");
+            }
+            else {
+                $("[for=finish_time]").parents('div:first').addClass("hide");
+            }
+        });
+
+        if(selecter.val() == "03"){
+            $("[for=finish_time]").parents('div:first').removeClass("hide");
+        }
+        else {
+            $("[for=finish_time]").parents('div:first').addClass("hide");
+        }
+
+    });
+
+
+    function SaveEditData() {
+
+        var data = new FormData()
+
+        var ID = $('#@Html.IdFor(m => m.EditModel.ID)').val();
+        var FinishCaseTime = $('#@Html.IdFor(m => m.EditModel.FinishCaseTime)').val();
+        var AssignCaseStatus = $('#@Html.IdFor(m => m.EditModel.AssignCaseStatus)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+        if (AssignCaseStatus == "") { $.alert("請選擇派案狀態"); return false; }
+
+        data.append('@Html.NameFor(m => m.EditModel.ID)', ID);
+        data.append('@Html.NameFor(m => m.EditModel.AssignCaseStatus)', AssignCaseStatus);
+        data.append('@Html.NameFor(m => m.EditModel.FinishCaseTime)', FinishCaseTime);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+    }
+</script>

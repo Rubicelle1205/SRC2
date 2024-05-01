@@ -272,7 +272,7 @@ var permission_arr = {
 
 $(function () {
 
-    if ((location.pathname).indexOf("ConsultationPsyMang") >= 0 || (location.pathname).indexOf("ConsultationFirstTalkMang") >= 0) {
+    if ((location.pathname).indexOf("ConsultationPsyMang") >= 0 || (location.pathname).indexOf("ConsultationFirstTalkMang") >= 0 || (location.pathname).indexOf("ConsultationCaseMang") >= 0) {
         //###############以下為通用fun#######################//
 
         //避免任何場合下ENTER送出
@@ -450,6 +450,22 @@ $(function () {
 
             $('[for=finish_time]').on('apply.daterangepicker', function (ev, picker) {
                 $(this).val(picker.startDate.format('YYYY-MM-DD HH:mm'));
+            });
+        }
+
+        if ($("[for=finish_date]").length > 0) {
+            // 結案時間
+            datetimepicker_option.format = "YYYY-MM-DD";
+            $('[for=finish_date]').daterangepicker({
+                // minDate: now_time(),
+                autoUpdateInput: false,
+                singleDatePicker: true,
+                showDropdowns: true,
+                locale: datetimepicker_option,
+            });
+
+            $('[for=finish_date]').on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('YYYY-MM-DD'));
             });
         }
 

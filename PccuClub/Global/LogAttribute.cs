@@ -91,6 +91,7 @@
         諮商空間維護 = 76,
         諮商初談申請表 = 77,
         初談預約管理 = 78,
+        諮商紀錄維護 = 79,
     }
 
 	public enum DBActionChineseName

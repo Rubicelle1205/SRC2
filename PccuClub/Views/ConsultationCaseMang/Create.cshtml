@@ -1,0 +1,160 @@
+﻿@model WebPccuClub.Models.ConsultationCaseMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<head>
+    <script src="~/js/backend_counselling.js"></script>
+</head>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form action="" enctype="multipart/form-data" id="form" method="post">
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">姓名<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.Name, new {@class = "form-control", @placeholder="請輸入姓名"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">學號<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.SNO, new {@class = "form-control", @placeholder="請輸入學號"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">負責心理師<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.Psychologist ,(List<SelectListItem>)ViewBag.ddlPsy,"請選擇負責心理師", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">使用空間<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.RoomID ,(List<SelectListItem>)ViewBag.ddlRoom,"請選擇使用空間", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">諮商時間<span class="required">*</span></th>
+                                        <td>
+                                            <div class="input-group col-md-6 p-0">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">日期</span>
+                                                </div>
+                                                @Html.TextBoxFor(m => m.CreateModel.TalkDate, new {@class = "form-control", @placeholder="請點擊輸入框並選擇諮商日期", @for="finish_date"})
+                                            </div>
+                                            <div class="row">
+                                                <div class="input-group col-md-6">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">開始時間</span>
+                                                    </div>
+                                                    @Html.DropDownListFor(m => m.CreateModel.TalkSTime ,(List<SelectListItem>)ViewBag.ddlTalkSTime,"請選擇諮商開始時間", new {@class = "form-control"})
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">結束時間</span>
+                                                    </div>
+                                                    @Html.DropDownListFor(m => m.CreateModel.TalkETime ,(List<SelectListItem>)ViewBag.ddlTalkETime,"請選擇諮商結束時間", new {@class = "form-control"})
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-body table-responsive-sm">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">備註<span class="required"></span></th>
+                                        <td>
+                                            @Html.TextAreaFor(m => m.CreateModel.Memo, new {@class="form-control", placeholder="請輸入備註", rows="6"})
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- /.card-body -->
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </form>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+
+    function SaveData() {
+
+        var data = new FormData()
+        var Name = $('#@Html.IdFor(m => m.CreateModel.Name)').val();
+        var SNO = $('#@Html.IdFor(m => m.CreateModel.SNO)').val();
+        var Psychologist = $('#@Html.IdFor(m => m.CreateModel.Psychologist)').val();
+        var RoomID = $('#@Html.IdFor(m => m.CreateModel.RoomID)').val();
+        var TalkDate = $('#@Html.IdFor(m => m.CreateModel.TalkDate)').val();
+        var TalkSTime = $('#@Html.IdFor(m => m.CreateModel.TalkSTime)').val();
+        var TalkETime = $('#@Html.IdFor(m => m.CreateModel.TalkETime)').val();
+        var Memo = $('#@Html.IdFor(m => m.CreateModel.Memo)').val();
+
+        if (Name == "") { $.alert("姓名不可為空白"); return; }
+        if (SNO == "") { $.alert("學號不可為空白"); return; }
+        if (Psychologist == "") { $.alert("請選擇負責心理師"); return; }
+        if (RoomID == "") { $.alert("請選擇使用空間"); return; }
+        if (TalkDate == "") { $.alert("請點擊輸入框並選擇諮商日期"); return; }
+        if (TalkSTime == "") { $.alert("請選擇諮商開始時間"); return; }
+        if (TalkETime == "") { $.alert("請選擇諮商結束時間"); return; }
+
+
+        data.append('@Html.NameFor(m => m.CreateModel.Name)', Name);
+        data.append('@Html.NameFor(m => m.CreateModel.SNO)', SNO);
+        data.append('@Html.NameFor(m => m.CreateModel.Psychologist)', Psychologist);
+        data.append('@Html.NameFor(m => m.CreateModel.RoomID)', RoomID);
+        data.append('@Html.NameFor(m => m.CreateModel.TalkDate)', TalkDate);
+        data.append('@Html.NameFor(m => m.CreateModel.TalkSTime)', TalkSTime);
+        data.append('@Html.NameFor(m => m.CreateModel.TalkETime)', TalkETime);
+        data.append('@Html.NameFor(m => m.CreateModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("SaveNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+</script>

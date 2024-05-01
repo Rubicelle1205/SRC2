@@ -260,6 +260,7 @@
         var FirstTalkTime = $('#@Html.IdFor(m => m.EditModel.FirstTalkTime)').val();
         var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
 
+        if (FirstTalkStatus == "") { $.alert("請選擇是否完成初談"); return false; }
         if (Psychologist == "") { $.alert("請選擇負責心理師"); return false; }
 
         data.append('@Html.NameFor(m => m.EditModel.ID)', ID);
