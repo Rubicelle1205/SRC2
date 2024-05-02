@@ -31,7 +31,7 @@
                         }
                         @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "03"))
                         {
-                            <a href="case/init.html" class="list-group-item list-group-item-action">
+                            <a href="@Url.Action("Index", "EventHome")" class="list-group-item list-group-item-action">
                                 <i class="fa-solid fa-user-secret"></i> 案件系統
                             </a>
                         }

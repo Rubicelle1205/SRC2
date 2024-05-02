@@ -7,24 +7,24 @@ using WebPccuClub.Global.Extension;
 
 namespace WebPccuClub.Models
 {
-    public class ConsultationRoleMangViewModel
+    public class EventRoleMangViewModel
     {
         [DisplayName("檔案上傳")]
         [UIHint("_UploadFile")]
         public IFormFile? File { get; set; }
 
-        public ConsultationRoleMangConditionModel ConditionModel { get; set; }
+        public EventRoleMangConditionModel ConditionModel { get; set; }
 
-        public List<ConsultationRoleMangResultModel> ResultModel { get; set; }
+        public List<EventRoleMangResultModel> ResultModel { get; set; }
 
-        public ConsultationRoleMangCreateModel CreateModel { get; set; }
+        public EventRoleMangCreateModel CreateModel { get; set; }
 
-        public ConsultationRoleMangEditModel EditModel { get; set; }
+        public EventRoleMangEditModel EditModel { get; set; }
     }
 
-    public class ConsultationRoleMangConditionModel
+    public class EventRoleMangConditionModel
     {
-        public ConsultationRoleMangConditionModel()
+        public EventRoleMangConditionModel()
         {
             this.Page = 0;
             this.PageSize = 10;
@@ -59,7 +59,7 @@ namespace WebPccuClub.Models
         public DateTime? To_ReleaseDate { get; set; }
     }
 
-    public class ConsultationRoleMangResultModel
+    public class EventRoleMangResultModel
     {
         /// <summary>角色ID</summary>
         [DisplayName("角色ID")]
@@ -79,7 +79,7 @@ namespace WebPccuClub.Models
         public List<FunInfo> LstFunInfo = new List<FunInfo>();
     }
 
-    public class ConsultationRoleMangCreateModel
+    public class EventRoleMangCreateModel
     {
         /// <summary>
         /// 已有權限
@@ -112,7 +112,7 @@ namespace WebPccuClub.Models
         public DateTime? LastModified { get; set; }
     }
 
-    public class ConsultationRoleMangEditModel
+    public class EventRoleMangEditModel
     {
         /// <summary>
         /// 已有權限

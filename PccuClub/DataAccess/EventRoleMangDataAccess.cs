@@ -40,7 +40,7 @@ namespace WebPccuClub.DataAccess
                                FROM SystemRole A
 							   LEFT JOIN Code B ON B.Code = A.SystemCode AND B.Type = 'SystemCode'
                               WHERE 1 = 1
-AND A.SystemCode = '05'
+AND A.SystemCode = '03'
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.LastModified BETWEEN @FromDate AND @ToDate" : " ")}
 {(model.RoleId != null ? " AND A.RoleId LIKE '%' + @RoleId + '%'" : " ")}
 AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
@@ -123,7 +123,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
                                                ,@RoleName
                                                ,@SystemRoleCode
                                                ,@Comment
-                                               ,'05'
+                                               ,'03'
                                                ,1
                                                ,@LastModifier
                                                ,GETDATE()
@@ -156,7 +156,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
 
                 if (arrFun.Count() > 0)
                 {
-                    CommendText = $@"DELETE FROM SystemRoleFun WHERE RoleId = @RoleId AND SystemCode = '05'";
+                    CommendText = $@"DELETE FROM SystemRoleFun WHERE RoleId = @RoleId AND SystemCode = '03'";
 
                     ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -170,7 +170,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
                     {
                         parameters.Add("@MenuNode", arrFun[i].ToString());
 
-                        CommendText = $@"INSERT INTO SystemRoleFun (RoleId, MenuNode, SystemCode) VALUES (@RoleId, @MenuNode, '05')";
+                        CommendText = $@"INSERT INTO SystemRoleFun (RoleId, MenuNode, SystemCode) VALUES (@RoleId, @MenuNode, '03')";
 
                         ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -205,7 +205,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
                                 SET RoleName = @RoleName, 
                                     SystemRoleCode = @SystemRoleCode, 
                                     Comment = @Comment, 
-                                    SystemCode = '05', 
+                                    SystemCode = '03', 
                                     LastModifier = @LastModifier, 
                                     LastModified = GETDATE()
                                 WHERE RoleId = @RoleId ";
@@ -232,7 +232,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
 
             #endregion 參數設定
 
-            CommendText = $@"DELETE FROM SystemRoleFun WHERE RoleId = @RoleId AND SystemCode = '05'";
+            CommendText = $@"DELETE FROM SystemRoleFun WHERE RoleId = @RoleId AND SystemCode = '03'";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -246,7 +246,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             {
                 parameters.Add("@MenuNode", arrFun[i].ToString());
 
-                CommendText = $@"INSERT INTO SystemRoleFun (RoleId, MenuNode, SystemCode) VALUES (@RoleId, @MenuNode, '05')";
+                CommendText = $@"INSERT INTO SystemRoleFun (RoleId, MenuNode, SystemCode) VALUES (@RoleId, @MenuNode, '03')";
 
                 ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -272,7 +272,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             parameters.Add("@RoleId", ser);
             #endregion 參數設定
 
-            string CommendText = $@"DELETE FROM SystemRole WHERE RoleId = @RoleId AND SystemCode = '05'";
+            string CommendText = $@"DELETE FROM SystemRole WHERE RoleId = @RoleId AND SystemCode = '03'";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -293,7 +293,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             parameters.Add("@RoleId", ser);
             #endregion 參數設定
 
-            string CommendText = $@"DELETE FROM UserRole WHERE RoleId = @RoleId AND SystemCode = '05' ";
+            string CommendText = $@"DELETE FROM UserRole WHERE RoleId = @RoleId AND SystemCode = '03' ";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -362,7 +362,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
                          LEFT JOIN Code B ON B.Code = A.SystemCode AND B.Type = 'SystemCode'
                          LEFT JOIN SystemFun C ON C.FunId = A.FunId
                              WHERE C.url <> ''
-                               AND A.SystemCode = '05'
+                               AND A.SystemCode = '03'
                                AND A.MenuName <> '初始頁'
                           ORDER BY A.MenuNode";
 
@@ -389,7 +389,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
                          LEFT JOIN Code B ON B.Code = A.SystemCode AND B.Type = 'SystemCode'
 						 LEFT JOIN SystemFun C ON C.FunId = A.FunId
                              WHERE C.Url <> ''
-                               AND A.SystemCode = '05'
+                               AND A.SystemCode = '03'
                                AND A.MenuName <> '初始頁'
 ";
 
