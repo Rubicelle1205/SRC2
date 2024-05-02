@@ -341,4 +341,22 @@ namespace WebPccuClub.Models
         public DateTime? Created { get; set; }
 
     }
+
+    public class RoomDataModel
+    {
+        public string Date { get; set; }
+        public string ClassName { get; set; } = ""; // td樣式
+        public string Markup { get; set; } // HTML 標記
+        public List<Order> Orders { get; set; } = new List<Order>();
+    }
+
+    public class Order
+    {
+        public string RoomId { get; set; }
+        public string RoomTitle { get; set; }
+        public string PsychologistTitle { get; set; }
+        public string StudentNumber { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
+    }
 }

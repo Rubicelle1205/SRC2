@@ -5,7 +5,15 @@
 }
 
 <head>
+    <link rel="stylesheet" href="~/dist/css/appointment-week-view-scheduler/src/css/scheduler.css">
+    <link rel="stylesheet" href="~/dist/plugins/jquery-ui/jquery-ui.theme.css">
+    <link rel="stylesheet" href="~/dist/plugins/calendar/dist/zabuto_calendar.min.css">
+    <link rel="stylesheet" href="~/dist/plugins/calendar-plugin/style.css">
+    <link rel="stylesheet" href="~/dist/plugins/calendar-plugin/theme.css">
+    
     <script src="~/js/backend_counselling.js"></script>
+    <script src="~/dist/plugins/calendar/dist/zabuto_calendar.min.js"></script>
+    <script src="~/dist/plugins/calendar-plugin/calendar.min.js"></script>
 </head>
 
 <!-- Main content -->
@@ -14,6 +22,22 @@
         <!-- /.row -->
         <div class="row">
             <div class="col-12">
+@*
+                <div class="card">
+                    <div class="card-header">目前排案狀態參考 <span class="text-danger text-sm">點擊下方月曆可查看當天排案紀錄</span></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div id="view-calendar"></div>
+                            </div>
+                            <div class="col-md-8">
+                                <div id="choose-day-events"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+*@
+
                 <form action="" enctype="multipart/form-data" id="form" method="post">
                     <div class="card">
                         <div class="card-body table-responsive-sm">
@@ -100,7 +124,72 @@
 <!-- /.content -->
 
 <script>
+    $(document).ready(function () {
+        var $calendar = $('#view-calendar');
+        
+        var initData = [{date:"2024-05-01",markup:"<span class='badge rounded-pill bg-success'>[day]</span>",orders:"[{date:\"2024-05-01\",markup:\"<span class='badge rounded-pill bg-success'>[day]</span>\",orders:[{id:1,room_id:\"room1\",room_title:\"諮商室A\",psychologist_title:\"心理師A\",student_number:\"B852145\",start_time:\"11:00\",end_time:\"12:00\"},{id:2,room_id:\"room1\",room_title:\"諮商室A\",psychologist_title:\"心理師B\",student_number:\"B451348\",start_time:\"08:00\",end_time:\"09:00\"},{id:5,room_id:\"room3\",room_title:\"諮商室C\",psychologist_title:\"心理師B\",student_number:\"B988456\",start_time:\"09:00\",end_time:\"10:00\"}]},{date:\"2024-05-03\",markup:\"<span class='badge rounded-pill bg-success'>[day]</span>\",orders:[{id:3,room_id:\"room1\",room_title:\"諮商室A\",psychologist_title:\"心理師A\",student_number:\"B123456\",start_time:\"11:00\",end_time:\"12:00\"},{id:4,room_id:\"room3\",room_title:\"諮商室C\",psychologist_title:\"心理師C\",student_number:\"B789456\",start_time:\"15:00\",end_time:\"17:00\"}]}]"}];
 
+        $(".zabuto-calendar__day--today").click(); // 自動觸發[今天]日期
+
+        $calendar.zabuto_calendar({
+                    language: 'cn', // 本地化語言
+                    header_format: '[year]年 [month]', // header顯示格式
+                    classname: 'table table-bordered lightgrey-weekends clickable',
+                    today_markup: '<span class="bg-gradient-blue">[day]</span>', // [今天]樣式
+                    navigation_markup: { // 月份前後切換樣式
+                        prev: '<i class="fas fa-chevron-circle-left"></i>',
+                        next: '<i class="fas fa-chevron-circle-right"></i>'
+                    },
+                    events: initData,
+                });
+
+        $calendar.on('zabuto:calendar:day', function (e) {
+            var weekday = e.date.getDay(); // 星期幾
+            var str = '<h5><b>' + e.value + '（' + weekTitleArr[weekday] + '）</b></h5>\n';
+            if (e.eventdata !== null) {
+                var events = e.eventdata.events[0].orders;
+
+                // 按照[教室]整合
+                var room_data = {}
+                $.each(events, function (index, item) {
+                    if (room_data[item.room_id] === undefined) {
+                        room_data[item.room_id] = {
+                            room_title: item.room_title,
+                            room_events: []
+                        }
+                    }
+
+                    room_data[item.room_id].room_events.push(item)
+                });
+
+                // 按照[開始時間]排序
+                $.each(room_data, function (room_id, item) {
+                    str += '<span class="badge badge-warning mx-1">' + item.room_title + '</span> ';
+                    str += '<ul class="list-group list-group-flush text-sm">';
+                    item.room_events
+                        .sort(function (a, b) {
+                            var a_hour = parseInt(a.start_time.substr(0, 2));
+                            var b_hour = parseInt(b.start_time.substr(0, 2));
+                            return a_hour - b_hour;
+                        })
+                        .forEach(function (event) {
+                            str += '<li class="list-group-item p-1">';
+                            str += event.start_time + '~' + event.end_time;
+                            str += '<span class="mx-1">' + event.psychologist_title + '</span> ';
+                            str += '<span class="mx-1">' + event.student_number + '</span> ';
+                            str += '</li>';
+                        });
+                    str += '</ul>';
+                })
+
+            } else {
+                str += '<span class="text-muted">無排案紀錄1</span>';
+            }
+
+            $("#choose-day-events").html(str);
+        });
+
+    });
 
     function SaveData() {
 

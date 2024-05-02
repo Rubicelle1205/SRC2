@@ -176,6 +176,38 @@ namespace WebPccuClub.Controllers
             return Json(vmRtn);
         }
 
+        [ValidateInput(false)]
+        public IActionResult GetAllRoomData()
+        {
+            var roomData = new List<RoomDataModel>
+        {
+            new RoomDataModel
+            {
+                Date = DateTime.Now.ToString("yyyy-MM-dd"),
+                Markup = "<span class='badge rounded-pill bg-success'>[day]</span>",
+                Orders = new List<Order>
+                {
+                    new Order { RoomId = "room1", RoomTitle = "諮商室A", PsychologistTitle = "心理師A", StudentNumber = "B852145", StartTime = "11:00", EndTime = "12:00" },
+                    new Order { RoomId = "room1", RoomTitle = "諮商室A", PsychologistTitle = "心理師B", StudentNumber = "B451348", StartTime = "08:00", EndTime = "09:00" },
+                    new Order { RoomId = "room3", RoomTitle = "諮商室C", PsychologistTitle = "心理師B", StudentNumber = "B988456", StartTime = "09:00", EndTime = "10:00" }
+                }
+            },
+            new RoomDataModel
+            {
+                Date = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd"),
+                Markup = "<span class='badge rounded-pill bg-success'>[day]</span>",
+                Orders = new List<Order>
+                {
+                    new Order { RoomId = "room1", RoomTitle = "諮商室A", PsychologistTitle = "心理師A", StudentNumber = "B123456", StartTime = "11:00", EndTime = "12:00" },
+                    new Order { RoomId = "room3", RoomTitle = "諮商室C", PsychologistTitle = "心理師C", StudentNumber = "B789456", StartTime = "15:00", EndTime = "17:00" }
+                }
+            }
+        };
+
+            return Json(roomData);
+        }
+
+
         [LogAttribute(LogActionChineseName.匯出Excel)]
         public IActionResult ExportSearchResult(ConsultationCaseMangViewModel vm)
         {

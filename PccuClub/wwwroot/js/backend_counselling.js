@@ -481,103 +481,65 @@ $(function () {
             $("[name=permission_id]").html(option);
         }
 
-        if ((location.pathname).indexOf("/ConsultationPsyMang") >= 0) {
+        if ((location.pathname).indexOf("/ConsultationPsyMang") >= 0 || (location.pathname).indexOf("/ConsultationCaseMang") >= 0) {
 
             if ($('#view-calendar').length > 0) {
                 // 有排案的[日期]：若有資料則點擊日期時 hasEvent=true
-                var initData = [
-                    {
-                        date: getISODateTime(now_time(), "yyyy-MM-dd"),
-                        classname: "", // td樣式
-                        markup: "<span class='badge rounded-pill bg-success'>[day]</span>", // html
-                        orders: [
-                            {
-                                id: 1,
-                                room_id: "room1",
-                                room_title: "諮商室A",
-                                psychologist_title: "心理師A",
-                                student_number: "B852145",
-                                start_time: "11:00",
-                                end_time: "12:00",
-                            },
-                            {
-                                id: 2,
-                                room_id: "room1",
-                                room_title: "諮商室A",
-                                psychologist_title: "心理師B",
-                                student_number: "B451348",
-                                start_time: "08:00",
-                                end_time: "09:00",
-                            },
-                            {
-                                id: 5,
-                                room_id: "room3",
-                                room_title: "諮商室C",
-                                psychologist_title: "心理師B",
-                                student_number: "B988456",
-                                start_time: "09:00",
-                                end_time: "10:00",
-                            }
-                        ]
-                    }, {
-                        date: GetDateStr(+1),
-                        classname: "",
-                        markup: "<span class='badge rounded-pill bg-success'>[day]</span>",
-                        orders: [
-                            {
-                                id: 3,
-                                room_id: "room1",
-                                room_title: "諮商室A",
-                                psychologist_title: "心理師A",
-                                student_number: "B123456",
-                                start_time: "11:00",
-                                end_time: "12:00",
-                            },
-                            {
-                                id: 4,
-                                room_id: "room3",
-                                room_title: "諮商室C",
-                                psychologist_title: "心理師C",
-                                student_number: "B789456",
-                                start_time: "15:00",
-                                end_time: "17:00",
-                            }
-                        ]
-                    }, {
-                        date: GetDateStr(-15),
-                        classname: "", // td樣式
-                        markup: "<span class='badge rounded-pill bg-success'>[day]</span>", // html
-                        orders: [
-                            {
-                                id: 6,
-                                room_id: "room3",
-                                room_title: "諮商室C",
-                                psychologist_title: "心理師A",
-                                student_number: "B852145",
-                                start_time: "08:00",
-                                end_time: "10:00",
-                            },
-                            {
-                                id: 7,
-                                room_id: "room2",
-                                room_title: "諮商室B",
-                                psychologist_title: "心理師A",
-                                student_number: "B451348",
-                                start_time: "11:00",
-                                end_time: "12:00",
-                            },
-                            {
-                                id: 8,
-                                room_id: "room1",
-                                room_title: "諮商室A",
-                                psychologist_title: "心理師C",
-                                student_number: "B988456",
-                                start_time: "09:00",
-                                end_time: "10:00",
-                            }
-                        ]
-                    }
-                ]
+                //var initData = [
+                //    {
+                //        date: getISODateTime(now_time(), "yyyy-MM-dd"),
+                //        classname: "", // td樣式
+                //        markup: "<span class='badge rounded-pill bg-success'>[day]</span>", // html
+                //        orders: [
+                //            {
+                //                room_id: "room1",
+                //                room_title: "諮商室A",
+                //                psychologist_title: "心理師A",
+                //                student_number: "B852145",
+                //                start_time: "11:00",
+                //                end_time: "12:00",
+                //            },
+                //            {
+                //                room_id: "room1",
+                //                room_title: "諮商室A",
+                //                psychologist_title: "心理師B",
+                //                student_number: "B451348",
+                //                start_time: "08:00",
+                //                end_time: "09:00",
+                //            },
+                //            {
+                //                room_id: "room3",
+                //                room_title: "諮商室C",
+                //                psychologist_title: "心理師B",
+                //                student_number: "B988456",
+                //                start_time: "09:00",
+                //                end_time: "10:00",
+                //            }
+                //        ]
+                //    }, {
+                //        date: GetDateStr(+1),
+                //        classname: "",
+                //        markup: "<span class='badge rounded-pill bg-success'>[day]</span>",
+                //        orders: [
+                //            {
+                //                room_id: "room1",
+                //                room_title: "諮商室A",
+                //                psychologist_title: "心理師A",
+                //                student_number: "B123456",
+                //                start_time: "11:00",
+                //                end_time: "12:00",
+                //            },
+                //            {
+                //                room_id: "room3",
+                //                room_title: "諮商室C",
+                //                psychologist_title: "心理師C",
+                //                student_number: "B789456",
+                //                start_time: "15:00",
+                //                end_time: "17:00",
+                //            }
+                //        ]
+                //    }
+                //]
 
 
                 // 目前排案狀態參考
@@ -610,20 +572,20 @@ $(function () {
                 // var calendar = $calendar.calendar(options);
 
                 /* 套件範例: https://www.zabuto.com/dev/calendar/demo/#basic */
-                $calendar.zabuto_calendar({
-                    language: 'cn', // 本地化語言
-                    header_format: '[year]年 [month]', // header顯示格式
-                    classname: 'table table-bordered lightgrey-weekends clickable',
-                    today_markup: '<span class="bg-gradient-blue">[day]</span>', // [今天]樣式
-                    navigation_markup: { // 月份前後切換樣式
-                        prev: '<i class="fas fa-chevron-circle-left"></i>',
-                        next: '<i class="fas fa-chevron-circle-right"></i>'
-                    },
-                    events: initData,
-                    // ajax:"get_data.php", // 從api取得events
-                    // show_days: true, // 是否顯示[星期幾]
-                    // week_starts: 'monday', // 每周從星期幾開始
-                });
+                //$calendar.zabuto_calendar({
+                //    language: 'cn', // 本地化語言
+                //    header_format: '[year]年 [month]', // header顯示格式
+                //    classname: 'table table-bordered lightgrey-weekends clickable',
+                //    today_markup: '<span class="bg-gradient-blue">[day]</span>', // [今天]樣式
+                //    navigation_markup: { // 月份前後切換樣式
+                //        prev: '<i class="fas fa-chevron-circle-left"></i>',
+                //        next: '<i class="fas fa-chevron-circle-right"></i>'
+                //    },
+                //    events: initData,
+                //    // ajax:"get_data.php", // 從api取得events
+                //    // show_days: true, // 是否顯示[星期幾]
+                //    // week_starts: 'monday', // 每周從星期幾開始
+                //});
 
                 // 切換月份
                 $calendar.on('zabuto:calendar:goto', function (e) {
@@ -631,53 +593,53 @@ $(function () {
                 });
 
                 // 點擊日期：列出有哪些排案紀錄
-                $calendar.on('zabuto:calendar:day', function (e) {
-                    var weekday = e.date.getDay(); // 星期幾
-                    var str = '<h5><b>' + e.value + '（' + weekTitleArr[weekday] + '）</b></h5>\n';
-                    if (e.eventdata !== null) {
-                        var events = e.eventdata.events[0].orders;
+                //$calendar.on('zabuto:calendar:day', function (e) {
+                //    var weekday = e.date.getDay(); // 星期幾
+                //    var str = '<h5><b>' + e.value + '（' + weekTitleArr[weekday] + '）</b></h5>\n';
+                //    if (e.eventdata !== null) {
+                //        var events = e.eventdata.events[0].orders;
 
-                        // 按照[教室]整合
-                        var room_data = {}
-                        $.each(events, function (index, item) {
-                            if (room_data[item.room_id] === undefined) {
-                                room_data[item.room_id] = {
-                                    room_title: item.room_title,
-                                    room_events: []
-                                }
-                            }
+                //        // 按照[教室]整合
+                //        var room_data = {}
+                //        $.each(events, function (index, item) {
+                //            if (room_data[item.room_id] === undefined) {
+                //                room_data[item.room_id] = {
+                //                    room_title: item.room_title,
+                //                    room_events: []
+                //                }
+                //            }
 
-                            room_data[item.room_id].room_events.push(item)
-                        });
+                //            room_data[item.room_id].room_events.push(item)
+                //        });
 
-                        // 按照[開始時間]排序
-                        $.each(room_data, function (room_id, item) {
-                            str += '<span class="badge badge-warning mx-1">' + item.room_title + '</span> ';
-                            str += '<ul class="list-group list-group-flush text-sm">';
-                            item.room_events
-                                .sort(function (a, b) {
-                                    var a_hour = parseInt(a.start_time.substr(0, 2));
-                                    var b_hour = parseInt(b.start_time.substr(0, 2));
-                                    return a_hour - b_hour;
-                                })
-                                .forEach(function (event) {
-                                    str += '<li class="list-group-item p-1">';
-                                    str += event.start_time + '~' + event.end_time;
-                                    str += '<span class="mx-1">' + event.psychologist_title + '</span> ';
-                                    str += '<span class="mx-1">' + event.student_number + '</span> ';
-                                    str += '</li>';
-                                });
-                            str += '</ul>';
-                        })
+                //        // 按照[開始時間]排序
+                //        $.each(room_data, function (room_id, item) {
+                //            str += '<span class="badge badge-warning mx-1">' + item.room_title + '</span> ';
+                //            str += '<ul class="list-group list-group-flush text-sm">';
+                //            item.room_events
+                //                .sort(function (a, b) {
+                //                    var a_hour = parseInt(a.start_time.substr(0, 2));
+                //                    var b_hour = parseInt(b.start_time.substr(0, 2));
+                //                    return a_hour - b_hour;
+                //                })
+                //                .forEach(function (event) {
+                //                    str += '<li class="list-group-item p-1">';
+                //                    str += event.start_time + '~' + event.end_time;
+                //                    str += '<span class="mx-1">' + event.psychologist_title + '</span> ';
+                //                    str += '<span class="mx-1">' + event.student_number + '</span> ';
+                //                    str += '</li>';
+                //                });
+                //            str += '</ul>';
+                //        })
 
-                    } else {
-                        str += '<span class="text-muted">無排案紀錄</span>';
-                    }
+                //    } else {
+                //        str += '<span class="text-muted">無排案紀錄</span>';
+                //    }
 
-                    $("#choose-day-events").html(str);
-                });
+                //    //$("#choose-day-events").html(str);
+                //});
 
-                $(".zabuto-calendar__day--today").click(); // 自動觸發[今天]日期
+                //$(".zabuto-calendar__day--today").click(); // 自動觸發[今天]日期
             }
 
             // 諮商日期
