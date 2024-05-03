@@ -92,6 +92,7 @@
         諮商初談申請表 = 77,
         初談預約管理 = 78,
         諮商紀錄維護 = 79,
+        校安事件主類別維護 = 80,
     }
 
 	public enum DBActionChineseName
