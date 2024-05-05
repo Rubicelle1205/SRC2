@@ -36,6 +36,7 @@ SELECT A.ID, A.MainID, B.Text AS MainIDText, A.CaseSystemType, A.Import, A.Memo,
 FROM EventSecondClassMang A
 LEFT JOIN EventMainClassMang B ON B.ID = A.MainID
 WHERE 1 = 1
+AND A.CaseSystemType = '01'
 AND (@MainID IS NULL OR A.MainID LIKE '%' + @MainID + '%') 
 AND (@Text IS NULL OR A.Text LIKE '%' + @Text + '%') 
 AND (@Memo IS NULL OR A.Memo LIKE '%' + @Memo + '%') ";

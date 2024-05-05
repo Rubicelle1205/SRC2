@@ -1,5 +1,6 @@
 ﻿using DataAccess;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NPOI.POIFS.Crypt;
 using PccuClub.WebAuth;
 using System.Data;
@@ -11,12 +12,12 @@ using WebPccuClub.Models;
 namespace WebPccuClub.DataAccess
 {
     
-    public class EventCaseMainClassMangDataAccess : BaseAccess
+    public class EventCaseStatusMangDataAccess : BaseAccess
     {
 
         /// <summary> 查詢結果 </summary>
 
-        public List<EventCaseMainClassMangResultModel> GetSearchResult(EventCaseMainClassMangConditionModel model)
+        public List<EventCaseStatusMangResultModel> GetSearchResult(EventCaseStatusMangConditionModel model)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -24,26 +25,29 @@ namespace WebPccuClub.DataAccess
             DBAParameter parameters = new DBAParameter();
 
             parameters.Add("@Text", model?.Text);
+            parameters.Add("@Enable", model?.Enable);
             parameters.Add("@Memo", model?.Memo);
 
             #region 參數設定
             #endregion
 
             CommandText = $@"
-SELECT ID, Text, CaseSystemType, Memo, Creator, Created, LastModifier, LastModified
-FROM EventMainClassMang
+SELECT A.ID, A.Text, A.CaseSystemType, A.Enable, B.Text AS EnableText, A.Memo, A.Creator, A.Created, A.LastModifier, A.LastModified
+FROM EventStatusMang A
+LEFT JOIN Code B ON B.Code = A.Enable AND B.Type = 'Enable'
 WHERE 1 = 1
 AND A.CaseSystemType = '01'
-AND (@Text IS NULL OR Text LIKE '%' + @Text + '%') 
-AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
+AND (@Text IS NULL OR A.Text LIKE '%' + @Text + '%') 
+AND (@Enable IS NULL OR A.Enable LIKE '%' + @Enable + '%') 
+AND (@Memo IS NULL OR A.Memo LIKE '%' + @Memo + '%') ";
 
 
-            (DbExecuteInfo info, IEnumerable<EventCaseMainClassMangResultModel> entitys) dbResult = DbaExecuteQuery<EventCaseMainClassMangResultModel>(CommandText, parameters, true, DBAccessException);
+            (DbExecuteInfo info, IEnumerable<EventCaseStatusMangResultModel> entitys) dbResult = DbaExecuteQuery<EventCaseStatusMangResultModel>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList();
 
-            return new List<EventCaseMainClassMangResultModel>();
+            return new List<EventCaseStatusMangResultModel>();
         }
 
         /// <summary>
@@ -52,7 +56,7 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
         /// <param name="submitBtn"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public EventCaseMainClassMangEditModel GetEditData(string Ser)
+        public EventCaseStatusMangEditModel GetEditData(string Ser)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -65,14 +69,14 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
             #endregion
 
             CommandText = $@"
-SELECT ID, Text, CaseSystemType, Memo, Creator, Created, LastModifier, LastModified
-FROM EventMainClassMang
+SELECT ID, Text, CaseSystemType, Enable, Memo, Creator, Created, LastModifier, LastModified
+FROM EventStatusMang
 WHERE 1 = 1
 AND CaseSystemType = '01'
 AND (ID = @ID) ";
 
 
-            (DbExecuteInfo info, IEnumerable<EventCaseMainClassMangEditModel> entitys) dbResult = DbaExecuteQuery<EventCaseMainClassMangEditModel>(CommandText, parameters, true, DBAccessException);
+            (DbExecuteInfo info, IEnumerable<EventCaseStatusMangEditModel> entitys) dbResult = DbaExecuteQuery<EventCaseStatusMangEditModel>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList().FirstOrDefault();
@@ -81,7 +85,7 @@ AND (ID = @ID) ";
         }
 
         /// <summary> 新增資料 </summary>
-        public DbExecuteInfo InsertData(EventCaseMainClassMangViewModel vm, UserInfo LoginUser)
+        public DbExecuteInfo InsertData(EventCaseStatusMangViewModel vm, UserInfo LoginUser)
         {
 
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
@@ -89,13 +93,15 @@ AND (ID = @ID) ";
 
             #region 參數設定
             parameters.Add("@Text", vm.CreateModel.Text);
+            parameters.Add("@Enable", vm.CreateModel.Enable);
             parameters.Add("@Memo", vm.CreateModel.Memo);
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
-            string CommendText = $@"INSERT INTO EventMainClassMang
+            string CommendText = $@"INSERT INTO EventStatusMang
                                                (Text
                                                ,CaseSystemType
+                                               ,Enable
                                                ,Memo
                                                ,Creator
                                                ,Created
@@ -104,6 +110,7 @@ AND (ID = @ID) ";
                                          VALUES
                                                (@Text
                                                ,'01'
+                                               ,@Enable
                                                ,@Memo
                                                ,@LoginId
                                                ,GETDATE()
@@ -116,20 +123,21 @@ AND (ID = @ID) ";
         }
 
         /// <summary> 修改資料 </summary>
-        public DbExecuteInfo UpdateData(EventCaseMainClassMangViewModel vm, UserInfo LoginUser)
+        public DbExecuteInfo UpdateData(EventCaseStatusMangViewModel vm, UserInfo LoginUser)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
             parameters.Add("@ID", vm.EditModel.ID);
-            parameters.Add("@Memo", vm.EditModel.Memo);
             parameters.Add("@Text", vm.EditModel.Text);
+            parameters.Add("@Enable", vm.EditModel.Enable);
+            parameters.Add("@Memo", vm.EditModel.Memo);
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
-            string CommendText = $@"UPDATE EventMainClassMang 
-                                       SET Text = @Text, Memo = @Memo, LastModifier = @LoginId, LastModified = GETDATE()
+            string CommendText = $@"UPDATE EventStatusMang 
+                                       SET Text = @Text, Enable = @Enable, Memo = @Memo, LastModifier = @LoginId, LastModified = GETDATE()
                                      WHERE ID = @ID AND CaseSystemType = '01'";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
@@ -151,11 +159,32 @@ AND (ID = @ID) ";
             parameters.Add("@ID", ser);
             #endregion 參數設定
 
-            string CommendText = $@"DELETE FROM EventMainClassMang WHERE ID = @ID AND CaseSystemType = '01'";
+            string CommendText = $@"DELETE FROM EventStatusMang WHERE ID = @ID AND CaseSystemType = '01'";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
             return ExecuteResult;
         }
+
+        public List<SelectListItem> GetddlEnable()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS Value, Text AS Text FROM Code WHERE Type = 'Enable'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
     }
 }
