@@ -64,9 +64,10 @@
 </section>
 
 <script>
-        function GoSearch(source) {
 
-        if(source == 0)
+    function GoSearch(source) {
+
+        if (source == 0)
             $('#@(Html.IdFor(m => m.ConditionModel.Page))').val(0);
 
         SendAjax({

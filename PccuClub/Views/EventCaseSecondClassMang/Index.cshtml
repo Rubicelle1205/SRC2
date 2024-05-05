@@ -53,6 +53,7 @@
                             </div>
                         </div>
                     </div>
+                    @Html.HiddenFor(m => m.ConditionModel.MainID)
                     @Html.HiddenFor(m => m.ConditionModel.Page)
                     @Html.HiddenFor(m => m.ConditionModel.PageSize)
                     @Html.HiddenFor(m => m.ConditionModel.TotalCount)
@@ -67,9 +68,18 @@
 </section>
 
 <script>
-        function GoSearch(source) {
 
-        if(source == 0)
+    $(document).ready(function () {
+
+        var MainID = $('#@(Html.IdFor(m => m.ConditionModel.MainID))').val();
+        if (MainID != "")
+            GoSearch();
+
+    });
+
+    function GoSearch(source) {
+
+        if (source == 0)
             $('#@(Html.IdFor(m => m.ConditionModel.Page))').val(0);
 
         SendAjax({

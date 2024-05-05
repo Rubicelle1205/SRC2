@@ -28,6 +28,12 @@
                             }
 
                             <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel(@item.ID);">刪除</a>
+
+                            @using (Html.BeginForm("Index", "EventCaseSecondClassMang", FormMethod.Post, new { style = "float:left" }))
+                            {
+                                <button type="submit" value="@item.ID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-dark">編輯次類別</button>
+                            }
+
                             </td>
                         </tr>
                     }

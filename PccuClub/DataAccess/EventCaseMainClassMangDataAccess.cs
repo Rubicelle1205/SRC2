@@ -33,7 +33,7 @@ namespace WebPccuClub.DataAccess
 SELECT ID, Text, CaseSystemType, Memo, Creator, Created, LastModifier, LastModified
 FROM EventMainClassMang
 WHERE 1 = 1
-AND A.CaseSystemType = '01'
+AND CaseSystemType = '01'
 AND (@Text IS NULL OR Text LIKE '%' + @Text + '%') 
 AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
 

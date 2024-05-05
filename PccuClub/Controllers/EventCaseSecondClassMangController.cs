@@ -28,12 +28,16 @@ namespace WebPccuClub.Controllers
 
 
         [Log(LogActionChineseName.首頁)]
-        public IActionResult Index()
+        public IActionResult Index(string submitBtn)
         {
             ViewBag.ddlMainClass = dbAccess.GetddlMainClass();
 
             EventCaseSecondClassMangViewModel vm = new EventCaseSecondClassMangViewModel();
             vm.ConditionModel = new EventCaseSecondClassMangConditionModel();
+
+            if (!string.IsNullOrEmpty(submitBtn))
+                vm.ConditionModel.MainID = submitBtn;
+
             return View(vm);
         }
 
