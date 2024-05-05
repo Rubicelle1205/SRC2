@@ -1,4 +1,4 @@
-﻿@model WebPccuClub.Models.EventCaseMainClassMangViewModel
+﻿@model WebPccuClub.Models.EventCaseReferMangViewModel
 
 @{
     Layout = "_BackendLayout";
@@ -21,12 +21,20 @@
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Text)<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.CreateModel.Text, new {@class = "form-control", placeholder = "請輸入主類別名稱"})</td>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Created)<span class="required">*</span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.Created, new {@class = "form-control"})</td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Memo)</th>
-                                        <td>@Html.TextAreaFor(m => m.CreateModel.Memo, new {@class = "form-control", placeholder = "請輸入備註", rows = "6"})</td>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.LastModified)<span class="required">*</span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.LastModified, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ReferName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ReferName, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Memo)</th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class = "form-control", rows = "6"})</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -39,6 +47,7 @@
                         </div>
                     </div>
                     <!-- /.card -->
+                    @Html.HiddenFor(m => m.EditModel.ReferID)
                 </form> 
                 <!-- /.form -->
             </div>
@@ -56,16 +65,18 @@
     function SaveData() {
 
         var data = new FormData()
-        var Text = $('#@Html.IdFor(m => m.CreateModel.Text)').val();
-        var Memo = $('#@Html.IdFor(m => m.CreateModel.Memo)').val();
+        var ReferID = $('#@Html.IdFor(m => m.EditModel.ReferID)').val();
+        var ReferName = $('#@Html.IdFor(m => m.EditModel.ReferName)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
 
-        if (Text == "") { $.alert("主類別名稱不可為空白"); return; }
+        if (ReferName == "") { $.alert("單位名稱不可為空白"); return; }
 
-        data.append('@Html.NameFor(m => m.CreateModel.Text)', Text);
-        data.append('@Html.NameFor(m => m.CreateModel.Memo)', Memo);
+        data.append('@Html.NameFor(m => m.EditModel.ReferID)', ReferID);
+        data.append('@Html.NameFor(m => m.EditModel.ReferName)', ReferName);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
 
         SendAjax({
-            url: '@Url.Action("SaveNewData")',
+            url: '@Url.Action("EditOldData")',
             data: data,
             processData: false,
             contentType: false,
@@ -73,10 +84,10 @@
                 if (result.errorCode == 0) {
                     $.confirm({
                         title: "",
-                        content: "新增成功",
+                        content: "修改成功",
                         buttons: {
                             確定: function () {
-                                Reset();
+                                window.location = $("#Back").attr("href");
                             },
                         }
                     });
@@ -90,7 +101,7 @@
     }
 
     function Reset() {
-        $('#@Html.IdFor(m => m.CreateModel.Text)').val("");
-        $('#@Html.IdFor(m => m.CreateModel.Memo)').val("");
+        $('#@Html.IdFor(m => m.EditModel.ReferName)').val("");
+        $('#@Html.IdFor(m => m.EditModel.Memo)').val("");
     }
 </script>

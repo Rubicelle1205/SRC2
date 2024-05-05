@@ -1,4 +1,4 @@
-﻿@model WebPccuClub.Models.EventCaseMainClassMangViewModel
+﻿@model WebPccuClub.Models.EventCaseReferMangViewModel
 
 @{
     Layout = "_BackendLayout";
@@ -21,8 +21,8 @@
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Text)<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.CreateModel.Text, new {@class = "form-control", placeholder = "請輸入主類別名稱"})</td>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ReferName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.ReferName, new {@class = "form-control", placeholder = "請輸入單位名稱"})</td>
                                     </tr>
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.CreateModel.Memo)</th>
@@ -56,12 +56,12 @@
     function SaveData() {
 
         var data = new FormData()
-        var Text = $('#@Html.IdFor(m => m.CreateModel.Text)').val();
+        var ReferName = $('#@Html.IdFor(m => m.CreateModel.ReferName)').val();
         var Memo = $('#@Html.IdFor(m => m.CreateModel.Memo)').val();
 
-        if (Text == "") { $.alert("主類別名稱不可為空白"); return; }
+        if (ReferName == "") { $.alert("單位名稱不可為空白"); return; }
 
-        data.append('@Html.NameFor(m => m.CreateModel.Text)', Text);
+        data.append('@Html.NameFor(m => m.CreateModel.ReferName)', ReferName);
         data.append('@Html.NameFor(m => m.CreateModel.Memo)', Memo);
 
         SendAjax({
@@ -90,7 +90,7 @@
     }
 
     function Reset() {
-        $('#@Html.IdFor(m => m.CreateModel.Text)').val("");
+        $('#@Html.IdFor(m => m.CreateModel.ReferName)').val("");
         $('#@Html.IdFor(m => m.CreateModel.Memo)').val("");
     }
 </script>

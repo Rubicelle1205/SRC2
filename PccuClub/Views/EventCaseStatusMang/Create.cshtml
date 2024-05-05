@@ -28,11 +28,11 @@
                                     </tr>
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.CreateModel.Text)<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.CreateModel.Text, new {@class = "form-control"})</td>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.Text, new {@class = "form-control", placeholder = "請輸入狀態名稱"})</td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Memo)<span class="required">*</span></th>
-                                        <td>@Html.TextAreaFor(m => m.CreateModel.Memo, new {@class = "form-control"})</td>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.Memo)</th>
+                                        <td>@Html.TextAreaFor(m => m.CreateModel.Memo, new {@class = "form-control", placeholder = "請輸入備註", rows = "6"})</td>
                                     </tr>
                                 </tbody>
                             </table>

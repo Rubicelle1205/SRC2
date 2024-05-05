@@ -39,8 +39,8 @@
                                         <td>@Html.TextBoxFor(m => m.EditModel.Text, new {@class = "form-control"})</td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Memo)<span class="required">*</span></th>
-                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class = "form-control"})</td>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Memo)</th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class = "form-control", rows = "6"})</td>
                                     </tr>
                                 </tbody>
                             </table>
