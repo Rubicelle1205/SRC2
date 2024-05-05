@@ -13,15 +13,15 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WebPccuClub.Controllers
 {
-    [LogAttribute(LogActionChineseName.校安事件次類別維護)]
-    public class EventCaseSecondClassMangController : BaseController
+    [LogAttribute(LogActionChineseName.性平事件次類別維護)]
+    public class EventGenderSecondClassMangController : BaseController
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
-        EventCaseSecondClassMangDataAccess dbAccess = new EventCaseSecondClassMangDataAccess();
+        EventGenderSecondClassMangDataAccess dbAccess = new EventGenderSecondClassMangDataAccess();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
-        public EventCaseSecondClassMangController(IHostingEnvironment _hostingEnvironment)
+        public EventGenderSecondClassMangController(IHostingEnvironment _hostingEnvironment)
         {
             hostingEnvironment = _hostingEnvironment;
         }
@@ -32,8 +32,8 @@ namespace WebPccuClub.Controllers
         {
             ViewBag.ddlMainClass = dbAccess.GetddlMainClass();
 
-            EventCaseSecondClassMangViewModel vm = new EventCaseSecondClassMangViewModel();
-            vm.ConditionModel = new EventCaseSecondClassMangConditionModel();
+            EventGenderSecondClassMangViewModel vm = new EventGenderSecondClassMangViewModel();
+            vm.ConditionModel = new EventGenderSecondClassMangConditionModel();
 
             if (!string.IsNullOrEmpty(submitBtn))
                 vm.ConditionModel.MainID = submitBtn;
@@ -45,31 +45,27 @@ namespace WebPccuClub.Controllers
         public IActionResult Create()
         {
             ViewBag.ddlMainClass = dbAccess.GetddlMainClass();
-            ViewBag.ddlSubSystemBelong = dbAccess.GetddlSubSystemBelong();
 
-            EventCaseSecondClassMangViewModel vm = new EventCaseSecondClassMangViewModel();
-            vm.CreateModel = new EventCaseSecondClassMangCreateModel();
+            EventGenderSecondClassMangViewModel vm = new EventGenderSecondClassMangViewModel();
+            vm.CreateModel = new EventGenderSecondClassMangCreateModel();
             return View(vm);
         }
 
         [Log(LogActionChineseName.編輯)]
-        public IActionResult Edit(string submitBtn, EventCaseSecondClassMangViewModel vm)
+        public IActionResult Edit(string submitBtn, EventGenderSecondClassMangViewModel vm)
         {
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
             ViewBag.ddlMainClass = dbAccess.GetddlMainClass();
-            ViewBag.ddlSubSystemBelong = dbAccess.GetddlSubSystemBelong();
 
             vm.EditModel = dbAccess.GetEditData(submitBtn);
             return View(vm);
         }
 
         [LogAttribute(LogActionChineseName.查詢)]
-        public IActionResult GetSearchResult(EventCaseSecondClassMangViewModel vm)
+        public IActionResult GetSearchResult(EventGenderSecondClassMangViewModel vm)
         {
-            ViewBag.ddlSubSystemBelong = dbAccess.GetddlSubSystemBelong();
-
             vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel).ToList();
 
             #region 分頁
@@ -83,7 +79,7 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.新增儲存)]
         [ValidateInput(false)]
-        public IActionResult SaveNewData(EventCaseSecondClassMangViewModel vm)
+        public IActionResult SaveNewData(EventGenderSecondClassMangViewModel vm)
         {
             try
             {
@@ -114,7 +110,7 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
-        public IActionResult EditOldData(EventCaseSecondClassMangViewModel vm)
+        public IActionResult EditOldData(EventGenderSecondClassMangViewModel vm)
         {
             try
             {
