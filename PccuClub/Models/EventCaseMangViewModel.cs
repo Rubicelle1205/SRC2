@@ -158,7 +158,7 @@ namespace WebPccuClub.Models
         /// <summary>其他人數</summary>
         [DisplayName("其他人數")]
         public string? ElseAmt { get; set; }
-
+        
         /// <summary>結案狀態</summary>
         [DisplayName("結案狀態")]
         public string? CaseStatus { get; set; }
@@ -170,6 +170,20 @@ namespace WebPccuClub.Models
         /// <summary>備註</summary>
         [DisplayName("備註")]
         public string? Memo { get; set; }
+
+
+        /// <summary>事件ID</summary>
+        [DisplayName("事件ID")]
+        public string? EventID { get; set; }
+
+        /// <summary>事件時間</summary>
+        [DisplayName("事件時間")]
+        public string? EventDateTime { get; set; }
+
+        /// <summary>事件說明</summary>
+        [DisplayName("事件說明")]
+        public string? EventText { get; set; }
+
     }
 
     public class EventCaseMangEditModel

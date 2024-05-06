@@ -1,0 +1,356 @@
+﻿@model WebPccuClub.Models.EventCaseMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+    List<SelectListItem> LstddlReferUnit = ViewBag.ddlReferUnit;
+}
+
+<head>
+    <script src="~/js/backend_case.js"></script>
+</head>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form action="" enctype="multipart/form-data" id="form" method="post">
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">事件編號<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.CaseID, new {@class = "form-control", placeholder = "請輸入事件編號"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">校安事件主類別<span class="required">*</span></th>
+                                        <td>@Html.DropDownListFor(m => m.CreateModel.MainClass ,(List<SelectListItem>)ViewBag.ddlMainClass,"請選擇校安事件主類別", new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">校安事件次類別<span class="required">*</span></th>
+                                        <td>@Html.DropDownListFor(m => m.CreateModel.SecondClass ,(List<SelectListItem>)ViewBag.ddlSecondClass,"請選擇校安事件次類別", new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">事件發生地點<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.Location, new {@class = "form-control", placeholder = "請輸入事件發生地點"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">事件發生時間<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.OccurTime, new {@class = "form-control col-md-6", @placeholder="請點擊輸入框並選擇事件發生時間", @for="finish_time"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">知悉時間<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.KnowTime, new {@class = "form-control col-md-6", @placeholder="請點擊輸入框並選擇知悉時間", @for="finish_time"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">媒體是否得知<span class="required">*</span></th>
+                                        <td>@Html.DropDownListFor(m => m.CreateModel.MediaKnow ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇媒體是否得知", new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">相關人員<span class="required">*</span></th>
+                                        <td>
+                                        <div class="row">
+                                            <div class="input-group col-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">死亡人數</span>
+                                                </div>
+                                                    @Html.TextBoxFor(m => m.CreateModel.DeathAmt, new {@class = "form-control"})
+                                            </div>
+                                            <div class="input-group col-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">受傷人數</span>
+                                                </div>
+                                                    @Html.TextBoxFor(m => m.CreateModel.HurtAmt, new {@class = "form-control"})
+                                            </div>
+                                            <div class="input-group col-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">患病人數</span>
+                                                </div>
+                                                    @Html.TextBoxFor(m => m.CreateModel.SickAmt, new {@class = "form-control"})
+                                            </div>
+                                            <div class="input-group col-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">其他人數</span>
+                                                </div>
+                                                    @Html.TextBoxFor(m => m.CreateModel.ElseAmt, new {@class = "form-control"})
+                                            </div>
+                                        </div>
+                                        <table class="table table-sm mt-2" id="peo_table">
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">性別</th>
+                                                    <th scope="col">姓名</th>
+                                                    <th scope="col">狀態</th>
+                                                    <th scope="col">職稱</th>
+                                                    <th scope="col">所屬單位</th>
+                                                    <th scope="col">學號</th>
+                                                    <th scope="col">出生年</th>
+                                                    <th scope="col">目前位置</th>
+                                                    <th scope="col">角色</th>
+                                                    <th scope="col">
+                                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                                                name="add_row">
+                                                            <i class="fa-solid fa-plus"></i>
+                                                        </button>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="col">1</th>
+                                                    <td>
+                                                            @Html.DropDownList("Sex", (IEnumerable<SelectListItem>)ViewBag.ddlSex, "請選擇性別", new { @class = "form-control  form-control-sm" })
+                                                    </td>
+                                                    <td>
+                                                            @Html.TextBox("Name", null, new { @class = "form-control form-control-sm", placeholder = "請輸入姓名" })
+                                                    </td>
+                                                    <td>
+                                                            @Html.DropDownList("VictimStatus", (IEnumerable<SelectListItem>)ViewBag.ddlVictimStatus, "請選擇狀態", new { @class = "form-control  form-control-sm" })
+                                                    </td>
+                                                    <td>
+                                                            @Html.DropDownList("VictimTitle", (IEnumerable<SelectListItem>)ViewBag.ddlVictimTitle, "請選擇身分", new { @class = "form-control  form-control-sm" })
+                                                    </td>
+                                                    <td>
+                                                            @Html.DropDownList("VictimUnit", (IEnumerable<SelectListItem>)ViewBag.ddlVictimUnit, "請選擇所屬單位", new { @class = "form-control  form-control-sm" })
+                                                    </td>
+                                                    <td>
+                                                            @Html.TextBox("SNO", null, new { @class = "form-control form-control-sm", placeholder = "請輸入學號" })
+                                                    </td>
+                                                    <td>
+                                                            @Html.DropDownList("BirthYear", (IEnumerable<SelectListItem>)ViewBag.ddlBirth, "請選擇出生年", new { @class = "form-control  form-control-sm" })
+                                                    </td>
+                                                    <td>
+                                                            @Html.DropDownList("VictimLocation", (IEnumerable<SelectListItem>)ViewBag.ddlVictimLocation, "請選擇目前位置", new { @class = "form-control  form-control-sm" })
+                                                    </td>
+                                                    <td>
+                                                            @Html.DropDownList("ddlVictimRole", (IEnumerable<SelectListItem>)ViewBag.GetddlVictimRole, "請選擇角色", new { @class = "form-control  form-control-sm" })
+                                                    </td>
+                                                    <td>
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-outline-danger"
+                                                                name="delete_row">
+                                                            <i class="fa-solid fa-x"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="d-flex justify-content-between">
+                                            <button type="button" class="btn btn-sm btn-outline-danger"
+                                                    name="clean_all">
+                                                <i class="fa-solid fa-x"></i>
+                                                刪除所有人員
+                                            </button>
+                                        </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-body table-responsive-sm">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">事件原因及經過<span class="required"></span></th>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="input-group">
+                                                        @Html.TextBoxFor(m => m.CreateModel.EventDateTime, new { @class = "form-control", @readonly = "readonly"})
+                                                        @Html.DropDownListFor(m => m.CreateModel.EventID, (List<SelectListItem>)ViewBag.ddlEventStatus,"請選擇事件狀態", new {@class = "form-control"})
+                                                    </div>
+                                                    <!-- 無論新增/編輯時，這個欄位預設都是空。新增/編輯時，若值不為空，則會有一筆紀錄歷程 -->
+                                                    @Html.TextAreaFor(m => m.CreateModel.EventText, new {@class = "form-control mt-1", @rows="4"})
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">轉介單位<span class="required">*</span></th>
+                                        <td>
+                                            <div class="row p-2">
+                                                @foreach (SelectListItem item in LstddlReferUnit)
+                                                {
+                                                    <div class="col-md-2 custom-control custom-checkbox">
+                                                        <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                               type="checkbox" id="@item.Value" value="@item.Value">
+                                                        <label class="custom-control-label" for="@item.Value">@item.Text</label>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">是否結案<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.CaseStatus, (List<SelectListItem>)ViewBag.ddlCaseFinish,"請選擇是否結案", new {@class = "form-control col-md-6"})
+                                            <div class="input-group col-md-6 p-0 hide">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">結案時間</span>
+                                                </div>
+                                                @Html.TextBoxFor(m => m.CreateModel.CaseFinishDateTime, new {@class = "form-control", @placeholder="請點擊輸入框並選擇結案時間", @for="finish_time2"})
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">備註<span class="required"></span></th>
+                                        <td>
+                                            @Html.TextAreaFor(m => m.CreateModel.Memo, new {@class="form-control", placeholder="請輸入備註", rows="6"})
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- /.card-body -->
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                            <button type="button" id="generate_string" class="btn btn-primary">生成数据字符串</button>
+
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </form>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+    $(document).ready(function () {
+
+        var selecter = $('#@Html.IdFor(m => m.CreateModel.CaseStatus)');
+
+        selecter.change(function () {
+            if (selecter.val() == "01") {
+                $("[for=finish_time2]").parents('div:first').removeClass("hide");
+            }
+            else {
+                $("[for=finish_time2]").parents('div:first').addClass("hide");
+            }
+        });
+
+        if (selecter.val() == "01") {
+            $("[for=finish_time2]").parents('div:first').removeClass("hide");
+        }
+        else {
+            $("[for=finish_time2]").parents('div:first').addClass("hide");
+        }
+
+        ///////////////////////////////////////////////////////////////////
+
+        $('button[name="add_row"]').click(function () {
+            var $tableBody = $('#peo_table tbody'); // 获取表格的tbody元素
+            var $lastRow = $tableBody.find('tr:last'); // 找到最后一行
+            var $newRow = $lastRow.clone(); // 克隆最后一行
+
+            // 获取新行的序号，增加1
+            var newRowNum = parseInt($lastRow.find('th:first').text()) + 1;
+            $newRow.find('th:first').text(newRowNum);
+
+            // 清除新行中的输入数据和选择数据
+            $newRow.find('input').val('');
+            $newRow.find('select').val('');
+
+            // 将新行添加到表格的末尾
+            $tableBody.append($newRow);
+        });
+
+        // 处理删除行的按钮点击事件
+        $('#peo_table').on('click', 'button[name="delete_row"]', function () {
+            $(this).closest('tr').remove(); // 移除当前行
+
+            // 重新编号
+            $('#peo_table tbody tr').each(function (index) {
+                $(this).find('th:first').text(index + 1);
+            });
+        });
+
+        $('#peo_table').on('click', 'button[name="delete_row"]', function () {
+            $(this).closest('tr').remove();
+        });
+
+        $('button[name="clean_all"]').click(function () {
+            $('#peo_table tbody').empty();
+        });
+        ///////////////////////////////////////////////////////////////////
+
+        $('#generate_string').click(function () {
+            var dataString = '';
+            $('#peo_table tbody tr').each(function (index) {
+                var rowNum = index + 1; // 行号
+                var sex = $(this).find('[name="Sex"]').val(); // 性別
+                var name = $(this).find('[name="Name"]').val(); // 姓名
+                var status = $(this).find('[name="VictimStatus"]').val(); // 狀態
+                var title = $(this).find('[name="VictimTitle"]').val(); // 職稱
+                var unit = $(this).find('[name="VictimUnit"]').val(); // 所屬單位
+                var sno = $(this).find('[name="SNO"]').val(); // 學號
+                var birthYear = $(this).find('[name="BirthYear"]').val(); // 出生年
+                var location = $(this).find('[name="VictimLocation"]').val(); // 目前位置
+                var role = $(this).find('[name="ddlVictimRole"]').val(); // 角色
+
+                // 格式化数据
+                dataString += rowNum + ':' + sex + ',' + name + ',' + status + ',' + title + ',' + unit + ',' + sno + ',' + birthYear + ',' + location + ',' + role + '|';
+            });
+
+            // 移除最后一个 '|'
+            dataString = dataString.slice(0, -1);
+
+            // 显示或使用数据字符串
+            console.log(dataString); // 仅作为演示，实际可以做其他操作，如发送到服务器等
+            alert(dataString);
+        });
+    });
+
+    function SaveData() {
+
+        var data = new FormData()
+        var Text = $('#@Html.IdFor(m => m.CreateModel.CaseID)').val();
+        var Memo = $('#@Html.IdFor(m => m.CreateModel.CaseID)').val();
+
+        if (Text == "") { $.alert("主類別名稱不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.CreateModel.CaseID)', Text);
+        data.append('@Html.NameFor(m => m.CreateModel.CaseID)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("SaveNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                Reset();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+    function Reset() {
+        $('#@Html.IdFor(m => m.CreateModel.CaseID)').val("");
+        $('#@Html.IdFor(m => m.CreateModel.CaseID)').val("");
+    }
+</script>
