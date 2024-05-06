@@ -111,6 +111,10 @@ namespace WebPccuClub.Models
     {
         public List<Victim> LstVictim = new List<Victim>();
 
+        public string? strLstVictim { get; set; }
+
+        public List<EventData> LstEventData = new List<EventData>();
+
         /// <summary>事件編號</summary>
         [DisplayName("事件編號")]
         public string? CaseID { get; set; }

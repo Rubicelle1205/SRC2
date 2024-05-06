@@ -91,9 +91,9 @@ AND (A.CaseID = @ID) ";
         }
 
         /// <summary> 新增資料 </summary>
-        public DbExecuteInfo InsertData(EventCaseMangViewModel vm, UserInfo LoginUser)
+        public DbExecuteInfo InsertData(EventCaseMangViewModel vm, UserInfo LoginUser, out DataTable dt)
         {
-
+            DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
@@ -117,12 +117,12 @@ AND (A.CaseID = @ID) ";
             parameters.Add("@ElseAmt", vm.CreateModel.ElseAmt);
 
             parameters.Add("@ReferCode", vm.CreateModel.ReferCode);
-            
+
             parameters.Add("@Memo", vm.CreateModel.Memo);
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
-            string CommendText = $@"INSERT INTO CaseMainMang
+            string CommendText = $@"INSERT INTO hq_PccuCase.dbo.CaseMainMang
                                                (CaseID
                                                ,MainClass
                                                ,SecondClass
@@ -142,6 +142,7 @@ AND (A.CaseID = @ID) ";
                                                ,Created
                                                ,LastModifier
                                                ,LastModified)
+                                         OUTPUT Inserted.CaseID
                                          VALUES
                                                (@CaseID
                                                ,@MainClass
@@ -163,9 +164,15 @@ AND (A.CaseID = @ID) ";
                                                ,@LoginId
                                                ,GETDATE())";
 
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            dt = ds.Tables[0];
 
             return ExecuteResult;
+
+
+
         }
 
         /// <summary> 新增相關人員資料 </summary>
@@ -174,13 +181,13 @@ AND (A.CaseID = @ID) ";
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
-            string CommendText = $@"DELETE FROM CaseVictimMang WHERE CaseID = '{CaseID}' ";
+            string CommendText = $@"DELETE FROM hq_PccuCase.dbo.CaseVictimMang WHERE CaseID = '{CaseID}' ";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
-            if (ExecuteResult.isSuccess)
+            if (ExecuteResult.isSuccess || ExecuteResult.ErrorCode == dbErrorCode._EC_NotAffect)
             {
-                CommendText = $@"INSERT INTO CaseVictimMang
+                CommendText = $@"INSERT INTO hq_PccuCase.dbo.CaseVictimMang
                                                (CaseID
                                                ,Name
                                                ,SNO
@@ -225,13 +232,13 @@ AND (A.CaseID = @ID) ";
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
-            string CommendText = $@"DELETE FROM EventDetailMang WHERE CaseID = '{CaseID}' ";
+            string CommendText = $@"DELETE FROM hq_PccuCase.dbo.EventDetailMang WHERE CaseID = '{CaseID}' ";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
-            if (ExecuteResult.isSuccess)
+            if (ExecuteResult.isSuccess || ExecuteResult.ErrorCode == dbErrorCode._EC_NotAffect)
             {
-               CommendText = $@"INSERT INTO EventDetailMang
+               CommendText = $@"INSERT INTO hq_PccuCase.dbo.EventDetailMang
                                             (CaseID
                                             ,CaseSystemType
                                             ,EventID
@@ -243,7 +250,7 @@ AND (A.CaseID = @ID) ";
                                             ,LastModified)
                                         VALUES
                                             ('{CaseID}'
-                                            ,@CaseSystemType
+                                            ,'01'
                                             ,@EventID
                                             ,@EventDateTime
                                             ,@Text

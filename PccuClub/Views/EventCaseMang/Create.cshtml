@@ -19,6 +19,7 @@
                     <div class="card">
                         <div class="card-body table-responsive-sm">
                             <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
                                 <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
                             </h6>
                             <table class="table table-bordered">
@@ -211,8 +212,6 @@
                         <!-- /.card-body -->
                         <div class="card-footer d-flex justify-content-end">
                             <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
-                            <button type="button" id="generate_string" class="btn btn-primary">生成数据字符串</button>
-
                         </div>
                     </div>
                     <!-- /.card -->
@@ -251,27 +250,22 @@
         ///////////////////////////////////////////////////////////////////
 
         $('button[name="add_row"]').click(function () {
-            var $tableBody = $('#peo_table tbody'); // 获取表格的tbody元素
-            var $lastRow = $tableBody.find('tr:last'); // 找到最后一行
-            var $newRow = $lastRow.clone(); // 克隆最后一行
+            var $tableBody = $('#peo_table tbody'); 
+            var $lastRow = $tableBody.find('tr:last');
+            var $newRow = $lastRow.clone(); 
 
-            // 获取新行的序号，增加1
             var newRowNum = parseInt($lastRow.find('th:first').text()) + 1;
             $newRow.find('th:first').text(newRowNum);
 
-            // 清除新行中的输入数据和选择数据
             $newRow.find('input').val('');
             $newRow.find('select').val('');
 
-            // 将新行添加到表格的末尾
             $tableBody.append($newRow);
         });
 
-        // 处理删除行的按钮点击事件
         $('#peo_table').on('click', 'button[name="delete_row"]', function () {
             $(this).closest('tr').remove(); // 移除当前行
 
-            // 重新编号
             $('#peo_table tbody tr').each(function (index) {
                 $(this).find('th:first').text(index + 1);
             });
@@ -287,42 +281,106 @@
         ///////////////////////////////////////////////////////////////////
 
         $('#generate_string').click(function () {
-            var dataString = '';
-            $('#peo_table tbody tr').each(function (index) {
-                var rowNum = index + 1; // 行号
-                var sex = $(this).find('[name="Sex"]').val(); // 性別
-                var name = $(this).find('[name="Name"]').val(); // 姓名
-                var status = $(this).find('[name="VictimStatus"]').val(); // 狀態
-                var title = $(this).find('[name="VictimTitle"]').val(); // 職稱
-                var unit = $(this).find('[name="VictimUnit"]').val(); // 所屬單位
-                var sno = $(this).find('[name="SNO"]').val(); // 學號
-                var birthYear = $(this).find('[name="BirthYear"]').val(); // 出生年
-                var location = $(this).find('[name="VictimLocation"]').val(); // 目前位置
-                var role = $(this).find('[name="ddlVictimRole"]').val(); // 角色
+            
 
-                // 格式化数据
-                dataString += rowNum + ':' + sex + ',' + name + ',' + status + ',' + title + ',' + unit + ',' + sno + ',' + birthYear + ',' + location + ',' + role + '|';
-            });
-
-            // 移除最后一个 '|'
-            dataString = dataString.slice(0, -1);
-
-            // 显示或使用数据字符串
-            console.log(dataString); // 仅作为演示，实际可以做其他操作，如发送到服务器等
-            alert(dataString);
         });
     });
 
     function SaveData() {
 
         var data = new FormData()
-        var Text = $('#@Html.IdFor(m => m.CreateModel.CaseID)').val();
-        var Memo = $('#@Html.IdFor(m => m.CreateModel.CaseID)').val();
 
-        if (Text == "") { $.alert("主類別名稱不可為空白"); return; }
+        var CaseID = $('#@Html.IdFor(m => m.CreateModel.CaseID)').val();
+        var MainClass = $('#@Html.IdFor(m => m.CreateModel.MainClass)').val();
+        var SecondClass = $('#@Html.IdFor(m => m.CreateModel.SecondClass)').val();
+        var Location = $('#@Html.IdFor(m => m.CreateModel.Location)').val();
+        var OccurTime = $('#@Html.IdFor(m => m.CreateModel.OccurTime)').val();
+        var KnowTime = $('#@Html.IdFor(m => m.CreateModel.KnowTime)').val();
+        var MediaKnow = $('#@Html.IdFor(m => m.CreateModel.MediaKnow)').val();
 
-        data.append('@Html.NameFor(m => m.CreateModel.CaseID)', Text);
-        data.append('@Html.NameFor(m => m.CreateModel.CaseID)', Memo);
+        var DeathAmt = $('#@Html.IdFor(m => m.CreateModel.DeathAmt)').val();
+        var HurtAmt = $('#@Html.IdFor(m => m.CreateModel.HurtAmt)').val();
+        var SickAmt = $('#@Html.IdFor(m => m.CreateModel.SickAmt)').val();
+        var ElseAmt = $('#@Html.IdFor(m => m.CreateModel.ElseAmt)').val();
+
+        var EventID = $('#@Html.IdFor(m => m.CreateModel.EventID)').val();
+        var EventDateTime = $('#@Html.IdFor(m => m.CreateModel.EventDateTime)').val();
+        var EventText = $('#@Html.IdFor(m => m.CreateModel.EventText)').val();
+
+        var CaseStatus = $('#@Html.IdFor(m => m.CreateModel.CaseStatus)').val();
+        var CaseFinishDateTime = $('#@Html.IdFor(m => m.CreateModel.CaseFinishDateTime)').val();
+        
+        var Memo = $('#@Html.IdFor(m => m.CreateModel.Memo)').val();
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        var dataString = '';
+        $('#peo_table tbody tr').each(function (index) {
+            var rowNum = index + 1;
+            var sex = $(this).find('[name="Sex"]').val();
+            var name = $(this).find('[name="Name"]').val();
+            var status = $(this).find('[name="VictimStatus"]').val();
+            var title = $(this).find('[name="VictimTitle"]').val();
+            var unit = $(this).find('[name="VictimUnit"]').val();
+            var sno = $(this).find('[name="SNO"]').val();
+            var birthYear = $(this).find('[name="BirthYear"]').val();
+            var location = $(this).find('[name="VictimLocation"]').val();
+            var role = $(this).find('[name="ddlVictimRole"]').val();
+
+            dataString += rowNum + ':' + sex + ',' + name + ',' + status + ',' + title + ',' + unit + ',' + sno + ',' + birthYear + ',' + location + ',' + role + '|';
+        });
+
+        dataString = dataString.slice(0, -1);
+        var strVictim = dataString;
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        var selectedValues = [];
+        $(".custom-control-input-outline").each(function () {
+            if ($(this).is(":checked")) {
+                selectedValues.push($(this).val());
+            }
+        });
+
+        if (CaseID == "") { $.alert("事件編號不可為空白"); return; }
+        if (MainClass == "") { $.alert("主類別名稱不可為空白"); return; }
+        if (SecondClass == "") { $.alert("次類別名稱不可為空白"); return; }
+        if (Location == "") { $.alert("事件發生地點不可為空白"); return; }
+        if (OccurTime == "") { $.alert("事件發生時間不可為空白"); return; }
+        if (KnowTime == "") { $.alert("知悉時間不可為空白"); return; }
+        if (MediaKnow == "") { $.alert("媒體是否得知不可為空白"); return; }
+
+        if (DeathAmt == "") { $.alert("死亡人數不可為空白"); return; }
+        if (HurtAmt == "") { $.alert("受傷人數不可為空白"); return; }
+        if (SickAmt == "") { $.alert("患病人數不可為空白"); return; }
+        if (ElseAmt == "") { $.alert("其他人數不可為空白"); return; }
+
+        if (CaseStatus == "") { $.alert("需選擇是否結案"); return; }
+        
+        if (strVictim == "") { $.alert("需填寫相關人員"); return; }
+        if (selectedValues == "") { $.alert("需選擇轉介單位"); return; }
+
+        data.append('@Html.NameFor(m => m.CreateModel.CaseID)', CaseID);
+        data.append('@Html.NameFor(m => m.CreateModel.MainClass)', MainClass);
+        data.append('@Html.NameFor(m => m.CreateModel.SecondClass)', SecondClass);
+        data.append('@Html.NameFor(m => m.CreateModel.Location)', Location);
+        data.append('@Html.NameFor(m => m.CreateModel.OccurTime)', OccurTime);
+        data.append('@Html.NameFor(m => m.CreateModel.KnowTime)', KnowTime);
+        data.append('@Html.NameFor(m => m.CreateModel.MediaKnow)', MediaKnow);
+        
+        data.append('@Html.NameFor(m => m.CreateModel.DeathAmt)', DeathAmt);
+        data.append('@Html.NameFor(m => m.CreateModel.HurtAmt)', HurtAmt);
+        data.append('@Html.NameFor(m => m.CreateModel.SickAmt)', SickAmt);
+        data.append('@Html.NameFor(m => m.CreateModel.ElseAmt)', ElseAmt);
+
+        data.append('@Html.NameFor(m => m.CreateModel.strLstVictim)', strVictim);
+
+        data.append('@Html.NameFor(m => m.CreateModel.EventID)', EventID);
+        data.append('@Html.NameFor(m => m.CreateModel.EventDateTime)', EventDateTime);
+        data.append('@Html.NameFor(m => m.CreateModel.EventText)', EventText);
+
+        data.append('@Html.NameFor(m => m.CreateModel.ReferCode)', selectedValues);
+
+        data.append('@Html.NameFor(m => m.CreateModel.CaseStatus)', CaseStatus);
+        data.append('@Html.NameFor(m => m.CreateModel.CaseFinishDateTime)', CaseFinishDateTime);
+
+        data.append('@Html.NameFor(m => m.CreateModel.Memo)', Memo);
 
         SendAjax({
             url: '@Url.Action("SaveNewData")',
@@ -336,7 +394,7 @@
                         content: "新增成功",
                         buttons: {
                             確定: function () {
-                                Reset();
+                                window.location = $("#Back").attr("href");
                             },
                         }
                     });
@@ -349,8 +407,4 @@
         });
     }
 
-    function Reset() {
-        $('#@Html.IdFor(m => m.CreateModel.CaseID)').val("");
-        $('#@Html.IdFor(m => m.CreateModel.CaseID)').val("");
-    }
 </script>

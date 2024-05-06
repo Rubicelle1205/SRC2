@@ -3,6 +3,7 @@ using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.ComponentModel;
+using System.Data;
 using System.Reflection;
 using System.Web.Mvc;
 using Utility;
@@ -98,9 +99,36 @@ namespace WebPccuClub.Controllers
         {
             try
             {
-                dbAccess.DbaInitialTransaction();
+                if (!string.IsNullOrEmpty(vm.CreateModel.strLstVictim))
+                    vm.CreateModel.LstVictim = TransToLstVictim(vm.CreateModel.strLstVictim);
 
-                var dbResult = dbAccess.InsertData(vm, LoginUser);
+                vm.CreateModel.LstEventData = TransToLstEventData(vm);
+
+                dbAccess.DbaInitialTransaction();
+                DataTable dt = new DataTable();
+
+                var dbResult = dbAccess.InsertData(vm, LoginUser, out dt);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                string CaseID = dt.QueryFieldByDT("CaseID");
+                dbResult = dbAccess.InsertVictim(vm.CreateModel.LstVictim, LoginUser, CaseID);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                dbResult = dbAccess.InsertEventData(vm.CreateModel.LstEventData, LoginUser, CaseID);
 
                 if (!dbResult.isSuccess)
                 {
@@ -122,6 +150,7 @@ namespace WebPccuClub.Controllers
 
             return Json(vmRtn);
         }
+
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
@@ -182,6 +211,57 @@ namespace WebPccuClub.Controllers
             }
 
             return Json(vmRtn);
+        }
+
+        private List<Victim> TransToLstVictim(string strLstVictim)
+        {
+            List<Victim> LstVictim = new List<Victim>();
+
+            if (!string.IsNullOrEmpty(strLstVictim))
+            {
+                string[] arrRow = strLstVictim.Split("|");
+
+                for (int i = 0; i <= arrRow.Length - 1; i++)
+                { 
+                    string[] arrdtRowData = arrRow[i].Split(":");
+                    string[] arrRowData = arrdtRowData[1].Split(",");
+
+                    Victim vic = new Victim();
+
+                    vic.Sex = arrRowData[0].ToString();
+                    vic.Name = arrRowData[1].ToString();
+                    vic.Status = arrRowData[2].ToString();
+                    vic.Title = arrRowData[3].ToString();
+                    vic.Unit = arrRowData[4].ToString();
+                    vic.SNO = arrRowData[5].ToString();
+                    vic.BirthYear = arrRowData[6].ToString();
+                    vic.Location = arrRowData[7].ToString();
+                    vic.Role = arrRowData[8].ToString();
+
+                    LstVictim.Add(vic);
+                }
+            }
+
+            return LstVictim;
+        }
+
+
+        private List<EventData> TransToLstEventData(EventCaseMangViewModel vm)
+        {
+            List<EventData> LstEventData = new List<EventData>();
+
+            string EventID = vm.CreateModel.EventID;
+            string EventDateTime = vm.CreateModel.EventDateTime;
+            string EventText = vm.CreateModel.EventText;
+
+            EventData ed = new EventData();
+            ed.EventID = EventID;
+            ed.EventDateTime = DateTime.Parse(EventDateTime);
+            ed.Text = EventText;
+
+            LstEventData.Add(ed);
+
+            return LstEventData;
         }
     }
 }
