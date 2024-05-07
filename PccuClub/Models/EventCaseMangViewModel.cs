@@ -196,6 +196,8 @@ namespace WebPccuClub.Models
 
         public List<EventData> LstEventData = new List<EventData>();
 
+        public string? strLstVictim { get; set; }
+
         /// <summary>事件編號</summary>
         [DisplayName("事件編號")]
         public string? CaseID { get; set; }
@@ -263,6 +265,20 @@ namespace WebPccuClub.Models
         /// <summary>更新時間</summary>
         [DisplayName("更新時間")]
         public string? LastModified { get; set; }
+
+
+        /// <summary>事件ID</summary>
+        [DisplayName("事件ID")]
+        public string? EventID { get; set; }
+
+        /// <summary>事件時間</summary>
+        [DisplayName("事件時間")]
+        public string? EventDateTime { get; set; }
+
+        /// <summary>事件說明</summary>
+        [DisplayName("事件說明")]
+        public string? EventText { get; set; }
+
     }
 
     public class Victim
@@ -309,6 +325,10 @@ namespace WebPccuClub.Models
         /// <summary>事件編號</summary>
         [DisplayName("事件編號")]
         public string? EventID { get; set; }
+
+        /// <summary>事件編號</summary>
+        [DisplayName("事件編號")]
+        public string? EventIDText { get; set; }
 
         /// <summary>事件時間</summary>
         [DisplayName("事件時間")]

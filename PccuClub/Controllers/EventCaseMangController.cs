@@ -73,9 +73,26 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlMainClass = dbAccess.GetddlMainClass();
             ViewBag.ddlSecondClass = dbAccess.GetddlSecondClass();
             ViewBag.ddlCaseFinish = dbAccess.GetddlCaseFinishClass();
+            ViewBag.ddlReferUnit = dbAccess.GetddlReferUnit();
+            ViewBag.ddlYesOrNo = dbAccess.GetddlYesOrNo();
+            ViewBag.ddlEventStatus = dbAccess.GetddlEventStatus();
 
-            //EventCaseMangViewModel vm = new EventCaseMangViewModel();
+            ViewBag.ddlSex = dbAccess.GetddlSex();
+            ViewBag.ddlVictimTitle = dbAccess.GetddlVictimTitle();
+            ViewBag.ddlVictimUnit = dbAccess.GetddlVictimUnit();
+            ViewBag.ddlVictimLocation = dbAccess.GetddlVictimLocation();
+            ViewBag.ddlVictimRole = dbAccess.GetddlVictimRole();
+            ViewBag.ddlBirth = dbAccess.GetddlBirth();
+            ViewBag.ddlVictimStatus = dbAccess.GetddlVictimStatus();
+
             vm.EditModel = dbAccess.GetEditData(submitBtn);
+            vm.EditModel.EventDateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            if (vm.EditModel != null)
+            {
+                vm.EditModel.LstVictim = dbAccess.GetLstVictimData(vm.EditModel.CaseID);
+                vm.EditModel.LstEventData = dbAccess.GetEventData(vm.EditModel.CaseID);
+            }
+
             return View(vm);
         }
 

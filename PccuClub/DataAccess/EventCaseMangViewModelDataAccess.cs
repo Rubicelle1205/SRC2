@@ -73,8 +73,8 @@ AND (@CaseID IS NULL OR A.CaseID LIKE '%' + @CaseID + '%')  ";
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT A.CaseID, A.MainClass, A.SecondClass, A.CaseStatus, A.CaseFinishDateTime, A.OccurTime, A.KnowTime, 
-                                    A.Location, A.MediaKnow, A.Created, A.LastModified, A.Memo
+            CommandText = $@"SELECT A.CaseID, A.MainClass, A.SecondClass, A.CaseStatus, A.CaseFinishDateTime, A.OccurTime, A.KnowTime, A.ReferCode,
+                                    A.Location, A.MediaKnow, A.DeathAmt, A.HurtAmt, A.SickAmt, A.ElseAmt, A.Created, A.LastModified, A.Memo
                                FROM hq_PccuCase.dbo.CaseMainMang A
                           LEFT JOIN hq_PccuClub.dbo.EventMainClassMang B ON B.ID = A.MainClass
                           LEFT JOIN hq_PccuClub.dbo.EventSecondClassMang C ON C.ID = A.SecondClass
@@ -88,6 +88,63 @@ AND (A.CaseID = @ID) ";
                 return dbResult.entitys.ToList().FirstOrDefault();
 
             return null;
+        }
+
+        public List<Victim> GetLstVictimData(string CaseID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@CaseID", CaseID);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT CaseID, Name, SNO, BirthYear, Sex, Status, Title, Unit, Location, Role, 
+                                    Creator, Created, LastModifier, LastModified
+                               FROM hq_PccuCase.dbo.CaseVictimMang
+                              WHERE 1 = 1
+                                AND CaseID = @CaseID
+";
+
+
+            (DbExecuteInfo info, IEnumerable<Victim> entitys) dbResult = DbaExecuteQuery<Victim>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<Victim>();
+        }
+
+        public List<EventData> GetEventData(string CaseID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@CaseID", CaseID);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT A.EventID, B.Text AS EventIDText, A.EventDateTime, A.Text
+                               FROM hq_PccuCase.dbo.EventDetailMang A
+						  LEFT JOIN hq_PccuClub.dbo.EventStatusMang B ON B.ID = A.EventID AND B.CaseSystemType = '01'
+                              WHERE 1 = 1
+                                AND A.CaseID = @CaseID AND A.CaseSystemType = '01'
+						   ORDER BY A.EventDateTime DESC
+";
+
+
+            (DbExecuteInfo info, IEnumerable<EventData> entitys) dbResult = DbaExecuteQuery<EventData>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<EventData>();
         }
 
         /// <summary> 新增資料 </summary>
