@@ -16,7 +16,6 @@ namespace WebPccuClub.DataAccess
     {
 
         /// <summary> 查詢結果 </summary>
-
         public List<EventCaseMangResultModel> GetSearchResult(EventCaseMangConditionModel model)
         {
             string CommandText = string.Empty;
@@ -409,6 +408,47 @@ AND (A.CaseID = @ID) ";
 
             return ExecuteResult;
         }
+
+
+        /// <summary> 查詢結果 </summary>
+        public List<EventCaseMangResultModel> GetExportResult(EventCaseMangConditionModel model)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@MainClass", model.MainClass);
+            parameters.Add("@SecondClass", model.SecondClass);
+            parameters.Add("@CaseID", model.CaseID);
+            parameters.Add("@CaseStatus", model.CaseStatus);
+            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
+            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT A.CaseID, A.MainClass, B.Text AS MainClassText, A.SecondClass, C.Text AS SecondClassText, A.CaseStatus, D.Text AS CaseStatusText, A.CaseFinishDateTime, A.OccurTime, A.KnowTime, A.Created
+                               FROM hq_PccuCase.dbo.CaseMainMang A
+                          LEFT JOIN hq_PccuClub.dbo.EventMainClassMang B ON B.ID = A.MainClass
+                          LEFT JOIN hq_PccuClub.dbo.EventSecondClassMang C ON C.ID = A.SecondClass
+                          LEFT JOIN hq_PccuClub.dbo.Code D ON D.Code = A.CaseStatus AND D.Type = 'CaseFinish'
+WHERE 1 = 1
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
+AND (@MainClass IS NULL OR A.MainClass = @MainClass)
+AND (@SecondClass IS NULL OR A.SecondClass = @SecondClass)
+AND (@CaseStatus IS NULL OR A.CaseStatus = @CaseStatus)
+AND (@CaseID IS NULL OR A.CaseID LIKE '%' + @CaseID + '%')  ";
+
+
+            (DbExecuteInfo info, IEnumerable<EventCaseMangResultModel> entitys) dbResult = DbaExecuteQuery<EventCaseMangResultModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<EventCaseMangResultModel>();
+        }
+
 
         public List<SelectListItem> GetddlMainClass()
         {

@@ -94,9 +94,8 @@
 
                             @using (Html.BeginForm("Edit", "EventCaseMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
                             {
-                            <button type="submit" value="@item.CaseID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看轉介內容</button>
+                                <button type="submit" value="@item.CaseID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看轉介內容</button>
                             }
-                            <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel('@item.CaseID');">刪除</a>
                         </td>
                     </tr>
                     }
