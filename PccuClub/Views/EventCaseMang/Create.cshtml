@@ -112,13 +112,13 @@
                                                             @Html.TextBox("Name", null, new { @class = "form-control form-control-sm", placeholder = "請輸入姓名" })
                                                     </td>
                                                     <td>
-                                                            @Html.DropDownList("VictimStatus", (IEnumerable<SelectListItem>)ViewBag.ddlVictimStatus, "請選擇狀態", new { @class = "form-control  form-control-sm" })
+                                                            @Html.DropDownList("Status", (IEnumerable<SelectListItem>)ViewBag.ddlVictimStatus, "請選擇狀態", new { @class = "form-control  form-control-sm" })
                                                     </td>
                                                     <td>
-                                                            @Html.DropDownList("VictimTitle", (IEnumerable<SelectListItem>)ViewBag.ddlVictimTitle, "請選擇身分", new { @class = "form-control  form-control-sm" })
+                                                            @Html.DropDownList("Title", (IEnumerable<SelectListItem>)ViewBag.ddlVictimTitle, "請選擇身分", new { @class = "form-control  form-control-sm" })
                                                     </td>
                                                     <td>
-                                                            @Html.DropDownList("VictimUnit", (IEnumerable<SelectListItem>)ViewBag.ddlVictimUnit, "請選擇所屬單位", new { @class = "form-control  form-control-sm" })
+                                                            @Html.DropDownList("Unit", (IEnumerable<SelectListItem>)ViewBag.ddlVictimUnit, "請選擇所屬單位", new { @class = "form-control  form-control-sm" })
                                                     </td>
                                                     <td>
                                                             @Html.TextBox("SNO", null, new { @class = "form-control form-control-sm", placeholder = "請輸入學號" })
@@ -127,10 +127,10 @@
                                                             @Html.DropDownList("BirthYear", (IEnumerable<SelectListItem>)ViewBag.ddlBirth, "請選擇出生年", new { @class = "form-control  form-control-sm" })
                                                     </td>
                                                     <td>
-                                                            @Html.DropDownList("VictimLocation", (IEnumerable<SelectListItem>)ViewBag.ddlVictimLocation, "請選擇目前位置", new { @class = "form-control  form-control-sm" })
+                                                            @Html.DropDownList("Location", (IEnumerable<SelectListItem>)ViewBag.ddlVictimLocation, "請選擇目前位置", new { @class = "form-control  form-control-sm" })
                                                     </td>
                                                     <td>
-                                                            @Html.DropDownList("ddlVictimRole", (IEnumerable<SelectListItem>)ViewBag.ddlVictimRole, "請選擇角色", new { @class = "form-control  form-control-sm" })
+                                                            @Html.DropDownList("Role", (IEnumerable<SelectListItem>)ViewBag.ddlVictimRole, "請選擇角色", new { @class = "form-control  form-control-sm" })
                                                     </td>
                                                     <td>
                                                         <button type="button"
@@ -317,13 +317,13 @@
             var rowNum = index + 1;
             var sex = $(this).find('[name="Sex"]').val();
             var name = $(this).find('[name="Name"]').val();
-            var status = $(this).find('[name="VictimStatus"]').val();
-            var title = $(this).find('[name="VictimTitle"]').val();
-            var unit = $(this).find('[name="VictimUnit"]').val();
+            var status = $(this).find('[name="Status"]').val();
+            var title = $(this).find('[name="Title"]').val();
+            var unit = $(this).find('[name="Unit"]').val();
             var sno = $(this).find('[name="SNO"]').val();
             var birthYear = $(this).find('[name="BirthYear"]').val();
-            var location = $(this).find('[name="VictimLocation"]').val();
-            var role = $(this).find('[name="ddlVictimRole"]').val();
+            var location = $(this).find('[name="Location"]').val();
+            var role = $(this).find('[name="Role"]').val();
 
             dataString += rowNum + ':' + sex + ',' + name + ',' + status + ',' + title + ',' + unit + ',' + sno + ',' + birthYear + ',' + location + ',' + role + '|';
         });

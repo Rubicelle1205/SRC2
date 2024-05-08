@@ -227,9 +227,6 @@ AND (A.CaseID = @ID) ";
             dt = ds.Tables[0];
 
             return ExecuteResult;
-
-
-
         }
 
         /// <summary> 新增相關人員資料 </summary>
@@ -289,13 +286,7 @@ AND (A.CaseID = @ID) ";
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
-            string CommendText = $@"DELETE FROM hq_PccuCase.dbo.EventDetailMang WHERE CaseID = '{CaseID}' ";
-
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-            if (ExecuteResult.isSuccess || ExecuteResult.ErrorCode == dbErrorCode._EC_NotAffect)
-            {
-               CommendText = $@"INSERT INTO hq_PccuCase.dbo.EventDetailMang
+            string CommendText = $@"INSERT INTO hq_PccuCase.dbo.EventDetailMang
                                             (CaseID
                                             ,CaseSystemType
                                             ,EventID
@@ -316,9 +307,7 @@ AND (A.CaseID = @ID) ";
                                             ,'{loginUser.LoginId}'
                                             ,GETDATE() )";
 
-                ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
-
-            }
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
 
             return ExecuteResult;
         }
@@ -354,13 +343,46 @@ AND (A.CaseID = @ID) ";
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
-            string CommendText = $@"UPDATE CaseMainMang 
+            string CommendText = $@"UPDATE hq_PccuCase.dbo.CaseMainMang 
                                        SET MainClass = @MainClass, SecondClass = @SecondClass, 
                                            CaseStatus = @CaseStatus, CaseFinishDateTime = @CaseFinishDateTime, 
                                            Location = @Location, OccurTime = @OccurTime, KnowTime = @KnowTime, MediaKnow = @MediaKnow, 
                                            DeathAmt = @DeathAmt, HurtAmt = @HurtAmt, SickAmt = @SickAmt, ElseAmt = @ElseAmt, 
                                            ReferCode = @ReferCode, Memo = @Memo, LastModifier = @LoginId, LastModified = GETDATE()
-                                     WHERE A.CaseID = @ID";
+                                     WHERE CaseID = @CaseID";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        /// <summary> 新增事件原因及經過資料 </summary>
+        public DbExecuteInfo UpdateEventData(EventCaseMangViewModel vm, UserInfo loginUser, string CaseID)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommendText = $@"INSERT INTO hq_PccuCase.dbo.EventDetailMang
+                                           (CaseID
+                                            ,CaseSystemType
+                                            ,EventID
+                                            ,EventDateTime
+                                            ,Text
+                                            ,Creator
+                                            ,Created
+                                            ,LastModifier
+                                            ,LastModified)
+                                        VALUES
+                                            ('{CaseID}'
+                                            ,'01'
+                                            ,'{vm.EditModel.EventID}'
+                                            ,'{vm.EditModel.EventDateTime}'
+                                            ,'{vm.EditModel.EventText}'
+                                            ,'{loginUser.LoginId}'
+                                            ,GETDATE()
+                                            ,'{loginUser.LoginId}'
+                                            ,GETDATE() )";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -381,7 +403,7 @@ AND (A.CaseID = @ID) ";
             parameters.Add("@ID", ser);
             #endregion 參數設定
 
-            string CommendText = $@"DELETE FROM CaseMainMang WHERE CaseID = @ID ";
+            string CommendText = $@"DELETE FROM hq_PccuCase.dbo.CaseMainMang WHERE CaseID = @ID ";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 

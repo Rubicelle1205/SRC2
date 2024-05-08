@@ -175,9 +175,53 @@ namespace WebPccuClub.Controllers
         {
             try
             {
+                if (!string.IsNullOrEmpty(vm.EditModel.strLstVictim))
+                    vm.EditModel.LstVictim = TransToLstVictim(vm.EditModel.strLstVictim);
+
                 dbAccess.DbaInitialTransaction();
 
                 var dbResult = dbAccess.UpdateData(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
+                dbResult = dbAccess.InsertVictim(vm.EditModel.LstVictim, LoginUser, vm.EditModel.CaseID);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public IActionResult EditOldEventData(EventCaseMangViewModel vm)
+        {
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.UpdateEventData(vm, LoginUser, vm.EditModel.CaseID);
 
                 if (!dbResult.isSuccess)
                 {
@@ -261,7 +305,6 @@ namespace WebPccuClub.Controllers
 
             return LstVictim;
         }
-
 
         private List<EventData> TransToLstEventData(EventCaseMangViewModel vm)
         {
