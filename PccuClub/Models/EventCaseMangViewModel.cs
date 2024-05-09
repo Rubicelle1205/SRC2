@@ -443,6 +443,17 @@ namespace WebPccuClub.Models
         public DateTime? Created { get; set; }
     }
 
+    public class EventCaseMangChkSeconodModel
+    {
+        /// <summary>CaseID</summary>
+        [DisplayName("CaseID")]
+        public string? CaseID { get; set; }
+
+        /// <summary>SecondCode</summary>
+        [DisplayName("SecondCode")]
+        public string? SecondCode { get; set; }
+    }
+
     public class EventData
     {
         /// <summary>事件編號</summary>

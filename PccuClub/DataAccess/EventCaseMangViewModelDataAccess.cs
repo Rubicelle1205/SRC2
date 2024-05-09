@@ -8,6 +8,7 @@ using System.Text.Encodings.Web;
 using WebPccuClub.Global;
 using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
+using X.PagedList;
 
 namespace WebPccuClub.DataAccess
 {
@@ -307,6 +308,53 @@ AND (A.CaseID = @ID) ";
                                             ,GETDATE() )";
 
             ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+            return ExecuteResult;
+        }
+
+        /// <summary> 新增子系統資料 </summary>
+        public DbExecuteInfo InsertSubSystem(List<string> LstSubSystem, string CaseID, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+            
+            #region 參數設定
+            #endregion 參數設定
+
+            for (int i = 0; i <= LstSubSystem.Count - 1; i++)
+            {
+                string SubSystemCode = LstSubSystem[i];
+                string SubSystemType = "";
+
+                if (SubSystemCode == "01")
+                    SubSystemCode = "02";
+                else if (SubSystemCode == "02")
+                    SubSystemCode = "03";
+
+                if (SubSystemCode != "")
+                {
+                    string CommendText = $@"INSERT INTO hq_PccuCase.dbo.EventMainMang
+                                               (CaseID
+                                               ,CaseSystemType
+                                               ,Creator
+                                               ,Created
+                                               ,LastModifier
+                                               ,LastModified)
+                                         VALUES
+                                               ('{CaseID}'
+                                               ,'{SubSystemCode}'
+                                               ,'{LoginUser.LoginId}'
+                                               ,GETDATE()
+                                               ,'{LoginUser.LoginId}'
+                                               ,GETDATE())";
+
+
+                    ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+                }
+                else
+                    return new DbExecuteInfo { isSuccess = true };
+            }
 
             return ExecuteResult;
         }
@@ -840,6 +888,41 @@ AND (@HandleEvent IS NULL OR A.HandleEvent LIKE '%' + @HandleEvent + '%')
                 return dbResult.entitys.ToList();
 
             return new List<SelectListItem>();
+        }
+
+        /// <summary> 查詢結果 </summary>
+
+        public List<string> GetNeedWriteSecond(string Second)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ID", Second);
+            #endregion
+
+            CommandText = $@"SELECT Import
+                               FROM EventSecondClassMang
+                              WHERE 1 = 1 
+                                AND ID = @ID
+";
+
+
+            (DbExecuteInfo info, IEnumerable<ConsultationRoleMangEditModel> entitys) dbResult = DbaExecuteQuery<ConsultationRoleMangEditModel>(CommandText, parameters, true, DBAccessException);
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                string Import = ds.Tables[0].QueryFieldByDT("Import");
+                string[] arr = Import.Split(",");
+                
+                return arr.ToList();
+            }
+
+            return new List<string>();
         }
     }
 }

@@ -157,6 +157,19 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
+                string SecondClass = vm.CreateModel.SecondClass;
+                List<string> LstSubSystem = dbAccess.GetNeedWriteSecond(SecondClass);
+                
+                dbResult = dbAccess.InsertSubSystem(LstSubSystem, vm.CreateModel.CaseID, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
                 dbAccess.DbaCommit();
             }
             catch (Exception ex)
@@ -318,6 +331,7 @@ namespace WebPccuClub.Controllers
                 }
 
                 List<EventCaseImportMangResultModel> LstExcel = new List<EventCaseImportMangResultModel>();
+                List<EventCaseMangChkSeconodModel> LstChkSecond = new List<EventCaseMangChkSeconodModel>();
 
                 using (Stream stream = vm.File.OpenReadStream())
                 {
@@ -402,6 +416,12 @@ namespace WebPccuClub.Controllers
                             };
 
                             LstExcel.Add(excel);
+
+                            EventCaseMangChkSeconodModel chkSecond = new EventCaseMangChkSeconodModel();
+                            chkSecond.CaseID = excel.CaseID;
+                            chkSecond.SecondCode = excel.SecondClass;
+
+                            LstChkSecond.Add(chkSecond);
                         }
                     }
                 }
@@ -416,6 +436,23 @@ namespace WebPccuClub.Controllers
                         dbAccess.DbaRollBack();
                         vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                         vmRtn.ErrorMsg = "上傳失敗";
+                    }
+
+                    foreach (EventCaseMangChkSeconodModel item in LstChkSecond)
+                    {
+                        string SecondClass = item.SecondCode;
+                        List<string> LstSubSystem = dbAccess.GetNeedWriteSecond(SecondClass);
+
+                        dbResult = dbAccess.InsertSubSystem(LstSubSystem, item.CaseID, LoginUser);
+
+                        if (!dbResult.isSuccess)
+                        {
+                            dbAccess.DbaRollBack();
+                            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                            vmRtn.ErrorMsg = "新增失敗";
+                            return Json(vmRtn);
+                        }
+
                     }
                 }
 
