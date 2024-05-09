@@ -16,9 +16,7 @@
                     <div class="card">
                         <div class="card-header">
                             <button type="button" class="btn btn-sm btn-outline-dark" onclick="ExportSearchResult()">匯出校安事件清單</button>
-                            <button type="button" class="btn btn-sm btn-outline-dark">匯出轉介內容歷程</button>
-                            <button type="button" class="ml-1 btn btn-sm btn-outline-danger">匯入校安事件清單</button>
-                            <button type="button" class="ml-1 btn btn-sm btn-outline-danger">匯入轉介內容歷程</button>
+                            <a href=@Url.Action("Upload") class="ml-1 btn btn-sm btn-outline-danger">匯入校安事件清單</a>
                             <div class="card-tools">
                                 <a href=@Url.Action("Create") class="btn btn-sm btn-success">新增</a>
                             </div>

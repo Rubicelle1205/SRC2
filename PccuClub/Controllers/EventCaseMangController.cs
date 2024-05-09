@@ -276,6 +276,12 @@ namespace WebPccuClub.Controllers
             return Json(vmRtn);
         }
 
+        [Log(LogActionChineseName.匯入)]
+        public IActionResult Upload()
+        {
+            EventCaseMangViewModel vm = new EventCaseMangViewModel();
+            return View(vm);
+        }
 
         [LogAttribute(LogActionChineseName.匯出Excel)]
         public IActionResult ExportSearchResult(EventCaseMangViewModel vm)
@@ -410,14 +416,14 @@ namespace WebPccuClub.Controllers
         }
 
         [Log(LogActionChineseName.匯入)]
-        public IActionResult Upload()
+        public IActionResult ReferDataUpload()
         {
             EventCaseMangViewModel vm = new EventCaseMangViewModel();
             return View(vm);
         }
 
         [LogAttribute(LogActionChineseName.查詢)]
-        public IActionResult GetPersonalConsentSearchResult(EventCaseMangViewModel vm)
+        public IActionResult GetReferDataSearchResult(EventCaseMangViewModel vm)
         {
             vm.ReferDataResultModel = dbAccess.GetReferDataSearchResult(vm.ReferDataConditionModel).ToList();
 

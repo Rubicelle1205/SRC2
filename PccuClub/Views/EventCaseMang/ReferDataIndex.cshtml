@@ -16,7 +16,7 @@
                     <div class="card">
                         <div class="card-header">
                             <button type="button" class="btn btn-sm btn-outline-dark" onclick="ExportSearchResult()">匯出轉介內容歷程</button>
-                            <a href=@Url.Action("Upload") class="ml-1 btn btn-sm btn-outline-danger">匯入轉介內容歷程</a>
+                            <a href=@Url.Action("ReferDataUpload") class="ml-1 btn btn-sm btn-outline-danger">匯入轉介內容歷程</a>
                             <div class="card-tools">
                             </div>
                         </div>
@@ -89,7 +89,7 @@
         }
 
         SendAjax({
-            url: '@Url.Action("GetPersonalConsentSearchResult")',
+            url: '@Url.Action("GetReferDataSearchResult")',
             data: $("#SearchForm").serialize(),
             success: function (result) {
                 $('#SearchResultList').html(result);
