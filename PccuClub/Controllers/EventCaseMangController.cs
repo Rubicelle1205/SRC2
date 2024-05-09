@@ -283,6 +283,153 @@ namespace WebPccuClub.Controllers
             return View(vm);
         }
 
+        [LogAttribute(LogActionChineseName.下載template檔案)]
+        public IActionResult DownloadTemplate()
+        {
+            string FileName = "校安事件管理_template.xlsx";
+
+            string filePath = Path.Combine(hostingEnvironment.ContentRootPath, "Template", FileName);
+
+            byte[] fileContents = System.IO.File.ReadAllBytes(filePath);
+
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName);
+
+        }
+
+        [LogAttribute(LogActionChineseName.匯入Excel)]
+        public async Task<IActionResult> ImportExcel(EventCaseMangViewModel vm)
+        {
+            if (vm.File != null && vm.File.Length > 0)
+            {
+                string fileExtension = Path.GetExtension(vm.File.FileName);
+
+                if (fileExtension != ".xlsx")
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "選擇檔案格式錯誤";
+                    return Json(vmRtn);
+                }
+
+                if (!vm.File.FileName.Contains("校安事件管理_template"))
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "選擇檔案錯誤";
+                    return Json(vmRtn);
+                }
+
+                List<EventCaseImportMangResultModel> LstExcel = new List<EventCaseImportMangResultModel>();
+
+                using (Stream stream = vm.File.OpenReadStream())
+                {
+                    XSSFWorkbook workbook = new XSSFWorkbook(stream);
+                    ISheet sheet = workbook.GetSheetAt(0);
+                    List<string> LstSNo = new List<string>();
+
+                    for (int i = 1; i <= sheet.LastRowNum; i++)
+                    {
+                        IRow row = sheet.GetRow(i);
+                        bool CanGo = true;
+
+                        for (int j = 0; j <= row.Count() - 1; j++)
+                        {
+                            row.GetCell(j)?.SetCellType(CellType.String);
+                            string Celldata = row.GetCell(j)?.ToString();
+                            if (string.IsNullOrEmpty(Celldata))
+                                CanGo = false;
+                        }
+
+                        if (row != null && CanGo)
+                        {
+                            string CaseID = "";
+                            string MainClass = "";
+                            string SecondClass = "";
+                            string CaseFinishClass = "";
+
+                            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlCaseID = dbAccess.GetddlCaseID();
+                            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlMainClass = dbAccess.GetddlMainClass();
+                            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlSecondClass = dbAccess.GetddlSecondClass();
+                            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlCaseFinishClass = dbAccess.GetddlCaseFinishClass();
+
+                            if (LstddlCaseID.Any(m => m.Text == row.GetCell(0)?.ToString()))
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("檢核資料失敗:校安事件編號{0}已存在", row.GetCell(0)?.ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
+
+                            if (!LstddlMainClass.Any(m => m.Text == row.GetCell(1)?.ToString()))
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("檢核資料失敗:{0}", row.GetCell(1)?.ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
+                            else
+                            {
+                                MainClass = LstddlMainClass.Where(m => m.Text == row.GetCell(1)?.ToString()).FirstOrDefault().Value;
+                            }
+
+                            if (!LstddlSecondClass.Any(m => m.Text == row.GetCell(2)?.ToString()))
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("檢核資料失敗:{0}", row.GetCell(2)?.ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
+                            else
+                            {
+                                SecondClass = LstddlSecondClass.Where(m => m.Text == row.GetCell(2)?.ToString()).FirstOrDefault().Value;
+                            }
+
+                            if (!LstddlCaseFinishClass.Any(m => m.Text == row.GetCell(5)?.ToString()))
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("檢核資料失敗:{0}", row.GetCell(5)?.ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
+                            else
+                            {
+                                CaseFinishClass = LstddlCaseFinishClass.Where(m => m.Text == row.GetCell(5)?.ToString()).FirstOrDefault().Value;
+                            }
+                            EventCaseImportMangResultModel excel = new EventCaseImportMangResultModel
+                            {
+                                CaseID = row.GetCell(0)?.StringCellValue.TrimStartAndEnd(),
+                                MainClass = MainClass,
+                                SecondClass = SecondClass,
+                                OccurTime = DateTime.Parse(row.GetCell(3)?.StringCellValue),
+                                KnowTime = DateTime.Parse(row.GetCell(4).StringCellValue),
+                                CaseStatus = CaseFinishClass,
+                                CaseFinishDateTime = DateTime.Parse(row.GetCell(6)?.StringCellValue),
+                                Created = DateTime.Now
+                            };
+
+                            LstExcel.Add(excel);
+                        }
+                    }
+                }
+
+                dbAccess.DbaInitialTransaction();
+                if (LstExcel.Count > 0)
+                {
+                    var dbResult = dbAccess.ImportData(LstExcel, LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "上傳失敗";
+                    }
+                }
+
+                dbAccess.DbaCommit();
+            }
+            else
+            {
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "請選擇檔案上傳";
+            }
+
+            return Json(vmRtn);
+        }
+
         [LogAttribute(LogActionChineseName.匯出Excel)]
         public IActionResult ExportSearchResult(EventCaseMangViewModel vm)
         {
@@ -437,7 +584,7 @@ namespace WebPccuClub.Controllers
         }
 
         [LogAttribute(LogActionChineseName.下載template檔案)]
-        public IActionResult DownloadTemplate()
+        public IActionResult DownloadReferDataTemplate()
         {
             string FileName = "轉介內容歷程_template.xlsx";
 
@@ -450,7 +597,7 @@ namespace WebPccuClub.Controllers
         }
 
         [LogAttribute(LogActionChineseName.匯入Excel)]
-        public async Task<IActionResult> ImportExcelAsync(EventCaseMangViewModel vm)
+        public async Task<IActionResult> ReferDataImportExcel(EventCaseMangViewModel vm)
         {
             if (vm.File != null && vm.File.Length > 0)
             {
@@ -537,7 +684,7 @@ namespace WebPccuClub.Controllers
                 dbAccess.DbaInitialTransaction();
                 if (LstExcel.Count > 0)
                 {
-                    var dbResult = dbAccess.ImportData(LstExcel, LoginUser);
+                    var dbResult = dbAccess.ReferDataImportData(LstExcel, LoginUser);
 
                     if (!dbResult.isSuccess)
                     {

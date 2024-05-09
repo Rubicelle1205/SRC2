@@ -408,6 +408,41 @@ namespace WebPccuClub.Models
         public DateTime? Created { get; set; }
     }
 
+    public class EventCaseImportMangResultModel
+    {
+        /// <summary>事件編號</summary>
+        [DisplayName("事件編號")]
+        public string? CaseID { get; set; }
+
+        /// <summary>校安事件主類別</summary>
+        [DisplayName("校安事件主類別")]
+        public string? MainClass { get; set; }
+
+        /// <summary>校安事件次類別</summary>
+        [DisplayName("校安事件次類別")]
+        public string? SecondClass { get; set; }
+
+        /// <summary>發生時間</summary>
+        [DisplayName("發生時間")]
+        public DateTime? OccurTime { get; set; }
+
+        /// <summary>知悉時間</summary>
+        [DisplayName("知悉時間")]
+        public DateTime? KnowTime { get; set; }
+
+        /// <summary>是否結案</summary>
+        [DisplayName("是否結案")]
+        public string? CaseStatus { get; set; }
+
+        /// <summary>結案時間</summary>
+        [DisplayName("結案時間")]
+        public DateTime? CaseFinishDateTime { get; set; }
+
+        /// <summary>建立時間</summary>
+        [DisplayName("建立時間")]
+        public DateTime? Created { get; set; }
+    }
+
     public class EventData
     {
         /// <summary>事件編號</summary>

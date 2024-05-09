@@ -491,9 +491,49 @@ AND (@HandleEvent IS NULL OR A.HandleEvent LIKE '%' + @HandleEvent + '%')
             return new List<EventCaseReferDataMangResultModel>();
         }
 
+        /// <summary> 新增資料 </summary>
+        public DbExecuteInfo ImportData(List<EventCaseImportMangResultModel> dataList, UserInfo LoginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO hq_PccuCase.dbo.CaseMainMang
+                                               (CaseID
+                                               ,MainClass
+                                               ,SecondClass
+                                               ,CaseStatus
+                                               ,CaseFinishDateTime
+                                               ,OccurTime
+                                               ,KnowTime
+                                                ,Creator
+                                                ,Created
+                                                ,LastModifier
+                                                ,LastModified)
+                                         VALUES
+                                               (@CaseID
+                                               ,@MainClass
+                                               ,@SecondClass
+                                               ,@CaseStatus
+                                               ,@CaseFinishDateTime
+                                               ,@OccurTime
+                                               ,@KnowTime
+                                               ,'{LoginUser.LoginId}'
+                                               ,GETDATE()
+                                               ,'{LoginUser.LoginId}'
+                                               ,GETDATE())";
+
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+            return ExecuteResult;
+        }
 
         /// <summary> 新增資料 </summary>
-        public DbExecuteInfo ImportData(List<EventCaseReferDataImportMangResultModel> dataList, UserInfo LoginUser)
+        public DbExecuteInfo ReferDataImportData(List<EventCaseReferDataImportMangResultModel> dataList, UserInfo LoginUser)
         {
 
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
