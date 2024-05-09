@@ -92,7 +92,7 @@
                                 <button type="button" class="ml-1 btn btn-sm btn-outline-dark">下載轉介單位Excel</button>
                             }
 
-                            @using (Html.BeginForm("Edit", "EventCaseMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
+                            @using (Html.BeginForm("ReferDataIndex", "EventCaseMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
                             {
                                 <button type="submit" value="@item.CaseID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看轉介內容</button>
                             }

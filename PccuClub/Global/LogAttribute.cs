@@ -105,6 +105,7 @@
         校安事件管理 = 90,
         性平事件管理 = 91,
         霸凌事件管理 = 92,
+        轉介內容歷程 = 93,
     }
 
 	public enum DBActionChineseName

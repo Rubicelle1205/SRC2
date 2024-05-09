@@ -27,6 +27,8 @@ namespace WebPccuClub.Controllers
             hostingEnvironment = _hostingEnvironment;
         }
 
+        #region 校安事件
+
 
         [Log(LogActionChineseName.首頁)]
         public IActionResult Index()
@@ -388,5 +390,232 @@ namespace WebPccuClub.Controllers
 
             return LstEventData;
         }
+
+        #endregion
+
+        #region 轉介
+
+        [Log(LogActionChineseName.首頁)]
+        public IActionResult ReferDataIndex(string submitBtn)
+        {
+            ViewBag.ddlRefer = dbAccess.GetddlReferUnit();
+
+            EventCaseMangViewModel vm = new EventCaseMangViewModel();
+            vm.ReferDataConditionModel = new EventCaseReferDataMangConditionModel();
+
+            if (!string.IsNullOrEmpty(submitBtn))
+                vm.ReferDataConditionModel.CaseID = submitBtn;
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.匯入)]
+        public IActionResult Upload()
+        {
+            EventCaseMangViewModel vm = new EventCaseMangViewModel();
+            return View(vm);
+        }
+
+        [LogAttribute(LogActionChineseName.查詢)]
+        public IActionResult GetPersonalConsentSearchResult(EventCaseMangViewModel vm)
+        {
+            vm.ReferDataResultModel = dbAccess.GetReferDataSearchResult(vm.ReferDataConditionModel).ToList();
+
+            #region 分頁
+            vm.ReferDataConditionModel.TotalCount = vm.ReferDataResultModel.Count();
+            int StartRow = vm.ReferDataConditionModel.Page * vm.ReferDataConditionModel.PageSize;
+            vm.ReferDataResultModel = vm.ReferDataResultModel.Skip(StartRow).Take(vm.ReferDataConditionModel.PageSize).ToList();
+            #endregion
+
+            return PartialView("_SearchReferDataResultPartial", vm);
+        }
+
+        [LogAttribute(LogActionChineseName.下載template檔案)]
+        public IActionResult DownloadTemplate()
+        {
+            string FileName = "轉介內容歷程_template.xlsx";
+
+            string filePath = Path.Combine(hostingEnvironment.ContentRootPath, "Template", FileName);
+
+            byte[] fileContents = System.IO.File.ReadAllBytes(filePath);
+
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName);
+
+        }
+
+        [LogAttribute(LogActionChineseName.匯入Excel)]
+        public async Task<IActionResult> ImportExcelAsync(EventCaseMangViewModel vm)
+        {
+            if (vm.File != null && vm.File.Length > 0)
+            {
+                string fileExtension = Path.GetExtension(vm.File.FileName);
+
+                if (fileExtension != ".xlsx")
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "選擇檔案格式錯誤";
+                    return Json(vmRtn);
+                }
+
+                if (!vm.File.FileName.Contains("轉介內容歷程_template"))
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "選擇檔案錯誤";
+                    return Json(vmRtn);
+                }
+
+                List< EventCaseReferDataImportMangResultModel > LstExcel = new List<EventCaseReferDataImportMangResultModel>();
+
+                using (Stream stream = vm.File.OpenReadStream())
+                {
+                    XSSFWorkbook workbook = new XSSFWorkbook(stream);
+                    ISheet sheet = workbook.GetSheetAt(0);
+                    List<string> LstSNo = new List<string>();
+
+                    for (int i = 1; i <= sheet.LastRowNum; i++)
+                    {
+                        IRow row = sheet.GetRow(i);
+                        bool CanGo = true;
+
+                        for (int j = 0; j <= row.Count() - 1; j++)
+                        {
+                            row.GetCell(j)?.SetCellType(CellType.String);
+                            string Celldata = row.GetCell(j)?.ToString();
+                            if (string.IsNullOrEmpty(Celldata))
+                                CanGo = false;
+                        }
+
+                        if (row != null && CanGo)
+                        {
+                            string ReferID = "";
+                            string CaseID = "";
+
+                            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstReferUnit = dbAccess.GetddlReferUnit();
+                            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlCaseID = dbAccess.GetddlCaseID();
+
+                            if (!LstddlCaseID.Any(m => m.Text == row.GetCell(0)?.ToString()))
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("檢核資料失敗:查無校安事件編號{0}", row.GetCell(0)?.ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
+
+                            if (!LstReferUnit.Any(m => m.Text == row.GetCell(1)?.ToString()))
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("檢核資料失敗:{0}", row.GetCell(1)?.ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
+                            else
+                            {
+                                ReferID = LstReferUnit.Where(m => m.Text == row.GetCell(1)?.ToString()).FirstOrDefault().Value;
+                            }
+
+                            EventCaseReferDataImportMangResultModel excel = new EventCaseReferDataImportMangResultModel
+                            {
+                                CaseID = row.GetCell(0)?.StringCellValue.TrimStartAndEnd(),
+                                ReferID = ReferID,
+                                HandleTime = DateTime.Parse(row.GetCell(2)?.StringCellValue),
+                                HandleEvent = row.GetCell(3)?.StringCellValue.TrimStartAndEnd(),
+                                HandleMan = row.GetCell(4)?.StringCellValue.TrimStartAndEnd(),
+                                Leader = row.GetCell(5)?.StringCellValue.TrimStartAndEnd(),
+                                Director = row.GetCell(6)?.StringCellValue.TrimStartAndEnd(),
+                                Created = DateTime.Now
+                            };
+
+                            LstExcel.Add(excel);
+                        }
+                    }
+                }
+
+                dbAccess.DbaInitialTransaction();
+                if (LstExcel.Count > 0)
+                {
+                    var dbResult = dbAccess.ImportData(LstExcel, LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "上傳失敗";
+                    }
+                }
+
+                dbAccess.DbaCommit();
+            }
+            else
+            {
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "請選擇檔案上傳";
+            }
+
+            return Json(vmRtn);
+        }
+
+        [LogAttribute(LogActionChineseName.匯出Excel)]
+        public IActionResult ExportReferDataSearchResult(EventCaseMangViewModel vm)
+        {
+            string FileName = string.Format("{0}_{1}", LogActionChineseName.轉介內容歷程, DateTime.Now.ToString("yyyyMMdd"));
+            vm.ReferDataResultModel = dbAccess.GetReferDataSearchResult(vm.ReferDataConditionModel);
+
+            if (vm.ReferDataResultModel != null && vm.ReferDataResultModel.Count > 0)
+            {
+                IWorkbook workbook = new XSSFWorkbook();
+                List<int> LstWidth = new List<int> { 40, 40, 40, 40, 40, 40, 40, 40 };
+
+                ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
+
+                var properties = typeof(EventCaseReferDataExcelHeaderMangResultModel).GetProperties();
+
+                //設定欄位
+                IRow headerRow = sheet.CreateRow(0);
+
+                XSSFCellStyle headStyle = ExcelUtil.GetDefaultHeaderStyle(workbook);
+
+                for (int i = 0; i <= properties.Length - 1; i++)
+                {
+                    var displayAttribute = (DisplayNameAttribute)properties[i].GetCustomAttribute(typeof(DisplayNameAttribute));
+                    var displayName = displayAttribute?.DisplayName ?? properties[i].Name;
+
+                    headerRow.CreateCell(i).SetCellValue(displayName);
+
+                    foreach (ICell cell in headerRow.Cells)
+                        cell.CellStyle = headStyle;
+
+                }
+
+                XSSFCellStyle contentStyle = ExcelUtil.GetDefaultContentStyle(workbook);
+
+                //設定資料
+                for (int i = 0; i <= vm.ReferDataResultModel.Count - 1; i++)
+                {
+                    IRow dataRow = sheet.CreateRow(i + 1);
+
+                    dataRow.CreateCell(0).SetCellValue(vm.ReferDataResultModel[i].CaseID);
+                    dataRow.CreateCell(1).SetCellValue(vm.ReferDataResultModel[i].ReferIDText);
+                    dataRow.CreateCell(2).SetCellValue(vm.ReferDataResultModel[i].HandleTime != null ? vm.ReferDataResultModel[i].HandleTime.Value.ToString("yyyy/MM/dd HH:mm") : "");
+                    dataRow.CreateCell(3).SetCellValue(vm.ReferDataResultModel[i].HandleEvent);
+                    dataRow.CreateCell(4).SetCellValue(vm.ReferDataResultModel[i].HandleMan);
+                    dataRow.CreateCell(5).SetCellValue(vm.ReferDataResultModel[i].Leader);
+                    dataRow.CreateCell(6).SetCellValue(vm.ReferDataResultModel[i].Director);
+                    dataRow.CreateCell(7).SetCellValue(vm.ReferDataResultModel[i].Created != null ? vm.ReferDataResultModel[i].Created.Value.ToString("yyyy/MM/dd HH:mm") : "");
+
+                    foreach (ICell cell in dataRow.Cells)
+                        cell.CellStyle = contentStyle;
+                }
+
+                MemoryStream ms = new MemoryStream();
+                workbook.Write(ms, true);
+                ms.Flush();
+                ms.Position = 0;
+
+                return File(ms, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName + ".xlsx");
+            }
+
+            return View("Index", vm);
+
+        }
+
+        #endregion
     }
 }

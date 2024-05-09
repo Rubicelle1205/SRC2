@@ -450,6 +450,90 @@ AND (@CaseID IS NULL OR A.CaseID LIKE '%' + @CaseID + '%')  ";
         }
 
 
+
+
+        /// <summary> 查詢結果 </summary>
+
+        public List<EventCaseReferDataMangResultModel> GetReferDataSearchResult(EventCaseReferDataMangConditionModel model)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@CaseID", model?.CaseID);
+            parameters.Add("@ReferID", model?.ReferID);
+            parameters.Add("@HandleEvent", model?.HandleEvent);
+            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
+            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
+
+
+            #endregion
+
+            CommandText = $@"SELECT A.ID, A.CaseID, A.ReferID, B.ReferName AS ReferIDText, A.HandleMan, A.HandleTime, A.HandleEvent, A.Leader, A.Director, A.Creator, A.Created, A.LastModifier, A.LastModified
+                               FROM hq_PccuCase.dbo.ReferMang A
+                          LEFT JOIN hq_PccuClub.dbo.ReferUnitMang B ON B.ReferID = A.ReferID
+                              WHERE 1 = 1 
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.HandleTime BETWEEN @FromDate AND @ToDate" : " ")}
+AND (@ReferID IS NULL OR A.ReferID = @ReferID)
+AND (@CaseID IS NULL OR A.CaseID LIKE '%' + @CaseID + '%') 
+AND (@HandleEvent IS NULL OR A.HandleEvent LIKE '%' + @HandleEvent + '%') 
+";
+
+
+            (DbExecuteInfo info, IEnumerable<EventCaseReferDataMangResultModel> entitys) dbResult = DbaExecuteQuery<EventCaseReferDataMangResultModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<EventCaseReferDataMangResultModel>();
+        }
+
+
+        /// <summary> 新增資料 </summary>
+        public DbExecuteInfo ImportData(List<EventCaseReferDataImportMangResultModel> dataList, UserInfo LoginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO hq_PccuCase.dbo.ReferMang
+                                               (CaseID
+                                                ,ReferID
+                                                ,HandleMan
+                                                ,HandleTime
+                                                ,HandleEvent
+                                                ,Leader
+                                                ,Director
+                                                ,Creator
+                                                ,Created
+                                                ,LastModifier
+                                                ,LastModified)
+                                         VALUES
+                                               (@CaseID
+                                               ,@ReferID
+                                               ,@HandleMan
+                                               ,@HandleTime
+                                               ,@HandleEvent
+                                               ,@Leader
+                                               ,@Director
+                                               ,'{LoginUser.LoginId}'
+                                               ,GETDATE()
+                                               ,'{LoginUser.LoginId}'
+                                               ,GETDATE())";
+
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+            return ExecuteResult;
+        }
+
+
         public List<SelectListItem> GetddlMainClass()
         {
             string CommandText = string.Empty;
@@ -698,5 +782,24 @@ AND (@CaseID IS NULL OR A.CaseID LIKE '%' + @CaseID + '%')  ";
             return new List<SelectListItem>();
         }
 
+        public List<SelectListItem> GetddlCaseID()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT CaseID AS Value, CaseID AS Text FROM hq_PccuCase.dbo.CaseMainMang ";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
     }
 }

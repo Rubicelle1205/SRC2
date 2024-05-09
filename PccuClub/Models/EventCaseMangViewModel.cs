@@ -19,6 +19,10 @@ namespace WebPccuClub.Models
 
         public EventCaseMangExcelModel ExcelModel { get; set; }
 
+        public EventCaseReferDataMangConditionModel ReferDataConditionModel { get; set; }
+
+        public List<EventCaseReferDataMangResultModel> ReferDataResultModel { get; set; }
+
     }
 
     public class EventCaseMangConditionModel
@@ -403,6 +407,7 @@ namespace WebPccuClub.Models
         [DisplayName("建立時間")]
         public DateTime? Created { get; set; }
     }
+
     public class EventData
     {
         /// <summary>事件編號</summary>
@@ -420,5 +425,195 @@ namespace WebPccuClub.Models
         /// <summary>事件紀錄</summary>
         [DisplayName("事件紀錄")]
         public string? Text { get; set; }
+    }
+
+
+    public class EventCaseReferDataMangConditionModel
+    {
+        public EventCaseReferDataMangConditionModel()
+        {
+            this.Page = 0;
+            this.PageSize = 10;
+            this.TotalCount = 0;
+        }
+
+        /// <summary> 目前頁數 </summary>
+        public int Page { get; set; }
+
+        /// <summary> 預設每頁顯示筆數 - 依需求更改 </summary>
+        public int PageSize { get; set; }
+
+        /// <summary> 總筆數 </summary>
+        public int TotalCount { get; set; }
+
+        /// <summary>辦理情形</summary>
+        [DisplayName("辦理情形")]
+        public string? HandleEvent { get; set; }
+
+        /// <summary>校安事件編號</summary>
+        [DisplayName("校安事件編號")]
+        public string? CaseID { get; set; }
+
+        /// <summary>轉介單位</summary>
+        [DisplayName("轉介單位")]
+        public string? ReferID { get; set; }
+
+        [DisplayName("起始日期")]
+        public DateTime? From_ReleaseDate { get; set; }
+
+        [DisplayName("結束日期")]
+        public DateTime? To_ReleaseDate { get; set; }
+    }
+
+    public class EventCaseReferDataMangResultModel
+    {
+        /// <summary>校安事件編號</summary>
+        [DisplayName("校安事件編號")]
+        public string? CaseID { get; set; }
+
+        /// <summary>轉介單位名稱	</summary>
+        [DisplayName("轉介單位名稱\t")]
+        public string? ReferID { get; set; }
+
+        /// <summary>轉介單位名稱	</summary>
+        [DisplayName("轉介單位名稱\t")]
+        public string? ReferIDText { get; set; }
+
+        /// <summary>承辦人</summary>
+        [DisplayName("承辦人")]
+        public string? HandleMan { get; set; }
+
+        /// <summary>會辦時間</summary>
+        [DisplayName("會辦時間")]
+        public DateTime? HandleTime { get; set; }
+
+        /// <summary>辦理情形</summary>
+        [DisplayName("辦理情形")]
+        public string? HandleEvent { get; set; }
+
+        /// <summary>組長</summary>
+        [DisplayName("組長")]
+        public string? Leader { get; set; }
+
+        /// <summary>主管</summary>
+        [DisplayName("主管")]
+        public string? Director { get; set; }
+
+        /// <summary>匯入時間</summary>
+        [DisplayName("匯入時間")]
+        public DateTime? Created { get; set; }
+    }
+
+    public class EventCaseReferDataImportMangResultModel
+    {
+        /// <summary>校安事件編號</summary>
+        [DisplayName("校安事件編號")]
+        public string? CaseID { get; set; }
+
+        /// <summary>轉介單位名稱	</summary>
+        [DisplayName("轉介單位名稱")]
+        public string? ReferID { get; set; }
+
+        /// <summary>轉介單位名稱	</summary>
+        [DisplayName("轉介單位名稱\t")]
+        public string? ReferIDText { get; set; }
+
+        /// <summary>承辦人</summary>
+        [DisplayName("承辦人")]
+        public string? HandleMan { get; set; }
+
+        /// <summary>會辦時間</summary>
+        [DisplayName("會辦時間")]
+        public DateTime? HandleTime { get; set; }
+
+        /// <summary>辦理情形</summary>
+        [DisplayName("辦理情形")]
+        public string? HandleEvent { get; set; }
+
+        /// <summary>組長</summary>
+        [DisplayName("組長")]
+        public string? Leader { get; set; }
+
+        /// <summary>主管</summary>
+        [DisplayName("主管")]
+        public string? Director { get; set; }
+
+        /// <summary>匯入時間</summary>
+        [DisplayName("匯入時間")]
+        public DateTime? Created { get; set; }
+    }
+
+    public class EventCaseReferDataExcelMangResultModel
+    {
+        /// <summary>校安事件編號</summary>
+        [DisplayName("校安事件編號")]
+        public string? CaseID { get; set; }
+
+        /// <summary>轉介單位名稱	</summary>
+        [DisplayName("轉介單位名稱")]
+        public string? ReferID { get; set; }
+
+        /// <summary>轉介單位名稱	</summary>
+        [DisplayName("轉介單位名稱")]
+        public string? ReferIDText { get; set; }
+
+        /// <summary>承辦人</summary>
+        [DisplayName("承辦人")]
+        public string? HandleMan { get; set; }
+
+        /// <summary>會辦時間</summary>
+        [DisplayName("會辦時間")]
+        public DateTime? HandleTime { get; set; }
+
+        /// <summary>辦理情形</summary>
+        [DisplayName("辦理情形")]
+        public string? HandleEvent { get; set; }
+
+        /// <summary>組長</summary>
+        [DisplayName("組長")]
+        public string? Leader { get; set; }
+
+        /// <summary>主管</summary>
+        [DisplayName("主管")]
+        public string? Director { get; set; }
+
+        /// <summary>匯入時間</summary>
+        [DisplayName("匯入時間")]
+        public DateTime? Created { get; set; }
+    }
+
+    public class EventCaseReferDataExcelHeaderMangResultModel
+    {
+        /// <summary>校安事件編號</summary>
+        [DisplayName("校安事件編號")]
+        public string? CaseID { get; set; }
+
+        /// <summary>轉介單位名稱	</summary>
+        [DisplayName("轉介單位名稱")]
+        public string? ReferIDText { get; set; }
+
+        /// <summary>承辦人</summary>
+        [DisplayName("承辦人")]
+        public string? HandleMan { get; set; }
+
+        /// <summary>會辦時間</summary>
+        [DisplayName("會辦時間")]
+        public DateTime? HandleTime { get; set; }
+
+        /// <summary>辦理情形</summary>
+        [DisplayName("辦理情形")]
+        public string? HandleEvent { get; set; }
+
+        /// <summary>組長</summary>
+        [DisplayName("組長")]
+        public string? Leader { get; set; }
+
+        /// <summary>主管</summary>
+        [DisplayName("主管")]
+        public string? Director { get; set; }
+
+        /// <summary>匯入時間</summary>
+        [DisplayName("匯入時間")]
+        public DateTime? Created { get; set; }
     }
 }
