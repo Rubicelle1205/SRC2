@@ -293,6 +293,10 @@ namespace WebPccuClub.Models
         [DisplayName("性別")]
         public string? Sex { get; set; }
 
+        /// <summary>性別</summary>
+        [DisplayName("性別")]
+        public string? SexText { get; set; }
+
         /// <summary>姓名</summary>
         [DisplayName("姓名")]
         public string? Name { get; set; }
@@ -301,13 +305,25 @@ namespace WebPccuClub.Models
         [DisplayName("狀態")]
         public string? Status { get; set; }
 
+        /// <summary>狀態</summary>
+        [DisplayName("狀態")]
+        public string? StatusText { get; set; }
+
         /// <summary>職稱</summary>
         [DisplayName("職稱")]
         public string? Title { get; set; }
 
+        /// <summary>職稱</summary>
+        [DisplayName("職稱")]
+        public string? TitleText { get; set; }
+
         /// <summary>所屬單位</summary>
         [DisplayName("所屬單位")]
         public string? Unit { get; set; }
+
+        /// <summary>所屬單位</summary>
+        [DisplayName("所屬單位")]
+        public string? UnitText { get; set; }
 
         /// <summary>學號</summary>
         [DisplayName("學號")]
@@ -321,9 +337,17 @@ namespace WebPccuClub.Models
         [DisplayName("目前位置")]
         public string? Location { get; set; }
 
+        /// <summary>目前位置</summary>
+        [DisplayName("目前位置")]
+        public string? LocationText { get; set; }
+
         /// <summary>角色</summary>
         [DisplayName("角色")]
         public string? Role { get; set; }
+
+        /// <summary>角色</summary>
+        [DisplayName("角色")]
+        public string? RoleText { get; set; }
     }
 
     public class EventCaseMangExcelModel
