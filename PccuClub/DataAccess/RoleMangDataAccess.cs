@@ -34,9 +34,12 @@ namespace WebPccuClub.DataAccess
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT RoleId, RoleName, Comment, IsEnable, Creator, Created, LastModifier, LastModified, ModifiedReason
+            CommandText = $@"SELECT A.RoleId, A.RoleName, A.Comment, A.SystemCode, B.Text AS SystemCodeText, 
+                                    A.IsEnable, A.Creator, A.Created, A.LastModifier, A.LastModified, A.ModifiedReason
                                FROM SystemRole A
+							   LEFT JOIN Code B ON B.Code = A.SystemCode AND B.Type = 'SystemCode'
                               WHERE 1 = 1
+AND A.SystemCode = '02'
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.LastModified BETWEEN @FromDate AND @ToDate" : " ")}
 {(model.RoleId != null ? " AND A.RoleId LIKE '%' + @RoleId + '%'" : " ")}
 AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
@@ -69,8 +72,9 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             #region 參數設定
             #endregion
 
-            CommandText = $@"
-                            SELECT RoleId, RoleName, Comment, IsEnable, Creator, Created, LastModifier, LastModified, ModifiedReason
+            CommandText = $@"SELECT RoleId, RoleName, Comment, SystemCode, 
+	                     CASE WHEN SystemRoleCode = '02' THEN '01' ELSE '02' END AS SystemRoleCode, 
+	                               IsEnable, Creator, Created, LastModifier, LastModified, ModifiedReason
                               FROM SystemRole
                              WHERE 1 = 1
                                AND RoleId = @RoleId";
@@ -94,6 +98,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             #region 參數設定
             parameters.Add("@RoleId", vm.CreateModel.RoleId.TrimStartAndEnd());
             parameters.Add("@RoleName", vm.CreateModel.RoleName.TrimStartAndEnd());
+            parameters.Add("@SystemRoleCode", vm.CreateModel.SystemRoleCode.TrimStartAndEnd() == "01" ? "02" : "01");
             parameters.Add("@Comment", vm.CreateModel.Comment.TrimStartAndEnd());
 
             parameters.Add("@LastModifier", LoginUser.LoginId);
@@ -102,7 +107,9 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             string CommendText = $@"INSERT INTO SystemRole
                                                (RoleId
                                                ,RoleName
+                                               ,SystemRoleCode
                                                ,Comment
+                                               ,SystemCode
                                                ,IsEnable
                                                ,Creator
                                                ,Created
@@ -112,7 +119,9 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
                                          VALUES
                                                (@RoleId
                                                ,@RoleName
+                                               ,@SystemRoleCode
                                                ,@Comment
+                                               ,'02'
                                                ,1
                                                ,@LastModifier
                                                ,GETDATE()
@@ -145,7 +154,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
 
                 if (arrFun.Count() > 0)
                 {
-                    CommendText = $@"DELETE FROM SystemRoleFun WHERE RoleId = @RoleId ";
+                    CommendText = $@"DELETE FROM SystemRoleFun WHERE RoleId = @RoleId AND SystemCode = '02'";
 
                     ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -159,12 +168,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
                     {
                         parameters.Add("@MenuNode", arrFun[i].ToString());
 
-                        CommendText = $@"INSERT INTO SystemRoleFun
-                                               (RoleId
-                                               ,MenuNode)
-                                         VALUES
-                                               (@RoleId
-                                               ,@MenuNode)";
+                        CommendText = $@"INSERT INTO SystemRoleFun (RoleId, MenuNode, SystemCode) VALUES (@RoleId, @MenuNode, '02')";
 
                         ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -189,17 +193,20 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
 
             parameters.Add("@RoleId", vm.EditModel.RoleId);
             parameters.Add("@RoleName", vm.EditModel.RoleName.TrimStartAndEnd());
+            parameters.Add("@SystemRoleCode", vm.EditModel.SystemRoleCode.TrimStartAndEnd() == "01" ? "02" : "01");
             parameters.Add("@Comment", vm.EditModel.Comment.TrimStartAndEnd());
 
             parameters.Add("@LastModifier", LoginUser.LoginId);
-                #endregion 參數設定
+            #endregion 參數設定
 
-                CommendText = $@"UPDATE SystemRole 
-                                           SET RoleName = @RoleName, 
-                                               Comment = @Comment, 
-                                               LastModifier = @LastModifier, 
-                                               LastModified = GETDATE()
-                                         WHERE RoleId = @RoleId ";
+            CommendText = $@"UPDATE SystemRole 
+                                SET RoleName = @RoleName, 
+                                    SystemRoleCode = @SystemRoleCode, 
+                                    Comment = @Comment, 
+                                    SystemCode = '02', 
+                                    LastModifier = @LastModifier, 
+                                    LastModified = GETDATE()
+                                WHERE RoleId = @RoleId ";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -223,7 +230,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
 
             #endregion 參數設定
 
-            CommendText = $@"DELETE FROM SystemRoleFun WHERE RoleId = @RoleId ";
+            CommendText = $@"DELETE FROM SystemRoleFun WHERE RoleId = @RoleId AND SystemCode = '02'";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -237,12 +244,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             {
                 parameters.Add("@MenuNode", arrFun[i].ToString());
 
-                CommendText = $@"INSERT INTO SystemRoleFun
-                                               (RoleId
-                                               ,MenuNode)
-                                         VALUES
-                                               (@RoleId
-                                               ,@MenuNode)";
+                CommendText = $@"INSERT INTO SystemRoleFun (RoleId, MenuNode, SystemCode) VALUES (@RoleId, @MenuNode, '02')";
 
                 ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -268,7 +270,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             parameters.Add("@RoleId", ser);
             #endregion 參數設定
 
-            string CommendText = $@"DELETE FROM SystemRole WHERE RoleId = @RoleId ";
+            string CommendText = $@"DELETE FROM SystemRole WHERE RoleId = @RoleId AND SystemCode = '02'";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -289,7 +291,7 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             parameters.Add("@RoleId", ser);
             #endregion 參數設定
 
-            string CommendText = $@"DELETE FROM UserRole WHERE RoleId = @RoleId ";
+            string CommendText = $@"DELETE FROM UserRole WHERE RoleId = @RoleId AND SystemCode = '02' ";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -386,12 +388,14 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
             #region 參數設定
             #endregion
 
-            CommandText = @"SELECT A.MenuNode AS VALUE, A.MenuName AS TEXT, A.BackOrFront AS [GROUP], A.SystemCode, B.Text AS SystemCodeText, C.Url
+            CommandText = @"SELECT A.MenuNode AS VALIE, A.MenuName AS TEXT
                               FROM SystemMenu A
                          LEFT JOIN Code B ON B.Code = A.SystemCode AND B.Type = 'SystemCode'
-						 LEFT JOIN SystemFun C ON C.FunId = A.FunId
+                         LEFT JOIN SystemFun C ON C.FunId = A.FunId
                              WHERE C.url <> ''
+                               AND A.SystemCode = '02'
                                AND A.MenuName <> '初始頁'
+                          ORDER BY A.MenuNode
 ";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
@@ -416,7 +420,8 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
                               FROM SystemMenu A
                          LEFT JOIN Code B ON B.Code = A.SystemCode AND B.Type = 'SystemCode'
 						 LEFT JOIN SystemFun C ON C.FunId = A.FunId
-                             WHERE C.url <> ''
+                             WHERE C.Url <> ''
+                               AND A.SystemCode = '02'
                                AND A.MenuName <> '初始頁'
 ";
 
