@@ -1,4 +1,4 @@
-﻿@model WebPccuClub.Models.HolisticMainClassMangViewModel
+﻿@model WebPccuClub.Models.HolisticSecondClassMangViewModel
 
 
 <!-- /.card-header -->
@@ -6,11 +6,10 @@
     <table class="table table-bordered table-hover text-nowrap">
         <thead>
             <tr class="text-center">
-                <th width="25%">
-                    名稱
-                </th>
-                <th width="25%">備註</th>
-                <th width="30%">建立時間</th>
+                <th width="20%">群組</th>
+                <th width="20%">名稱</th>
+                <th width="20%">備註</th>
+                <th width="20%">建立時間</th>
                 <th width="20%">功能</th>
             </tr>
         </thead>
@@ -20,11 +19,12 @@
                 foreach (var item in Model.ResultModel)
                 {
                     <tr>
+                        <td class="text-center text-sm">@item.MainIDText</td>
                         <td class="text-center text-sm">@item.Text</td>
                         <td class="text-left text-sm">@item.Memo</td>
                         <td class="text-left text-sm">@item.Created.Value.ToString("yyyy/MM/dd HH:mm")</td>
                         <td class="text-center text-sm" style="display: flex; justify-content: center; align-items: center;">
-                            @using (Html.BeginForm("Edit", "HolisticMainClassMang", FormMethod.Post, new { style = "float:left" }))
+                            @using (Html.BeginForm("Edit", "HolisticSecondClassMang", FormMethod.Post, new { style = "float:left" }))
                             {
                                 <button type="submit" value="@item.ID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
                             }
