@@ -12,20 +12,20 @@ using WebPccuClub.Models;
 namespace WebPccuClub.DataAccess
 {
     
-    public class EventGenderMangDataAccess : BaseAccess
+    public class EventBullyingMangDataAccess : BaseAccess
     {
 
         /// <summary> 查詢結果 </summary>
 
-        public List<EventGenderMangResultModel> GetSearchResult(EventGenderMangConditionModel model)
+        public List<EventBullyingMangResultModel> GetSearchResult(EventBullyingMangConditionModel model)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
 
             DBAParameter parameters = new DBAParameter();
 
-            parameters.Add("@GenderMainClass", model?.GenderMainClass);
-            parameters.Add("@GenderSecondClass", model?.GenderSecondClass);
+            parameters.Add("@BullyingMainClass", model?.BullyingMainClass);
+            parameters.Add("@BullyingSecondClass", model?.BullyingSecondClass);
             parameters.Add("@CaseStatus", model?.CaseStatus);
             parameters.Add("@AcceptStatus", model?.AcceptStatus);
             parameters.Add("@CaseID", model?.CaseID);
@@ -39,32 +39,32 @@ namespace WebPccuClub.DataAccess
 
             CommandText = $@"
 SELECT A.EventID, A.CaseID, A.SubCaseID, A.CaseSystemType, F.OccurTime, F.KnowTime,
-       A.MainClass AS GenderMainClass, B.Text AS GenderMainClassText, 
-       A.SecondClass AS GenderSecondClass, C.Text AS GenderSecondClassText, 
+       A.MainClass AS BullyingMainClass, B.Text AS BullyingMainClassText, 
+       A.SecondClass AS BullyingSecondClass, C.Text AS BullyingSecondClassText, 
        A.AcceptStatus, D.Text AS AcceptStatusText, A.AcceptTime, A.CaseStatus, E.Text AS CaseStatusText, A.CaseFinishDateTime, A.Memo, A.Creator, A.Created, A.LastModifier, A.LastModified
 FROM hq_PccuCase.dbo.EventMainMang A
-LEFT JOIN hq_PccuClub.dbo.EventMainClassMang B ON B.ID = A.MainClass AND B.CaseSystemType = '02'
-LEFT JOIN hq_PccuClub.dbo.EventSecondClassMang C ON C.ID = A.SecondClass AND C.CaseSystemType = '02'
+LEFT JOIN hq_PccuClub.dbo.EventMainClassMang B ON B.ID = A.MainClass AND B.CaseSystemType = '03'
+LEFT JOIN hq_PccuClub.dbo.EventSecondClassMang C ON C.ID = A.SecondClass AND C.CaseSystemType = '03'
 LEFT JOIN Code D ON D.Code = A.AcceptStatus AND D.Type = 'AcceptStatus' 
 LEFT JOIN Code E ON E.Code = A.CaseStatus AND E.Type = 'CaseFinish' 
 LEFT JOIN hq_PccuCase.dbo.CaseMainMang F ON F.CaseID = A.CaseID
 WHERE 1 = 1
-AND A.CaseSystemType = '02'
+AND A.CaseSystemType = '03'
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND Created BETWEEN @FromDate AND @ToDate" : " ")}
-AND (@GenderMainClass IS NULL OR A.MainClass = @GenderMainClass)
-AND (@GenderSecondClass IS NULL OR A.SecondClass = @GenderSecondClass)
+AND (@BullyingMainClass IS NULL OR A.MainClass = @BullyingMainClass)
+AND (@BullyingSecondClass IS NULL OR A.SecondClass = @BullyingSecondClass)
 AND (@CaseStatus IS NULL OR A.CaseStatus = @CaseStatus)
 AND (@AcceptStatus IS NULL OR A.AcceptStatus = @AcceptStatus)
 AND (@CaseID IS NULL OR A.CaseID LIKE '%' + @CaseID + '%')
 AND (@SubCaseID IS NULL OR A.SubCaseID LIKE '%' + @SubCaseID + '%')  ";
 
 
-            (DbExecuteInfo info, IEnumerable<EventGenderMangResultModel> entitys) dbResult = DbaExecuteQuery<EventGenderMangResultModel>(CommandText, parameters, true, DBAccessException);
+            (DbExecuteInfo info, IEnumerable<EventBullyingMangResultModel> entitys) dbResult = DbaExecuteQuery<EventBullyingMangResultModel>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList();
 
-            return new List<EventGenderMangResultModel>();
+            return new List<EventBullyingMangResultModel>();
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ AND (@SubCaseID IS NULL OR A.SubCaseID LIKE '%' + @SubCaseID + '%')  ";
         /// <param name="submitBtn"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public EventGenderMangEditModel GetEditData(string Ser)
+        public EventBullyingMangEditModel GetEditData(string Ser)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -87,19 +87,19 @@ AND (@SubCaseID IS NULL OR A.SubCaseID LIKE '%' + @SubCaseID + '%')  ";
 
             CommandText = $@"SELECT D.EventID, A.CaseID, A.MainClass, B.Text AS MainClassText, A.SecondClass, C.Text AS SecondClassText, A.CaseStatus, A.CaseFinishDateTime, 
                                     A.OccurTime, A.KnowTime, A.ReferCode, A.Location, A.MediaKnow, A.DeathAmt, A.HurtAmt, A.SickAmt, A.ElseAmt, A.Created, A.LastModified, 
-									D.SubCaseID, D.MainClass AS GenderMainClass, E.Text AS GenderMainClassText, D.SecondClass AS GenderSecondClass, F.Text AS GenderSecondClassText, D.AcceptStatus, D.AcceptTime, 
+									D.SubCaseID, D.MainClass AS BullyingMainClass, E.Text AS GenderMainClassText, D.SecondClass AS BullyingSecondClass, F.Text AS GenderSecondClassText, D.AcceptStatus, D.AcceptTime, 
 									D.CaseStatus, D.CaseFinishDateTime, D.Memo
                                FROM hq_PccuCase.dbo.CaseMainMang A
                           LEFT JOIN hq_PccuClub.dbo.EventMainClassMang B ON B.ID = A.MainClass AND B.CaseSystemType = '01'
                           LEFT JOIN hq_PccuClub.dbo.EventSecondClassMang C ON C.ID = A.SecondClass AND C.CaseSystemType = '01'
-                          LEFT JOIN hq_pccuCase.dbo.EventMainMang D ON D.CaseID = A.CaseID AND D.CaseSystemType = '02'
-						  LEFT JOIN hq_PccuClub.dbo.EventMainClassMang E ON E.ID = D.MainClass AND E.CaseSystemType = '02'
-                          LEFT JOIN hq_PccuClub.dbo.EventSecondClassMang F ON F.ID = D.SecondClass AND F.CaseSystemType = '02'
+                          LEFT JOIN hq_pccuCase.dbo.EventMainMang D ON D.CaseID = A.CaseID AND D.CaseSystemType = '03'
+                          LEFT JOIN hq_PccuClub.dbo.EventMainClassMang E ON E.ID = D.MainClass AND E.CaseSystemType = '03'
+                          LEFT JOIN hq_PccuClub.dbo.EventSecondClassMang F ON F.ID = D.SecondClass AND F.CaseSystemType = '03'
 WHERE 1 = 1
 AND (A.CaseID = @ID) ";
 
 
-            (DbExecuteInfo info, IEnumerable<EventGenderMangEditModel> entitys) dbResult = DbaExecuteQuery<EventGenderMangEditModel>(CommandText, parameters, true, DBAccessException);
+            (DbExecuteInfo info, IEnumerable<EventBullyingMangEditModel> entitys) dbResult = DbaExecuteQuery<EventBullyingMangEditModel>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList().FirstOrDefault();
@@ -156,9 +156,9 @@ AND (A.CaseID = @ID) ";
 
             CommandText = $@"SELECT A.EventID, B.Text AS EventIDText, A.EventDateTime, A.Text
                                FROM hq_PccuCase.dbo.EventDetailMang A
-						  LEFT JOIN hq_PccuClub.dbo.EventStatusMang B ON B.ID = A.EventID AND B.CaseSystemType = '02'
+						  LEFT JOIN hq_PccuClub.dbo.EventStatusMang B ON B.ID = A.EventID AND B.CaseSystemType = '03'
                               WHERE 1 = 1
-                                AND A.CaseID = @CaseID AND A.CaseSystemType = '02'
+                                AND A.CaseID = @CaseID AND A.CaseSystemType = '03'
 						   ORDER BY A.EventDateTime DESC
 ";
 
@@ -172,7 +172,7 @@ AND (A.CaseID = @ID) ";
         }
 
         /// <summary> 修改資料 </summary>
-        public DbExecuteInfo UpdateData(EventGenderMangViewModel vm, UserInfo LoginUser)
+        public DbExecuteInfo UpdateData(EventBullyingMangViewModel vm, UserInfo LoginUser)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
@@ -180,8 +180,8 @@ AND (A.CaseID = @ID) ";
             #region 參數設定
             parameters.Add("@EventID", vm.EditModel.EventID);
             parameters.Add("@SubCaseID", vm.EditModel.SubCaseID);
-            parameters.Add("@GenderMainClass", vm.EditModel.GenderMainClass);
-            parameters.Add("@GenderSecondClass", vm.EditModel.GenderSecondClass);
+            parameters.Add("@BullyingMainClass", vm.EditModel.BullyingMainClass);
+            parameters.Add("@BullyingSecondClass", vm.EditModel.BullyingSecondClass);
             parameters.Add("@AcceptStatus", vm.EditModel.AcceptStatus);
             parameters.Add("@AcceptTime", vm.EditModel.AcceptTime);
             parameters.Add("@CaseStatus", vm.EditModel.CaseStatus);
@@ -192,8 +192,8 @@ AND (A.CaseID = @ID) ";
 
             string CommendText = $@"UPDATE hq_PccuCase.dbo.EventMainMang 
                                        SET SubCaseID = @SubCaseID, 
-                                           MainClass = @GenderMainClass, 
-                                           SecondClass = @GenderSecondClass, 
+                                           MainClass = @BullyingMainClass, 
+                                           SecondClass = @BullyingSecondClass, 
                                            AcceptStatus = @AcceptStatus, 
                                            AcceptTime = @AcceptTime,
                                            CaseStatus = @CaseStatus, 
@@ -201,7 +201,7 @@ AND (A.CaseID = @ID) ";
                                            Memo = @Memo, 
                                            LastModifier = @LoginId, 
                                            LastModified = GETDATE()
-                                     WHERE EventID = @EventID AND CaseSystemType = '02'";
+                                     WHERE EventID = @EventID AND CaseSystemType = '03'";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -209,7 +209,7 @@ AND (A.CaseID = @ID) ";
         }
 
         /// <summary> 新增事件原因及經過資料 </summary>
-        public DbExecuteInfo UpdateEventData(EventGenderMangViewModel vm, UserInfo loginUser, string CaseID)
+        public DbExecuteInfo UpdateEventData(EventBullyingMangViewModel vm, UserInfo loginUser, string CaseID)
         {
 
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
@@ -227,10 +227,10 @@ AND (A.CaseID = @ID) ";
                                             ,LastModified)
                                         VALUES
                                             ('{CaseID}'
-                                            ,'02'
-                                            ,'{vm.EditModel.GenderEventID}'
-                                            ,'{vm.EditModel.GenderEventDateTime}'
-                                            ,'{vm.EditModel.GenderEventText}'
+                                            ,'03'
+                                            ,'{vm.EditModel.BullyingEventID}'
+                                            ,'{vm.EditModel.BullyingEventDateTime}'
+                                            ,'{vm.EditModel.BullyingEventText}'
                                             ,'{loginUser.LoginId}'
                                             ,GETDATE()
                                             ,'{loginUser.LoginId}'
@@ -260,7 +260,7 @@ AND (A.CaseID = @ID) ";
                                             ,LastModified)
                                         VALUES
                                             ('{CaseID}'
-                                            ,'02'
+                                            ,'03'
                                             ,@EventID
                                             ,@EventDateTime
                                             ,@Text
@@ -296,7 +296,7 @@ AND (A.CaseID = @ID) ";
         }
 
 
-        public List<SelectListItem> GetddlGenderMainClass()
+        public List<SelectListItem> GetddlBullyingMainClass()
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -306,7 +306,7 @@ AND (A.CaseID = @ID) ";
             #region 參數設定
             #endregion
 
-            CommandText = @"SELECT ID AS Value, Text AS Text FROM EventMainClassMang WHERE CaseSystemType = '02'";
+            CommandText = @"SELECT ID AS Value, Text AS Text FROM EventMainClassMang WHERE CaseSystemType = '03'";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
@@ -316,7 +316,7 @@ AND (A.CaseID = @ID) ";
             return new List<SelectListItem>();
         }
 
-        public List<SelectListItem> GetddlGenderSecondClass()
+        public List<SelectListItem> GetddlBullyingSecondClass()
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -326,7 +326,7 @@ AND (A.CaseID = @ID) ";
             #region 參數設定
             #endregion
 
-            CommandText = @"SELECT ID AS Value, Text AS Text FROM EventSecondClassMang WHERE CaseSystemType = '02'";
+            CommandText = @"SELECT ID AS Value, Text AS Text FROM EventSecondClassMang WHERE CaseSystemType = '03'";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
@@ -376,7 +376,7 @@ AND (A.CaseID = @ID) ";
             return new List<SelectListItem>();
         }
 
-        public List<SelectListItem> GetddlGenderEventStatus()
+        public List<SelectListItem> GetddlBullyingEventStatus()
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -386,7 +386,7 @@ AND (A.CaseID = @ID) ";
             #region 參數設定
             #endregion
 
-            CommandText = @"SELECT ID AS Value, Text AS Text FROM EventStatusMang WHERE CaseSystemType = '02' and Enable = 1 ";
+            CommandText = @"SELECT ID AS Value, Text AS Text FROM EventStatusMang WHERE CaseSystemType = '03' and Enable = 1 ";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
