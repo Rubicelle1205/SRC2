@@ -19,6 +19,7 @@
                     <div class="card">
                         <div class="card-body table-responsive-sm">
                             <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
                                 <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
                             </h6>
                             <table class="table table-bordered">
@@ -318,8 +319,33 @@
 
         var data = new FormData()
 
-        if (Text == "") { $.alert("主類別名稱不可為空白"); return; }
+        var EventID = $('#@Html.IdFor(m => m.EditModel.EventID)').val();
+        var CaseID = $('#@Html.IdFor(m => m.EditModel.CaseID)').val();
+        var SubCaseID = $('#@Html.IdFor(m => m.EditModel.SubCaseID)').val();
+        var GenderMainClass = $('#@Html.IdFor(m => m.EditModel.GenderMainClass)').val();
+        var GenderSecondClass = $('#@Html.IdFor(m => m.EditModel.GenderSecondClass)').val();
+        var AcceptStatus = $('#@Html.IdFor(m => m.EditModel.AcceptStatus)').val();
+        var AcceptTime = $('#@Html.IdFor(m => m.EditModel.AcceptTime)').val();
+        var CaseStatus = $('#@Html.IdFor(m => m.EditModel.CaseStatus)').val();
+        var CaseFinishDateTime = $('#@Html.IdFor(m => m.EditModel.CaseFinishDateTime)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
 
+        if (SubCaseID == "") { $.alert("性平號不可為空白"); return; }
+        if (GenderMainClass == "") { $.alert("需選擇性平事件主類別"); return; }
+        if (GenderSecondClass == "") { $.alert("需選擇性平事件次類別"); return; }
+        if (AcceptStatus == "") { $.alert("需選擇是否受理"); return; }
+        if (CaseStatus == "") { $.alert("需選擇是否結案"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.EventID)', EventID);
+        data.append('@Html.NameFor(m => m.EditModel.CaseID)', CaseID);
+        data.append('@Html.NameFor(m => m.EditModel.SubCaseID)', SubCaseID);
+        data.append('@Html.NameFor(m => m.EditModel.GenderMainClass)', GenderMainClass);
+        data.append('@Html.NameFor(m => m.EditModel.GenderSecondClass)', GenderSecondClass);
+        data.append('@Html.NameFor(m => m.EditModel.AcceptStatus)', AcceptStatus);
+        data.append('@Html.NameFor(m => m.EditModel.AcceptTime)', AcceptTime);
+        data.append('@Html.NameFor(m => m.EditModel.CaseStatus)', CaseStatus);
+        data.append('@Html.NameFor(m => m.EditModel.CaseFinishDateTime)', CaseFinishDateTime);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
 
         SendAjax({
             url: '@Url.Action("EditOldData")',

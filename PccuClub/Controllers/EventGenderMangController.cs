@@ -94,16 +94,6 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
-                //dbResult = dbAccess.InsertVictim(vm.EditModel.LstVictim, LoginUser, vm.EditModel.CaseID);
-
-                if (!dbResult.isSuccess)
-                {
-                    dbAccess.DbaRollBack();
-                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "新增失敗";
-                    return Json(vmRtn);
-                }
-
                 dbAccess.DbaCommit();
             }
             catch (Exception ex)

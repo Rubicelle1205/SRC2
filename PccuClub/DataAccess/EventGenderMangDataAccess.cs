@@ -85,11 +85,12 @@ AND (@SubCaseID IS NULL OR A.SubCaseID LIKE '%' + @SubCaseID + '%')  ";
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT A.CaseID, A.MainClass, B.Text AS MainClassText, A.SecondClass, C.Text AS SecondClassText, A.CaseStatus, A.CaseFinishDateTime, A.OccurTime, A.KnowTime, A.ReferCode,
-                                    A.Location, A.MediaKnow, A.DeathAmt, A.HurtAmt, A.SickAmt, A.ElseAmt, A.Created, A.LastModified, A.Memo
+            CommandText = $@"SELECT D.EventID, A.CaseID, A.MainClass, B.Text AS MainClassText, A.SecondClass, C.Text AS SecondClassText, A.CaseStatus, A.CaseFinishDateTime, 
+                                    A.OccurTime, A.KnowTime, A.ReferCode, A.Location, A.MediaKnow, A.DeathAmt, A.HurtAmt, A.SickAmt, A.ElseAmt, A.Created, A.LastModified, A.Memo
                                FROM hq_PccuCase.dbo.CaseMainMang A
                           LEFT JOIN hq_PccuClub.dbo.EventMainClassMang B ON B.ID = A.MainClass
                           LEFT JOIN hq_PccuClub.dbo.EventSecondClassMang C ON C.ID = A.SecondClass
+                          LEFT JOIN hq_pccuCase.dbo.EventMainMang D ON D.CaseID = A.CaseID AND D.CaseSystemType = '02'
 WHERE 1 = 1
 AND (A.CaseID = @ID) ";
 
@@ -186,8 +187,16 @@ AND (A.CaseID = @ID) ";
             #endregion 參數設定
 
             string CommendText = $@"UPDATE hq_PccuCase.dbo.EventMainMang 
-                                       SET SubCaseID = @SubCaseID, MainClass = @GenderMainClass, SecondClass = @GenderSecondClass. AcceptStatus = @AcceptStatus, AcceptTime = @AcceptTime,
-                                       CaseStatus = @CaseStatus, CaseFinishDateTime = @CaseFinishDateTime, Memo = @Memo, LastModifier = @LoginId, LastModified = GETDATE()
+                                       SET SubCaseID = @SubCaseID, 
+                                           MainClass = @GenderMainClass, 
+                                           SecondClass = @GenderSecondClass, 
+                                           AcceptStatus = @AcceptStatus, 
+                                           AcceptTime = @AcceptTime,
+                                           CaseStatus = @CaseStatus, 
+                                           CaseFinishDateTime = @CaseFinishDateTime, 
+                                           Memo = @Memo, 
+                                           LastModifier = @LoginId, 
+                                           LastModified = GETDATE()
                                      WHERE EventID = @EventID AND CaseSystemType = '02'";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
