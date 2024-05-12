@@ -489,6 +489,29 @@ namespace WebPccuClub.Global
 			return new List<SelectListItem>();
 		}
 
+        public List<SelectListItem> GetAllActName()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT A.ActID AS VALUE, A.ActName + '(' + B.ClubCName + ')' AS Text 
+							  FROM ActDetail A 
+					     LEFT JOIN ClubMang B ON B.ClubId = A.BrrowUnit
+";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
         public List<SelectListItem> GetOrderBy()
         {
             string CommandText = string.Empty;
@@ -518,18 +541,25 @@ namespace WebPccuClub.Global
             int NowSchoolYear = int.Parse(PublicFun.GetNowSchoolYear());
 
 			if (type == 0)  //取得本學年度資料 (-2 ~ +2)
-            {
+			{
 				for (int i = NowSchoolYear - 2; i <= NowSchoolYear + 2; i++)
 				{
 					LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
 				}
 			}
 			else if (type == 1)  //取得本學年度資料 (-2)
-            {
-                for (int i = NowSchoolYear - 2; i <= NowSchoolYear; i++)
+			{
+				for (int i = NowSchoolYear - 2; i <= NowSchoolYear; i++)
+				{
+					LstItem.Add(new SelectListItem() { Value = string.Format("{0}1", i), Text = string.Format("{0}1", i) });
+					LstItem.Add(new SelectListItem() { Value = string.Format("{0}2", i), Text = string.Format("{0}2", i) });
+				}
+			}
+			else if (type == 2)
+			{
+                for (int i = NowSchoolYear - 10; i <= NowSchoolYear; i++)
                 {
-                    LstItem.Add(new SelectListItem() { Value = string.Format("{0}1", i), Text = string.Format("{0}1", i) });
-                    LstItem.Add(new SelectListItem() { Value = string.Format("{0}2", i), Text = string.Format("{0}2", i) });
+                    LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
                 }
             }
 
