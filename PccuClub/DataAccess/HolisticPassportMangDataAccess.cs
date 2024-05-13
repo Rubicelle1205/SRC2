@@ -35,7 +35,7 @@ namespace WebPccuClub.DataAccess
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT A.ID, A.SchoolYear, A.ClubID, A.ClubCName, A.ActID, A.ActName, A.ActVerify, B.Text AS ActVerifyText, A.Creator
+            CommandText = $@"SELECT A.ID, A.SchoolYear, A.ClubID, A.ClubCName, A.ActID, A.ActName, A.ActVerify, B.Text AS ActVerifyText, A.Created
                                FROM HolisticPassportMang A
                           LEFT JOIN Code B ON B.Code = A.ActVerify AND B.Type = 'ActVerify'
 WHERE 1 = 1
@@ -116,7 +116,7 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')
             #endregion
 
             CommandText = $@"SELECT ID, ClubID, ActID, ActName, HolisticActName, ActDesc, MainID, SecondID, ThridID, ActSTime, ActETime, RegistrationWay, 
-                                    PlaceSource, PlaceSchool, PlaceSchoolElse, PlaceElse, Presenter, PresenterIntro, Host, HostIntro, 
+                                    PlaceSource, BuildID, PlaceID, PlaceName, Presenter, PresenterIntro, Host, HostIntro, 
                                     ClubCName, ContactMan, RegistrationMan, OpenObject, Tag, PosterIconPath, Memo, ActVerify, ActVerifyMemo, 
                                     Creator, Created, LastModifier, LastModified
                                FROM HolisticPassportMang
@@ -266,9 +266,9 @@ AND (ID = @ID) ";
             parameters.Add("@ActETime", vm.EditModel.ActETime);
             parameters.Add("@RegistrationWay", vm.EditModel.RegistrationWay);
             parameters.Add("@PlaceSource", vm.EditModel.PlaceSource);
-            parameters.Add("@PlaceSchool", vm.EditModel.PlaceSchool);
-            parameters.Add("@PlaceSchoolElse", vm.EditModel.PlaceSchoolElse);
-            parameters.Add("@PlaceElse", vm.EditModel.PlaceElse);
+            parameters.Add("@BuildID", vm.EditModel.BuildID);
+            parameters.Add("@PlaceID", vm.EditModel.PlaceID);
+            parameters.Add("@PlaceName", vm.EditModel.PlaceName);
             parameters.Add("@Presenter", vm.EditModel.Presenter);
             parameters.Add("@PresenterIntro", vm.EditModel.PresenterIntro);
             parameters.Add("@Host", vm.EditModel.Host);
@@ -299,9 +299,9 @@ AND (ID = @ID) ";
                                             ActETime = @ActETime, 
                                             RegistrationWay = @RegistrationWay, 
                                             PlaceSource = @PlaceSource, 
-                                            PlaceSchool = @PlaceSchool, 
-                                            PlaceSchoolElse = @PlaceSchoolElse, 
-                                            PlaceElse = @PlaceElse, 
+                                            BuildID = @BuildID, 
+                                            PlaceID = @PlaceID, 
+                                            PlaceName = @PlaceName, 
                                             Presenter = @Presenter, 
                                             PresenterIntro = @PresenterIntro, 
                                             Host = @Host, 

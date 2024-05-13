@@ -25,7 +25,6 @@ namespace Utility
             SSOAuth.getComplexIdentityResponse Result = new SSOAuth.getComplexIdentityResponse();
             SSOAuth.clsJSONResult sResultData = new SSOAuth.clsJSONResult();
 
-#if DEBUG
             switch (Guid)
             {
                 case "staff_test":
@@ -58,10 +57,6 @@ namespace Utility
                     sResultData = Result.Body.getComplexIdentityResult;
                     break;
             }
-#else
-            Result = await SSOsoap.getComplexIdentityAsync(Guid, SSOaccessToken);
-            sResultData = Result.Body.getComplexIdentityResult;
-#endif
 
             return sResultData;
         }

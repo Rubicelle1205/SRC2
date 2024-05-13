@@ -279,17 +279,17 @@ namespace WebPccuClub.Models
         [DisplayName("活動地點")]
         public string? PlaceSource { get; set; }
 
+        /// <summary>校內建築</summary>
+        [DisplayName("校內建築")]
+        public string? BuildID { get; set; }
+
         /// <summary>校內場地</summary>
-        [DisplayName("校內場地")]
-        public string? PlaceSchool { get; set; }
+        [DisplayName("校內場地/")]
+        public string? PlaceID { get; set; }
 
-        /// <summary>校內其他場地</summary>
-        [DisplayName("校內其他場地")]
-        public string? PlaceSchoolElse { get; set; }
-
-        /// <summary>校外場地</summary>
-        [DisplayName("校外場地")]
-        public string? PlaceElse { get; set; }
+        /// <summary>校內其他場地/校外場地</summary>
+        [DisplayName("校內其他場地/校外場地")]
+        public string? PlaceName { get; set; }
 
         /// <summary>主講人</summary>
         [DisplayName("主講人")]
