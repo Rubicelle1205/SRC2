@@ -479,6 +479,44 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
             return ds.Tables[0];
         }
 
+        public string[] GetDefaultPage(string[] arr)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+            string strMenuNode = string.Empty;
+
+            for (int i = 0; i <= arr.Length - 1; i++)
+            {
+                if (i != arr.Length - 1)
+                {
+                    strMenuNode = strMenuNode + string.Format("'{0}',", arr[i]);
+                }
+                else
+                {
+                    strMenuNode = strMenuNode + string.Format("'{0}'", arr[i]);
+                }
+            }
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT MenuNode 
+                               FROM SystemMenu
+                              WHERE 1 = 1
+                                AND MenuName = '初始頁'
+                                AND SystemCode IN (SELECT DISTINCT SystemCode
+                                                     FROM SystemMenu
+                                                    WHERE 1 = 1
+                                                      AND MenuNode IN ({strMenuNode}))";
+
+            (DbExecuteInfo info, IEnumerable<HyperRoleMangEditModel> entitys) dbResult = DbaExecuteQuery<HyperRoleMangEditModel>(CommandText, parameters, true, DBAccessException);
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+            return ds.DataSetToStringArray("MenuNode");
+        }
+
         public DataTable GetUpMenuNode(string[] arr)
         {
             string CommandText = string.Empty;
