@@ -630,6 +630,15 @@ select.form-control {
     justify-content: center;
     text-decoration: none;
 }
+
+.pagelist.pagelist-icon2 .listItem .icon.full-icon {
+    background-color: #ff9666;
+}
+
+.pagelist.pagelist-icon2 .listItem .icon.full-icon:hover {
+    background-color: #ff7433;
+}
+
 .pagelist.pagelist-icon2 .listItem .icon.end-icon {
     background-color: #f9be91;
 }

@@ -347,20 +347,6 @@ AND (ID = @ID) ";
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         public List<SelectListItem> GetAllClubID()
         {
             string CommandText = string.Empty;

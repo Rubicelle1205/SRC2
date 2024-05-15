@@ -34,7 +34,7 @@ namespace WebPccuClub.DataAccess
 
             #endregion
 
-            CommandText = $@"SELECT A.ActID, B.ActDetailId, B.ActName, B.SchoolYear, A.ActVerify, C.Text AS ActVerifyText, A.Created, D.ActFinishId
+            CommandText = $@"SELECT A.ActID, B.ActDetailId, B.ActName, B.SchoolYear, A.ActVerify, C.Text AS ActVerifyText, B.Passport, A.Created, D.ActFinishId
                                FROM ActMain A
                           LEFT JOIN ActDetail B ON B.ActID = A.ActID
                           LEFT JOIN Code C ON C.Code = A.ActVerify AND C.Type = 'ActVerify'
@@ -735,6 +735,8 @@ namespace WebPccuClub.DataAccess
             return str;
         }
 
+        #region 活動結案
+
         /// <summary> 新增結案資料 </summary>
         public DbExecuteInfo InsertActFinishData(ClubActReportViewModel vm, UserInfo LoginUser, out DataTable dt)
         {
@@ -833,5 +835,197 @@ namespace WebPccuClub.DataAccess
 
             return ExecuteResult;
         }
+
+        #endregion
+
+        #region 全人學習護照
+
+        /// <summary> 新增全人學習護照 </summary>
+        public DbExecuteInfo InsertHolisticPassportNewData(ClubActReportViewModel vm, UserInfo LoginUser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@SchoolYear", vm.ClubHolisticPassport.SchoolYear);
+            parameters.Add("@ClubID", vm.ClubHolisticPassport.ClubID);
+            parameters.Add("@ActID", vm.ClubHolisticPassport.ActID);
+            parameters.Add("@ActName", vm.ClubHolisticPassport.ActName);
+            parameters.Add("@HolisticActName", vm.ClubHolisticPassport.HolisticActName);
+            parameters.Add("@ActDesc", vm.ClubHolisticPassport.ActDesc);
+            parameters.Add("@MainID", vm.ClubHolisticPassport.MainID);
+            parameters.Add("@SecondID", vm.ClubHolisticPassport.SecondID);
+            parameters.Add("@ThridID", vm.ClubHolisticPassport.ThridID);
+            parameters.Add("@ActSTime", vm.ClubHolisticPassport.ActSTime);
+            parameters.Add("@ActETime", vm.ClubHolisticPassport.ActETime);
+            parameters.Add("@RegistrationWay", vm.ClubHolisticPassport.RegistrationWay);
+            parameters.Add("@PlaceSource", vm.ClubHolisticPassport.PlaceSource);
+            parameters.Add("@BuildID", vm.ClubHolisticPassport.BuildID);
+            parameters.Add("@PlaceID", vm.ClubHolisticPassport.PlaceID);
+            parameters.Add("@PlaceName", vm.ClubHolisticPassport.PlaceName);
+            parameters.Add("@Presenter", vm.ClubHolisticPassport.Presenter);
+            parameters.Add("@PresenterIntro", vm.ClubHolisticPassport.PresenterIntro);
+            parameters.Add("@Host", vm.ClubHolisticPassport.Host);
+            parameters.Add("@HostIntro", vm.ClubHolisticPassport.HostIntro);
+            parameters.Add("@ClubCName", vm.ClubHolisticPassport.ClubCName);
+            parameters.Add("@ContactMan", vm.ClubHolisticPassport.ContactMan);
+            parameters.Add("@RegistrationMan", vm.ClubHolisticPassport.RegistrationMan);
+            parameters.Add("@OpenObject", vm.ClubHolisticPassport.OpenObject);
+            parameters.Add("@Tag", vm.ClubHolisticPassport.Tag);
+            parameters.Add("@PosterIconPath", vm.ClubHolisticPassport.PosterIconPath);
+            parameters.Add("@Memo", vm.ClubHolisticPassport.Memo);
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO HolisticPassportMang
+                                               (SchoolYear, 
+                                                ClubID, 
+                                                ActID, 
+                                                ActName, 
+                                                HolisticActName, 
+                                                ActDesc,
+                                                MainID, 
+                                                SecondID, 
+                                                ThridID, 
+                                                ActSTime, 
+                                                ActETime, 
+                                                RegistrationWay, 
+                                                PlaceSource, 
+                                                BuildID, 
+                                                PlaceID, 
+                                                PlaceName, 
+                                                Presenter, 
+                                                PresenterIntro, 
+                                                Host, 
+                                                HostIntro, 
+                                                ClubCName, 
+                                                ContactMan, 
+                                                RegistrationMan, 
+                                                OpenObject, 
+                                                Tag, 
+                                                PosterIconPath, 
+                                                Memo, 
+                                                Creator, 
+                                                Created, 
+                                                LastModifier,
+                                                LastModified)
+                                         VALUES
+                                               (@SchoolYear, 
+                                                @ClubID, 
+                                                @ActID, 
+                                                @ActName, 
+                                                @HolisticActName, 
+                                                @ActDesc,
+                                                @MainID, 
+                                                @SecondID, 
+                                                @ThridID, 
+                                                @ActSTime, 
+                                                @ActETime, 
+                                                @RegistrationWay, 
+                                                @PlaceSource, 
+                                                @BuildID, 
+                                                @PlaceID, 
+                                                @PlaceName, 
+                                                @Presenter, 
+                                                @PresenterIntro, 
+                                                @Host, 
+                                                @HostIntro, 
+                                                @ClubCName, 
+                                                @ContactMan, 
+                                                @RegistrationMan, 
+                                                @OpenObject, 
+                                                @Tag, 
+                                                @PosterIconPath, 
+                                                @Memo, 
+                                                @LoginId, 
+                                                GETDATE(), 
+                                                @LoginId, 
+                                                GETDATE())";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        public List<SelectListItem> GetddlHolisticMainClass()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT ID AS Value, Text AS Text FROM HolisticMainClassMang ";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetddlHolisticSecondClass()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT ID AS Value, Text AS Text FROM HolisticSecondClassMang ";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetddlHolisticThirdClass()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT ID AS Value, Text AS Text FROM HolisticThirdClassMang ";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetddlActInOrOut()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS VALUE, Text AS Text FROM code WHERE Type = 'ActInOrOut' ";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+        #endregion
     }
 }

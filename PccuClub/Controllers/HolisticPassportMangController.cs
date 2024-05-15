@@ -274,33 +274,8 @@ namespace WebPccuClub.Controllers
             vm.CreateModel.BuildID = Buildid;
 
 
-            return PartialView("_PlaceDataPartial", vm);
+            return PartialView("_HolisticPlaceDataPartial", vm);
         }
-
-        [ValidateInput(false)]
-        public IActionResult GetSuggestPlace(string PlaceSource, string Prefix)
-        {
-            List<string> LstPlaceName = new List<string>();
-
-            DataTable dt = dbAccess.GetPlaceName(PlaceSource);
-
-            if (dt != null && dt.Rows.Count > 0)
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    LstPlaceName.Add(dr["PlaceName"].ToString());
-                }
-            }
-
-            var result = LstPlaceName.Where(x => x.ToLower().Contains(Prefix)).ToList().Take(10);
-
-            return Json(result);
-        }
-
-
-
-
-
 
 
     }

@@ -27,6 +27,8 @@ namespace WebPccuClub.Models
 
 		public ClubActReportClubActFinish ClubActFinish { get; set; }
 
+        public ClubActReportClubHolisticPassport ClubHolisticPassport { get; set; }
+
     }
 
     public class ClubActReportConditionModel
@@ -73,6 +75,10 @@ namespace WebPccuClub.Models
         /// <summary>審核</summary>
         [DisplayName("審核")]
         public string? ActVerifyText { get; set; }
+
+        /// <summary>全人</summary>
+        [DisplayName("全人")]
+        public string? Passport { get; set; }
 
         /// <summary>報備日期</summary>
         [DisplayName("報備日期")]
@@ -357,7 +363,9 @@ namespace WebPccuClub.Models
         public string? InAndOutSchool { get; set; }
     }
 
-	public class ClubActReportClubActFinish
+    #region 活動結案
+    
+    public class ClubActReportClubActFinish
     {
         /// <summary>社團代碼</summary>
         [DisplayName("社團代碼")]
@@ -423,4 +431,120 @@ namespace WebPccuClub.Models
         public string? Department { get; set; }
     }
 
+    #endregion
+
+    #region 全人學習護照
+
+    public class ClubActReportClubHolisticPassport
+    {
+        /// <summary>學年度</summary>
+        [DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>社團代號</summary>
+        [DisplayName("社團代號")]
+        public string? ClubID { get; set; }
+
+        /// <summary>活動報備編號</summary>
+        [DisplayName("活動報備編號")]
+        public string? ActID { get; set; }
+
+        /// <summary>活動名稱</summary>
+        [DisplayName("活動名稱")]
+        public string? ActName { get; set; }
+
+        /// <summary>全人端名稱</summary>
+        [DisplayName("全人端名稱")]
+        public string? HolisticActName { get; set; }
+
+        /// <summary>活動說明</summary>
+        [DisplayName("活動說明")]
+        public string? ActDesc { get; set; }
+
+        /// <summary>群組</summary>
+        [DisplayName("群組")]
+        public string? MainID { get; set; }
+
+        /// <summary>類別</summary>
+        [DisplayName("類別")]
+        public string? SecondID { get; set; }
+
+        /// <summary>項目</summary>
+        [DisplayName("項目")]
+        public string? ThridID { get; set; }
+
+        /// <summary>活動開始時間</summary>
+        [DisplayName("活動開始時間")]
+        public DateTime? ActSTime { get; set; }
+
+        /// <summary>活動結束時間</summary>
+        [DisplayName("活動結束時間")]
+        public DateTime? ActETime { get; set; }
+
+        /// <summary>報名方式</summary>
+        [DisplayName("報名方式")]
+        public string? RegistrationWay { get; set; }
+
+        /// <summary>活動地點</summary>
+        [DisplayName("活動地點")]
+        public string? PlaceSource { get; set; }
+
+        /// <summary>校內建築</summary>
+        [DisplayName("校內建築")]
+        public string? BuildID { get; set; }
+
+        /// <summary>校內場地</summary>
+        [DisplayName("校內場地/")]
+        public string? PlaceID { get; set; }
+
+        /// <summary>校內其他場地/校外場地</summary>
+        [DisplayName("校內其他場地/校外場地")]
+        public string? PlaceName { get; set; }
+
+        /// <summary>主講人</summary>
+        [DisplayName("主講人")]
+        public string? Presenter { get; set; }
+
+        /// <summary>主講人介紹</summary>
+        [DisplayName("主講人介紹")]
+        public string? PresenterIntro { get; set; }
+
+        /// <summary>主持人</summary>
+        [DisplayName("主持人")]
+        public string? Host { get; set; }
+
+        /// <summary>主持人介紹</summary>
+        [DisplayName("主持人介紹")]
+        public string? HostIntro { get; set; }
+
+        /// <summary>主辦單位名稱</summary>
+        [DisplayName("主辦單位名稱")]
+        public string? ClubCName { get; set; }
+
+        /// <summary>聯絡人</summary>
+        [DisplayName("聯絡人")]
+        public string? ContactMan { get; set; }
+
+        /// <summary>負責補登者</summary>
+        [DisplayName("負責補登者")]
+        public string? RegistrationMan { get; set; }
+
+        /// <summary>開放對象</summary>
+        [DisplayName("開放對象")]
+        public string? OpenObject { get; set; }
+
+        /// <summary>關鍵字標籤</summary>
+        [DisplayName("關鍵字標籤")]
+        public string? Tag { get; set; }
+
+        /// <summary>海報縮圖</summary>
+        [DisplayName("海報縮圖")]
+        public string? PosterIconPath { get; set; }
+
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
+        public string? Memo { get; set; }
+    }
+
+    #endregion
 }

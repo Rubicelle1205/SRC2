@@ -35,8 +35,19 @@
                     <div class="content">@item.Created.Value.ToString("yyyy/MM/dd")</div>
                 </div>
             </div>
+            
+
+
             @if (item.ActVerify == "02" || item.ActVerify == "04")
             {
+                if (item.Passport == "01")
+                {
+                    <a href="@Url.Action("CreateHolisticPassport", "ClubActReport", new { id = item.ActID })" class="icon full-icon">
+                        全人 <i class="fas fa-stamp"></i>
+                    </a>
+                    
+                }
+
                 if (string.IsNullOrEmpty(item.ActFinishId))
                 {
                     <a href="@Url.Action("CreateClubActFinish", "ClubActReport", new { id = item.ActID })" class="icon end-icon">
