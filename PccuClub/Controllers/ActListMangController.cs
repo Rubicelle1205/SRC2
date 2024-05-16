@@ -34,7 +34,7 @@ namespace WebPccuClub.Controllers
 
 
         [Log(LogActionChineseName.首頁)]
-        public IActionResult Index()
+        public IActionResult Index() 
         {
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlLifeClass = dbAccess.GetAllLifeClass();

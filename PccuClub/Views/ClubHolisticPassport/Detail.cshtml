@@ -1,0 +1,157 @@
+﻿@model WebPccuClub.Models.ClubHolisticPassportViewModel
+
+@{
+    Layout = "_FrontLayout";
+    ViewBag.Title = "全人學習護照填報紀錄";
+}
+
+@if (null != Model.DetailModel)
+{
+    <div class="col-xxl-8">
+        <div class="contentWrapper">
+            <h4 class="pageTitle">全人學習護照填報紀錄 - @Model.DetailModel.HolisticActName</h4>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index")">全人學習護照填報紀錄</a></li>
+                    <li class="breadcrumb-item active">@Model.DetailModel.HolisticActName</li>
+                </ol>
+            </nav>
+            <hr>
+            <div class="mb-4">
+                <a id="Back" href="@Url.Action("Index")"><i class="fas fa-chevron-left"></i> 返回</a>
+            </div>
+
+            <div class="infoWrapper mb-4">
+                <div class="infoItem">
+                    <div class="tag">審核狀態</div>
+                    <div class="content">
+                        @if (Model.DetailModel.ActVerify == "01")
+                        {
+                            <div class="badge badge-primary">@Model.DetailModel.ActVerifyText</div>
+                        }
+                        else if (Model.DetailModel.ActVerify == "02")
+                        {
+                            <div class="badge badge-success">@Model.DetailModel.ActVerifyText</div>
+                        }
+                        else if (Model.DetailModel.ActVerify == "03")
+                        {
+                            <div class="badge badge-secondary">@Model.DetailModel.ActVerifyText</div>
+                        }
+                        else if (Model.DetailModel.ActVerify == "04")
+                        {
+                            <div class="badge badge-info">@Model.DetailModel.ActVerifyText</div>
+                        }
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">審核備註</div>
+                    <div class="content">@Model.DetailModel.Memo</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">全人端名稱</div>
+                    <div class="content">@Model.DetailModel.HolisticActName</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動名稱</div>
+                    <div class="content">@Model.DetailModel.ActName</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">全人學習認證群組</div>
+                    <div class="content">@Model.DetailModel.MainIDText</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">全人學習認證類別</div>
+                    <div class="content">@Model.DetailModel.SecondIDText</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">全人學習認證項目</div>
+                    <div class="content">@Model.DetailModel.ThridIDText</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動開始時間</div>
+                    <div class="content">@Model.DetailModel.ActSTime</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動結束時間</div>
+                    <div class="content">@Model.DetailModel.ActETime</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">報名方式</div>
+                    <div class="content">@Model.DetailModel.RegistrationWay</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動地點</div>
+                    <div class="content">@Model.DetailModel.PlaceSourceText</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主講人</div>
+                    <div class="content">@Model.DetailModel.Presenter</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主講人介紹</div>
+                    <div class="content">@Model.DetailModel.PresenterIntro</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主持人</div>
+                    <div class="content">@Model.DetailModel.Host</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主持人介紹</div>
+                    <div class="content">@Model.DetailModel.HostIntro</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主辦單位</div>
+                    <div class="content">@Model.DetailModel.ClubCName</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">聯絡人</div>
+                    <div class="content">@Model.DetailModel.ContactMan</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">負責補登者</div>
+                    <div class="content">@Model.DetailModel.RegistrationMan</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">開放對象</div>
+                    <div class="content">@Model.DetailModel.OpenObject</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">關鍵字標籤</div>
+                    <div class="content">@Model.DetailModel.Tag</div>
+                </div>
+            </div>
+        
+            <div class="infoWrapper mb-5">
+                <div class="infoItem">
+                    <div class="tag">海報縮圖</div>
+                    <div class="content">
+                        @if (null != Model.DetailModel.PosterIconPath)
+                        {
+                            <div class="mb-1">
+                                <a class="text-decoration-underline" href="../@Model.DetailModel.PosterIconPath" target="_blank">海報縮圖</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">備註</div>
+                    <div class="content">@Model.DetailModel.Memo</div>
+                </div>
+            </div>
+
+
+            @if (Model.DetailModel.ActVerify != "02" && Model.DetailModel.ActVerify != "04")
+            {
+                <div class="row justify-content-center mb-5">
+                    <div class="col-lg-4">
+                        @using (Html.BeginForm("Edit", "ClubHolisticPassport", FormMethod.Post))
+                        {
+                            <button type="submit" value="@Model.DetailModel.ID" name="submitBtn" class="submit-btn btn btn-primary btn-modern border-0 w-100">編輯</button>
+                        }
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+}

@@ -1,0 +1,83 @@
+﻿@model WebPccuClub.Models.ClubHolisticPassportViewModel
+
+@if (Model.ResultModel.Count > 0)
+{
+    foreach (var item in Model.ResultModel)
+    {
+        <a href="@Url.Action("Detail", "ClubHolisticPassport", new { id = item.ID })" class="listItem">
+            <div class="textbox">
+                <div class="serNum"> @item.ID </div>
+                <div class="title">@item.HolisticActName</div>
+                <div class="spec">
+                    <div class="tag">審核狀態：</div>
+                    <div class="content">
+
+                        @if (item.ActVerify == "01")
+                        {
+                            <div class="badge badge-primary">@item.ActVerifyText</div>
+                        }
+                        else if (item.ActVerify == "02")
+                        {
+                            <div class="badge badge-success">@item.ActVerifyText</div>
+                        }
+                        else if (item.ActVerify == "03")
+                        {
+                            <div class="badge badge-secondary">@item.ActVerifyText</div>
+                        }
+                        else if (item.ActVerify == "04")
+                        {
+                            <div class="badge badge-info">@item.ActVerifyText</div>
+                        }
+                    </div>
+                </div>
+                <div class="spec">
+                    <div class="tag">上傳日期：</div>
+                    <div class="content">@item.Created.Value.ToString("yyyy/MM/dd")</div>
+                </div>
+            </div>
+            <div class="icon">
+                查看 <i class="fas fa-chevron-right"></i>
+            </div>
+        </a>
+    }
+}
+
+<div class="card-footer clearfix" style="background:none;">
+    <div class="pagination justify-content-end" id="SearchResultListPagination" style="justify-content:center !important;"></div>
+</div>
+<!-- /.card-body -->
+
+<script>
+    $("#SearchResultListPagination").solventoPageBar(
+        {
+            containerHtml: "<ul class='pagination justify-content-end'>{{:firstPageRender}}{{:prePageRender}}{{:pageRender}}{{:nextPageRender}}{{:lastPageRender}}</ul>{{:totalPageRender}}", // render: pagesbarHtml
+            firstPageHtml: "<li class='page-item {{:disable}}'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-double-left'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            lastPageHtml: "<li class='page-item {{:disable}}'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-double-right'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            pageHtml: " <li class='page-item {{:selectedHtml}}'><a {{:idx}} class='page-link {{:pageClass}}'>{{:pageNumber}}</a></li>",//pageClass: clickEventClass, pageNumber: pageNumber, selectedHtml : selectedHtml,idx : idx
+            prePageHtml: "<li class='page-item'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-left'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            nextPageHtml: "<li class='page-item'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-right'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            //totalPageHtml: "<div class='page-intro'>共<span>{{:totalCount}}</span>筆資料</div>",
+            totalPageHtml: "",
+            pNow: "目前為第 {{:pnow}} 頁 / 共 {{:ptotle}} 頁",
+            pEver: "每頁顯示 {{:pever}} 筆 / 共 {{:ptotleever}} 筆",
+            pageSelectedHtml: "active",
+        },
+        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.ConditionModel.Page)']").val()) + 1,
+        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.ConditionModel.PageSize)']").val()),
+
+    @Model.ConditionModel.TotalCount,
+        changePage
+    );
+
+    function changePage(idx) {
+        //動畫
+        $('#SearchForm').find("input[name='@Html.NameFor(m => m.ConditionModel.Page)']").val(idx - 1);
+        //取頁面數
+        $("#@Html.IdFor(m => m.ConditionModel.Page)").val(idx - 1);
+
+        GoSearch();
+    }
+
+
+
+</script>
