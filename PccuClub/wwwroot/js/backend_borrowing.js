@@ -1,195 +1,76 @@
-var type_arr = {
-    "意外事件": {
-        "交通意外事件": "",
-        "中毒事件": "",
-        "自傷、自殺事件": "",
-        "溺水事件": "",
-        "運動、休閒事件": "",
-        "實驗、實習及環境設施事件": "",
-        "其他意外傷害事件": "",
-    },
-    "安全維護事件": {
-        "性侵害、性騷擾或性霸凌事件": "性平事件子系統、霸凌事件子系統",
-        "家庭暴力事件": "",
-        "身心障礙事件": "",
-        "火警": "",
-        "人為破壞事件": "",
-        "校園失竊事件": "",
-        "糾紛事件": "",
-        "校屬人員遭侵害事件": "",
-        "資訊安全": "",
-        "詐騙事件": "",
-        "其他校園安全維護事件": "",
-        "疑涉犯兒童及少年性剝削防制條例第 4 章所定之罪": "",
-    },
-    "暴力事件與偏差行為": {
-        "疑似霸凌事件": "霸凌事件子系統",
-        "霸凌事件": "霸凌事件子系統",
-        "暴力偏差行為": "",
-        "疑涉違法事件": "",
-        "藥物濫用事件": "",
-        "干擾校園安全及事務": "",
-        "其他校園暴力或偏差行為": "",
-    },
-    "管教衝突事件": {
-        "親師生衝突事件": "",
-        "校務行政管教衝突事件": "",
-        "其他有關管教衝突事件": "",
-        "教師不當管教造成學生身心嚴重侵害之確認事件": "",
-        "教師不當管教造成學生身心嚴重侵害之疑似事件": "",
-        "教師不當管教造成學生身心輕微侵害事件": "",
-        "其他教師不當管教學生事件(非體罰或違法處罰)": "",
-        "疑似校長及教職員工對學生霸凌事件": "",
-        "校長及教職員工對學生霸凌事件": "",
-    },
-    "兒童少年保護事件(未滿18歲)": {
-        "性侵害、性騷擾或性霸凌事件": "性平事件子系統、霸凌事件子系統",
-        "藥物濫用事件": "",
-        "強迫引誘自殺行為": "",
-        "其他兒少保護事件": "",
-        "兒童及少年遭性剝削或疑似遭受性剝削事件": "",
-        "家庭暴力事件": "",
-    },
-    "天然災害": {
-        "天然災害": "",
-        "其他重大災害": "",
-        "環境災害": "",
-    },
-    "疾病事件": {
-        "法定傳染病": "",
-        "一般傳染病": "",
-    },
-    "其他事件": {
-        "校務相關問題": "",
-        "其他的問題": "",
-    },
-    "校內管制事件": {
-        "校內管制事件": "",
+var weekTitleArr = { 1: '一', 2: '二', 3: '三', 4: '四', 5: '五', 6: '六', 7: '日' };
+var monthTitleArr = {
+    1: "1月",
+    2: "2月",
+    3: "3月",
+    4: "4月",
+    5: "5月",
+    6: "6月",
+    7: "7月",
+    8: "8月",
+    9: "9月",
+    10: "10月",
+    11: "11月",
+    12: "12月",
+}
+var dateRangePickerOption = {
+    alwaysShowCalendars: true,
+    autoApply: true,
+    autoUpdateInput: false,
+    timePicker: false,
+    timePicker24Hour: true,
+    singleDatePicker: true,
+    showDropdowns: true,
+    locale: {
+        format: "YYYY-MM-DD HH:mm", // 24小時 HH:mm
+        applyLabel: "確定",
+        cancelLabel: "取消",
+        fromLabel: "開始日期",
+        toLabel: "結束日期",
+        customRangeLabel: "自訂日期區間",
+        daysOfWeek: ["日", "一", "二", "三", "四", "五", "六"],
+        monthNames: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+        firstDay: 1,
     }
 }
-var type_gender_arr = {
-    "大分類一": {
-        "小分類1": "",
-        "小分類2": "",
-    },
-    "大分類二": {
-        "小分類A": "",
-        "小分類B": "",
-    }
-}
-var status_gender_arr = {
-    "狀態一": "停用",
-    "狀態二": "啟用",
-    "狀態三": "啟用",
-    "已受理": "啟用",
-    "第一次延長": "啟用",
-    "第二次延長": "啟用",
-    "已結案": "啟用"
-}
-var unit_arr = [
-    "生活輔導組",
-    "課外活動組",
-    "衛生保健組",
-    "軍訓室職員",
-    "學生諮商中心"
-]
-var permission_arr = {
-    "前台功能": {},
-    "後台功能": {
-        "校安事件管理": ["case_list.html", true],
-        "匯入校安事件清單": ["case_xls_mang.html", true],
-        "校安事件主類別": ["type_list.html", true],
-        "校安事件次類別": ["subtype_list.html", true],
-        "轉介單位清單": ["unit_list.html", true],
-        "轉介內容歷程": ["case_unit_list.html", true],
-        "匯入轉介內容歷程": ["case_xls_mang.html", true],
-        "性平事件管理": ["case_gender_list.html", false],
-        "匯入性平事件清單": ["case_gender_xls_mang.html", false],
-        "性平事件主類別": ["type_gender_list.html", false],
-        "性平事件次類別": ["subtype_gender_list.html", false],
-        "性平事件狀態維護": ["status_gender_list.html", false],
-        "霸凌事件管理": ["case_bully_list.html", false],
-        "匯入霸凌事件清單": ["case_bully_xls_mang.html", false],
-        "霸凌事件主類別": ["type_bully_list.html", false],
-        "霸凌事件次類別": ["subtype_bully_list.html", false],
-        "霸凌事件狀態維護": ["status_bully_list.html", false],
-        // "使用者帳號綁定": ["user_list.html", false],
-        "身分權限設定": ["role_list.html", false],
-        "管理員維護": ["admin_list.html", false],
-        "個人資料": ["me_mang.html", false],
-    },
-}
-var datetimepicker_option = {
-    format: "YYYY-MM-DD HH:mm",
-    applyLabel: "確定",
-    cancelLabel: "取消",
-    fromLabel: "開始日期",
-    toLabel: "結束日期",
-    customRangeLabel: "自訂日期區間",
-    daysOfWeek: ["日", "一", "二", "三", "四", "五", "六"],
-    monthNames: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
-    firstDay: 1,
-}
+
+var startDate = "";
+var endDate = "";
 
 $(function () {
 
-    if ((location.pathname).indexOf("EventCaseMang") >= 0 || (location.pathname).indexOf("EventGenderMang") >= 0 || (location.pathname).indexOf("EventBullyingMang") >= 0
-        || (location.pathname).indexOf("BorrowMainClassMang") >= 0)
-    {
-        if ($("[for=finish_time]").length > 0) {
-            // 結案時間
-            datetimepicker_option.format = "YYYY-MM-DD HH:mm";
-            $('[for=finish_time]').daterangepicker({
-                // minDate: now_time(),
-                autoUpdateInput: false,
-                singleDatePicker: true,
-                showDropdowns: true,
-                timePicker: true,
-                timePicker24Hour: true,
-                locale: datetimepicker_option,
-            });
-        }
+    if ($("[for=finish_date]").length > 0) {
+        // 結案時間
+        datetimepicker_option.format = "YYYY-MM-DD";
+        $('[for=finish_date]').daterangepicker({
+            // minDate: now_time(),
+            autoUpdateInput: false,
+            singleDatePicker: true,
+            showDropdowns: true,
+            locale: datetimepicker_option,
+        });
 
-        if ($("[for=finish_time2]").length > 0) {
-            // 結案時間
-            datetimepicker_option.format = "YYYY-MM-DD HH:mm";
-            $('[for=finish_time2]').daterangepicker({
-                // minDate: now_time(),
-                autoUpdateInput: false,
-                singleDatePicker: true,
-                showDropdowns: true,
-                timePicker: true,
-                timePicker24Hour: true,
-                locale: datetimepicker_option,
-            });
-
-
-            $('[for^=finish_time]').on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('YYYY-MM-DD HH:mm'));
-            });
-        }
-
-        if ($("[for=finish_date]").length > 0) {
-            // 結案時間
-            datetimepicker_option.format = "YYYY-MM-DD";
-            $('[for=finish_date]').daterangepicker({
-                // minDate: now_time(),
-                autoUpdateInput: false,
-                singleDatePicker: true,
-                showDropdowns: true,
-                timePicker: false,
-                timePicker24Hour: false,
-                locale: datetimepicker_option,
-            });
-
-
-            $('[for^=finish_date]').on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('YYYY-MM-DD'));
-            });
-        }
+        $('[for=finish_date]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD'));
+        });
     }
-    
 
+
+
+
+
+
+
+
+
+
+    // 警示重置
+    $(document).on('focus', '.is-invalid', function () {
+        $(this).removeClass("is-invalid");
+    })
+    $(document).on('change', '.is-invalid', function () {
+        $(this).removeClass("is-invalid");
+    })
 
     if ((location.pathname).indexOf("admin") >= 0) {
         //###############以下為通用fun#######################//
@@ -215,6 +96,72 @@ $(function () {
                 }
             })
         })
+
+        if ($(".select2-selector").length > 0) {
+            $(".select2-selector").select2();
+        }
+
+        // daterangepicker.js
+        if ($(".dp-input").length > 0) {
+            $(".dp-input").each(function (i, ele) {
+                var dateFormat = "YYYY-MM-DD";
+                if ($(ele).hasClass("dp-range-dt") || $(ele).hasClass("dp-range-d")) { // range date、time || range date
+                    dateRangePickerOption.singleDatePicker = false;
+
+                    var start_date = $(ele).closest(".form-group").find(".dp-start").val();
+                    var end_date = $(ele).closest(".form-group").find(".dp-end").val();
+
+                    if (start_date !== "" && start_date !== undefined) {
+                        dateRangePickerOption.startDate = start_date;
+                    }
+                    if (end_date !== "" && end_date !== undefined) {
+                        dateRangePickerOption.endDate = end_date;
+                    }
+
+                    if ($(ele).hasClass("dp-range-d")) {
+                        dateFormat = "YYYY-MM-DD";
+                        dateRangePickerOption.timePicker = false;
+                        dateRangePickerOption.timePicker24Hour = false;
+                    }
+
+                    dateRangePickerOption.locale.format = dateFormat;
+                } else if ($(ele).hasClass("dp-single-dt")) { // single date、time
+                    dateRangePickerOption.locale.format = dateFormat;
+                } else if ($(ele).hasClass("dp-single-d")) { // single date
+                    dateFormat = "YYYY-MM-DD";
+                    dateRangePickerOption.timePicker = false;
+                    dateRangePickerOption.timePicker24Hour = false;
+                }
+
+                $(ele).daterangepicker(dateRangePickerOption, function (start, end, label) {
+                    // console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+                    // Lets update the fields manually this event fires on selection of range
+                    var selectedStartDate = start.format(dateFormat); // selected start
+                    var selectedEndDate = end.format(dateFormat); // selected end
+
+                    $checkinInput = $(ele).closest(".input-group").find(".dp-start");
+                    $checkoutInput = $(ele).closest(".input-group").find(".dp-end");
+
+                    // Updating Fields with selected dates
+                    $checkinInput.val(selectedStartDate);
+
+                    // Setting the Selection of dates on calender on CHECKIN FIELD (To get this it must be binded by Ids not Calss)
+                    var checkInPicker = $checkinInput.data('daterangepicker');
+                    checkInPicker.setStartDate(selectedStartDate);
+                    checkInPicker.setEndDate(selectedEndDate);
+
+                    if ($checkoutInput.length > 0) {
+                        $checkoutInput.val(selectedEndDate);
+
+                        // Setting the Selection of dates on calender on CHECKOUT FIELD (To get this it must be binded by Ids not Calss)
+                        var checkOutPicker = $checkoutInput.data('daterangepicker');
+                        checkOutPicker.setStartDate(selectedStartDate);
+                        checkOutPicker.setEndDate(selectedEndDate);
+                    }
+                });
+            });
+        }
+
 
         //###############以下為特定頁面fun#######################//
         if ((location.pathname).indexOf("admin_mang.") >= 0 || (location.pathname).indexOf("me_mang.") >= 0) {
@@ -274,107 +221,6 @@ $(function () {
             });
         }
 
-        // 校安事件主類別
-        if ($("[name=type_id]").length > 0) {
-            var is_list = (location.pathname).indexOf("_list.") >= 0;
-            var main_type = is_list ? "全部事件主類別" : "請選擇事件主類別";
-            var main_subtype = is_list ? "全部事件次類別" : "請選擇事件次類別";
-
-            var is_update = getUrlParam("model") === "update";
-            var defaults_type = ""
-            if (is_update) {
-                defaults_type = "意外事件"
-            } else if (is_list) {
-                defaults_type = getUrlParam("type_id")
-            }
-
-            $("[name=type_id]").html(genType(type_arr, defaults_type, main_type));
-            if ($("[name=subtype_id]").length > 0) {
-                $(document).on("change", "[name=type_id]", function () {
-                    var type = $('option:selected', this).val();
-                    var defaults_subtype = is_update ? "交通意外事件" : "";
-                    $("[name=subtype_id]").html(genSubtype(type_arr, type, defaults_subtype, main_subtype));
-                });
-
-                $("[name=type_id]").change();
-            }
-        }
-
-        // 性平事件主類別
-        if ($("[name=type_gender_id]").length > 0) {
-            var is_list = (location.pathname).indexOf("_list.") >= 0;
-            var main_type = is_list ? "全部事件主類別" : "請選擇事件主類別";
-            var main_subtype = is_list ? "全部事件次類別" : "請選擇事件次類別";
-
-            var is_update = getUrlParam("model") === "update";
-            var defaults_type = ""
-            if (is_update) {
-                defaults_type = "大分類一"
-            } else if (is_list) {
-                defaults_type = getUrlParam("type_id")
-            }
-
-            $("[name=type_gender_id]").html(genType(type_gender_arr, defaults_type, main_type));
-            if ($("[name=subtype_gender_id]").length > 0) {
-                $(document).on("change", "[name=type_gender_id]", function () {
-                    var type = $('option:selected', this).val();
-                    var defaults_subtype = is_update ? "小分類1" : "";
-                    $("[name=subtype_gender_id]").html(genSubtype(type_gender_arr, type, defaults_subtype, main_subtype));
-                });
-
-                $("[name=type_gender_id]").change();
-            }
-        }
-
-        // 霸凌事件主類別
-        if ($("[name=type_bully_id]").length > 0) {
-            var is_list = (location.pathname).indexOf("_list.") >= 0;
-            var main_type = is_list ? "全部事件主類別" : "請選擇事件主類別";
-            var main_subtype = is_list ? "全部事件次類別" : "請選擇事件次類別";
-
-            var is_update = getUrlParam("model") === "update";
-            var defaults_type = ""
-            if (is_update) {
-                defaults_type = "大分類一"
-            } else if (is_list) {
-                defaults_type = getUrlParam("type_id")
-            }
-
-            $("[name=type_bully_id]").html(genType(type_gender_arr, defaults_type, main_type));
-            if ($("[name=subtype_bully_id]").length > 0) {
-                $(document).on("change", "[name=type_bully_id]", function () {
-                    var type = $('option:selected', this).val();
-                    var defaults_subtype = is_update ? "小分類1" : "";
-                    $("[name=subtype_bully_id]").html(genSubtype(type_gender_arr, type, defaults_subtype, main_subtype));
-                });
-
-                $("[name=type_bully_id]").change();
-            }
-        }
-
-        // 性平事件狀態、霸凌事件狀態
-        if ($("[name=status]").length > 0) {
-            var option = '';
-            $.each(status_gender_arr, function (status, is_useful) {
-                if (is_useful === "啟用") {
-                    option += '<option value="' + status + '">' + status + '</option>\n';
-                }
-            });
-
-            $("[name=status]").html(option);
-        }
-
-        // 轉介單位
-        if ($("[name=unit_id]").length > 0) {
-            var option = '<option value="">全部轉介單位</option>\n';
-            $.each(unit_arr, function (key, unit) {
-                option += '<option value="' + unit + '">' + unit + '</option>\n';
-            });
-
-            $("[name=unit_id]").html(option);
-        }
-
-
         // 身分權限
         if ($("[name=permission_id]").length > 0) {
             var option = '<option value="">全部權限</option>\n';
@@ -385,6 +231,172 @@ $(function () {
             });
 
             $("[name=permission_id]").html(option);
+        }
+
+        if ((location.pathname).indexOf("/psychologist_mang") >= 0) {
+            $("#reset-stock").click(function () {
+                var event_arr = [];
+                event_arr["success"] = function () {
+                    showAlert("盤點成功!");
+                }
+                showConfirm(event_arr, "庫存盤點", "確定要重新盤點庫存嗎?");
+            })
+        }
+
+        if ((location.pathname).indexOf("/counselling_mang") >= 0) {
+            var match_arr = [];
+            // 單筆盤點開始
+            if ($("#checking_start").length > 0) {
+                $("#checking_start").click(function () {
+                    var this_dom = $(this);
+                    var event_arr = [];
+                    event_arr["success"] = function () {
+                        var tbody = this_dom.parents("#form").find("tbody");
+                        this_dom.addClass("hide").siblings().removeClass("hide");
+                        tbody.find("[data-set=checking]").each(function (i, ele) {
+                            $(ele).parents("tr").find("td").eq(2).append(' <i class="fa-solid fa-lock" data-lock></i>');
+                            $(ele).parent().prev().append(' <i class="fa-solid fa-lock" data-lock></i><br/><span class="text-danger">盤點中(不外借)</span>');
+                            $(ele).parent().next().children("[name=note]").removeClass("hide");
+                            $(ele).text('盤點中');
+                        });
+
+                        $.when(showAlert("盤點開始，過程中請勿刷新頁面。並於結束時點擊「盤點結束」"))
+                            .then(function () {
+                                checking();
+                            });
+                    }
+                    showConfirm(event_arr, "盤點", "確定要開始盤點庫存嗎?");
+                })
+            }
+
+            // 批次盤點
+            if ($("#multi_checking_start").length > 0) {
+                $("#multi_checking_start").click(function () {
+                    var this_dom = $(this)
+                    var event_arr = [];
+                    event_arr["success"] = function (num) {
+                        var tbody = this_dom.parents("#form").find("tbody");
+                        tbody.find("[data-set=checking]").each(function (i, ele) {
+                            if (i + 1 <= parseInt(num)) {
+                                $(ele).text('盤點無誤').removeClass("text-muted").addClass("text-success");
+
+                                var code = $(ele).parents("tr").find("[data-number]").text();
+                                if ($.inArray(code, match_arr) <= -1) {
+                                    match_arr.push(code);
+                                }
+                            }
+                        });
+                    }
+                    showPrompt(event_arr, "批次盤點", "請輸入盤點數量，系統將依序盤點");
+                })
+            }
+
+            // 盤點繼續
+            if ($("#checking_continue").length > 0) {
+                $("#checking_continue").click(function () {
+                    checking();
+                })
+            }
+
+            // 盤點結束
+            if ($("#checking_end").length > 0) {
+                $("#checking_end").click(function () {
+                    var event_arr = [];
+                    event_arr["success"] = function () {
+                        // 假設 ajax 儲存盤點紀錄, 並重新整理頁面
+                        $.when(showAlert("請至「盤點紀錄」匯出報表"))
+                            .then(function () {
+                                setTimeout(function () {
+                                    document.location.reload();
+                                }, 500)
+                            });
+                    }
+                    showConfirm(event_arr, "盤點作業", "目前盤點數量為" + match_arr.length + "，請問要結束盤點嗎?");
+                })
+            }
+
+            function checking() {
+                var event_arr2 = [];
+                event_arr2["success"] = function (val) {
+                    var is_match = false;
+                    $("[data-number]").each(function (i, ele) {
+                        var this_text = $(ele).text();
+                        if (this_text === val) {
+                            is_match = true;
+                            if ($.inArray(val, match_arr) <= -1) {
+                                match_arr.push(val);
+                                $(ele).parents("tr").find("[data-set=checking]").text('盤點無誤').toggleClass("text-muted").toggleClass("text-success");
+                            }
+                            checking();
+                        }
+                    })
+
+                    if (!is_match) {
+                        $.when(showAlert("查無資產編號：" + val))
+                            .then(function () {
+                                checking();
+                            });
+                    }
+                }
+                showPrompt(event_arr2);
+            }
+
+            // 新增一筆子資源
+            if ($("#add_row").length > 0) {
+                $("#add_row").click(function () {
+                    var table = $(this).parents(".card").eq(0).find("table").eq(0);
+                    var str = addRowHtml();
+                    table.append(str);
+                });
+
+                function addRowHtml(arr = []) {
+                    return `<tr>
+                                <td>
+                                    <input req data-title="資產號碼" class="form-control" name="sub_number"
+                                           placeholder="請輸入資產號碼" value="${arr.sub_number !== undefined ? arr.sub_number : ""}">
+                                </td>
+                                <td>
+                                    <input req data-title="子資源名稱" class="form-control" name="title"
+                                           placeholder="請輸入子資源名稱" value="${arr.title !== undefined ? arr.title : ""}">
+                                </td>
+                                <td>
+                                    <select class="form-control" data-title="上下架狀態"
+                                            name="is_finish"
+                                            req>
+                                        <option value="" ${arr.is_finish === undefined ? 'selected' : ''}>請選擇上下架狀態</option>
+                                        <option value="上架" ${arr.is_finish !== undefined && arr.is_finish ? 'selected' : ''}>上架</option>
+                                        <option value="下架" ${arr.is_finish !== undefined && !arr.is_finish ? 'selected' : ''}>下架</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" data-title="借用狀態"
+                                            name="borrowing_status"
+                                            req>
+                                        <option value="" ${arr.borrowing_status === undefined ? 'selected' : ''}>請選擇借用狀態</option>
+                                        <option value="可借用" ${arr.borrowing_status === 1 ? 'selected' : ''}>可借用</option>
+                                        <option value="使用中" ${arr.borrowing_status === 2 ? 'selected' : ''}>使用中</option>
+                                        <option value="不可借用" ${arr.borrowing_status === 3 ? 'selected' : ''}>不可借用</option>
+                                    </select>
+                                </td>
+                                <td>
+                                <textarea data-title="備註" class="form-control" rows="" name="note"
+                                          placeholder="請輸入備註"></textarea>
+                                </td>
+                                <td>
+                                    <button type="button" class="ml-1 btn btn-sm btn-outline-danger"
+                                            name="box_del">刪除
+                                    </button>
+                                </td>
+                            </tr>`;
+                }
+
+
+            }
+        }
+
+        if ((location.pathname).indexOf("/unit_mang") >= 0 || (location.pathname).indexOf("/psychologist_mang") >= 0) {
+
+
         }
 
         if ((location.pathname).indexOf("/role_mang.") >= 0) {
@@ -406,350 +418,71 @@ $(function () {
 
             $("#permission_td").html(checkbox)
 
-        }
-
-        if ((location.pathname).indexOf("/type_list.") >= 0) {
-            var row = '';
-            $.each(type_arr, function (type) {
-                row += '<tr>\n';
-                row += '<td>' + type + '</td>\n';
-                row += '<td></td>\n';
-                row += '<td>\n';
-                row += '<a href="type_mang.html?model=update" class="mx-1 btn btn-sm btn-outline-primary">編輯</a>\n';
-                row += '<button type="button" class="ml-1 btn btn-sm btn-outline-danger" name="box_del">刪除\n';
-                row += '</button>\n';
-                row += '<a href="subtype_list.html?type_id=' + type + '" class="mx-1 btn btn-sm btn-outline-dark">編輯次類別</a>\n';
-                row += '</td>\n';
-                row += '</tr>\n';
-            });
-            $("tbody").html(row);
-        }
-
-        if ((location.pathname).indexOf("/subtype_list.") >= 0) {
-            var row = '';
-            $.each(type_arr, function (type, items) {
-                $.each(items, function (subtype, import_sys) {
-                    row += '<tr>\n';
-                    row += '<td>' + type + '</td>\n';
-                    row += '<td>' + subtype + '</td>\n';
-                    row += '<td>' + import_sys + '</td>\n';
-                    row += '<td></td>\n';
-                    row += '<td>\n';
-                    row += '<a href="subtype_mang.html?model=update" class="mx-1 btn btn-sm btn-outline-primary">編輯</a>\n';
-                    row += '<button type="button" class="ml-1 btn btn-sm btn-outline-danger" name="box_del">刪除\n';
-                    row += '</button>\n';
-                    row += '</td>\n';
-                    row += '</tr>\n';
+            var checkbox_type = '';
+            if (permission_type_arr.length > 0) {
+                checkbox_type += '<div class="row p-2">\n';
+                $.each(permission_type_arr, function (i, item) {
+                    var checked = item.checked ? "checked" : "";
+                    checkbox_type += '<div class="col-md-3 custom-control custom-checkbox">\n';
+                    checkbox_type += '<input class="custom-control-input custom-control-input-primary custom-control-input-outline" type="checkbox" id="' + item.id + '" value="' + item.id + '" title="' + item.title + '" ' + checked + '>\n';
+                    checkbox_type += '<label class="custom-control-label" for="' + item.id + '">' + item.title + '</label>\n';
+                    checkbox_type += '</div>\n';
                 })
-            });
-            $("tbody").html(row);
-        }
 
-        if ((location.pathname).indexOf("/type_gender_list.") >= 0) {
-            var row = '';
-            $.each(type_gender_arr, function (type) {
-                row += '<tr>\n';
-                row += '<td>' + type + '</td>\n';
-                row += '<td></td>\n';
-                row += '<td>\n';
-                row += '<a href="type_gender_mang.html?model=update" class="mx-1 btn btn-sm btn-outline-primary">編輯</a>\n';
-                row += '<button type="button" class="ml-1 btn btn-sm btn-outline-danger" name="box_del">刪除\n';
-                row += '</button>\n';
-                row += '<a href="subtype_gender_list.html?type_id=' + type + '" class="mx-1 btn btn-sm btn-outline-dark">編輯次類別</a>\n';
-                row += '</td>\n';
-                row += '</tr>\n';
-            });
-            $("tbody").html(row);
-        }
-
-        if ((location.pathname).indexOf("/subtype_gender_list.") >= 0) {
-            var row = '';
-            $.each(type_gender_arr, function (type, items) {
-                $.each(items, function (subtype) {
-                    row += '<tr>\n';
-                    row += '<td>' + type + '</td>\n';
-                    row += '<td>' + subtype + '</td>\n';
-                    row += '<td></td>\n';
-                    row += '<td>\n';
-                    row += '<a href="subtype_gender_mang.html?model=update" class="mx-1 btn btn-sm btn-outline-primary">編輯</a>\n';
-                    row += '<button type="button" class="ml-1 btn btn-sm btn-outline-danger" name="box_del">刪除\n';
-                    row += '</button>\n';
-                    row += '</td>\n';
-                    row += '</tr>\n';
-                })
-            });
-            $("tbody").html(row);
-        }
-
-        if ((location.pathname).indexOf("/type_bully_list.") >= 0) {
-            var row = '';
-            $.each(type_gender_arr, function (type) {
-                row += '<tr>\n';
-                row += '<td>' + type + '</td>\n';
-                row += '<td></td>\n';
-                row += '<td>\n';
-                row += '<a href="type_bully_mang.html?model=update" class="mx-1 btn btn-sm btn-outline-primary">編輯</a>\n';
-                row += '<button type="button" class="ml-1 btn btn-sm btn-outline-danger" name="box_del">刪除\n';
-                row += '</button>\n';
-                row += '<a href="subtype_bully_list.html?type_id=' + type + '" class="mx-1 btn btn-sm btn-outline-dark">編輯次類別</a>\n';
-                row += '</td>\n';
-                row += '</tr>\n';
-            });
-            $("tbody").html(row);
-        }
-
-
-        if ((location.pathname).indexOf("/subtype_bully_list.") >= 0) {
-            var row = '';
-            $.each(type_gender_arr, function (type, items) {
-                $.each(items, function (subtype) {
-                    row += '<tr>\n';
-                    row += '<td>' + type + '</td>\n';
-                    row += '<td>' + subtype + '</td>\n';
-                    row += '<td></td>\n';
-                    row += '<td>\n';
-                    row += '<a href="subtype_bully_mang.html?model=update" class="mx-1 btn btn-sm btn-outline-primary">編輯</a>\n';
-                    row += '<button type="button" class="ml-1 btn btn-sm btn-outline-danger" name="box_del">刪除\n';
-                    row += '</button>\n';
-                    row += '</td>\n';
-                    row += '</tr>\n';
-                })
-            });
-            $("tbody").html(row);
-        }
-
-        if ((location.pathname).indexOf("/status_gender_list.") >= 0) {
-            // 性平事件狀態不可被刪除
-            var row = '';
-            $.each(status_gender_arr, function (status, is_useful) {
-                var useful_class = (is_useful === "停用") ? "text-danger" : "text-success";
-                row += '<tr>\n';
-                row += '<td>' + status + '</td>\n';
-                row += '<td class="' + useful_class + '">' + is_useful + '</td>\n';
-                row += '<td></td>\n';
-                row += '<td>\n';
-                row += '<a href="status_gender_mang.html?model=update" class="mx-1 btn btn-sm btn-outline-primary">編輯</a>\n';
-                // row += '<button type="button" class="ml-1 btn btn-sm btn-outline-danger" name="box_del">刪除\n';
-                row += '</button>\n';
-                row += '</td>\n';
-                row += '</tr>\n';
-            });
-            $("tbody").html(row);
-        }
-
-        if ((location.pathname).indexOf("/status_bully_list.") >= 0) {
-            // 霸凌事件狀態不可被刪除
-            var row = '';
-            $.each(status_gender_arr, function (status, is_useful) {
-                var useful_class = (is_useful === "停用") ? "text-danger" : "text-success";
-                row += '<tr>\n';
-                row += '<td>' + status + '</td>\n';
-                row += '<td class="' + useful_class + '">' + is_useful + '</td>\n';
-                row += '<td></td>\n';
-                row += '<td>\n';
-                row += '<a href="status_bully_mang.html?model=update" class="mx-1 btn btn-sm btn-outline-primary">編輯</a>\n';
-                // row += '<button type="button" class="ml-1 btn btn-sm btn-outline-danger" name="box_del">刪除\n';
-                row += '</button>\n';
-                row += '</td>\n';
-                row += '</tr>\n';
-            });
-            $("tbody").html(row);
-        }
-
-        if ((location.pathname).indexOf("case_list.") >= 0) {
-            // 下載各單位空白轉介紀錄表
-            if ($('[name=download_excel]').length > 0) {
-                $('[name=download_excel]').click(function (e) {
-                    e.preventDefault();
-                    window.open('../uploads/excels/轉介單位紀錄表_生活輔導組.xlsx');
-                    window.open('../uploads/excels/轉介單位紀錄表_衛生保健組.xlsx');
-                })
+                checkbox_type += '</div>\n';
             }
-        }
 
-        if ($("[name=happen_time],[name=notify_time],[name=accept_time],[name=finish_time]").length > 0) {
-            // 事件時間、知悉時間、受理時間、結案時間
-            $('[name=happen_time],[name=notify_time],[name=accept_time],[name=finish_time]').daterangepicker({
-                // minDate: now_time(),
-                autoUpdateInput: false,
-                singleDatePicker: true,
-                showDropdowns: true,
-                timePicker: true,
-                timePicker24Hour: true,
-                locale: datetimepicker_option,
-            });
+            $("#permission_type_td").html(checkbox_type)
 
-            $('[name=happen_time],[name=notify_time],[name=accept_time],[name=finish_time]').on('apply.daterangepicker', function (ev, picker) {
-                $(this).val(picker.startDate.format('YYYY-MM-DD HH:mm'));
-            });
-        }
-
-        if ($("[name=now_time]").length > 0) {
-            // 事件時間、知悉時間
-            $('[name=now_time]').daterangepicker({
-                minDate: getISODateTime(now_time(), "yyyy-MM-dd HH:mm"),
-            });
         }
 
         if ((location.pathname).indexOf("case_") >= 0) {
-            if ($("#peo_table").length > 0) {
-                var len = $("#peo_table tbody tr").length;
-
-                $("[name=add_row]").click(function () {
-                    len += 1
-                    var new_row = addRow(len);
-                    $("#peo_table tbody").append(new_row);
-                })
-
-                $("[name=clean_all]").click(function () {
-                    var event_arr = [];
-                    event_arr["success"] = function () {
-                        len = 1;
-                        var new_row = addRow(len);
-                        $("#peo_table tbody").html(new_row);
-                    }
-                    showConfirm(event_arr);
-                })
-
-                $(document).on("click", "[name=delete_row]", function () {
-                    var this_tr = $(this).closest("tr");
-                    var event_arr = [];
-                    event_arr["success"] = function () {
-                        this_tr.remove(); // 模擬刪除
-                    }
-                    showConfirm(event_arr);
-                })
-
-                //var gender_arr = ["男", "女", "其他"]; // 性別
-                //var status_arr = ["死亡", "重傷", "輕傷", "失蹤", "正常", "疾病"]; // 狀態
-                //var title_arr = ["學生", "教師", "教官", "職員", "校外人士", "其他", "校長(園長)", "實驗學生(短期進修)", "廠商", "教保員(助理教保員)"]; // 職稱
-                //var unit_arr = ["本校一、二級行政單位。", "本校一、二級學術單位。", "校外人員。"]; // 所屬單位
-                //var location_arr = ["醫院", "學校", "警局", "在家中", "安置中", "其他", "不明", "集中檢疫所"]; // 目前位置
-                //var char_arr = ["受害者", "行為人/肇事者", "關係人", "其他(無法定義者)", "朋友", "協調者", "疾患人員", "工友", "互為行為人(疑似合意)"]; // 角色
-
-                //function addRow(num) {
-                //    var tr = '<tr>\n';
-                //    tr += '<th scope="col">' + num + '</th>\n';
-                //    tr += '<td>\n';
-                //    tr += genSelectOptions("peo_gender" + num, "性別", gender_arr);
-                //    tr += '</td>\n';
-                //    tr += '<td><input type="text" class="form-control form-control-sm" name="peo_name' + num + '" placeholder="請輸入姓名"></td>\n';
-                //    tr += '<td>\n';
-                //    tr += genSelectOptions("peo_status" + num, "狀態", status_arr);
-                //    tr += '</td>\n';
-                //    tr += '<td>\n';
-                //    tr += genSelectOptions("peo_title" + num, "職稱", title_arr);
-                //    tr += '</td>\n';
-                //    tr += '<td>\n';
-                //    tr += genSelectOptions("peo_unit" + num, "所屬單位", unit_arr);
-                //    tr += '</td>\n';
-                //    tr += '<td><input type="text" class="form-control form-control-sm" name="peo_num' + num + '" placeholder="請輸入學號"></td>\n';
-                //    tr += '<td>\n';
-                //    tr += '<select class="form-control form-control-sm bd_y" name="peo_year' + num + '">\n';
-                //    tr += '<option value="" selected>請選擇出生年</option>\n';
-                //    tr += genBirthYear();
-                //    tr += '</select>\n';
-                //    tr += '</td>\n';
-                //    tr += '<td>\n';
-                //    tr += genSelectOptions("peo_location" + num, "目前位置", location_arr);
-                //    tr += '</td>\n';
-                //    tr += '<td>\n';
-                //    tr += genSelectOptions("peo_char" + num, "角色", char_arr);
-                //    tr += '</td>\n';
-                //    tr += '<td>\n';
-                //    tr += '<button type="button" class="btn btn-sm btn-outline-danger" name="delete_row"><i class="fa-solid fa-x"></i>\n';
-                //    tr += '</button>\n';
-                //    tr += '</td>\n';
-                //    tr += '</tr>\n';
-
-                //    return tr;
-                //}
-
-                //if ($(".bd_y").length > 0) {
-                //    // 年
-                //    var year_defaults = $('.bd_y').attr('defaults'); // 選擇的項目
-                //    var option = genBirthYear(year_defaults);
-                //    $('.bd_y').append(option);
-                //}
-
-                //function genBirthYear(defaults) {
-                //    var str = "";
-                //    var y = parseInt(getISODateTime(now_time(), "yyyy")) + 1 - 1911;
-                //    for (var i = 0; i <= 100; i++) {
-                //        y = y - 1;
-                //        var selected = '';
-                //        if (y == defaults) {
-                //            selected = 'selected';
-                //        }
-
-                //        str += '<option value="' + y + '" ' + selected + '>民國' + y + '年</option>';
-                //    }
-
-                //    return str;
-                //}
-
-                //function genSelectOptions(name = "", title = "", arr = []) {
-                //    var str = ''
-                //    str += '<select class="form-control form-control-sm" name="' + name + '">\n';
-                //    str += '<option value="" selected>請選擇' + title + '</option>\n';
-                //    $.each(arr, function (i, item) {
-                //        str += '<option value="' + item + '">' + item + '</option>\n';
-                //    });
-                //    str += '</select>\n';
-
-                //    return str
-                //}
-            }
-
-            // 是否結案。若是，則須填寫結案時間
-            if ($("[name=is_finish]").length > 0) {
-                $("[name=is_finish]").change(function () {
-                    var val = $("option:selected", this).val();
-                    if (val === "是") {
-                        $("[name=finish_time]").attr("req", "Y").parents('div:first').removeClass("hide").find('.required').text('*');
-                    } else {
-                        $("[name=finish_time]").removeAttr("req").parents('div:first').addClass("hide").find('.required').text('');
-                    }
-                }).change();
-            }
-
-
-            // 是否受理。若是，則須填寫結案時間
-            if ($("[name=is_accept]").length > 0) {
-                $("[name=is_accept]").change(function () {
-                    var val = $("option:selected", this).val();
-                    if (val === "是") {
-                        $("[name=accept_time]").attr("req", "Y").parents('div:first').removeClass("hide").find('.required').text('*');
-                    } else {
-                        $("[name=accept_time]").removeAttr("req").parents('div:first').addClass("hide").find('.required').text('');
-                    }
-                }).change();
-            }
-
             var now_format = getISODateTime(now_time(), "yyyy-MM-dd HH:mm:ss")
             $("[name=now_time]").val(now_format);
 
-            // 新增事件紀錄
+            // 新增狀態歷程紀錄
             $("#add_history").click(function () {
                 var time = $("[name=now_time]").val().replace("T", " ");
                 var status = $("[name=status]").val();
                 var history = $("[name=history]").val();
                 if (history !== "") {
-                    var list = '<li class="list-group-item p-1">';
-                    list += getISODateTime(time, "yyyy/MM/dd HH:mm");
-                    list += '<span class="badge badge-primary mx-1">' + status + '</span> ' + history + '\n';
-                    list += '</li>\n';
+                    switch (status) {
+                        case "已領取":
+                            var notset_arr = 0;
+                            $(".sub_resource").each(function () {
+                                var val = $("option:checked", this).val();
+                                if (val === "") {
+                                    notset_arr++;
+                                    $(this).addClass("is-invalid");
+                                }
+                            });
 
-                    $(".list-group").append(list);
+                            if (notset_arr > 0) {
+                                showAlert("請選擇核定之子資源");
+                                return false;
+                            }
+                    }
+                    var event_arr = [];
+                    event_arr["success"] = function () {
+                        var list = '<li class="list-group-item p-1">';
+                        list += getISODateTime(time, "yyyy/MM/dd HH:mm");
+                        list += '<span class="font-weight-bold">經手人員A</span>';
+                        list += '<span class="badge badge-primary mx-1">' + status + '</span> ' + history + '\n';
+                        list += '</li>\n';
 
-                    // 新增成功後，重整記錄時間+清空紀錄內容
-                    now_format = getISODateTime(now_time(), "yyyy-MM-dd HH:mm:ss")
-                    $("[name=now_time]").val(now_format);
-                    $("[name=history]").val("");
+                        $(".list-group").append(list);
 
-                    showAlert("新增成功!")
+                        // 新增成功後，重整記錄時間+清空紀錄內容
+                        now_format = getISODateTime(now_time(), "yyyy-MM-dd HH:mm:ss")
+                        $("[name=now_time]").val(now_format);
+                        $("[name=history]").val("");
+
+                        showAlert("切換成功!")
+                    }
+                    showConfirm(event_arr, "切換狀態提醒", "確定要將狀態切為「<span class='font-weight-bold text-danger'>" + status + "</span>」?");
                 } else {
-                    showAlert("請輸入本次紀錄內容", "red")
+                    showAlert("請輸入本次紀錄內容", "red");
+                    return false;
                 }
             })
 
@@ -768,6 +501,280 @@ $(function () {
                     showConfirm(event_arr, "確定要清空內容嗎?", "清空內容無法復原");
                 }
             })
+
+            if ($(".borrow_table").length > 0) {
+                var borrow_list = '';
+                var len = 0;
+                $.each(borrow_arr, function (index, item) {
+                    var total = parseInt(item.total);
+                    if (item.single_type === 1) { // 單筆借用
+                        for (var i = 1; i < total + 1; i++) {
+                            len++;
+                            console.log(item.resource_name, i);
+                            borrow_list += borrowTableHtml(len, item, item.single_type);
+                        }
+                    } else {
+                        len++;
+                        borrow_list += borrowTableHtml(len, item, item.single_type);
+                    }
+                });
+
+                $(".borrow_table").find("tbody").html(borrow_list)
+
+                /*
+                <!-- <select class="form-control sub_resource select2-selector"
+                                            data-id="2">
+                                        <option value="">請選擇核定子資源</option>
+                                        <option value="A001">A001</option>
+                                        <option value="A002">A002</option>
+                                        <option value="A003">A003</option>
+                                        <option value="A004">A004</option>
+                                    </select> -->
+                * */
+                function borrowTableHtml(len, item, type) {
+                    return `<tr>
+                                <td>${len}</td>
+                                <td>${item.resource_name}</td>
+                                <td>${type === 1 ? "<span class=\"badge badge-success\">單筆借用</span>" : "<span class=\"badge badge-warning\">大量借用</span>"}</td>
+                                <td>${type === 1 ? 1 : item.total}</td>
+                                <td>
+                                    <span class="text-muted">尚未領取</span>
+                                </td>
+                                <td>
+                                    <button type="button"
+                                            class="ml-1 btn btn-sm btn-outline-primary"
+                                            name="box_borrowing" data-id="${item.resource_id}" data-single="${type}">借出
+                                    </button>
+                                    <button type="button"
+                                            class="ml-1 btn btn-sm btn-outline-danger"
+                                            name="box_del" data-id="${item.resource_id}">刪除
+                                    </button>
+                                </td>
+                            </tr>`
+                }
+            }
+
+            $("#start_date").change(function () {
+                var start_date = new Date($(this).val());
+                var end_date = $("#end_date").val();
+                if (end_date !== "") {
+                    end_date = new Date(end_date);
+                    var diff = DateDiff(start_date, end_date)
+                    if (diff < 0) {
+                        alert("領取日期不得大於歸還日期");
+                        $(this).val(startDate);
+                        return false;
+                    }
+                }
+
+                startDate = $(this).val();
+            });
+
+            $("#end_date").change(function (e) {
+                var start_date = $("#start_date").val();
+                var end_date = new Date($(this).val());
+                if (start_date !== "") {
+                    start_date = new Date(start_date);
+                    var diff = DateDiff(start_date, end_date)
+                    if (diff < 0) {
+                        alert("領取日期不得大於歸還日期");
+                        $(this).val(endDate);
+                        return false;
+                    }
+                }
+
+                endDate = $(this).val();
+            });
+
+            genResourceOption();
+
+            function genResourceOption() {
+                var resourceOption = '';
+                $.each(resource_arr, function (index, item) {
+                    var disabled = parseInt(item.current_available) === 0 ? "disabled" : ""; // 若無可借用庫存則不可選擇
+                    resourceOption += '<option value="' + item.id + '" data-available="' + item.current_available + '" ' + disabled + ' data-once="' + item.single_limit + '">(' + item.type + ') ' + item.name + '</option>';
+                });
+
+                $("#resource_id").append(resourceOption);
+            }
+
+            // 借用資源
+            $(document).on("change", "#resource_id", function () {
+                var available = parseInt($("option:selected", this).data("available"));
+                var once = parseInt($("option:selected", this).data("once"));
+                var resourceNumOption = '<option value="">請選擇借用數量</option>';
+                for (let i = 1; i < available + 1; i++) {
+                    var disabled = (once > 0 && once < i) ? "disabled" : ""; // 資源單次借用上限數量 (0=無限制)
+                    resourceNumOption += '<option value="' + i + '" ' + disabled + '>' + i + '</option>';
+                }
+
+                $("#resource_num").html(resourceNumOption);
+            });
+
+            // 新增器材
+            $(".addevent-btn").click(function () {
+                var sum_arr = [];
+                $(this).prev(".form-row").find(".form-control").each(function () {
+                    var val = $("option:selected", this).val();
+                    if (val === "") {
+                        var title = $(this).attr("title");
+                        $(this).addClass("is-invalid");
+                        sum_arr.push(title);
+                    }
+                })
+
+                $.unique(sum_arr);
+                if (sum_arr.length > 0) {
+                    sum_arr = sum_arr.join("、");
+                    showAlert(sum_arr)
+                    $('html, body').animate({
+                        scrollTop: $('.is-invalid:first').offset().top - 200
+                    }, 500);
+                    return false;
+                } else {
+                    var resource_id = $("#resource_id option:selected").val(); // 借用資源id
+                    var resource_num = parseInt($("#resource_num option:selected").val()); // 借用資源數量
+                    var index = resource_arr.findIndex(function (e) {
+                        return e.id === resource_id;
+                    });
+
+                    var resource = resource_arr[index];
+                    var resource_name = "(" + resource.type + ") " + resource.name; // 借用資源名稱
+                    var resource_available = parseInt(resource.current_available); // 資源上架庫存
+                    var resource_once = parseInt(resource.single_limit); // 資源單次借用上限數量
+                    var resource_safety = parseInt(resource.safety_count); // 資源安全庫存數量
+                    var resource_safety_note = resource.safety_note; // 資源安全庫存提示
+
+                    if (resource_once > 0 && resource_num > resource_once) {
+                        showAlert("「" + resource_name + "」的單次借用上限數量為：" + resource_once);
+                        return false;
+                    }
+
+                    // 當預約當下庫存已低於安全庫存，應顯示後台設定之提示訊息。但不影響送出
+                    if (resource_safety > resource_available) {
+                        var event_arr = [];
+                        event_arr["fail"] = function () {
+                            return false;
+                        }
+                        showConfirm(event_arr, "安全庫存提示", "確定要借用嗎?\n\n" + resource_safety_note);
+                    }
+
+                    var is_exist = $("[data-resource-id='" + resource_id + "']").length;
+                    if (is_exist > 0) {
+                        var event_arr = [];
+                        event_arr["success"] = function () {
+                            $("[data-resource-id='" + resource_id + "']>.location").html(resource_name + ' <i class="fas fa-x"></i> ' + resource_num);
+                        }
+                        showConfirm(event_arr, "數量更新", "是否要更新「" + resource_name + "」的借用數量為：" + resource_num + "？");
+                    } else {
+                        var str = '<li class="list-group-item d-flex justify-content-between p-1" data-resource-id="' + resource_id + '"><!--如果要修改數量就先[移除]再[新增]-->\n';
+                        str += '<span class="location">' + resource_name + ' <i class="fas fa-x"></i> ' + resource_num + '</span>\n';
+                        str += '<button class="del-btn btn btn-sm btn-outline-dark mx-1" type="button">移除 <i class="fas fa-times"></i></button>\n';
+                        str += '</li>\n';
+
+                        $("#event_des>ul").append(str);
+                        genResourceOption();
+                    }
+
+                    // 更新器材暫存數量
+                    // var index = resource_arr.findIndex(function (e) {
+                    //     return e.id == resource_id;
+                    // });
+                    // resource_arr[index].current_available = resource_arr[index].current_available - resource_num
+                }
+            });
+
+            // 移除器材
+            $(document).on('click', '#event_des .del-btn', function () {
+                var $btn = $(this);
+                var event_arr = [];
+                event_arr["success"] = function () {
+                    $btn.closest(".list-group-item").remove();
+                }
+
+                showConfirm(event_arr, "刪除提醒", "確定要刪除嗎?");
+            })
+
+            // 借出
+            if ($("[name=box_borrowing]").length > 0) {
+                $("[name=box_borrowing]").click(function () {
+                    var this_dom = $(this);
+                    var resource_id = $(this).data("id");
+                    var this_type = $(this).data("single");
+                    var index = findIndex(resource_arr, "id", resource_id);
+                    var arr = resource_arr[index].sub_resources;
+                    if (this_type === 1) { // 單筆借出
+                        var event_arr = [];
+                        event_arr["success"] = function (sub_id) {
+                            var sub_index = findIndex(arr, "id", sub_id);
+                            var sub_arr = arr[sub_index];
+                            this_dom.parent().prev().html('<span class="text-success">已領取(未儲存)</span><br/><span class="text-sm">' + sub_arr.code + '</span>').addClass("text-muted");
+                        }
+                        showPromptSelect2(event_arr, "資源借出", "請選擇或輸入資產編號", resource_id);
+
+                    } else if (this_type === 2) { // 大量借出
+                        var event_arr = [];
+                        event_arr["success"] = function (num) {
+                            this_dom.parent().prev().html('<span class="text-success">已領取(未儲存)</span><br/><span class="text-sm">數量:' + num + '</span>').addClass("text-muted");
+                        }
+                        showPrompt(event_arr, "資源借出", "請輸入借出數量");
+                    }
+                });
+            }
+
+            // 開始歸還
+            if ($("[name=box_return]").length > 0) {
+                $("[name=box_return]").click(function () {
+                    var this_dom = $(this);
+                    var this_type = this_dom.data("single");
+
+                    if (this_type === 1) { // 單筆歸還
+                        var event_arr = [];
+                        event_arr["success"] = function (value) {
+                            var is_match = false;
+                            $("span[data-single=1]").each(function (i, ele) {
+                                var code = $(ele).text();
+                                if (code === value) {
+                                    is_match = true;
+                                    $(ele).parent().html('<span class="text-danger">已歸還(未儲存)</span><br/><span class="text-sm">' + code + '</span>')
+                                }
+                            })
+
+                            if (!is_match) {
+                                $.when(showAlert("查無資產編號：" + value))
+                                    .then(function () {
+                                        showPrompt(event_arr, "歸還作業", "請輸入歸還物品資產編號");
+                                    })
+                                return false;
+                            }
+
+                            showPrompt(event_arr, "歸還作業", "請輸入歸還物品資產編號");
+                        }
+
+                        showPrompt(event_arr, "歸還作業", "請輸入歸還物品資產編號");
+                    } else if (this_type === 2) { // 大量歸還
+
+                        var event_arr = [];
+                        event_arr["success"] = function (num) {
+                            this_dom.parent().prev().html('<span class="text-danger">已歸還(未儲存)</span><br/><span class="text-sm">歸還數量:' + num + '</span>').addClass("text-muted");
+                        }
+
+                        showPrompt(event_arr, "歸還作業", "請輸入歸還數量");
+
+                    }
+                })
+            }
+
+            if ($("[name=box_lost]").length > 0) {
+                $("[name=box_lost]").click(function () {
+                    var this_dom = $(this);
+                    var event_arr = [];
+                    event_arr["success"] = function () {
+                        this_dom.parent().prev().find("span").eq(0).text('未歸還(未儲存)').addClass("text-danger");
+                    }
+                    showConfirm(event_arr, "物品遺失", "確認物品未歸還嗎?")
+                })
+            }
         }
 
         //###############以下為新增及編輯頁面 fun#######################//
@@ -898,7 +905,7 @@ $(function () {
                 var model = $('[name=model]').val();
                 if (model === "add") {
                     $('.upload_cover').each(function () {
-                        $(this).css('background-image', 'url(../uploads/others/nophoto.png)');
+                        $(this).css('background-image', 'url(../../uploads/others/nophoto.png)');
                     })
                     $('.filesupload[data-file]').each(function () {
                         $(this).parents('td:first').find('#filename').addClass('text-muted').text("尚未選擇檔案...");
@@ -906,7 +913,7 @@ $(function () {
                 } else if (model === "update") {
                     $('input.file[type=file]').each(function () {
                         var file = aes_decrypt($(this).data('file'));
-                        $(this).parents('td').find('.upload_cover').css('background-image', 'url(../uploads/others/' + file + ')');
+                        $(this).parents('td').find('.upload_cover').css('background-image', 'url(../../uploads/others/' + file + ')');
 
                         if ($(this).parents('td').find('.btn-remove').length > 0 && $(this).parents('td').find('.btn-preview').length > 0) {
                             $(this).parents('td').find('.btn-remove').removeClass('hide');
@@ -974,12 +981,11 @@ $(function () {
                 })
                 $(document).on('click', '.target_list .del-btn', function () {
                     var num = $(".target_list").find("[type='file']").length
-
-                    if (confirm("確認清除？") == false) {
-                        return false
-                    } else {
+                    var $btn = $(this);
+                    var event_arr = [];
+                    event_arr["success"] = function () {
                         if (num >= 2) {
-                            $(this).closest(".item").remove()
+                            $btn.closest(".item").remove()
                             $("#add_input_btn").prop("disabled", false)
                         }
 
@@ -988,7 +994,11 @@ $(function () {
                         } else {
                             $(".target_list .del-btn").removeClass("hidden")
                         }
+
+                        $btn.closest(".list-group-item").remove();
                     }
+
+                    showConfirm(event_arr, "刪除提醒", "確定要刪除嗎?");
                 })
 
                 function checkNum() {
@@ -1004,6 +1014,20 @@ $(function () {
 
         }
 
+        // 列表批次刪除
+        if ($("button[name=box_del]").length > 0) {
+            $(document).on("click", "button[name=box_del]", function () {
+                var this_tr = $(this).parents("tr").eq(0);
+                var event_arr = [];
+                event_arr["success"] = function () {
+                    this_tr.remove(); // 模擬刪除
+                    showAlert("刪除成功");
+                }
+                showConfirm(event_arr);
+            });
+        }
+
+
         //###############以下為列表頁面 fun#######################//
         if ((location.pathname).indexOf("_list.") >= 0) {
 
@@ -1018,17 +1042,6 @@ $(function () {
                         $(this).prop('checked', false); //uncheck
                     });
                 }
-            });
-
-            // 列表批次刪除
-            $("button[name=box_del]").click(function (event) {
-                var this_tr = $(this).parents("tr");
-                var event_arr = [];
-                event_arr["success"] = function () {
-                    this_tr.remove(); // 模擬刪除
-                    showAlert("刪除成功");
-                }
-                showConfirm(event_arr);
             });
 
             // 列表上方的篩選DOM
@@ -1062,7 +1075,7 @@ $(function () {
                     var event_arr = []
                     event_arr["success"] = function () {
                         if (filename !== undefined) {
-                            window.open('../uploads/excels/' + filename);
+                            window.open('../../uploads/excels/' + filename);
                         } else {
                             showAlert("此時將匯出符合篩選條件之結果Excel")
                         }
@@ -1088,11 +1101,18 @@ $(function () {
 })
 
 function showAlert(content = '', type = '') {
+    var deferred = $.Deferred();
     $.alert({
         title: '提醒您',
         content: content,
-        type: type
+        type: type,
+        onClose: function () {
+            // before the modal is hidden.
+            deferred.resolve();
+        },
     });
+
+    return deferred.promise();
 }
 
 function showConfirm(event_arr = [], title = "確定刪除?", content = "刪除資料無法復原!") {
@@ -1125,30 +1145,137 @@ function showConfirm(event_arr = [], title = "確定刪除?", content = "刪除�
     });
 }
 
-function genType(arr = type_arr, defaults = "", main = "請選擇校安事件主類別") {
+function showPrompt(event_arr = [], title = "盤點作業", content = "請輸入資產編號") {
+    var success = function () {
+    };
+    var fail = function () {
+    };
+
+    if (typeof (event_arr["success"]) != "undefined" && $.isFunction(event_arr["success"])) {
+        success = event_arr["success"];
+    }
+    if (typeof (event_arr["fail"]) != "undefined" && $.isFunction(event_arr["fail"])) {
+        fail = event_arr["fail"];
+    }
+
+    $.confirm({
+        title: title,
+        content: '' +
+            // '<form action="" class="formName">' +
+            '<div class="form-group">' +
+            '<label>' + content + '</label>' +
+            '<input type="text" placeholder="' + content + '" class="name form-control" required />' +
+            '</div>',
+        // '</form>',
+        buttons: {
+            confirm: {
+                text: '確認',
+                btnClass: 'btn-blue',
+                action: function () {
+                    var val = this.$content.find('.name').val();
+                    if (!val) {
+                        return false;
+                    }
+                    success(val);
+                }
+            },
+            cancel: {
+                text: '取消',
+                action: function () {
+                    // close
+                }
+            },
+        },
+        onOpen: function () {
+            // 直接enter觸發confirm https://github.com/craftpip/jquery-confirm/issues/464
+            var submit = this.$$confirm;
+            $(this.$content).on('keypress', function (e) {
+                if (e.which === 13) {
+                    submit.trigger('click');
+                }
+            });
+        },
+        onContentReady: function () {
+            // bind to events
+            var jc = this;
+            setTimeout(function () {
+                jc.$content.find('.name').focus(); // 自動focus
+            }, 500);
+            // this.$content.find('form').on('submit', function (e) {
+            //     // if the user submits the form by pressing enter in the field.
+            //     e.preventDefault();
+            //     jc.$$formSubmit.trigger('click'); // reference the button and click it
+            // });
+        }
+    });
+}
+
+function showPromptSelect2(event_arr = [], title = "資源借出", content = "請輸入資產編號", resource_id) {
+    var success = function () {
+    };
+    var fail = function () {
+    };
+
+    if (typeof (event_arr["success"]) != "undefined" && $.isFunction(event_arr["success"])) {
+        success = event_arr["success"];
+    }
+    if (typeof (event_arr["fail"]) != "undefined" && $.isFunction(event_arr["fail"])) {
+        fail = event_arr["fail"];
+    }
+
+    var options = '';
+    var index = findIndex(resource_arr, "id", resource_id);
+    var arr = resource_arr[index].sub_resources;
+    $.each(arr, function (id, sub) {
+        options += '<option value="' + sub.id + '">' + sub.code + '(' + sub.name + ')</option>'
+    });
+
+    $.confirm({
+        title: title,
+        content: '' +
+            '<form action="" class="formName">' +
+            '<div class="form-group">' +
+            '<label>' + content + '</label>' +
+            '<select class="name form-control select2-selector" required>' +
+            '<option value="">' + content + '</option>' +
+            options +
+            '</select>' +
+            '</div>' +
+            '</form>',
+        buttons: {
+            formSubmit: {
+                text: '確認',
+                btnClass: 'btn-blue',
+                action: function () {
+                    var val = this.$content.find('.name').val();
+                    if (!val) {
+                        return false;
+                    }
+                    success(val);
+                }
+            },
+            cancel: function () {
+                //close
+            },
+        },
+        onContentReady: function () {
+            // bind to events
+            var jc = this;
+            // this.$content.find('.select2-selector').select2();
+        }
+    });
+}
+
+function genType(arr = psychologist_arr, defaults = "", main = "請選擇校安事件主類別") {
     var option = (main !== "") ? '<option value="">' + main + '</option>\n' : '';
-    $.each(arr, function (type) {
-        if (type === defaults) {
-            option += '<option value="' + type + '" selected>' + type + '</option>\n';
+    $.each(arr, function (index, item) {
+        if (item.title === defaults) {
+            option += '<option value="' + item.id + '" selected>' + item.title + '</option>\n';
         } else {
-            option += '<option value="' + type + '">' + type + '</option>\n';
+            option += '<option value="' + item.id + '">' + item.title + '</option>\n';
         }
     });
 
-    return option;
-}
-
-function genSubtype(arr = type_arr, type = "意外事件", defaults = "", main = "請選擇校安事件次類別") {
-    var option = '<option value="">' + main + '</option>\n';
-    if (arr[type] !== undefined) {
-        $.each(arr[type], function (subtype) {
-            if (subtype === defaults) {
-                option += '<option value="' + subtype + '" selected>' + subtype + '</option>\n';
-            } else {
-                option += '<option value="' + subtype + '">' + subtype + '</option>\n';
-            }
-        });
-    }
     return option;
 }
 
@@ -1328,6 +1455,20 @@ function getISODateTime(date, format) {
     });
 }
 
+//N天後或N天前, GetDateStr(+-5) 或 特定日期 GetDateStr(+-5,"2016-05-05");
+function GetDateStr(AddDayCount, date) {
+    var arr = (date) ? date.split("-") : [];
+    var dd = (date) ? new Date(arr[0], arr[1] - 1, arr[2]) : new Date();
+    dd.setDate(dd.getDate() + AddDayCount);//获取AddDayCount天后的日期
+    //console.log(datetime_to_unix("2016-01-01 12:00:00").getDate())
+    var y = dd.getFullYear();
+
+    var m = (dd.getMonth() + 1 < 10) ? "0" + (dd.getMonth() + 1) : dd.getMonth() + 1;
+    var d = (dd.getDate() < 10) ? "0" + dd.getDate() : dd.getDate();
+    return y + "-" + m + "-" + d;
+}
+
+
 /*
 getUrlParam() //列出全部參數
 getUrlParam("id") //列出id的值
@@ -1355,29 +1496,29 @@ code.google.com/p/crypto-js/wiki/License
 */
 var CryptoJS = CryptoJS || function (u, p) {
     var d = {}, l = d.lib = {}, s = function () {
-        }, t = l.Base = {
-            extend: function (a) {
-                s.prototype = this;
-                var c = new s;
-                a && c.mixIn(a);
-                c.hasOwnProperty("init") || (c.init = function () {
-                    c.$super.init.apply(this, arguments)
-                });
-                c.init.prototype = c;
-                c.$super = this;
-                return c
-            }, create: function () {
-                var a = this.extend();
-                a.init.apply(a, arguments);
-                return a
-            }, init: function () {
-            }, mixIn: function (a) {
-                for (var c in a) a.hasOwnProperty(c) && (this[c] = a[c]);
-                a.hasOwnProperty("toString") && (this.toString = a.toString)
-            }, clone: function () {
-                return this.init.prototype.extend(this)
-            }
-        },
+    }, t = l.Base = {
+        extend: function (a) {
+            s.prototype = this;
+            var c = new s;
+            a && c.mixIn(a);
+            c.hasOwnProperty("init") || (c.init = function () {
+                c.$super.init.apply(this, arguments)
+            });
+            c.init.prototype = c;
+            c.$super = this;
+            return c
+        }, create: function () {
+            var a = this.extend();
+            a.init.apply(a, arguments);
+            return a
+        }, init: function () {
+        }, mixIn: function (a) {
+            for (var c in a) a.hasOwnProperty(c) && (this[c] = a[c]);
+            a.hasOwnProperty("toString") && (this.toString = a.toString)
+        }, clone: function () {
+            return this.init.prototype.extend(this)
+        }
+    },
         r = l.WordArray = t.extend({
             init: function (a, c) {
                 a = this.words = a || [];
@@ -1507,11 +1648,11 @@ var CryptoJS = CryptoJS || function (u, p) {
             var l = d.length, s = this._map, t = s.charAt(64);
             t && (t = d.indexOf(t), -1 != t && (l = t));
             for (var t = [], r = 0, w = 0; w <
-            l; w++) if (w % 4) {
-                var v = s.indexOf(d.charAt(w - 1)) << 2 * (w % 4), b = s.indexOf(d.charAt(w)) >>> 6 - 2 * (w % 4);
-                t[r >>> 2] |= (v | b) << 24 - 8 * (r % 4);
-                r++
-            }
+                l; w++) if (w % 4) {
+                    var v = s.indexOf(d.charAt(w - 1)) << 2 * (w % 4), b = s.indexOf(d.charAt(w)) >>> 6 - 2 * (w % 4);
+                    t[r >>> 2] |= (v | b) << 24 - 8 * (r % 4);
+                    r++
+                }
             return p.create(t, r)
         }, _map: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
     }
@@ -1602,7 +1743,7 @@ var CryptoJS = CryptoJS || function (u, p) {
 })(Math);
 (function () {
     var u = CryptoJS, p = u.lib, d = p.Base, l = p.WordArray, p = u.algo, s = p.EvpKDF = d.extend({
-        cfg: d.extend({keySize: 4, hasher: p.MD5, iterations: 1}), init: function (d) {
+        cfg: d.extend({ keySize: 4, hasher: p.MD5, iterations: 1 }), init: function (d) {
             this.cfg = this.cfg.extend(d)
         }, compute: function (d, r) {
             for (var p = this.cfg, s = p.hasher.create(), b = l.create(), u = b.words, q = p.keySize, p = p.iterations; u.length < q;) {
@@ -1701,7 +1842,7 @@ CryptoJS.lib.Cipher || function (u) {
         }
     };
     d.BlockCipher = v.extend({
-        cfg: v.cfg.extend({mode: b, padding: q}), reset: function () {
+        cfg: v.cfg.extend({ mode: b, padding: q }), reset: function () {
             v.reset.call(this);
             var a = this.cfg, b = a.iv, a = a.mode;
             if (this._xformMode == this._ENC_XFORM_MODE) var c = a.createEncryptor; else c = a.createDecryptor, this._minBufferSize = 1;
@@ -1738,10 +1879,10 @@ CryptoJS.lib.Cipher || function (u) {
                 b.splice(0, 4);
                 a.sigBytes -= 16
             }
-            return n.create({ciphertext: a, salt: c})
+            return n.create({ ciphertext: a, salt: c })
         }
     }, a = d.SerializableCipher = l.extend({
-        cfg: l.extend({format: b}), encrypt: function (a, b, c, d) {
+        cfg: l.extend({ format: b }), encrypt: function (a, b, c, d) {
             d = this.cfg.extend(d);
             var l = a.createEncryptor(c, d);
             b = l.finalize(b);
@@ -1767,13 +1908,13 @@ CryptoJS.lib.Cipher || function (u) {
     }), p = (p.kdf = {}).OpenSSL = {
         execute: function (a, b, c, d) {
             d || (d = s.random(8));
-            a = w.create({keySize: b + c}).compute(a, d);
+            a = w.create({ keySize: b + c }).compute(a, d);
             c = s.create(a.words.slice(b), 4 * c);
             a.sigBytes = 4 * b;
-            return n.create({key: a, iv: c, salt: d})
+            return n.create({ key: a, iv: c, salt: d })
         }
     }, c = d.PasswordBasedCipher = a.extend({
-        cfg: a.cfg.extend({kdf: p}), encrypt: function (b, c, d, l) {
+        cfg: a.cfg.extend({ kdf: p }), encrypt: function (b, c, d, l) {
             l = this.cfg.extend(l);
             d = l.kdf.execute(d,
                 b.keySize, b.ivSize);
@@ -1810,38 +1951,38 @@ CryptoJS.lib.Cipher || function (u) {
     }
     var H = [0, 1, 2, 4, 8,
         16, 32, 64, 128, 27, 54], d = d.AES = p.extend({
-        _doReset: function () {
-            for (var a = this._key, c = a.words, d = a.sigBytes / 4, a = 4 * ((this._nRounds = d + 6) + 1), e = this._keySchedule = [], j = 0; j < a; j++) if (j < d) e[j] = c[j]; else {
-                var k = e[j - 1];
-                j % d ? 6 < d && 4 == j % d && (k = l[k >>> 24] << 24 | l[k >>> 16 & 255] << 16 | l[k >>> 8 & 255] << 8 | l[k & 255]) : (k = k << 8 | k >>> 24, k = l[k >>> 24] << 24 | l[k >>> 16 & 255] << 16 | l[k >>> 8 & 255] << 8 | l[k & 255], k ^= H[j / d | 0] << 24);
-                e[j] = e[j - d] ^ k
-            }
-            c = this._invKeySchedule = [];
-            for (d = 0; d < a; d++) j = a - d, k = d % 4 ? e[j] : e[j - 4], c[d] = 4 > d || 4 >= j ? k : b[l[k >>> 24]] ^ x[l[k >>> 16 & 255]] ^ q[l[k >>>
-            8 & 255]] ^ n[l[k & 255]]
-        }, encryptBlock: function (a, b) {
-            this._doCryptBlock(a, b, this._keySchedule, t, r, w, v, l)
-        }, decryptBlock: function (a, c) {
-            var d = a[c + 1];
-            a[c + 1] = a[c + 3];
-            a[c + 3] = d;
-            this._doCryptBlock(a, c, this._invKeySchedule, b, x, q, n, s);
-            d = a[c + 1];
-            a[c + 1] = a[c + 3];
-            a[c + 3] = d
-        }, _doCryptBlock: function (a, b, c, d, e, j, l, f) {
-            for (var m = this._nRounds, g = a[b] ^ c[0], h = a[b + 1] ^ c[1], k = a[b + 2] ^ c[2], n = a[b + 3] ^ c[3], p = 4, r = 1; r < m; r++) var q = d[g >>> 24] ^ e[h >>> 16 & 255] ^ j[k >>> 8 & 255] ^ l[n & 255] ^ c[p++], s = d[h >>> 24] ^ e[k >>> 16 & 255] ^ j[n >>> 8 & 255] ^ l[g & 255] ^ c[p++], t =
-                d[k >>> 24] ^ e[n >>> 16 & 255] ^ j[g >>> 8 & 255] ^ l[h & 255] ^ c[p++], n = d[n >>> 24] ^ e[g >>> 16 & 255] ^ j[h >>> 8 & 255] ^ l[k & 255] ^ c[p++], g = q, h = s, k = t;
-            q = (f[g >>> 24] << 24 | f[h >>> 16 & 255] << 16 | f[k >>> 8 & 255] << 8 | f[n & 255]) ^ c[p++];
-            s = (f[h >>> 24] << 24 | f[k >>> 16 & 255] << 16 | f[n >>> 8 & 255] << 8 | f[g & 255]) ^ c[p++];
-            t = (f[k >>> 24] << 24 | f[n >>> 16 & 255] << 16 | f[g >>> 8 & 255] << 8 | f[h & 255]) ^ c[p++];
-            n = (f[n >>> 24] << 24 | f[g >>> 16 & 255] << 16 | f[h >>> 8 & 255] << 8 | f[k & 255]) ^ c[p++];
-            a[b] = q;
-            a[b + 1] = s;
-            a[b + 2] = t;
-            a[b + 3] = n
-        }, keySize: 8
-    });
+            _doReset: function () {
+                for (var a = this._key, c = a.words, d = a.sigBytes / 4, a = 4 * ((this._nRounds = d + 6) + 1), e = this._keySchedule = [], j = 0; j < a; j++) if (j < d) e[j] = c[j]; else {
+                    var k = e[j - 1];
+                    j % d ? 6 < d && 4 == j % d && (k = l[k >>> 24] << 24 | l[k >>> 16 & 255] << 16 | l[k >>> 8 & 255] << 8 | l[k & 255]) : (k = k << 8 | k >>> 24, k = l[k >>> 24] << 24 | l[k >>> 16 & 255] << 16 | l[k >>> 8 & 255] << 8 | l[k & 255], k ^= H[j / d | 0] << 24);
+                    e[j] = e[j - d] ^ k
+                }
+                c = this._invKeySchedule = [];
+                for (d = 0; d < a; d++) j = a - d, k = d % 4 ? e[j] : e[j - 4], c[d] = 4 > d || 4 >= j ? k : b[l[k >>> 24]] ^ x[l[k >>> 16 & 255]] ^ q[l[k >>>
+                    8 & 255]] ^ n[l[k & 255]]
+            }, encryptBlock: function (a, b) {
+                this._doCryptBlock(a, b, this._keySchedule, t, r, w, v, l)
+            }, decryptBlock: function (a, c) {
+                var d = a[c + 1];
+                a[c + 1] = a[c + 3];
+                a[c + 3] = d;
+                this._doCryptBlock(a, c, this._invKeySchedule, b, x, q, n, s);
+                d = a[c + 1];
+                a[c + 1] = a[c + 3];
+                a[c + 3] = d
+            }, _doCryptBlock: function (a, b, c, d, e, j, l, f) {
+                for (var m = this._nRounds, g = a[b] ^ c[0], h = a[b + 1] ^ c[1], k = a[b + 2] ^ c[2], n = a[b + 3] ^ c[3], p = 4, r = 1; r < m; r++) var q = d[g >>> 24] ^ e[h >>> 16 & 255] ^ j[k >>> 8 & 255] ^ l[n & 255] ^ c[p++], s = d[h >>> 24] ^ e[k >>> 16 & 255] ^ j[n >>> 8 & 255] ^ l[g & 255] ^ c[p++], t =
+                    d[k >>> 24] ^ e[n >>> 16 & 255] ^ j[g >>> 8 & 255] ^ l[h & 255] ^ c[p++], n = d[n >>> 24] ^ e[g >>> 16 & 255] ^ j[h >>> 8 & 255] ^ l[k & 255] ^ c[p++], g = q, h = s, k = t;
+                q = (f[g >>> 24] << 24 | f[h >>> 16 & 255] << 16 | f[k >>> 8 & 255] << 8 | f[n & 255]) ^ c[p++];
+                s = (f[h >>> 24] << 24 | f[k >>> 16 & 255] << 16 | f[n >>> 8 & 255] << 8 | f[g & 255]) ^ c[p++];
+                t = (f[k >>> 24] << 24 | f[n >>> 16 & 255] << 16 | f[g >>> 8 & 255] << 8 | f[h & 255]) ^ c[p++];
+                n = (f[n >>> 24] << 24 | f[g >>> 16 & 255] << 16 | f[h >>> 8 & 255] << 8 | f[k & 255]) ^ c[p++];
+                a[b] = q;
+                a[b + 1] = s;
+                a[b + 2] = t;
+                a[b + 3] = n
+            }, keySize: 8
+        });
     u.AES = p._createHelper(d)
 })();
 
@@ -1882,3 +2023,24 @@ CryptoJS.mode.ECB = function () {
     });
     return a
 }();
+
+// 天數差
+function DateDiff(startTime, endTime) {
+    const diffTime = endTime - startTime;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+function findIndex(arr, key, value) {
+    console.log(arr)
+    var i;
+    for (i = 0; i < arr.length; ++i) {
+        console.log(arr[i][key])
+        if (arr[i][key] == value) {
+            // Found it
+            break;
+        }
+    }
+    if (i < arr.length) {
+        return i;
+    }
+}
