@@ -37,7 +37,7 @@
                         }
                         @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "04"))
                         {
-                            <a href="borrowing/init.html" class="list-group-item list-group-item-action">
+                            <a href="@Url.Action("Index", "BorrowHome")" class="list-group-item list-group-item-action">
                                 <i class="fa-solid fa-boxes-packing"></i> 借用資源
                             </a>
                         }
