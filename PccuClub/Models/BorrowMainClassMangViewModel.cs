@@ -120,11 +120,12 @@ namespace WebPccuClub.Models
 
         /// <summary>可借用日期</summary>
         [DisplayName("可借用日期")]
-        public DateTime? BorrowSDate { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
+        public string? BorrowSDate { get; set; }
 
         /// <summary>可借用日期</summary>
         [DisplayName("可借用日期")]
-        public DateTime? BorrowEDate { get; set; }
+        public string? BorrowEDate { get; set; }
 
         /// <summary>借用規定</summary>
         [DisplayName("借用規定")]

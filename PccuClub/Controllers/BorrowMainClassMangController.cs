@@ -117,11 +117,26 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
-        public IActionResult EditOldData(BorrowMainClassMangViewModel vm)
+        public async Task<IActionResult> EditOldDataAsync(BorrowMainClassMangViewModel vm)
         {
             try
             {
                 dbAccess.DbaInitialTransaction();
+
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("CoverPath"))
+                        {
+                            var file = Request.Form.Files.GetFile("EditModel.CoverPath");
+
+                            string strFilePath = await upload.UploadFileAsync("CoverPath", file);
+
+                            vm.EditModel.CoverPath = strFilePath;
+                        }
+                    }
+                }
 
                 var dbResult = dbAccess.UpdateData(vm, LoginUser);
 

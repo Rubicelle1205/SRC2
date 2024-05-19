@@ -142,6 +142,15 @@ AND (ID = @ID) ";
 
             #region 參數設定
             parameters.Add("@ID", vm.EditModel.ID);
+
+            parameters.Add("@ActVerifyUnit", vm.EditModel.ActVerifyUnit);
+            parameters.Add("@BorrowSDate", vm.EditModel.BorrowSDate);
+            parameters.Add("@BorrowEDate", vm.EditModel.BorrowEDate);
+            parameters.Add("@BorrowRule", vm.EditModel.BorrowRule);
+            parameters.Add("@BorrowFee", vm.EditModel.BorrowFee);
+            parameters.Add("@ReserveRule", vm.EditModel.ReserveRule);
+            parameters.Add("@CoverPath", vm.EditModel.CoverPath);
+
             parameters.Add("@Memo", vm.EditModel.Memo);
             parameters.Add("@Text", vm.EditModel.Text);
             parameters.Add("@LoginId", LoginUser.LoginId);
