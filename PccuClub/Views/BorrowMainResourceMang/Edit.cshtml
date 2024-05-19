@@ -1,0 +1,369 @@
+﻿@model WebPccuClub.Models.BorrowMainResourceMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<head>
+    <script src="~/js/backend_case.js"></script>
+</head>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">啟用狀態<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.Enable ,(List<SelectListItem>)ViewBag.ddlEnable,"請選擇啟用狀態", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">資源代碼<span class="required">*</span></th>
+                                        <td>@Model.EditModel.MainResourceID</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">資源名稱<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.MainResourceName, new {@class = "form-control", placeholder = "請輸入資源名稱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">業務分類<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.MainClass ,(List<SelectListItem>)ViewBag.ddlMainClass,"請選擇業務分類", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">業務子分類<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.SecondClass ,(List<SelectListItem>)ViewBag.ddlSecondClass,"請選擇子業務分類", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">物品類型<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.BorrowType ,(List<SelectListItem>)ViewBag.ddlBorrowMultType,"請選擇是否為大量資源", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">簡易說明<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ShortDesc, new {@class = "form-control", placeholder = "請輸入簡易說明"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">借用規範<span class="required"></span></th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.BorrowRule, new {@class = "form-control", placeholder = "請輸入借用規範", rows = "5"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">
+                                            資源圖片<span class="required">*</span>
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">可上傳.jpeg,.jpg,.png</span>
+                                        </th>
+                                        <td>
+                                            <div class="d-flex flex-wrap justify-content-start">
+                                                <div>
+                                                    <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
+                                                        @Html.TextBoxFor(m => m.EditModel.ResourceImg1, new { @style="display:none;", @class="filesupload", type="file", accept = ".jpeg,.jpg,.png" })
+                                                    </label>
+                                                    <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                                    @if (Model.EditModel.ResourceImg1 != null)
+                                                    {
+                                                        <label class="upload_cover img-thumbnail" name="file1_prev" style="align-items:normal;">
+                                                            <img src="@Model.EditModel.ResourceImg1" style="width:100%;" />
+                                                        </label>
+                                                    }
+                                                </div>
+                                                <div>
+                                                    <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
+                                                        @Html.TextBoxFor(m => m.EditModel.ResourceImg2, new { @style="display:none;", @class="filesupload", type="file", accept = ".jpeg,.jpg,.png" })
+                                                    </label>
+                                                    <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                                    @if (Model.EditModel.ResourceImg2 != null)
+                                                    {
+                                                        <label class="upload_cover img-thumbnail" name="file1_prev" style="align-items:normal;">
+                                                            <img src="@Model.EditModel.ResourceImg2" style="width:100%;" />
+                                                        </label>
+                                                    }
+                                                </div>
+                                                <div>
+                                                    <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
+                                                        @Html.TextBoxFor(m => m.EditModel.ResourceImg3, new { @style="display:none;", @class="filesupload", type="file", accept = ".jpeg,.jpg,.png" })
+                                                    </label>
+                                                    <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                                    @if (Model.EditModel.ResourceImg3 != null)
+                                                    {
+                                                        <label class="upload_cover img-thumbnail" name="file1_prev" style="align-items:normal;">
+                                                            <img src="@Model.EditModel.ResourceImg3" style="width:100%;" />
+                                                        </label>
+                                                    }
+                                                </div>
+                                                <div>
+                                                    <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
+                                                        @Html.TextBoxFor(m => m.EditModel.ResourceImg4, new { @style="display:none;", @class="filesupload", type="file", accept = ".jpeg,.jpg,.png" })
+                                                    </label>
+                                                    <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                                    @if (Model.EditModel.ResourceImg4 != null)
+                                                    {
+                                                        <label class="upload_cover img-thumbnail" name="file1_prev" style="align-items:normal;">
+                                                            <img src="@Model.EditModel.ResourceImg4" style="width:100%;" />
+                                                        </label>
+                                                    }
+                                                </div>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">
+                                            庫存設定<span class="required">*</span>
+                                        </th>
+                                        <td>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6">
+                                                    <label for="number_stock">
+                                                        實際總庫存<span class="required">*</span>
+                                                    </label>
+                                                    @Html.TextBoxFor(m => m.EditModel.AmtReal, new {@class = "form-control", placeholder = "請輸入實際庫存", @type="number"})
+                                                    <small class="form-text text-muted">
+                                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                                        不顯示於前台，表示子資源的總數量，也意指[上架庫存]+保留數量(下架/自留)
+                                                    </small>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="number_open">
+                                                        上架庫存<span class="required">*</span>
+                                                    </label>
+                                                    @Html.TextBoxFor(m => m.EditModel.AmtShelves, new {@class = "form-control", placeholder = "請輸入上架庫存", @type="number"})
+                                                    <small class="form-text text-muted">
+                                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                                        顯示於前台，表示[上架]的子資源數量
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">庫存限制<span class="required">*</span></th>
+                                        <td>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-3">
+                                                    <label for="number_once">
+                                                        單次借用上限<span class="required">*</span>
+                                                    </label>
+                                                    @Html.TextBoxFor(m => m.EditModel.AmtOnce, new {@class = "form-control", placeholder = "請輸入單次借用上限", @type="number"})
+
+                                                    <small class="form-text text-muted">
+                                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                                        預約時選擇的數量不得大於此上限，0=沒限制
+                                                    </small>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="number_safety">
+                                                        安全庫存量<span class="required">*</span>
+                                                    </label>
+                                                    @Html.TextBoxFor(m => m.EditModel.AmtSafe, new {@class = "form-control", placeholder = "請輸入安全庫存量", @type="number"})
+
+                                                    <small class="form-text text-muted">
+                                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                                        若預約選擇之使用日期區間內最少可借用庫存已低於[安全庫存量]時跳出[安全庫存提示訊息]，0=沒限制
+                                                    </small>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="safety_note">安全庫存提示訊息</label>
+                                                    @Html.TextBoxFor(m => m.EditModel.SafeMessage, new {@class = "form-control", placeholder = "請輸入安全庫存提示訊息"})
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">備註<span class="required"></span></th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class = "form-control", placeholder = "請輸入備註", rows = "5"})</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    <!-- /.card -->
+                    @Html.HiddenFor(m => m.EditModel.MainResourceID)
+                </form> 
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+    $(document).on('change', ".filesupload", function (e) {
+        var file = e.target.files[0];
+
+        $(this).closest('.item').find('.text-muted#filename').text(file.name);
+
+        var reader = new FileReader();
+        var $closestLabel = $(this).closest('label.upload_cover');
+
+        reader.onload = function (e) {
+            $closestLabel.css('background-image', 'url(' + e.target.result + ')');
+        };
+
+        reader.readAsDataURL(file);
+    });
+
+    function SaveData() {
+
+        var data = new FormData()
+        var Enable = $('#@Html.IdFor(m => m.EditModel.Enable)').val();
+        var MainResourceID = $('#@Html.IdFor(m => m.EditModel.MainResourceID)').val();
+        var MainResourceName = $('#@Html.IdFor(m => m.EditModel.MainResourceName)').val();
+        var MainClass = $('#@Html.IdFor(m => m.EditModel.MainClass)').val();
+        var BorrowType = $('#@Html.IdFor(m => m.EditModel.BorrowType)').val();
+
+
+        var SecondClass = $('#@Html.IdFor(m => m.EditModel.SecondClass)').val();
+        var ShortDesc = $('#@Html.IdFor(m => m.EditModel.ShortDesc)').val();
+        var BorrowRule = $('#@Html.IdFor(m => m.EditModel.BorrowRule)').val();
+        var AmtReal = $('#@Html.IdFor(m => m.EditModel.AmtReal)').val();
+        var AmtSafe = $('#@Html.IdFor(m => m.EditModel.AmtSafe)').val();
+        var AmtShelves = $('#@Html.IdFor(m => m.EditModel.AmtShelves)').val();
+        var AmtOnce = $('#@Html.IdFor(m => m.EditModel.AmtOnce)').val();
+        var SafeMessage = $('#@Html.IdFor(m => m.EditModel.SafeMessage)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+        if (Enable == "") { $.alert("啟用狀態不可為空白"); return; }
+        if (MainResourceID == "") { $.alert("資源代碼不可為空白"); return; }
+        if (MainResourceName == "") { $.alert("資源名稱不可為空白"); return; }
+        if (MainClass == "") { $.alert("業務分類不可為空白"); return; }
+        if (BorrowType == "") { $.alert("物品類型不可為空白"); return; }
+        if (SecondClass == "") { $.alert("子業務分類不可為空白"); return; }
+        if (ShortDesc == "") { $.alert("簡易說明不可為空白"); return; }
+
+        if (AmtReal == "") { $.alert("實際總庫存不可為空白"); return; }
+        if (AmtSafe == "") { $.alert("安全庫存量不可為空白"); return; }
+        if (AmtShelves == "") { $.alert("上架庫存不可為空白"); return; }
+        if (AmtOnce == "") { $.alert("單次借用上限不可為空白"); return; }
+        if (SafeMessage == "") { $.alert("安全庫存提示訊息不可為空白"); return; }
+
+        var ResourceImg1 = $('#@Html.IdFor(m => m.EditModel.ResourceImg1)')[0].files[0];
+        if (typeof ResourceImg1 !== 'undefined') {
+            var fileExtension = ResourceImg1.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("資源圖片檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.EditModel.ResourceImg1)', ResourceImg1);
+        }
+
+        var ResourceImg2 = $('#@Html.IdFor(m => m.EditModel.ResourceImg2)')[0].files[0];
+        if (typeof ResourceImg2 !== 'undefined') {
+            var fileExtension = ResourceImg2.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("資源圖片檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.EditModel.ResourceImg2)', ResourceImg2);
+        }
+
+        var ResourceImg3 = $('#@Html.IdFor(m => m.EditModel.ResourceImg3)')[0].files[0];
+        if (typeof ResourceImg3 !== 'undefined') {
+            var fileExtension = ResourceImg3.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("資源圖片檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.EditModel.ResourceImg3)', ResourceImg3);
+        }
+
+        var ResourceImg4 = $('#@Html.IdFor(m => m.EditModel.ResourceImg4)')[0].files[0];
+        if (typeof ResourceImg4 !== 'undefined') {
+            var fileExtension = ResourceImg4.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("資源圖片檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.EditModel.ResourceImg4)', ResourceImg4);
+        }
+
+        if (typeof ResourceImg1 === 'undefined' && typeof ResourceImg2 === 'undefined' && typeof ResourceImg3 === 'undefined' && typeof ResourceImg4 === 'undefined') {
+            $.alert("資源圖片需上傳"); return;
+        }
+
+        data.append('@Html.NameFor(m => m.EditModel.Enable)', Enable);
+        data.append('@Html.NameFor(m => m.EditModel.MainResourceID)', MainResourceID);
+        data.append('@Html.NameFor(m => m.EditModel.MainResourceName)', MainResourceName);
+        data.append('@Html.NameFor(m => m.EditModel.BorrowType)', BorrowType);
+        data.append('@Html.NameFor(m => m.EditModel.MainClass)', MainClass);
+        data.append('@Html.NameFor(m => m.EditModel.SecondClass)', SecondClass);
+        data.append('@Html.NameFor(m => m.EditModel.BorrowRule)', BorrowRule);
+        data.append('@Html.NameFor(m => m.EditModel.ShortDesc)', ShortDesc);
+
+        data.append('@Html.NameFor(m => m.EditModel.AmtReal)', AmtReal);
+        data.append('@Html.NameFor(m => m.EditModel.AmtSafe)', AmtSafe);
+        data.append('@Html.NameFor(m => m.EditModel.AmtShelves)', AmtShelves);
+        data.append('@Html.NameFor(m => m.EditModel.AmtOnce)', AmtOnce);
+        data.append('@Html.NameFor(m => m.EditModel.SafeMessage)', SafeMessage);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+</script>
