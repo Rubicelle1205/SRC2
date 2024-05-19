@@ -175,6 +175,45 @@ namespace WebPccuClub.Controllers
             {
                 dbAccess.DbaInitialTransaction();
 
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("ResourceImg1"))
+                        {
+                            var file = Request.Form.Files.GetFile("EditModel.ResourceImg1");
+
+                            string strFilePath = await upload.UploadFileAsync("ResourceImg", file);
+
+                            vm.EditModel.ResourceImg1 = strFilePath;
+                        }
+                        if (Request.Form.Files[i].Name.Contains("ResourceImg2"))
+                        {
+                            var file = Request.Form.Files.GetFile("EditModel.ResourceImg2");
+
+                            string strFilePath = await upload.UploadFileAsync("ResourceImg", file);
+
+                            vm.EditModel.ResourceImg2 = strFilePath;
+                        }
+                        if (Request.Form.Files[i].Name.Contains("ResourceImg3"))
+                        {
+                            var file = Request.Form.Files.GetFile("EditModel.ResourceImg3");
+
+                            string strFilePath = await upload.UploadFileAsync("ResourceImg", file);
+
+                            vm.EditModel.ResourceImg3 = strFilePath;
+                        }
+                        if (Request.Form.Files[i].Name.Contains("ResourceImg4"))
+                        {
+                            var file = Request.Form.Files.GetFile("EditModel.ResourceImg4");
+
+                            string strFilePath = await upload.UploadFileAsync("ResourceImg", file);
+
+                            vm.EditModel.ResourceImg4 = strFilePath;
+                        }
+                    }
+                }
+
                 var dbResult = dbAccess.UpdateData(vm, LoginUser);
 
                 if (!dbResult.isSuccess)

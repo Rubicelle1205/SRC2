@@ -184,24 +184,24 @@ AND (MainResourceID = @MainResourceID) ";
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@MainResourceID", vm.CreateModel.MainResourceID);
-            parameters.Add("@MainResourceName", vm.CreateModel.MainResourceName);
-            parameters.Add("@MainClass", vm.CreateModel.MainClass);
-            parameters.Add("@SecondClass", vm.CreateModel.SecondClass);
-            parameters.Add("@BorrowType", vm.CreateModel.BorrowType);
-            parameters.Add("@ShortDesc", vm.CreateModel.ShortDesc);
-            parameters.Add("@BorrowRule", vm.CreateModel.BorrowRule);
-            parameters.Add("@ResourceImg1", vm.CreateModel.ResourceImg1);
-            parameters.Add("@ResourceImg2", vm.CreateModel.ResourceImg2);
-            parameters.Add("@ResourceImg3", vm.CreateModel.ResourceImg3);
-            parameters.Add("@ResourceImg4", vm.CreateModel.ResourceImg4);
-            parameters.Add("@AmtReal", vm.CreateModel.AmtReal);
-            parameters.Add("@AmtShelves", vm.CreateModel.AmtShelves);
-            parameters.Add("@AmtOnce", vm.CreateModel.AmtOnce);
-            parameters.Add("@AmtSafe", vm.CreateModel.AmtSafe);
-            parameters.Add("@SafeMessage", vm.CreateModel.SafeMessage);
-            parameters.Add("@Enable", vm.CreateModel.Enable);
-            parameters.Add("@Memo", vm.CreateModel.Memo);
+            parameters.Add("@MainResourceID", vm.EditModel.MainResourceID);
+            parameters.Add("@MainResourceName", vm.EditModel.MainResourceName);
+            parameters.Add("@MainClass", vm.EditModel.MainClass);
+            parameters.Add("@SecondClass", vm.EditModel.SecondClass);
+            parameters.Add("@BorrowType", vm.EditModel.BorrowType);
+            parameters.Add("@ShortDesc", vm.EditModel.ShortDesc);
+            parameters.Add("@BorrowRule", vm.EditModel.BorrowRule);
+            parameters.Add("@ResourceImg1", vm.EditModel.ResourceImg1);
+            parameters.Add("@ResourceImg2", vm.EditModel.ResourceImg2);
+            parameters.Add("@ResourceImg3", vm.EditModel.ResourceImg3);
+            parameters.Add("@ResourceImg4", vm.EditModel.ResourceImg4);
+            parameters.Add("@AmtReal", vm.EditModel.AmtReal);
+            parameters.Add("@AmtShelves", vm.EditModel.AmtShelves);
+            parameters.Add("@AmtOnce", vm.EditModel.AmtOnce);
+            parameters.Add("@AmtSafe", vm.EditModel.AmtSafe);
+            parameters.Add("@SafeMessage", vm.EditModel.SafeMessage);
+            parameters.Add("@Enable", vm.EditModel.Enable);
+            parameters.Add("@Memo", vm.EditModel.Memo);
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
@@ -210,8 +210,7 @@ AND (MainResourceID = @MainResourceID) ";
                                            BorrowType = @BorrowType, ShortDesc = @ShortDesc, BorrowRule = @BorrowRule, 
                                            ResourceImg1 = @ResourceImg1, ResourceImg2 = @ResourceImg2, ResourceImg3 = @ResourceImg3, ResourceImg4 = @ResourceImg4, 
                                            AmtReal = @AmtReal, AmtShelves = @AmtShelves, AmtOnce = @AmtOnce, AmtSafe = @AmtSafe, SafeMessage = @SafeMessage, 
-                                           Enable = @Enable, Memo = @Memo, InventoryStatus = @InventoryStatus, 
-                                           LastModifier = @LoginId, LastModified = GETDATE()
+                                           Enable = @Enable, Memo = @Memo, LastModifier = @LoginId, LastModified = GETDATE()
                                      WHERE MainResourceID = @MainResourceID";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
