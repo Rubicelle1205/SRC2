@@ -137,6 +137,71 @@ namespace WebPccuClub.Models
         public DateTime? Created { get; set; }
     }
 
+    public class EventGenderMangImportModel
+    {
+        public string? EventID { get; set; }
+
+        /// <summary>校安事件編號</summary>
+        [DisplayName("校安事件編號")]
+        public string? CaseID { get; set; }
+
+        /// <summary>性平號</summary>
+        [DisplayName("性平號")]
+        public string? SubCaseID { get; set; }
+
+        /// <summary>性平事件主類別</summary>
+        [DisplayName("性平事件主類別")]
+        public string? GenderMainClass { get; set; }
+
+        /// <summary>性平事件次類別</summary>
+        [DisplayName("性平事件次類別")]
+        public string? GenderSecondClass { get; set; }
+
+        /// <summary>性平事件主類別</summary>
+        [DisplayName("性平事件主類別")]
+        public string? GenderMainClassText { get; set; }
+
+        /// <summary>性平事件次類別</summary>
+        [DisplayName("性平事件次類別")]
+        public string? GenderSecondClassText { get; set; }
+
+        /// <summary>發生時間</summary>
+        [DisplayName("發生時間")]
+        public DateTime? OccurTime { get; set; }
+
+        /// <summary>知悉時間</summary>
+        [DisplayName("知悉時間")]
+        public DateTime? KnowTime { get; set; }
+
+        /// <summary>是否受理</summary>
+        [DisplayName("是否受理")]
+        public string? AcceptStatus { get; set; }
+
+        /// <summary>是否受理</summary>
+        [DisplayName("受理是否受理狀態")]
+        public string? AcceptStatusText { get; set; }
+
+        /// <summary>受理時間</summary>
+        [DisplayName("受理時間")]
+        public DateTime? AcceptTime { get; set; }
+
+        /// <summary>是否結案</summary>
+        [DisplayName("是否結案")]
+        public string? CaseStatus { get; set; }
+
+        /// <summary>是否結案</summary>
+        [DisplayName("是否結案")]
+        public string? CaseStatusText { get; set; }
+
+        /// <summary>結案時間</summary>
+        [DisplayName("結案時間")]
+        public DateTime? CaseFinishDateTime { get; set; }
+
+        /// <summary>建立時間</summary>
+        [DisplayName("建立時間")]
+        public DateTime? Created { get; set; }
+    }
+
     public class EventGenderMangEditModel
     {
         public List<Victim> LstVictim = new List<Victim>();

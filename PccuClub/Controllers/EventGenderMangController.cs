@@ -178,7 +178,7 @@ namespace WebPccuClub.Controllers
         [LogAttribute(LogActionChineseName.下載template檔案)]
         public IActionResult DownloadTemplate()
         {
-            string FileName = "校安事件管理_template.xlsx";
+            string FileName = "性平事件管理_template.xlsx";
 
             string filePath = Path.Combine(hostingEnvironment.ContentRootPath, "Template", FileName);
 
@@ -202,14 +202,14 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
-                if (!vm.File.FileName.Contains("校安事件管理_template"))
+                if (!vm.File.FileName.Contains("性平事件管理_template"))
                 {
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "選擇檔案錯誤";
                     return Json(vmRtn);
                 }
 
-                List<EventCaseImportMangResultModel> LstExcel = new List<EventCaseImportMangResultModel>();
+                List<EventGenderMangImportModel> LstExcel = new List<EventGenderMangImportModel>();
 
                 using (Stream stream = vm.File.OpenReadStream())
                 {
@@ -235,86 +235,100 @@ namespace WebPccuClub.Controllers
                             string CaseID = "";
                             string MainClass = "";
                             string SecondClass = "";
+                            string AcceptStatus = "";
                             string CaseFinishClass = "";
 
-                            //List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlCaseID = dbAccess.GetddlCaseID();
-                            //List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlMainClass = dbAccess.GetddlMainClass();
-                            //List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlSecondClass = dbAccess.GetddlSecondClass();
-                            //List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlCaseFinishClass = dbAccess.GetddlCaseFinishClass();
+                            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlCaseID = dbAccess.GetddlCaseID();
+                            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlMainClass = dbAccess.GetddlMainClass();
+                            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlSecondClass = dbAccess.GetddlSecondClass();
+                            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlAcceptStatus = dbAccess.GetddlAcceptStatus();
+                            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlCaseFinishClass = dbAccess.GetddlCaseFinishClass();
+                            
 
-                            //if (LstddlCaseID.Any(m => m.Text == row.GetCell(0)?.ToString()))
-                            //{
-                            //    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                            //    vmRtn.ErrorMsg = string.Format("檢核資料失敗:校安事件編號{0}已存在", row.GetCell(0)?.ToString().TrimStartAndEnd());
-                            //    return Json(vmRtn);
-                            //}
+                            if (!LstddlCaseID.Any(m => m.Text == row.GetCell(0)?.ToString()))
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("檢核資料失敗:校安事件編號{0}不存在", row.GetCell(0)?.ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
 
-                            //if (!LstddlMainClass.Any(m => m.Text == row.GetCell(1)?.ToString()))
-                            //{
-                            //    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                            //    vmRtn.ErrorMsg = string.Format("檢核資料失敗:{0}", row.GetCell(1)?.ToString().TrimStartAndEnd());
-                            //    return Json(vmRtn);
-                            //}
-                            //else
-                            //{
-                            //    MainClass = LstddlMainClass.Where(m => m.Text == row.GetCell(1)?.ToString()).FirstOrDefault().Value;
-                            //}
+                            if (!LstddlMainClass.Any(m => m.Text == row.GetCell(4)?.ToString()))
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("檢核資料失敗: 查無性平事件主類別 {0}", row.GetCell(4)?.ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
+                            else
+                            {
+                                MainClass = LstddlMainClass.Where(m => m.Text == row.GetCell(4)?.ToString()).FirstOrDefault().Value;
+                            }
 
-                            //if (!LstddlSecondClass.Any(m => m.Text == row.GetCell(2)?.ToString()))
-                            //{
-                            //    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                            //    vmRtn.ErrorMsg = string.Format("檢核資料失敗:{0}", row.GetCell(2)?.ToString().TrimStartAndEnd());
-                            //    return Json(vmRtn);
-                            //}
-                            //else
-                            //{
-                            //    SecondClass = LstddlSecondClass.Where(m => m.Text == row.GetCell(2)?.ToString()).FirstOrDefault().Value;
-                            //}
+                            if (!LstddlSecondClass.Any(m => m.Text == row.GetCell(5)?.ToString()))
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("檢核資料失敗: 查無性平事件次類別 {0}", row.GetCell(5)?.ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
+                            else
+                            {
+                                SecondClass = LstddlSecondClass.Where(m => m.Text == row.GetCell(5)?.ToString()).FirstOrDefault().Value;
+                            }
 
-                            //if (!LstddlCaseFinishClass.Any(m => m.Text == row.GetCell(5)?.ToString()))
-                            //{
-                            //    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                            //    vmRtn.ErrorMsg = string.Format("檢核資料失敗:{0}", row.GetCell(5)?.ToString().TrimStartAndEnd());
-                            //    return Json(vmRtn);
-                            //}
-                            //else
-                            //{
-                            //    CaseFinishClass = LstddlCaseFinishClass.Where(m => m.Text == row.GetCell(5)?.ToString()).FirstOrDefault().Value;
-                            //}
-                            //EventCaseImportMangResultModel excel = new EventCaseImportMangResultModel
-                            //{
-                            //    CaseID = row.GetCell(0)?.StringCellValue.TrimStartAndEnd(),
-                            //    MainClass = MainClass,
-                            //    SecondClass = SecondClass,
-                            //    OccurTime = DateTime.Parse(row.GetCell(3)?.StringCellValue),
-                            //    KnowTime = DateTime.Parse(row.GetCell(4).StringCellValue),
-                            //    CaseStatus = CaseFinishClass,
-                            //    CaseFinishDateTime = DateTime.Parse(row.GetCell(6)?.StringCellValue),
-                            //    Created = DateTime.Now
-                            //};
+                            if (!LstddlAcceptStatus.Any(m => m.Text == row.GetCell(6)?.ToString()))
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("檢核資料失敗: 查無受理狀態 {0}", row.GetCell(6)?.ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
+                            else
+                            {
+                                AcceptStatus = LstddlAcceptStatus.Where(m => m.Text == row.GetCell(6)?.ToString()).FirstOrDefault().Value;
+                            }
 
-                            //LstExcel.Add(excel);
+                            if (!LstddlCaseFinishClass.Any(m => m.Text == row.GetCell(8)?.ToString()))
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("檢核資料失敗: 查無是否結案 {0}", row.GetCell(8)?.ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
+                            else
+                            {
+                                CaseFinishClass = LstddlCaseFinishClass.Where(m => m.Text == row.GetCell(8)?.ToString()).FirstOrDefault().Value;
+                            }
 
-                            //EventGenderMangChkSeconodModel chkSecond = new EventGenderMangChkSeconodModel();
-                            //chkSecond.CaseID = excel.CaseID;
-                            //chkSecond.SecondCode = excel.SecondClass;
 
-                            //LstChkSecond.Add(chkSecond);
+                            EventGenderMangImportModel excel = new EventGenderMangImportModel
+                            {
+                                CaseID = row.GetCell(0)?.StringCellValue.TrimStartAndEnd(),
+                                SubCaseID = row.GetCell(1)?.StringCellValue.TrimStartAndEnd(),
+                                OccurTime = DateTime.Parse(row.GetCell(2)?.StringCellValue),
+                                KnowTime = DateTime.Parse(row.GetCell(3).StringCellValue),
+                                GenderMainClass = MainClass,
+                                GenderSecondClass = SecondClass,
+                                AcceptStatus = AcceptStatus,
+                                AcceptTime = DateTime.Parse(row.GetCell(7).StringCellValue),
+                                CaseStatus = CaseFinishClass,
+                                CaseFinishDateTime = DateTime.Parse(row.GetCell(9)?.StringCellValue),
+                                Created = DateTime.Now
+                            };
+
+                            LstExcel.Add(excel);
                         }
                     }
                 }
 
                 dbAccess.DbaInitialTransaction();
+
                 if (LstExcel.Count > 0)
                 {
-                    //var dbResult = dbAccess.ImportData(LstExcel, LoginUser);
+                    var dbResult = dbAccess.ImportData(LstExcel, LoginUser);
 
-                    //if (!dbResult.isSuccess)
-                    //{
-                    //    dbAccess.DbaRollBack();
-                    //    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    //    vmRtn.ErrorMsg = "上傳失敗";
-                    //}
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "上傳失敗";
+                    }
                 }
 
                 dbAccess.DbaCommit();
@@ -331,62 +345,65 @@ namespace WebPccuClub.Controllers
         [LogAttribute(LogActionChineseName.匯出Excel)]
         public IActionResult ExportSearchResult(EventGenderMangViewModel vm)
         {
-            string FileName = string.Format("{0}_{1}", LogActionChineseName.校安事件管理, DateTime.Now.ToString("yyyyMMdd"));
-            //vm.ResultModel = dbAccess.GetExportResult(vm.ConditionModel);
+            string FileName = string.Format("{0}_{1}", LogActionChineseName.性平事件管理, DateTime.Now.ToString("yyyyMMdd"));
+            vm.ResultModel = dbAccess.GetExportResult(vm.ConditionModel);
 
-            //if (vm.ResultModel != null && vm.ResultModel.Count > 0)
-            //{
-            //    IWorkbook workbook = new XSSFWorkbook();
-            //    List<int> LstWidth = new List<int> { 20, 80, 80, 40, 40, 20, 40, 40 };
+            if (vm.ResultModel != null && vm.ResultModel.Count > 0)
+            {
+                IWorkbook workbook = new XSSFWorkbook();
+                List<int> LstWidth = new List<int> { 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
 
-            //    ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
+                ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
 
-            //    var properties = typeof(EventGenderMangExcelHeaderModel).GetProperties();
+                var properties = typeof(EventGenderMangExcelHeaderModel).GetProperties();
 
-            //    //設定欄位
-            //    IRow headerRow = sheet.CreateRow(0);
+                //設定欄位
+                IRow headerRow = sheet.CreateRow(0);
 
-            //    XSSFCellStyle headStyle = ExcelUtil.GetDefaultHeaderStyle(workbook);
+                XSSFCellStyle headStyle = ExcelUtil.GetDefaultHeaderStyle(workbook);
 
-            //    for (int i = 0; i <= properties.Length - 1; i++)
-            //    {
-            //        var displayAttribute = (DisplayNameAttribute)properties[i].GetCustomAttribute(typeof(DisplayNameAttribute));
-            //        var displayName = displayAttribute?.DisplayName ?? properties[i].Name;
+                for (int i = 0; i <= properties.Length - 1; i++)
+                {
+                    var displayAttribute = (DisplayNameAttribute)properties[i].GetCustomAttribute(typeof(DisplayNameAttribute));
+                    var displayName = displayAttribute?.DisplayName ?? properties[i].Name;
 
-            //        headerRow.CreateCell(i).SetCellValue(displayName);
+                    headerRow.CreateCell(i).SetCellValue(displayName);
 
-            //        foreach (ICell cell in headerRow.Cells)
-            //            cell.CellStyle = headStyle;
+                    foreach (ICell cell in headerRow.Cells)
+                        cell.CellStyle = headStyle;
 
-            //    }
+                }
 
-            //    XSSFCellStyle contentStyle = ExcelUtil.GetDefaultContentStyle(workbook);
+                XSSFCellStyle contentStyle = ExcelUtil.GetDefaultContentStyle(workbook);
 
-            //    //設定資料
-            //    for (int i = 0; i <= vm.ResultModel.Count - 1; i++)
-            //    {
-            //        IRow dataRow = sheet.CreateRow(i + 1);
+                //設定資料
+                for (int i = 0; i <= vm.ResultModel.Count - 1; i++)
+                {
+                    IRow dataRow = sheet.CreateRow(i + 1);
 
-            //        dataRow.CreateCell(0).SetCellValue(vm.ResultModel[i].CaseID);
-            //        dataRow.CreateCell(1).SetCellValue(vm.ResultModel[i].MainClassText);
-            //        dataRow.CreateCell(2).SetCellValue(vm.ResultModel[i].SecondClassText);
-            //        dataRow.CreateCell(3).SetCellValue(vm.ResultModel[i].OccurTime != null ? vm.ResultModel[i].OccurTime.Value.ToString("yyyy/MM/dd HH:mm") : "");
-            //        dataRow.CreateCell(4).SetCellValue(vm.ResultModel[i].KnowTime != null ? vm.ResultModel[i].KnowTime.Value.ToString("yyyy/MM/dd HH:mm") : "");
-            //        dataRow.CreateCell(5).SetCellValue(vm.ResultModel[i].CaseStatusText);
-            //        dataRow.CreateCell(6).SetCellValue(vm.ResultModel[i].CaseFinishDateTime != null ? vm.ResultModel[i].CaseFinishDateTime.Value.ToString("yyyy/MM/dd HH:mm") : "");
-            //        dataRow.CreateCell(7).SetCellValue(vm.ResultModel[i].Created != null ? vm.ResultModel[i].Created.Value.ToString("yyyy/MM/dd HH:mm") : "");
+                    dataRow.CreateCell(0).SetCellValue(vm.ResultModel[i].CaseID);
+                    dataRow.CreateCell(1).SetCellValue(vm.ResultModel[i].SubCaseID);
+                    dataRow.CreateCell(2).SetCellValue(vm.ResultModel[i].OccurTime != null ? vm.ResultModel[i].OccurTime.Value.ToString("yyyy/MM/dd HH:mm") : "");
+                    dataRow.CreateCell(3).SetCellValue(vm.ResultModel[i].KnowTime != null ? vm.ResultModel[i].KnowTime.Value.ToString("yyyy/MM/dd HH:mm") : "");
+                    dataRow.CreateCell(4).SetCellValue(vm.ResultModel[i].GenderMainClassText);
+                    dataRow.CreateCell(5).SetCellValue(vm.ResultModel[i].GenderSecondClassText);
+                    dataRow.CreateCell(6).SetCellValue(vm.ResultModel[i].AcceptStatusText);
+                    dataRow.CreateCell(7).SetCellValue(vm.ResultModel[i].AcceptTime != null ? vm.ResultModel[i].AcceptTime.Value.ToString("yyyy/MM/dd HH:mm") : "");
+                    dataRow.CreateCell(8).SetCellValue(vm.ResultModel[i].CaseStatusText);
+                    dataRow.CreateCell(9).SetCellValue(vm.ResultModel[i].CaseFinishDateTime != null ? vm.ResultModel[i].CaseFinishDateTime.Value.ToString("yyyy/MM/dd HH:mm") : "");
+                    dataRow.CreateCell(10).SetCellValue(vm.ResultModel[i].Created != null ? vm.ResultModel[i].Created.Value.ToString("yyyy/MM/dd HH:mm") : "");
 
-            //        foreach (ICell cell in dataRow.Cells)
-            //            cell.CellStyle = contentStyle;
-            //    }
+                    foreach (ICell cell in dataRow.Cells)
+                        cell.CellStyle = contentStyle;
+                }
 
-            //    MemoryStream ms = new MemoryStream();
-            //    workbook.Write(ms, true);
-            //    ms.Flush();
-            //    ms.Position = 0;
+                MemoryStream ms = new MemoryStream();
+                workbook.Write(ms, true);
+                ms.Flush();
+                ms.Position = 0;
 
-            //    return File(ms, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName + ".xlsx");
-            //}
+                return File(ms, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName + ".xlsx");
+            }
 
             return View("Index", vm);
 
