@@ -137,6 +137,71 @@ namespace WebPccuClub.Models
         public DateTime? Created { get; set; }
     }
 
+    public class EventBullyingMangImportModel
+    {
+        public string? EventID { get; set; }
+
+        /// <summary>校安事件編號</summary>
+        [DisplayName("校安事件編號")]
+        public string? CaseID { get; set; }
+
+        /// <summary>霸凌號</summary>
+        [DisplayName("霸凌號")]
+        public string? SubCaseID { get; set; }
+
+        /// <summary>霸凌事件主類別</summary>
+        [DisplayName("霸凌事件主類別")]
+        public string? BullyingMainClass { get; set; }
+
+        /// <summary>霸凌事件次類別</summary>
+        [DisplayName("霸凌事件次類別")]
+        public string? BullyingSecondClass { get; set; }
+
+        /// <summary>霸凌事件主類別</summary>
+        [DisplayName("霸凌事件主類別")]
+        public string? BullyingMainClassText { get; set; }
+
+        /// <summary>霸凌事件次類別</summary>
+        [DisplayName("霸凌事件次類別")]
+        public string? BullyingSecondClassText { get; set; }
+
+        /// <summary>發生時間</summary>
+        [DisplayName("發生時間")]
+        public DateTime? OccurTime { get; set; }
+
+        /// <summary>知悉時間</summary>
+        [DisplayName("知悉時間")]
+        public DateTime? KnowTime { get; set; }
+
+        /// <summary>是否受理</summary>
+        [DisplayName("是否受理")]
+        public string? AcceptStatus { get; set; }
+
+        /// <summary>是否受理</summary>
+        [DisplayName("受理是否受理狀態")]
+        public string? AcceptStatusText { get; set; }
+
+        /// <summary>受理時間</summary>
+        [DisplayName("受理時間")]
+        public DateTime? AcceptTime { get; set; }
+
+        /// <summary>是否結案</summary>
+        [DisplayName("是否結案")]
+        public string? CaseStatus { get; set; }
+
+        /// <summary>是否結案</summary>
+        [DisplayName("是否結案")]
+        public string? CaseStatusText { get; set; }
+
+        /// <summary>結案時間</summary>
+        [DisplayName("結案時間")]
+        public DateTime? CaseFinishDateTime { get; set; }
+
+        /// <summary>建立時間</summary>
+        [DisplayName("建立時間")]
+        public DateTime? Created { get; set; }
+    }
+
     public class EventBullyingMangEditModel
     {
         public List<Victim> LstVictim = new List<Victim>();

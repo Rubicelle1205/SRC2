@@ -67,6 +67,56 @@ AND (@SubCaseID IS NULL OR A.SubCaseID LIKE '%' + @SubCaseID + '%')  ";
             return new List<EventBullyingMangResultModel>();
         }
 
+        public List<EventBullyingMangResultModel> GetExportResult(EventBullyingMangConditionModel model)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@BullyingMainClass", model?.BullyingMainClass);
+            parameters.Add("@BullyingSecondClass", model?.BullyingSecondClass);
+            parameters.Add("@CaseStatus", model?.CaseStatus);
+            parameters.Add("@AcceptStatus", model?.AcceptStatus);
+            parameters.Add("@CaseID", model?.CaseID);
+            parameters.Add("@SubCaseID", model?.SubCaseID);
+
+            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
+            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"
+SELECT A.EventID, A.CaseID, A.SubCaseID, A.CaseSystemType, F.OccurTime, F.KnowTime,
+       A.MainClass AS BullyingMainClass, B.Text AS BullyingMainClassText, 
+       A.SecondClass AS BullyingSecondClass, C.Text AS BullyingSecondClassText, 
+       A.AcceptStatus, D.Text AS AcceptStatusText, A.AcceptTime, A.CaseStatus, E.Text AS CaseStatusText, A.CaseFinishDateTime, A.Memo, A.Creator, A.Created, A.LastModifier, A.LastModified
+FROM hq_PccuCase.dbo.EventMainMang A
+LEFT JOIN hq_PccuClub.dbo.EventMainClassMang B ON B.ID = A.MainClass AND B.CaseSystemType = '03'
+LEFT JOIN hq_PccuClub.dbo.EventSecondClassMang C ON C.ID = A.SecondClass AND C.CaseSystemType = '03'
+LEFT JOIN Code D ON D.Code = A.AcceptStatus AND D.Type = 'AcceptStatus' 
+LEFT JOIN Code E ON E.Code = A.CaseStatus AND E.Type = 'CaseFinish' 
+LEFT JOIN hq_PccuCase.dbo.CaseMainMang F ON F.CaseID = A.CaseID
+WHERE 1 = 1
+AND A.CaseSystemType = '03'
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND Created BETWEEN @FromDate AND @ToDate" : " ")}
+AND (@BullyingMainClass IS NULL OR A.MainClass = @BullyingMainClass)
+AND (@BullyingSecondClass IS NULL OR A.SecondClass = @BullyingSecondClass)
+AND (@CaseStatus IS NULL OR A.CaseStatus = @CaseStatus)
+AND (@AcceptStatus IS NULL OR A.AcceptStatus = @AcceptStatus)
+AND (@CaseID IS NULL OR A.CaseID LIKE '%' + @CaseID + '%')
+AND (@SubCaseID IS NULL OR A.SubCaseID LIKE '%' + @SubCaseID + '%')  ";
+
+
+            (DbExecuteInfo info, IEnumerable<EventBullyingMangResultModel> entitys) dbResult = DbaExecuteQuery<EventBullyingMangResultModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<EventBullyingMangResultModel>();
+        }
+
         /// <summary>
         /// 取得編輯資料
         /// </summary>
@@ -169,6 +219,51 @@ AND (A.CaseID = @ID) ";
                 return dbResult.entitys.ToList();
 
             return new List<EventData>();
+        }
+
+        /// <summary> 新增資料 </summary>
+        public DbExecuteInfo ImportData(List<EventBullyingMangImportModel> dataList, UserInfo LoginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO hq_PccuCase.dbo.EventMainMang
+                                               (CaseID
+                                               ,SubCaseID
+                                               ,CaseSystemType
+                                               ,MainClass
+                                               ,SecondClass
+                                               ,AcceptStatus
+                                               ,AcceptTime
+                                               ,CaseStatus
+                                               ,CaseFinishDateTime
+                                               ,Creator
+                                               ,Created
+                                               ,LastModifier
+                                               ,LastModified)
+                                         VALUES
+                                               (@CaseID
+                                               ,@SubCaseID
+                                               ,'03'
+                                               ,@BullyingMainClass
+                                               ,@BullyingSecondClass
+                                               ,@AcceptStatus
+                                               ,@AcceptTime
+                                               ,@CaseStatus
+                                               ,@CaseFinishDateTime
+                                               ,'{LoginUser.LoginId}'
+                                               ,GETDATE()
+                                               ,'{LoginUser.LoginId}'
+                                               ,GETDATE())";
+
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+            return ExecuteResult;
         }
 
         /// <summary> 修改資料 </summary>
@@ -387,6 +482,86 @@ AND (A.CaseID = @ID) ";
             #endregion
 
             CommandText = @"SELECT ID AS Value, Text AS Text FROM EventStatusMang WHERE CaseSystemType = '03' and Enable = 1 ";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetddlCaseID()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT CaseID AS Value, CaseID AS Text FROM hq_PccuCase.dbo.CaseMainMang ";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetddlMainClass()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT ID AS Value, Text AS Text FROM EventMainClassMang WHERE CaseSystemType = '03'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetddlSecondClass()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT ID AS Value, Text AS Text FROM EventSecondClassMang WHERE CaseSystemType = '03'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetddlCaseFinishClass()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS Value, Text AS Text FROM Code WHERE Type = 'CaseFinish' ";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
