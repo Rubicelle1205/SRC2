@@ -50,10 +50,17 @@
                         </td>
 
                         <td class="text-center text-sm">
-                            @item.OccurTime.Value.ToString("yyyy/MM/dd HH:mm")
+                            @if (item.OccurTime != null)
+                            {
+                                item.OccurTime.Value.ToString("yyyy/MM/dd HH:mm");
+                            }
                             <br />
                             <span class="text-muted">
-                                @item.KnowTime.Value.ToString("yyyy/MM/dd HH:mm")
+                                @if (item.OccurTime != null)
+                                {
+                                    item.KnowTime.Value.ToString("yyyy/MM/dd HH:mm");
+                                }
+
                             </span>
                         </td>
 
