@@ -1,0 +1,59 @@
+﻿@model WebPccuClub.Models.FBorrowIndexViewModel
+
+@{
+	Layout = "_FrontBorrowLayout";
+	ViewBag.Title = "資源借用系統";
+}
+<div class="col-xxl-8">
+	<div class="contentWrapper">
+		<h4 class="pageTitle">個人資料</h4>
+		<hr>
+		@if (null != Model.ResultModel)
+        {
+            <div class="thumblist">
+                <div class="row">
+
+                    @foreach (FBorrowIndexResultModel item in Model.ResultModel)
+                    {
+                        <div class="col-lg-3 col-md-6">
+                            <div class="item">
+                                <div class="imgbox">
+                                    @if (item.CoverPath != null)
+                                    {
+                                        <div class="imgbox__inner-6-9">
+                                            <div class="image" style="background-image: url(@item.CoverPath);"></div>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="textbox">
+                                    <div class="num">@item.Text</div>
+                                    @*<div class="title title-3 text-muted">
+                                        實際借用品項現場核判不收借使用費。
+                                        1.驗收無誤且清潔完畢完成歸還手續，無息歸還其保證金。
+                                        2.逾期罰款每日100元按日累加，遺失照價賠償。
+                                    </div>*@
+                                    <div class="title d-flex justify-content-around mt-2">
+                                        @using (Html.BeginForm("Detail", "FBorrowIndex", FormMethod.Post, new { style = "float:left" }))
+                                        {
+                                            <button type="submit" value="@item.ID" name="submitBtn" class="btn btn btn-secondary">相關說明</button>
+                                        }
+                                        @using (Html.BeginForm("Detail", "FBorrowIndex", FormMethod.Post, new { style = "float:left" }))
+                                        {
+                                            <button type="submit" value="@item.ID" name="submitBtn" class="btn btn btn-primary">前往借用</button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    }
+                    
+                </div>
+            </div>
+        }
+	</div>
+</div>
+
+<script>
+
+</script>

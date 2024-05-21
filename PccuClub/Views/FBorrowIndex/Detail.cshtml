@@ -1,0 +1,61 @@
+﻿@model WebPccuClub.Models.FBorrowIndexViewModel
+
+@{
+	Layout = "_FrontBorrowLayout";
+	ViewBag.Title = "資源借用系統";
+}
+<div class="col-xxl-8">
+    @if (Model.Detail != null)
+    {
+        <div class="contentWrapper">
+            <h4 class="pageTitle">社團器材</h4>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">借用類別</a></li>
+                    <li class="breadcrumb-item active">社團器材</li>
+                </ol>
+            </nav>
+            <hr>
+            <div class="mb-4">
+                <a id="Back" href="@Url.Action("Index")"><i class="fas fa-chevron-left"></i>返回</a>
+            </div>
+
+            <div class="infoWrapper mb-4">
+                <div class="infoItem">
+                    <div class="tag">類別名稱</div>
+                    <div class="content">@Model.Detail.Text</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">可借用日期</div>
+                    <div class="content"> @Model.Detail.BorrowSDate.Value.ToString("yyyy/MM/dd") 至 @Model.Detail.BorrowEDate.Value.ToString("yyyy/MM/dd")</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">借用規定</div>
+                    <div class="content">
+                        <article style="white-space: pre-line;">
+                            @Model.Detail.BorrowRule
+                        </article>
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">費用</div>
+                    <div class="content">
+                        <article style="white-space: pre-line;">
+                            @Model.Detail.BorrowFee
+                        </article>
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">庫存機制</div>
+                    <div class="content" style="white-space: pre-line;">
+                            @Model.Detail.ReserveRule
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+
+</script>
