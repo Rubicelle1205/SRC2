@@ -1,0 +1,364 @@
+﻿@model WebPccuClub.Models.BorrowRecordMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">申請單位類型<span class="required">*</span></th>
+                                        <td>
+                                            <select id="" name="" class="form-control"
+                                                    title="請選擇申請單位類型" req>
+                                                <option value="" selected>請選擇申請單位類型</option>
+                                                <option value="行政單位">行政單位</option>
+                                                <option value="學術單位">學術單位</option>
+                                                <option value="學生社團">學生社團</option>
+                                                <option value="校外單位">校外單位</option>
+                                                <option value="個人(醫療)">個人(醫療)</option>
+                                                <option value="應屆畢業生(學位服)">應屆畢業生(學位服)</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">申請單位<span class="required">*</span></th>
+                                        <td>
+                                            <input type="text" class="form-control" value=""
+                                                   data-title="申請單位" req="Y" placeholder="請輸入申請單位">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">申請人<span class="required">*</span></th>
+                                        <td>
+                                            <input type="text" class="form-control" value=""
+                                                   data-title="申請人" req="Y" placeholder="請輸入申請人">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">申請人職稱<span class="required"></span></th>
+                                        <td>
+                                            <input type="text" class="form-control" value=""
+                                                   data-title="申請人職稱" req="Y" placeholder="請輸入申請人職稱">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">申請人Email<span class="required"></span></th>
+                                        <td>
+                                            <input type="email" class="form-control" value=""
+                                                   data-title="申請人Email" req="Y" placeholder="請輸入申請人Email">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">申請人電話/分機<span class="required"></span></th>
+                                        <td>
+                                            <input type="text" class="form-control" value=""
+                                                   data-title="申請人電話/分機" req="Y" placeholder="請輸入申請人電話/分機">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">申請目的<span class="required">*</span></th>
+                                        <td>
+                                            <input type="text" class="form-control" value=""
+                                                   data-title="申請目的" req="Y" placeholder="請輸入申請目的">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">活動名稱<span class="required">*</span></th>
+                                        <td>
+                                            <input type="text" class="form-control" value=""
+                                                   data-title="活動名稱" req="Y" placeholder="請輸入活動名稱">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">使用地點<span class="required">*</span></th>
+                                        <td>
+                                            <input type="text" class="form-control" value=""
+                                                   data-title="使用地點" req="Y" placeholder="請輸入使用地點">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">用途及特殊需求說明<span class="required">*</span></th>
+                                        <td>
+                                            <input type="text" class="form-control" value=""
+                                                   data-title="用途及特殊需求說明" req="Y" placeholder="請輸入用途及特殊需求說明">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <!--不會影響庫存-->
+                                        <th width="10%">實際使用起訖日<span class="required">*</span></th>
+                                        <td>
+                                            <div class="input-group">
+                                                <input req data-title="實際使用日期(起)"
+                                                       class="form-control dp-input dp-range-d dp-start"
+                                                       name="start_date" id="start_date"
+                                                       type="text" autocomplete="off"
+                                                       placeholder="請輸入實際使用日期(起)"
+                                                       value="">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text" id="basic-addon1">至</span>
+                                                </div>
+                                                <input req data-title="實際使用日期(訖)"
+                                                       class="form-control dp-input dp-range-d dp-end"
+                                                       name="end_date" id="end_date"
+                                                       type="text" autocomplete="off"
+                                                       placeholder="請輸入實際使用日期(訖)"
+                                                       value="">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!--會影響庫存-->
+                                    <tr>
+                                        <th width="10%">約定領取時間<span class="required"></span></th>
+                                        <td>
+                                            <div class="input-group">
+                                                <input req data-title="約定領取時間"
+                                                       class="form-control dp-input dp-range-d dp-start"
+                                                       name="start_date" id="start_date"
+                                                       type="text" autocomplete="off"
+                                                       placeholder="請輸入約定領取時間"
+                                                       value="">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text" id="basic-addon1">至</span>
+                                                </div>
+                                                <input req data-title="約定歸還時間"
+                                                       class="form-control dp-input dp-range-d dp-end"
+                                                       name="end_date" id="end_date"
+                                                       type="text" autocomplete="off"
+                                                       placeholder="請輸入約定歸還時間"
+                                                       value="">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">選擇借用資源</th>
+                                        <td>
+                                            <div class="form-row dateItem">
+                                                <div class="form-group col-md-6">
+                                                    <label for="resource_id">
+                                                        資源名稱<span class="required">*</span>
+                                                    </label>
+                                                    <select id="resource_id" name="" class="form-control"
+                                                            title="請選擇資源名稱">
+                                                        <option value="">請選擇資源名稱</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="resource_num">
+                                                        借用數量<span class="required">*</span>
+                                                    </label>
+                                                    <select id="resource_num" name="" class="form-control"
+                                                            title="請選擇借用數量">
+                                                        <option value="">請選擇借用數量</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <button class="addevent-btn btn btn-sm btn-secondary btn-modern border-0 mt-1 float-end"
+                                                    type="button">
+                                                新增器材 <i class="fas fa-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">已加入資源<span class="required"></span></th>
+                                        <td>
+                                            <div id="event_des" class="col-md-6 dateItem" title="尚未加入資源">
+                                                <ul class="list-group list-group-flush text-sm mb-2">
+                                                    <!--<span class="text-muted">尚無事件紀錄</span>-->
+                                                    <li class="list-group-item d-flex justify-content-between p-1"
+                                                        data-resource-id="2">
+                                                        <!--如果要修改數量就先[移除]再[新增]-->
+                                                        <span class="location">
+                                                            (社團器材) 喇叭 <i class="fas fa-x"></i> 2
+                                                        </span>
+                                                        <button class="del-btn btn btn-sm btn-outline-dark mx-1"
+                                                                type="button">
+                                                            移除 <i class="fas fa-times"></i>
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">
+                                            佐證資料<span class="required"></span><span class="mx-1"
+                                                                                    data-toggle="tooltip"
+                                                                                    data-bs-placement="top"
+                                                                                    title=""
+                                                                                    data-original-title="接受.pdf、.jpg、.jpeg、.png、.zip、.rar、.7z檔">
+                                                <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                            </span>
+                                        </th>
+                                        <td>
+                                            <div class="target_list">
+                                                <div class="d-block mb-1 item">
+                                                    <label class="btn btn-outline-primary mb-0">
+                                                        <input style="display:none;"
+                                                               req=""
+                                                               class="filesupload"
+                                                               data-title="佐證資料"
+                                                               type="file"
+                                                               name="file0" value=""
+                                                               data-file=""
+                                                               accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z"><i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                                    </label>
+                                                    <span class="text-sm mx-2 text-muted"
+                                                          id="filename">尚未選擇檔案...</span>
+                                                    <button class="del-btn btn btn-sm btn-outline-secondary hidden"
+                                                            type="button">
+                                                        <i class="fas fa-times"></i> 移除
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <button id="add_input_btn" class="btn btn-secondary btn-sm mt-3 d-block"
+                                                    type="button">
+                                                新增 <i class="icon-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">審核狀態<span class="required">*</span></th>
+                                        <td>
+                                            <select req class="form-control" data-title="審核狀態"
+                                                    name="status">
+                                                <option value="" selected>請選擇審核狀態</option>
+                                                <option value="申請中">申請中</option>
+                                                <option value="審核通過">審核通過</option>
+                                                <option value="審核失敗">審核失敗</option>
+                                                <option value="已領取">已領取（扣除庫存）</option>
+                                                <option value="已歸還">已歸還</option>
+                                                <option value="取消">取消</option>
+                                                <option value="毀損、遺失">毀損、遺失</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-3">
+                                                    <label for="">
+                                                        輔導老師或承辦人註記<span class="required"></span>
+                                                    </label>
+                                                    <textarea class="form-control" data-title="輔導老師或承辦人註記"
+                                                              name="note"
+                                                              placeholder="請輸入輔導老師或承辦人註記"
+                                                              rows="5"></textarea>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="">
+                                                        器材專業人員註記<span class="required"></span>
+                                                    </label>
+                                                    <textarea class="form-control" data-title="器材專業人員註記"
+                                                              name="note"
+                                                              placeholder="請輸入器材專業人員註記"
+                                                              rows="5"></textarea>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="">
+                                                        器材領取註記<span class="required"></span>
+                                                    </label>
+                                                    <textarea class="form-control" data-title="器材領取註記"
+                                                              name="note"
+                                                              placeholder="請輸入器材領取註記"
+                                                              rows="5"></textarea>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="">
+                                                        器材歸還註記<span class="required"></span>
+                                                    </label>
+                                                    <textarea class="form-control" data-title="器材歸還註記"
+                                                              name="note"
+                                                              placeholder="請輸入器材歸還註記"
+                                                              rows="5"></textarea>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="form-group col-md-12">
+                                                <label for="">
+                                                    其它備註<span class="required"></span>
+                                                </label>
+                                                <textarea class="form-control" data-title="其它備註"
+                                                          name="note"
+                                                          placeholder="請輸入其它備註"
+                                                          rows="5"></textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+
+
+
+
+
+                    </div>
+                    <!-- /.card -->
+                </form>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+
+    function SaveData() {
+
+        var data = new FormData()
+
+
+        SendAjax({
+            url: '@Url.Action("SaveNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+</script>
