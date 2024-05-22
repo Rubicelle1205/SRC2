@@ -4,6 +4,10 @@
     Layout = "_BackendLayout";
 }
 
+<head>
+    <script src="~/js/backend_case.js"></script>
+</head>
+
 <!-- Main content -->
 <section class="content">
     <div class="container-fluid">
@@ -20,102 +24,54 @@
                                 <tbody>
                                     <tr>
                                         <th width="10%">申請單位類型<span class="required">*</span></th>
-                                        <td>
-                                            <select id="" name="" class="form-control"
-                                                    title="請選擇申請單位類型" req>
-                                                <option value="" selected>請選擇申請單位類型</option>
-                                                <option value="行政單位">行政單位</option>
-                                                <option value="學術單位">學術單位</option>
-                                                <option value="學生社團">學生社團</option>
-                                                <option value="校外單位">校外單位</option>
-                                                <option value="個人(醫療)">個人(醫療)</option>
-                                                <option value="應屆畢業生(學位服)">應屆畢業生(學位服)</option>
-                                            </select>
-                                        </td>
+                                        <td>@Html.DropDownListFor(m => m.CreateModel.ApplyUnitType ,(List<SelectListItem>)ViewBag.ddlApplyUnitType,"請選擇申請單位類型", new {@class = "form-control"})</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">申請單位<span class="required">*</span></th>
-                                        <td>
-                                            <input type="text" class="form-control" value=""
-                                                   data-title="申請單位" req="Y" placeholder="請輸入申請單位">
-                                        </td>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.ApplyUnitName, new {@class = "form-control", placeholder = "請輸入申請單位"})</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">申請人<span class="required">*</span></th>
-                                        <td>
-                                            <input type="text" class="form-control" value=""
-                                                   data-title="申請人" req="Y" placeholder="請輸入申請人">
-                                        </td>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.ApplyMan, new {@class = "form-control", placeholder = "請輸入申請人"})</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">申請人職稱<span class="required"></span></th>
-                                        <td>
-                                            <input type="text" class="form-control" value=""
-                                                   data-title="申請人職稱" req="Y" placeholder="請輸入申請人職稱">
-                                        </td>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.ApplyTitle, new {@class = "form-control", placeholder = "請輸入申請人職稱"})</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">申請人Email<span class="required"></span></th>
-                                        <td>
-                                            <input type="email" class="form-control" value=""
-                                                   data-title="申請人Email" req="Y" placeholder="請輸入申請人Email">
-                                        </td>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.ApplyEmail, new {@class = "form-control", placeholder = "請輸入申請人Email"})</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">申請人電話/分機<span class="required"></span></th>
-                                        <td>
-                                            <input type="text" class="form-control" value=""
-                                                   data-title="申請人電話/分機" req="Y" placeholder="請輸入申請人電話/分機">
-                                        </td>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.ApplyTel, new {@class = "form-control", placeholder = "申請人電話/分機"})</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">申請目的<span class="required">*</span></th>
-                                        <td>
-                                            <input type="text" class="form-control" value=""
-                                                   data-title="申請目的" req="Y" placeholder="請輸入申請目的">
-                                        </td>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.ApplyPurpose, new {@class = "form-control", placeholder = "請輸入申請目的"})</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">活動名稱<span class="required">*</span></th>
-                                        <td>
-                                            <input type="text" class="form-control" value=""
-                                                   data-title="活動名稱" req="Y" placeholder="請輸入活動名稱">
-                                        </td>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.ActName, new {@class = "form-control", placeholder = "請輸入活動名稱"})</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">使用地點<span class="required">*</span></th>
-                                        <td>
-                                            <input type="text" class="form-control" value=""
-                                                   data-title="使用地點" req="Y" placeholder="請輸入使用地點">
-                                        </td>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.UseLocation, new {@class = "form-control", placeholder = "請輸入使用地點"})</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">用途及特殊需求說明<span class="required">*</span></th>
-                                        <td>
-                                            <input type="text" class="form-control" value=""
-                                                   data-title="用途及特殊需求說明" req="Y" placeholder="請輸入用途及特殊需求說明">
-                                        </td>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.UseDesc, new {@class = "form-control", placeholder = "請輸入用途及特殊需求說明"})</td>
                                     </tr>
                                     <tr>
                                         <!--不會影響庫存-->
                                         <th width="10%">實際使用起訖日<span class="required">*</span></th>
                                         <td>
                                             <div class="input-group">
-                                                <input req data-title="實際使用日期(起)"
-                                                       class="form-control dp-input dp-range-d dp-start"
-                                                       name="start_date" id="start_date"
-                                                       type="text" autocomplete="off"
-                                                       placeholder="請輸入實際使用日期(起)"
-                                                       value="">
+                                                @Html.TextBoxFor(m => m.EditModel.UseSDate, new {@class = "form-control", @placeholder="請輸入實際使用日期(起)", @for="finish_date"})
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="basic-addon1">至</span>
                                                 </div>
-                                                <input req data-title="實際使用日期(訖)"
-                                                       class="form-control dp-input dp-range-d dp-end"
-                                                       name="end_date" id="end_date"
-                                                       type="text" autocomplete="off"
-                                                       placeholder="請輸入實際使用日期(訖)"
-                                                       value="">
+                                                @Html.TextBoxFor(m => m.EditModel.UseEDate, new {@class = "form-control", @placeholder="請輸入實際使用日期(訖)", @for="finish_date"})
                                             </div>
                                         </td>
                                     </tr>
@@ -124,21 +80,11 @@
                                         <th width="10%">約定領取時間<span class="required"></span></th>
                                         <td>
                                             <div class="input-group">
-                                                <input req data-title="約定領取時間"
-                                                       class="form-control dp-input dp-range-d dp-start"
-                                                       name="start_date" id="start_date"
-                                                       type="text" autocomplete="off"
-                                                       placeholder="請輸入約定領取時間"
-                                                       value="">
+                                                @Html.TextBoxFor(m => m.EditModel.TakeSDate, new {@class = "form-control", @placeholder="請輸入約定領取時間", @for="finish_date"})
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="basic-addon1">至</span>
                                                 </div>
-                                                <input req data-title="約定歸還時間"
-                                                       class="form-control dp-input dp-range-d dp-end"
-                                                       name="end_date" id="end_date"
-                                                       type="text" autocomplete="off"
-                                                       placeholder="請輸入約定歸還時間"
-                                                       value="">
+                                                @Html.TextBoxFor(m => m.EditModel.TakeEDate, new {@class = "form-control", @placeholder="請輸入約定領取時間", @for="finish_date"})
                                             </div>
                                         </td>
                                     </tr>
@@ -232,19 +178,7 @@
                                     </tr>
                                     <tr>
                                         <th width="10%">審核狀態<span class="required">*</span></th>
-                                        <td>
-                                            <select req class="form-control" data-title="審核狀態"
-                                                    name="status">
-                                                <option value="" selected>請選擇審核狀態</option>
-                                                <option value="申請中">申請中</option>
-                                                <option value="審核通過">審核通過</option>
-                                                <option value="審核失敗">審核失敗</option>
-                                                <option value="已領取">已領取（扣除庫存）</option>
-                                                <option value="已歸還">已歸還</option>
-                                                <option value="取消">取消</option>
-                                                <option value="毀損、遺失">毀損、遺失</option>
-                                            </select>
-                                        </td>
+                                        <td>@Html.DropDownListFor(m => m.CreateModel.ActVerify ,(List<SelectListItem>)ViewBag.ddlBorrowActVerify,"請選擇審核狀態", new {@class = "form-control"})</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2">
@@ -253,37 +187,25 @@
                                                     <label for="">
                                                         輔導老師或承辦人註記<span class="required"></span>
                                                     </label>
-                                                    <textarea class="form-control" data-title="輔導老師或承辦人註記"
-                                                              name="note"
-                                                              placeholder="請輸入輔導老師或承辦人註記"
-                                                              rows="5"></textarea>
+                                                        @Html.TextAreaFor(m => m.CreateModel.TeacherMark, new {@class = "form-control", placeholder = "請輸入輔導老師或承辦人註記", rows = "5"})
                                                 </div>
                                                 <div class="form-group col-md-3">
                                                     <label for="">
                                                         器材專業人員註記<span class="required"></span>
                                                     </label>
-                                                    <textarea class="form-control" data-title="器材專業人員註記"
-                                                              name="note"
-                                                              placeholder="請輸入器材專業人員註記"
-                                                              rows="5"></textarea>
+                                                    @Html.TextAreaFor(m => m.CreateModel.DeviceMark, new {@class = "form-control", placeholder = "請輸入器材專業人員註記", rows = "5"})
                                                 </div>
                                                 <div class="form-group col-md-3">
                                                     <label for="">
                                                         器材領取註記<span class="required"></span>
                                                     </label>
-                                                    <textarea class="form-control" data-title="器材領取註記"
-                                                              name="note"
-                                                              placeholder="請輸入器材領取註記"
-                                                              rows="5"></textarea>
+                                                    @Html.TextAreaFor(m => m.CreateModel.TakeMark, new {@class = "form-control", placeholder = "請輸入器材領取註記", rows = "5"})
                                                 </div>
                                                 <div class="form-group col-md-3">
                                                     <label for="">
                                                         器材歸還註記<span class="required"></span>
                                                     </label>
-                                                    <textarea class="form-control" data-title="器材歸還註記"
-                                                              name="note"
-                                                              placeholder="請輸入器材歸還註記"
-                                                              rows="5"></textarea>
+                                                    @Html.TextAreaFor(m => m.CreateModel.ReturnMark, new {@class = "form-control", placeholder = "請輸入器材歸還註記", rows = "5"})
                                                 </div>
                                             </div>
                                         </td>
@@ -294,10 +216,7 @@
                                                 <label for="">
                                                     其它備註<span class="required"></span>
                                                 </label>
-                                                <textarea class="form-control" data-title="其它備註"
-                                                          name="note"
-                                                          placeholder="請輸入其它備註"
-                                                          rows="5"></textarea>
+                                                @Html.TextAreaFor(m => m.CreateModel.BorrowMemo, new {@class = "form-control", placeholder = "請輸入其它備註", rows = "5"})
                                             </div>
                                         </td>
                                     </tr>
@@ -310,10 +229,6 @@
                             <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
                             <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
                         </div>
-
-
-
-
 
                     </div>
                     <!-- /.card -->

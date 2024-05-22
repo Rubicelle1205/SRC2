@@ -134,7 +134,7 @@ var datetimepicker_option = {
 $(function () {
 
     if ((location.pathname).indexOf("EventCaseMang") >= 0 || (location.pathname).indexOf("EventGenderMang") >= 0 || (location.pathname).indexOf("EventBullyingMang") >= 0
-        || (location.pathname).indexOf("BorrowMainClassMang") >= 0)
+        || (location.pathname).indexOf("BorrowMainClassMang") >= 0 || (location.pathname).indexOf("BorrowRecordMang") >= 0 )
     {
         if ($("[for=finish_time]").length > 0) {
             // 結案時間

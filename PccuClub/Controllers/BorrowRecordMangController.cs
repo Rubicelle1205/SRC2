@@ -32,7 +32,9 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.首頁)]
         public IActionResult Index()
         {
+            
             ViewBag.ddlMainClass = dbAccess.GetddlMainClass();
+            ViewBag.ddlApplyUnitType = dbAccess.GetddlApplyUnitType();
             ViewBag.ddlBorrowActVerify = dbAccess.GetddlBorrowActVerify();
 
             BorrowRecordMangViewModel vm = new BorrowRecordMangViewModel();
@@ -43,6 +45,10 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public IActionResult Create()
         {
+            ViewBag.ddlMainClass = dbAccess.GetddlMainClass();
+            ViewBag.ddlApplyUnitType = dbAccess.GetddlApplyUnitType();
+            ViewBag.ddlBorrowActVerify = dbAccess.GetddlBorrowActVerify();
+
             BorrowRecordMangViewModel vm = new BorrowRecordMangViewModel();
             vm.CreateModel = new BorrowRecordMangCreateModel();
             return View(vm);
@@ -53,6 +59,10 @@ namespace WebPccuClub.Controllers
         {
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
+
+            ViewBag.ddlMainClass = dbAccess.GetddlMainClass();
+            ViewBag.ddlApplyUnitType = dbAccess.GetddlApplyUnitType();
+            ViewBag.ddlBorrowActVerify = dbAccess.GetddlBorrowActVerify();
 
             //BorrowRecordMangViewModel vm = new BorrowRecordMangViewModel();
             vm.EditModel = dbAccess.GetEditData(submitBtn);
