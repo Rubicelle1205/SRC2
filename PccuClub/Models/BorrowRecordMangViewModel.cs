@@ -157,6 +157,44 @@ namespace WebPccuClub.Models
         public DateTime? Created { get; set; }
     }
 
+    public class BorrowRecordMangExcelHeaderModel
+    {
+        /// <summary>申請單號</summary>
+        [DisplayName("申請單號")]
+        public string? BorrowMainID { get; set; }
+
+        /// <summary>申請單位(社團)</summary>
+        [DisplayName("申請單位(社團)")]
+        public string? ApplyUnitName { get; set; }
+
+        /// <summary>申請人</summary>
+        [DisplayName("申請人")]
+        public string? ApplyMan { get; set; }
+
+        /// <summary>職稱</summary>
+        [DisplayName("職稱")]
+        public string? ApplyTitle { get; set; }
+
+        /// <summary>領取日期</summary>
+        [DisplayName("領取日期")]
+        public DateTime? TakeSDate { get; set; }
+
+        /// <summary>歸還日期</summary>
+        [DisplayName("歸還日期")]
+        public DateTime? TakeEDate { get; set; }
+
+        /// <summary>業務分類</summary>
+        [DisplayName("業務分類")]
+        public string? MainClassIDText { get; set; }
+
+        /// <summary>審核狀態</summary>
+        [DisplayName("審核狀態")]
+        public string? ActVerifyText { get; set; }
+
+        [DisplayName("填表時間")]
+        public DateTime? Created { get; set; }
+    }
+
     public class BorrowRecordMangCreateModel
     {
         public List<BorrowRecordMangFileModel> LstFile = new List<BorrowRecordMangFileModel>();

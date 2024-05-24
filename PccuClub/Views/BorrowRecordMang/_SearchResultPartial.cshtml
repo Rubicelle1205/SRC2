@@ -36,13 +36,13 @@
                         </td>
                         @if (item.TakeSDate.HasValue && item.TakeEDate.HasValue)
                         {
-                            <td class="text-center text-sm">@item.TakeSDate ~ @item.TakeEDate</td>    
+                            <td class="text-center text-sm">@item.TakeSDate.Value.ToString("yyyy/MM/dd") ~ @item.TakeEDate.Value.ToString("yyyy/MM/dd")</td>
                         }
                         <td class="text-center text-sm">@item.MainClassIDText</td>
                         <td class="text-center text-sm">
                             @if (item.ActVerify == "01")
                             {
-                                <span class="text-secondary">@item.ActVerifyText</span>
+                                <span class="text-danger">@item.ActVerifyText</span>
                             }
                             else if (item.ActVerify == "02")
                             {
@@ -54,7 +54,19 @@
                             }
                             else if (item.ActVerify == "04")
                             {
-                                <span class="text-primary">@item.ActVerifyText</span>
+                                <span class=".text-info">@item.ActVerifyText</span>
+                            }
+                            else if (item.ActVerify == "05")
+                            {
+                                <span class="text-secondary">@item.ActVerifyText</span>
+                            }
+                            else if (item.ActVerify == "06")
+                            {
+                                <span class="text-success">@item.ActVerifyText</span>
+                            }
+                            else if (item.ActVerify == "07")
+                            {
+                                <span class="text-danger">@item.ActVerifyText</span>
                             }
                         </td>
                         @if (item.Created.HasValue)

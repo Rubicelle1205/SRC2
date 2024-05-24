@@ -121,21 +121,44 @@ namespace WebPccuClub.Controllers
                     string Device = arrData[0];
                     string Amt = arrData[1];
 
-                    string MainResourceID = dbAccess.GetMainResourceID(Device);
+                    DataTable dt = dbAccess.GetMainResourceID(Device);
+
+                    string MainResourceID = dt.QueryFieldByDT("MainClass");
+                    string BorrowType = dt.QueryFieldByDT("BorrowType");
 
                     LstMainResourceID.Add(MainResourceID);
 
                     BorrowRecordMangDeviceModel DeviceModel = new BorrowRecordMangDeviceModel();
-                    DeviceModel.MainResourceID = MainResourceID;
-                    DeviceModel.SecondResourceNo = Device;
-                    DeviceModel.BorrowAmt = Amt;
-                    DeviceModel.BorrowStatus = "01";
-                    vm.CreateModel.LstDevice.Add(DeviceModel);
+                    
+                    //非大量借用
+                    if (BorrowType == "02")
+                    {
+                        int TotAmt = Int32.Parse(Amt);
+
+                        for (int j = 1; j <= TotAmt; j++)
+                        {
+                            DeviceModel.MainResourceID = MainResourceID;
+                            DeviceModel.SecondResourceNo = Device;
+                            DeviceModel.BorrowAmt = "1";
+                            DeviceModel.BorrowStatus = "01";
+                            vm.CreateModel.LstDevice.Add(DeviceModel);
+                        }
+                    }
+                    else
+                    {
+                        DeviceModel.MainResourceID = MainResourceID;
+                        DeviceModel.SecondResourceNo = Device;
+                        DeviceModel.BorrowAmt = Amt;
+                        DeviceModel.BorrowStatus = "01";
+                        vm.CreateModel.LstDevice.Add(DeviceModel);
+                    }
                 }
 
                 for (int i = 0; i <= LstMainResourceID.Count - 1; i++)
                 {
                     DataTable dt = new DataTable();
+
+                    vm.CreateModel.MainClassID = LstMainResourceID[i];
                     var dbResult = dbAccess.InsertMainData(vm, LoginUser, out dt);
 
                     if (!dbResult.isSuccess)
@@ -160,16 +183,19 @@ namespace WebPccuClub.Controllers
                         return Json(vmRtn);
                     }
 
-
-                    dbResult = dbAccess.InsertFileData(vm.CreateModel.LstFile, LoginUser, BorrowMainID);
-
-                    if (!dbResult.isSuccess)
+                    if (vm.CreateModel.LstFile.Count > 0)
                     {
-                        dbAccess.DbaRollBack();
-                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        vmRtn.ErrorMsg = "新增失敗";
-                        return Json(vmRtn);
+                        dbResult = dbAccess.InsertFileData(vm.CreateModel.LstFile, LoginUser, BorrowMainID);
+
+                        if (!dbResult.isSuccess)
+                        {
+                            dbAccess.DbaRollBack();
+                            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                            vmRtn.ErrorMsg = "新增失敗";
+                            return Json(vmRtn);
+                        }
                     }
+                    
                 }
 
                 dbAccess.DbaCommit();
@@ -274,25 +300,70 @@ namespace WebPccuClub.Controllers
             return PartialView("_BorrowAmtPartial", vm);
         }
 
+        [LogAttribute(LogActionChineseName.匯出Excel)]
+        public IActionResult ExportSearchResult(BorrowRecordMangViewModel vm)
+        {
+            string FileName = string.Format("{0}_{1}", LogActionChineseName.借用紀錄管理, DateTime.Now.ToString("yyyyMMdd"));
+            vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel);
 
+            if (vm.ResultModel != null && vm.ResultModel.Count > 0)
+            {
+                IWorkbook workbook = new XSSFWorkbook();
+                List<int> LstWidth = new List<int> { 20, 20, 20, 20, 20, 20, 20, 20, 20 };
 
+                ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
 
+                var properties = typeof(BorrowRecordMangExcelHeaderModel).GetProperties();
 
+                //設定欄位
+                IRow headerRow = sheet.CreateRow(0);
 
+                XSSFCellStyle headStyle = ExcelUtil.GetDefaultHeaderStyle(workbook);
 
+                for (int i = 0; i <= properties.Length - 1; i++)
+                {
+                    var displayAttribute = (DisplayNameAttribute)properties[i].GetCustomAttribute(typeof(DisplayNameAttribute));
+                    var displayName = displayAttribute?.DisplayName ?? properties[i].Name;
 
+                    headerRow.CreateCell(i).SetCellValue(displayName);
 
+                    foreach (ICell cell in headerRow.Cells)
+                        cell.CellStyle = headStyle;
 
+                }
 
+                XSSFCellStyle contentStyle = ExcelUtil.GetDefaultContentStyle(workbook);
 
+                //設定資料
+                for (int i = 0; i <= vm.ResultModel.Count - 1; i++)
+                {
+                    IRow dataRow = sheet.CreateRow(i + 1);
 
+                    dataRow.CreateCell(0).SetCellValue(vm.ResultModel[i].BorrowMainID);
+                    dataRow.CreateCell(1).SetCellValue(vm.ResultModel[i].ApplyUnitName);
+                    dataRow.CreateCell(2).SetCellValue(vm.ResultModel[i].ApplyMan);
+                    dataRow.CreateCell(3).SetCellValue(vm.ResultModel[i].ApplyTitle);
+                    dataRow.CreateCell(4).SetCellValue(vm.ResultModel[i].TakeSDate != null ? vm.ResultModel[i].TakeSDate.Value.ToString("yyyy/MM/dd HH:mm") : "");
+                    dataRow.CreateCell(5).SetCellValue(vm.ResultModel[i].TakeEDate != null ? vm.ResultModel[i].TakeEDate.Value.ToString("yyyy/MM/dd HH:mm") : "");
+                    dataRow.CreateCell(6).SetCellValue(vm.ResultModel[i].MainClassIDText);
+                    dataRow.CreateCell(7).SetCellValue(vm.ResultModel[i].ActVerifyText);
+                    dataRow.CreateCell(8).SetCellValue(vm.ResultModel[i].Created != null ? vm.ResultModel[i].Created.Value.ToString("yyyy/MM/dd HH:mm") : "");
 
+                    foreach (ICell cell in dataRow.Cells)
+                        cell.CellStyle = contentStyle;
+                }
 
+                MemoryStream ms = new MemoryStream();
+                workbook.Write(ms, true);
+                ms.Flush();
+                ms.Position = 0;
 
+                return File(ms, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName + ".xlsx");
+            }
 
+            return View("Index", vm);
 
-
-
+        }
 
         [Log(LogActionChineseName.刪除)]
         [ValidateInput(false)]

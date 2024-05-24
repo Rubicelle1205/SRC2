@@ -40,7 +40,7 @@ namespace WebPccuClub.DataAccess
                                     A.ActVerify, C.Text AS ActVerifyText, A.Created
                                FROM BorrowMain A
                           LEFT JOIN BorrowMainClassMang B ON B.ID = A.MainClassID
-                          LEFT JOIN Code C ON C.Code = A.ActVerify AND D.Type = 'BorrowActVerify'
+                          LEFT JOIN Code C ON C.Code = A.ActVerify AND C.Type = 'BorrowActVerify'
 WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
 AND (@MainClassID IS NULL OR A.MainClassID = @MainClassID) 
@@ -525,7 +525,7 @@ AND (ID = @ID) ";
             return dt;
         }
 
-        public string GetMainResourceID(string SecondResourceID)
+        public DataTable GetMainResourceID(string SecondResourceID)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -536,16 +536,14 @@ AND (ID = @ID) ";
             parameters.Add("@SecondResourceID", SecondResourceID);
             #endregion
 
-            CommandText = @"SELECT MainClass
+            CommandText = @"SELECT MainClass, BorrowType
                               FROM BorrowMainResourceMang
                              WHERE 1 = 1
                                AND MainResourceID = @SecondResourceID ";
 
             DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
 
-            string str = ds.Tables[0].QueryFieldByDT("MainClass");
-
-            return str;
+            return ds.Tables[0];
         }
 
 
