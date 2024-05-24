@@ -48,6 +48,7 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlMainClass = dbAccess.GetddlMainClass();
             ViewBag.ddlApplyUnitType = dbAccess.GetddlApplyUnitType();
             ViewBag.ddlBorrowActVerify = dbAccess.GetddlBorrowActVerify();
+            ViewBag.ddlSecondResurce = dbAccess.GetddlSecondResurce();
 
             BorrowRecordMangViewModel vm = new BorrowRecordMangViewModel();
             vm.CreateModel = new BorrowRecordMangCreateModel();
@@ -91,30 +92,84 @@ namespace WebPccuClub.Controllers
             {
                 dbAccess.DbaInitialTransaction();
 
-                //if (Request.Form.Files.Count > 0)
-                //{
-                //    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
-                //    {
-                //        if (Request.Form.Files[i].Name.Contains("CoverPath"))
-                //        {
-                //            var file = Request.Form.Files.GetFile("CreateModel.CoverPath");
-
-                //            string strFilePath = await upload.UploadFileAsync("CoverPath", file);
-
-                //            vm.CreateModel.CoverPath = strFilePath;
-                //        }
-                //    }
-                //}
-
-                DataTable dt = new DataTable();
-                var dbResult = dbAccess.InsertMainData(vm, LoginUser, out dt);
-
-                if (!dbResult.isSuccess)
+                if (Request.Form.Files.Count > 0)
                 {
-                    dbAccess.DbaRollBack();
-                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "新增失敗";
-                    return Json(vmRtn);
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("File"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("BorrowRecord", file);
+
+                            BorrowRecordMangFileModel model = new BorrowRecordMangFileModel();
+                            model.FileName = file.FileName;
+                            model.FilePath = strFilePath;
+
+                            vm.CreateModel.LstFile.Add(model);
+                        }
+                    }
+                }
+
+                List<string> LstMainResourceID = new List<string>();
+                string[] arr = vm.CreateModel.strDeviceData.Split("|");
+
+                for (int i = 0; i <= arr.Length - 1; i++)
+                {
+                    string [] arrData = arr[i].Split(",");
+
+                    string Device = arrData[0];
+                    string Amt = arrData[1];
+
+                    string MainResourceID = dbAccess.GetMainResourceID(Device);
+
+                    LstMainResourceID.Add(MainResourceID);
+
+                    BorrowRecordMangDeviceModel DeviceModel = new BorrowRecordMangDeviceModel();
+                    DeviceModel.MainResourceID = MainResourceID;
+                    DeviceModel.SecondResourceNo = Device;
+                    DeviceModel.BorrowAmt = Amt;
+                    DeviceModel.BorrowStatus = "01";
+                    vm.CreateModel.LstDevice.Add(DeviceModel);
+                }
+
+                for (int i = 0; i <= LstMainResourceID.Count - 1; i++)
+                {
+                    DataTable dt = new DataTable();
+                    var dbResult = dbAccess.InsertMainData(vm, LoginUser, out dt);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "新增失敗";
+                        return Json(vmRtn);
+                    }
+
+                    string BorrowMainID = dt.QueryFieldByDT("BorrowMainID");
+
+
+                    List<BorrowRecordMangDeviceModel> datalist = vm.CreateModel.LstDevice.Where(x => x.MainResourceID == LstMainResourceID[i]).ToList();
+                    dbResult = dbAccess.InsertDeviceData(datalist, LoginUser, BorrowMainID);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "新增失敗";
+                        return Json(vmRtn);
+                    }
+
+
+                    dbResult = dbAccess.InsertFileData(vm.CreateModel.LstFile, LoginUser, BorrowMainID);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "新增失敗";
+                        return Json(vmRtn);
+                    }
                 }
 
                 dbAccess.DbaCommit();
@@ -175,6 +230,69 @@ namespace WebPccuClub.Controllers
 
             return Json(vmRtn);
         }
+
+        [Log(LogActionChineseName.取得上架數量)]
+        [ValidateInput(false)]
+        public IActionResult InitBorrowAmt(string MainResourceID)
+        {
+            if (!string.IsNullOrEmpty(MainResourceID))
+            {
+                ViewBag.ddlSecondResurce = dbAccess.GetddlSecondResurce();
+            }
+
+            DataTable dt = new DataTable();
+
+            dbAccess.GetBorrowAmt(MainResourceID, out dt);
+
+            string AmtShelves = dt.QueryFieldByDT("AmtShelves");
+            string AmtOnce = dt.QueryFieldByDT("AmtOnce");
+
+            BorrowRecordMangViewModel vm = new BorrowRecordMangViewModel();
+            vm.CreateModel = new BorrowRecordMangCreateModel();
+            vm.CreateModel.MainResourceID = MainResourceID;
+            vm.CreateModel.AmtShelves = AmtShelves;
+            vm.CreateModel.AmtOnce = AmtOnce;
+
+
+            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstItem = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>();
+
+            for (int i = 1; i <= Int32.Parse(AmtShelves); i++)
+            {
+                if (i > Int32.Parse(AmtOnce))
+                {
+                    LstItem.Add(new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem() { Value = i.ToString(), Text = string.Format("{0}", i), Disabled = true });
+                }
+                else
+                {
+                    LstItem.Add(new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem() { Value = i.ToString(), Text = string.Format("{0}", i)});
+                }
+                
+            }
+
+            ViewBag.ddlSecondAmt = LstItem;
+
+            return PartialView("_BorrowAmtPartial", vm);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         [Log(LogActionChineseName.刪除)]
         [ValidateInput(false)]

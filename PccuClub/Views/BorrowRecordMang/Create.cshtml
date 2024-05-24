@@ -18,6 +18,7 @@
                     <div class="card">
                         <div class="card-body table-responsive-sm">
                             <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
                                 <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
                             </h6>
                             <table class="table table-bordered">
@@ -67,24 +68,23 @@
                                         <th width="10%">實際使用起訖日<span class="required">*</span></th>
                                         <td>
                                             <div class="input-group">
-                                                @Html.TextBoxFor(m => m.EditModel.UseSDate, new {@class = "form-control", @placeholder="請輸入實際使用日期(起)", @for="finish_date"})
+                                                @Html.TextBoxFor(m => m.CreateModel.UseSDate, new {@class = "form-control", @placeholder="請輸入實際使用日期(起)", @for="finish_date"})
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="basic-addon1">至</span>
                                                 </div>
-                                                @Html.TextBoxFor(m => m.EditModel.UseEDate, new {@class = "form-control", @placeholder="請輸入實際使用日期(訖)", @for="finish_date"})
+                                                @Html.TextBoxFor(m => m.CreateModel.UseEDate, new {@class = "form-control", @placeholder="請輸入實際使用日期(訖)", @for="finish_date"})
                                             </div>
                                         </td>
                                     </tr>
-                                    <!--會影響庫存-->
                                     <tr>
                                         <th width="10%">約定領取時間<span class="required"></span></th>
                                         <td>
                                             <div class="input-group">
-                                                @Html.TextBoxFor(m => m.EditModel.TakeSDate, new {@class = "form-control", @placeholder="請輸入約定領取時間", @for="finish_date"})
+                                                @Html.TextBoxFor(m => m.CreateModel.TakeSDate, new {@class = "form-control", @placeholder="請輸入約定領取時間", @for="finish_date"})
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="basic-addon1">至</span>
                                                 </div>
-                                                @Html.TextBoxFor(m => m.EditModel.TakeEDate, new {@class = "form-control", @placeholder="請輸入約定領取時間", @for="finish_date"})
+                                                @Html.TextBoxFor(m => m.CreateModel.TakeEDate, new {@class = "form-control", @placeholder="請輸入約定領取時間", @for="finish_date"})
                                             </div>
                                         </td>
                                     </tr>
@@ -96,84 +96,48 @@
                                                     <label for="resource_id">
                                                         資源名稱<span class="required">*</span>
                                                     </label>
-                                                    <select id="resource_id" name="" class="form-control"
-                                                            title="請選擇資源名稱">
-                                                        <option value="">請選擇資源名稱</option>
-                                                    </select>
+                                                    @Html.DropDownListFor(m => m.CreateModel.MainResourceID ,(List<SelectListItem>)ViewBag.ddlSecondResurce,"請選擇資源名稱", new {@class = "form-control"})
                                                 </div>
                                                 <div class="form-group col-md-6">
                                                     <label for="resource_num">
                                                         借用數量<span class="required">*</span>
                                                     </label>
-                                                    <select id="resource_num" name="" class="form-control"
-                                                            title="請選擇借用數量">
-                                                        <option value="">請選擇借用數量</option>
-                                                    </select>
+                                                    <div id="borrowAmtPartial"></div>
                                                 </div>
                                             </div>
 
-                                            <button class="addevent-btn btn btn-sm btn-secondary btn-modern border-0 mt-1 float-end"
-                                                    type="button">
-                                                新增器材 <i class="fas fa-plus"></i>
-                                            </button>
+                                            <button id="btnAddevent" class="addevent-btn btn btn-sm btn-secondary btn-modern border-0 mt-1 float-end" type="button">新增器材 <i class="fas fa-plus"></i></button>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th width="10%">已加入資源<span class="required"></span></th>
                                         <td>
                                             <div id="event_des" class="col-md-6 dateItem" title="尚未加入資源">
-                                                <ul class="list-group list-group-flush text-sm mb-2">
-                                                    <!--<span class="text-muted">尚無事件紀錄</span>-->
-                                                    <li class="list-group-item d-flex justify-content-between p-1"
-                                                        data-resource-id="2">
-                                                        <!--如果要修改數量就先[移除]再[新增]-->
-                                                        <span class="location">
-                                                            (社團器材) 喇叭 <i class="fas fa-x"></i> 2
-                                                        </span>
-                                                        <button class="del-btn btn btn-sm btn-outline-dark mx-1"
-                                                                type="button">
-                                                            移除 <i class="fas fa-times"></i>
-                                                        </button>
-                                                    </li>
+                                                <ul  id="borrow-list" class="list-group list-group-flush text-sm mb-2">
+                                                   
                                                 </ul>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th width="10%">
-                                            佐證資料<span class="required"></span><span class="mx-1"
-                                                                                    data-toggle="tooltip"
-                                                                                    data-bs-placement="top"
-                                                                                    title=""
-                                                                                    data-original-title="接受.pdf、.jpg、.jpeg、.png、.zip、.rar、.7z檔">
+                                            佐證資料<span class="required"></span>
+                                            <span id="acceptTitle" class="mx-1" data-toggle="tooltip" data-bs-placement="top" title="">
                                                 <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
                                             </span>
                                         </th>
                                         <td>
-                                            <div class="target_list">
+                                            <div class="target_list_information">
                                                 <div class="d-block mb-1 item">
                                                     <label class="btn btn-outline-primary mb-0">
-                                                        <input style="display:none;"
-                                                               req=""
-                                                               class="filesupload"
-                                                               data-title="佐證資料"
-                                                               type="file"
-                                                               name="file0" value=""
-                                                               data-file=""
-                                                               accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z"><i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                                        <input id="ProposalFile0" name="ProposalFile0" type="file" class="filesupload" style="display:none;" accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z" />
+                                                        <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
                                                     </label>
-                                                    <span class="text-sm mx-2 text-muted"
-                                                          id="filename">尚未選擇檔案...</span>
-                                                    <button class="del-btn btn btn-sm btn-outline-secondary hidden"
-                                                            type="button">
-                                                        <i class="fas fa-times"></i> 移除
-                                                    </button>
+                                                    <span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                                    <button class="del-btn btn btn-sm btn-outline-secondary hidden" type="button"><i class="fas fa-times"></i> 移除</button>
                                                 </div>
                                             </div>
-                                            <button id="add_input_btn" class="btn btn-secondary btn-sm mt-3 d-block"
-                                                    type="button">
-                                                新增 <i class="icon-plus"></i>
-                                            </button>
+                                            <button id="add_input_btn" class="btn btn-secondary btn-sm mt-3 d-block" type="button">新增 <i class="icon-plus"></i></button>
                                         </td>
                                     </tr>
                                     <tr>
@@ -223,13 +187,12 @@
                                 </tbody>
                             </table>
                         </div>
-
-
+                        @Html.HiddenFor(m => m.CreateModel.strDeviceData)
                         <div class="card-footer d-flex justify-content-end">
                             <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
                             <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
                         </div>
-
+                        
                     </div>
                     <!-- /.card -->
                 </form>
@@ -244,12 +207,218 @@
 <!-- /.content -->
 
 <script>
+    
+    $(document).ready(function () {
+        // 多檔上傳
+        if ($(".target_list_information").length > 0) {
 
+            $(document).on('click', '#add_input_btn', function () {
+
+                var num = checkNum();
+                var addItem = '<div class="d-block mb-1 item">';
+                addItem += '<label class="btn btn-outline-primary mb-0">';
+                addItem += '<input id="ProposalFile' + num + '" style="display:none;" req class="filesupload" data-title="附件" type="file" name="ProposalFile' + num + '" value="" accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z" data-file="">';
+                addItem += '<i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案';
+                addItem += '</label>';
+                addItem += '<span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>';
+                addItem += '<button class="del-btn btn btn-sm btn-outline-secondary" type="button"><i class="fas fa-times"></i> 移除</button>';
+                addItem += '</div>';
+                if ($(".target_list_information").find("[type='file']").length <= 7) {
+                    $(".target_list_information").append(addItem);
+                    $(".target_list_information .del-btn").removeClass("hidden")
+                }
+            })
+
+            $(document).on('click', '.target_list_information .del-btn', function () {
+                var num = $(".target_list_information").find("[type='file']").length
+
+                if (confirm("確認清除？") == false) {
+                    return false
+                } else {
+                    if (num >= 2) {
+                        $(this).closest(".item").remove()
+                        $("#add_input_btn").prop("disabled", false)
+                    }
+
+                    if (num <= 2) {
+                        $(".target_list_information .del-btn").addClass("hidden")
+                    } else {
+                        $(".target_list_information .del-btn").removeClass("hidden")
+                    }
+                }
+            })
+
+            function checkNum() {
+                var num = $(".target_list_information").find(".d-block.mb-1.item").length
+                if (num >= 7) {
+                    $("#add_input_btn").prop("disabled", true)
+                } else {
+                    $("#add_input_btn").prop("disabled", false)
+                }
+                return num;
+            }
+        }
+
+        $(document).on('change', ".filesupload", function (e) {
+            var filename = e.target.files[0].name;
+            $(this).closest('.item').find('.text-muted#filename').text(filename);
+        });
+    });
+
+    $(document).ready(function () {
+        var addedItems = {};
+
+        $("[id $= 'MainResourceID']").on('change', function () {
+
+            InitBorrowAmt($("[id $= 'MainResourceID']").val());
+        });
+
+        $('#btnAddevent').click(function () {
+            
+
+            function updateRecordText() {
+                var itemList = Object.keys(addedItems).map(function(key) {
+                    return addedItems[key].text + ',' + addedItems[key].quantity;
+                }).join('|');
+
+                $('#@Html.IdFor(m => m.CreateModel.strDeviceData)').val(itemList);
+                alert($('#@Html.IdFor(m => m.CreateModel.strDeviceData)').val());
+            }
+
+            var MainResourceID = $('#@Html.IdFor(m => m.CreateModel.MainResourceID) option:selected' );
+            var BorrowAmt = $('#@Html.IdFor(m => m.CreateModel.BorrowAmt) option:selected');
+
+            
+            if (addedItems[MainResourceID.val()]) {
+                    if (confirm('此項目已存在。是否要更新數量？')) {
+                    var existingItem = $('#item-' + MainResourceID.val());
+                    existingItem.find('.quantity').text(BorrowAmt.val());
+                    addedItems[MainResourceID.val()].quantity = BorrowAmt.val();
+                    }
+                } else {
+
+                var listItem = $('<li>', { class: 'list-group-item d-flex justify-content-between p-1' }).html(
+                    '<span class="location"> ' + MainResourceID.text() + ' <i class="fas fa-x"></i> ' + BorrowAmt.text() +
+                    '</span><button class="del-btn btn btn-sm btn-outline-dark mx-1" type="button">移除 <i class="fas fa-times"></i></button>');
+
+                $('#borrow-list').append(listItem);
+
+                addedItems[MainResourceID.val()] = {
+                    text: MainResourceID.val(),
+                    quantity: BorrowAmt.val()
+                };
+
+                listItem.find('.del-btn').click(function () {
+                    listItem.remove();
+                    updateRecordText();
+                });
+                }
+            
+            updateRecordText();
+
+        });
+    });
+
+
+
+    function InitBorrowAmt(MainResourceID) {
+
+        SendAjax({
+            url: '@Url.Action("InitBorrowAmt")',
+            data: { 'MainResourceID': MainResourceID },
+            success: function (result) {
+                $('#borrowAmtPartial').html(result);
+            }
+        });
+    }
 
     function SaveData() {
 
         var data = new FormData()
 
+        var ApplyUnitType = $('#@Html.IdFor(m => m.CreateModel.ApplyUnitType)').val();
+        var ApplyUnitName = $('#@Html.IdFor(m => m.CreateModel.ApplyUnitName)').val();
+        var ApplyMan = $('#@Html.IdFor(m => m.CreateModel.ApplyMan)').val();
+        var ApplyTitle = $('#@Html.IdFor(m => m.CreateModel.ApplyTitle)').val();
+        var ApplyEmail = $('#@Html.IdFor(m => m.CreateModel.ApplyEmail)').val();
+        var ApplyTel = $('#@Html.IdFor(m => m.CreateModel.ApplyTel)').val();
+        var ApplyPurpose = $('#@Html.IdFor(m => m.CreateModel.ApplyPurpose)').val();
+        var ActName = $('#@Html.IdFor(m => m.CreateModel.ActName)').val();
+        var UseLocation = $('#@Html.IdFor(m => m.CreateModel.UseLocation)').val();
+        var UseDesc = $('#@Html.IdFor(m => m.CreateModel.UseDesc)').val();
+        var UseSDate = $('#@Html.IdFor(m => m.CreateModel.UseSDate)').val();
+        var UseEDate = $('#@Html.IdFor(m => m.CreateModel.UseEDate)').val();
+        var TakeSDate = $('#@Html.IdFor(m => m.CreateModel.TakeSDate)').val();
+        var TakeEDate = $('#@Html.IdFor(m => m.CreateModel.TakeEDate)').val();
+        var ActVerify = $('#@Html.IdFor(m => m.CreateModel.ActVerify)').val();
+        var TeacherMark = $('#@Html.IdFor(m => m.CreateModel.TeacherMark)').val();
+        var DeviceMark = $('#@Html.IdFor(m => m.CreateModel.DeviceMark)').val();
+        var TakeMark = $('#@Html.IdFor(m => m.CreateModel.TakeMark)').val();
+        var ReturnMark = $('#@Html.IdFor(m => m.CreateModel.ReturnMark)').val();
+        var BorrowMemo = $('#@Html.IdFor(m => m.CreateModel.BorrowMemo)').val();
+        var strDeviceData = $('#@Html.IdFor(m => m.CreateModel.strDeviceData)').val();
+
+
+        if (ApplyUnitType == "") { $.alert("申請單位類型不可為空"); return; }
+        if (ApplyUnitName == "") { $.alert("申請單位不可為空"); return; }
+        if (ApplyMan == "") { $.alert("角色名稱不可為空"); return; }
+        if (ApplyPurpose == "") { $.alert("申請目的不可為空"); return; }
+        if (ActName == "") { $.alert("活動名稱不可為空"); return; }
+        if (UseLocation == "") { $.alert("使用地點不可為空"); return; }
+        if (UseDesc == "") { $.alert("用途及特殊需求說明不可為空"); return; }
+        if (UseSDate == "") { $.alert("實際使用起日不可為空"); return; }
+        if (UseEDate == "") { $.alert("實際使用訖日不可為空"); return; }
+        if (TakeSDate == "") { $.alert("約定領取時間不可為空"); return; }
+        if (TakeEDate == "") { $.alert("約定歸還時間不可為空"); return; }
+        if (ActVerify == "") { $.alert("審核狀態不可為空"); return; }
+        if (strDeviceData == "") { $.alert("需選擇借用設備"); return; }
+
+
+
+        data.append('@Html.NameFor(m => m.CreateModel.ApplyUnitType)', ApplyUnitType);
+        data.append('@Html.NameFor(m => m.CreateModel.ApplyUnitName)', ApplyUnitName);
+        data.append('@Html.NameFor(m => m.CreateModel.ApplyMan)', ApplyMan);
+        data.append('@Html.NameFor(m => m.CreateModel.ApplyTitle)', ApplyTitle);
+        data.append('@Html.NameFor(m => m.CreateModel.ApplyEmail)', ApplyEmail);
+        data.append('@Html.NameFor(m => m.CreateModel.ApplyTel)', ApplyTel);
+        data.append('@Html.NameFor(m => m.CreateModel.ApplyPurpose)', ApplyPurpose);
+        data.append('@Html.NameFor(m => m.CreateModel.ActName)', ActName);
+        data.append('@Html.NameFor(m => m.CreateModel.UseLocation)', UseLocation);
+        data.append('@Html.NameFor(m => m.CreateModel.UseDesc)', UseDesc);
+        data.append('@Html.NameFor(m => m.CreateModel.UseSDate)', UseSDate);
+        data.append('@Html.NameFor(m => m.CreateModel.UseEDate)', UseEDate);
+        data.append('@Html.NameFor(m => m.CreateModel.TakeSDate)', TakeSDate);
+        data.append('@Html.NameFor(m => m.CreateModel.TakeEDate)', TakeEDate);
+        data.append('@Html.NameFor(m => m.CreateModel.ActVerify)', ActVerify);
+        data.append('@Html.NameFor(m => m.CreateModel.TeacherMark)', TeacherMark);
+        data.append('@Html.NameFor(m => m.CreateModel.DeviceMark)', DeviceMark);
+        data.append('@Html.NameFor(m => m.CreateModel.TakeMark)', TakeMark);
+        data.append('@Html.NameFor(m => m.CreateModel.ReturnMark)', ReturnMark);
+        data.append('@Html.NameFor(m => m.CreateModel.BorrowMemo)', BorrowMemo);
+        data.append('@Html.NameFor(m => m.CreateModel.strDeviceData)', strDeviceData);
+
+
+
+        var allEmpty = true;
+        for (var i = 0; i <= 8; i++) {
+            var file = $('#ProposalFile' + i);
+
+            if (file.length > 0 && file.val() !== '') {
+                allEmpty = false;
+                var File = $('#ProposalFile' + i)[0].files[0];
+                if (typeof File !== 'undefined') {
+                    var fileExtension = File.name.split('.').pop().toLowerCase();
+
+                    if (fileExtension !== 'pdf' && fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png'
+                        && fileExtension !== 'zip' && fileExtension !== 'rar' && fileExtension !== '7z') {
+                        $.alert("檔案類型不符合");
+                        return;
+                    }
+
+                    data.append('@Html.NameFor(m => m.File)', File);
+                }
+            }
+        }
 
         SendAjax({
             url: '@Url.Action("SaveNewData")',
@@ -276,4 +445,5 @@
         });
     }
 
+    $('#acceptTitle').tooltip({ title: "接受.pdf、.jpg、.jpeg、.png、.zip、.rar、.7z檔" });
 </script>

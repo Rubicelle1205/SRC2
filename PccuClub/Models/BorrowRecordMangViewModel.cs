@@ -161,6 +161,14 @@ namespace WebPccuClub.Models
     {
         public List<BorrowRecordMangFileModel> LstFile = new List<BorrowRecordMangFileModel>();
         public List<BorrowRecordMangDeviceModel> LstDevice = new List<BorrowRecordMangDeviceModel>();
+        public string? strDeviceData { get; set; }
+        public string? MainResourceID { get; set; }
+
+        public string? AmtShelves { get; set; }
+
+        public string? AmtOnce { get; set; }
+
+        public string? BorrowAmt { get; set; }
 
         [DisplayName("業務分類")]
         public string? MainClassID { get; set; }
@@ -311,8 +319,6 @@ namespace WebPccuClub.Models
 
     public class BorrowRecordMangFileModel
     {
-        public string? BorrowMainID { get; set; }
-
         public string? FileName { get; set; }
 
         public string? FilePath { get; set; }

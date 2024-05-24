@@ -192,7 +192,7 @@ AND (ID = @ID) ";
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
-            string CommendText = $@"INSERT INTO BorrowFile
+            string CommendText = $@"INSERT INTO BorrowDevice
                                             (BorrowMainID
                                             ,MainResourceID
                                             ,SecondResourceNo
@@ -419,6 +419,7 @@ AND (ID = @ID) ";
 
 
 
+
         public List<SelectListItem> GetddlMainClass()
         {
             string CommandText = string.Empty;
@@ -479,7 +480,75 @@ AND (ID = @ID) ";
             return new List<SelectListItem>();
         }
 
+        public List<SelectListItem> GetddlSecondResurce()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
 
-        
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT A.MainResourceID AS VALUE, '(' + B.Text + ')' + A.MainResourceName AS TEXT
+                              FROM BorrowMainResourceMang A
+                         LEFT JOIN BorrowMainClassMang B ON B.ID = A.MainClass";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public DataTable GetBorrowAmt(string MainResourceID, out DataTable dt)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@MainResourceID", MainResourceID);
+            #endregion
+
+            CommandText = @"SELECT MainResourceID, AmtShelves, AmtOnce
+                              FROM BorrowMainResourceMang
+                             WHERE 1 = 1
+                               AND MainResourceID = @MainResourceID ";
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            dt = ds.Tables[0];
+
+            return dt;
+        }
+
+        public string GetMainResourceID(string SecondResourceID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@SecondResourceID", SecondResourceID);
+            #endregion
+
+            CommandText = @"SELECT MainClass
+                              FROM BorrowMainResourceMang
+                             WHERE 1 = 1
+                               AND MainResourceID = @SecondResourceID ";
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            string str = ds.Tables[0].QueryFieldByDT("MainClass");
+
+            return str;
+        }
+
+
+
     }
 }

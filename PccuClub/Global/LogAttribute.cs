@@ -121,6 +121,7 @@
         前台借用類別 = 106,
         資源借用狀況 = 107,
         我的借用紀錄 = 108,
+        取得上架數量 = 109,
     }
 
 	public enum DBActionChineseName
