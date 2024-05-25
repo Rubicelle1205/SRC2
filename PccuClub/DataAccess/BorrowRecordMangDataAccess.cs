@@ -76,11 +76,13 @@ AND (@ApplyEmail IS NULL OR A.ApplyEmail LIKE '%' + @ApplyEmail + '%') ";
             #region 參數設定
             #endregion
 
-            CommandText = $@"
-SELECT ID, Text, MainClass, Memo, Creator, Created, LastModifier, LastModified
-FROM BorrowRecordMang
+            CommandText = $@"SELECT A.BorrowMainID, A.MainClassID, B.Text AS MainClassIDText, A.ApplyUnitType, A.ApplyUnitName, A.ApplyMan, A.ApplyTitle, A.ApplyEmail, A.ApplyTel, 
+                                    A.ApplyPurpose, A.ActName, A.UseLocation, A.UseDesc, A.UseSDate, A.UseEDate, A.TakeSDate, A.TakeEDate, A.BorrowMemo, 
+                                    A.TeacherMark, A.DeviceMark, A.TakeMark, A.ReturnMark, A.Memo, A.ActVerify, A.Creator, A.Created, A.LastModifier, A.LastModified
+                              FROM BorrowMain A
+                         LEFT JOIN BorrowMainClassMang B ON B.ID = A.MainClassID
 WHERE 1 = 1
-AND (ID = @ID) ";
+AND (A.BorrowMainID = @ID) ";
 
 
             (DbExecuteInfo info, IEnumerable<BorrowRecordMangEditModel> entitys) dbResult = DbaExecuteQuery<BorrowRecordMangEditModel>(CommandText, parameters, true, DBAccessException);
@@ -89,6 +91,102 @@ AND (ID = @ID) ";
                 return dbResult.entitys.ToList().FirstOrDefault();
 
             return null;
+        }
+
+        public List<EventData> GetEventData(string BorrowMainID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@BorrowMainID", BorrowMainID);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT A.EventID, B.Text AS EventIDText, A.EventDateTime, A.Text
+                               FROM BorrowHistroy A
+						  LEFT JOIN Code B ON B.Code = A.EventID AND B.Type = 'BorrowActVerify'
+                              WHERE 1 = 1
+                                AND BorrowMainID = @BorrowMainID
+						   ORDER BY A.EventDateTime DESC
+
+";
+
+
+            (DbExecuteInfo info, IEnumerable<EventData> entitys) dbResult = DbaExecuteQuery<EventData>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<EventData>();
+        }
+
+        public List<BorrowRecordMangFileModel> GetFileData(string submitBtn)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+
+            #region 參數設定
+
+            parameters.Add("@BorrowMainID", submitBtn);
+
+            #endregion
+
+            CommandText = $@"SELECT ID
+      ,BorrowMainID
+      ,FileName
+      ,FilePath
+      ,Creator
+      ,Created
+      ,LastModifier
+      ,LastModified
+                               FROM BorrowFile
+WHERE 1 = 1
+AND BorrowMainID = @BorrowMainID";
+
+
+            (DbExecuteInfo info, IEnumerable<BorrowRecordMangFileModel> entitys) dbResult = DbaExecuteQuery<BorrowRecordMangFileModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<BorrowRecordMangFileModel>();
+        }
+
+
+        public List<BorrowRecordMangDeviceModel> GetDeviceData(string submitBtn)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+
+            #region 參數設定
+
+            parameters.Add("@BorrowMainID", submitBtn);
+
+            #endregion
+
+            CommandText = $@"SELECT A.MainClassID, B.Text AS MainClassIDText, A.MainResourceID, C.MainResourceName AS MainResourceIDText, A.BorrowAmt
+                               FROM BorrowDevice A
+                          LEFT JOIN BorrowMainClassMang B ON b.ID = A.MainClassID
+                          LEFT JOIN BorrowMainResourceMang C ON C.MainResourceID = A.MainResourceID
+                              WHERE 1 = 1
+                                AND A.BorrowMainID = @BorrowMainID";
+
+
+            (DbExecuteInfo info, IEnumerable<BorrowRecordMangDeviceModel> entitys) dbResult = DbaExecuteQuery<BorrowRecordMangDeviceModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<BorrowRecordMangDeviceModel>();
         }
 
         #region 新增
@@ -286,7 +384,8 @@ AND (ID = @ID) ";
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@MainClassID", vm.EditModel.MainClassID);
+            parameters.Add("@BorrowMainID", vm.EditModel.BorrowMainID);
+
             parameters.Add("@ApplyUnitType", vm.EditModel.ApplyUnitType);
             parameters.Add("@ApplyUnitName", vm.EditModel.ApplyUnitName);
             parameters.Add("@ApplyMan", vm.EditModel.ApplyMan);
@@ -306,7 +405,7 @@ AND (ID = @ID) ";
             parameters.Add("@DeviceMark", vm.EditModel.DeviceMark);
             parameters.Add("@TakeMark", vm.EditModel.TakeMark);
             parameters.Add("@ReturnMark", vm.EditModel.ReturnMark);
-            parameters.Add("@ActVerify", vm.EditModel.ActVerify);
+            parameters.Add("@Memo", vm.EditModel.Memo);
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
@@ -329,15 +428,67 @@ AND (ID = @ID) ";
                                             TeacherMark = @TeacherMark, 
                                             TakeMark = @TakeMark, 
                                             ReturnMark = @ReturnMark, 
-                                            ActVerify = @ActVerify, 
+                                            Memo = @Memo, 
                                             LastModifier = @LoginId, 
                                             LastModified = GETDATE()
 
-                                     WHERE MainClassID = @MainClassID";
+                                     WHERE BorrowMainID = @BorrowMainID";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
             return ExecuteResult;
+        }
+
+        /// <summary> 新增事件原因及經過資料 </summary>
+        public DbExecuteInfo UpdateEventData(BorrowRecordMangViewModel vm, UserInfo loginUser, string BorrowMainID)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommendText = $@"INSERT INTO BorrowHistroy
+                                           (BorrowMainID
+                                            ,EventID
+                                            ,EventDateTime
+                                            ,Text
+                                            ,Creator
+                                            ,Created
+                                            ,LastModifier
+                                            ,LastModified)
+                                        VALUES
+                                            ('{BorrowMainID}'
+                                            ,'{vm.EditModel.EventID}'
+                                            ,'{vm.EditModel.EventDateTime}'
+                                            ,'{vm.EditModel.EventText}'
+                                            ,'{loginUser.LoginId}'
+                                            ,GETDATE()
+                                            ,'{loginUser.LoginId}'
+                                            ,GETDATE() )";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        public DataTable GetMailReceiver(string BorrowMainID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@BorrowMainID", BorrowMainID);
+            #endregion
+
+            CommandText = @"SELECT ApplyMan, ApplyEmail
+                              FROM BorrowMain
+                             WHERE 1 = 1
+                               AND BorrowMainID = @BorrowMainID ";
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            return ds.Tables[0];
         }
 
         #region 刪除

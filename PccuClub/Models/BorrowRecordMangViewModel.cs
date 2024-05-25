@@ -277,11 +277,17 @@ namespace WebPccuClub.Models
 
     public class BorrowRecordMangEditModel
     {
+        public List<BorrowRecordMangFileModel> LstFile = new List<BorrowRecordMangFileModel>();
+        public List<BorrowRecordMangDeviceModel> LstDevice = new List<BorrowRecordMangDeviceModel>();
+        public List<EventData> LstEventData = new List<EventData>();
 
         public string? BorrowMainID {get; set;}
 
         [DisplayName("業務分類")]
         public string? MainClassID { get; set; }
+
+        [DisplayName("業務分類")]
+        public string? MainClassIDText { get; set; }
 
         [DisplayName("申請單位類型")]
         public string? ApplyUnitType { get; set; }
@@ -353,6 +359,20 @@ namespace WebPccuClub.Models
 
         [DisplayName("最後修改時間")]
         public DateTime? LastModified { get; set; }
+
+
+
+        /// <summary>事件ID</summary>
+        [DisplayName("事件ID")]
+        public string? EventID { get; set; }
+
+        /// <summary>事件時間</summary>
+        [DisplayName("事件時間")]
+        public string? EventDateTime { get; set; }
+
+        /// <summary>事件說明</summary>
+        [DisplayName("事件說明")]
+        public string? EventText { get; set; }
     }
 
     public class BorrowRecordMangFileModel

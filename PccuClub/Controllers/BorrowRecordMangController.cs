@@ -2,6 +2,7 @@
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using PccuClub.WebAuth;
 using System.ComponentModel;
 using System.Data;
 using System.Reflection;
@@ -20,6 +21,7 @@ namespace WebPccuClub.Controllers
         ReturnViewModel vmRtn = new ReturnViewModel();
         BorrowRecordMangDataAccess dbAccess = new BorrowRecordMangDataAccess();
         UploadUtil upload = new UploadUtil();
+        MailUtil mail = new MailUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
@@ -67,6 +69,10 @@ namespace WebPccuClub.Controllers
 
             //BorrowRecordMangViewModel vm = new BorrowRecordMangViewModel();
             vm.EditModel = dbAccess.GetEditData(submitBtn);
+            vm.EditModel.LstFile = dbAccess.GetFileData(submitBtn);
+            vm.EditModel.LstDevice = dbAccess.GetDeviceData(submitBtn);
+            vm.EditModel.LstEventData = dbAccess.GetEventData(submitBtn);
+            vm.EditModel.EventDateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             return View(vm);
         }
 
@@ -224,21 +230,6 @@ namespace WebPccuClub.Controllers
             {
                 dbAccess.DbaInitialTransaction();
 
-                //if (Request.Form.Files.Count > 0)
-                //{
-                //    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
-                //    {
-                //        if (Request.Form.Files[i].Name.Contains("CoverPath"))
-                //        {
-                //            var file = Request.Form.Files.GetFile("EditModel.CoverPath");
-
-                //            string strFilePath = await upload.UploadFileAsync("CoverPath", file);
-
-                //            vm.EditModel.CoverPath = strFilePath;
-                //        }
-                //    }
-                //}
-
                 var dbResult = dbAccess.UpdateData(vm, LoginUser);
 
                 if (!dbResult.isSuccess)
@@ -260,6 +251,64 @@ namespace WebPccuClub.Controllers
             }
 
             return Json(vmRtn);
+        }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public IActionResult EditOldEventData(BorrowRecordMangViewModel vm)
+        {
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.UpdateEventData(vm, LoginUser, vm.EditModel.BorrowMainID);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+
+                if (vm.EditModel.EventID == "02" || vm.EditModel.EventID == "03")
+                {
+                    DataTable dtReceiver = dbAccess.GetMailReceiver(vm.EditModel.BorrowMainID);
+
+                    string Receiver = dtReceiver.QueryFieldByDT("ApplyEmail");
+                    string ApplyMan = dtReceiver.QueryFieldByDT("ApplyMan");
+
+                    string MailBody = GenMailBody(ApplyMan, vm.EditModel.EventID);
+
+                    if (!string.IsNullOrEmpty(Receiver))
+                    {
+                        mail.ExecuteSendMail(Receiver, "借用單更新通知", MailBody, System.Net.Mail.MailPriority.High, null);
+                    }
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+        private string GenMailBody(string ApplyMan, string EventID)
+        {
+            string str = string.Empty;
+            string Event = EventID == "02" ? "審核通過" : "審核失敗";
+
+            str = $@"<p>{ApplyMan} 您好:</p>
+                    <p>借用單{Event}，可至系統查看</p>";
+
+            return str;
         }
 
         [Log(LogActionChineseName.取得上架數量)]

@@ -1,0 +1,365 @@
+﻿@model WebPccuClub.Models.BorrowRecordMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+
+    List<SelectListItem> LstSubSystemBelong = ViewBag.ddlSubSystemBelong;
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Created)<span class="required">*</span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.Created, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.LastModified)<span class="required">*</span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.LastModified, new {@class = "form-control"})</td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="10%">申請單位類型<span class="required">*</span></th>
+                                        <td>@Html.DropDownListFor(m => m.EditModel.ApplyUnitType ,(List<SelectListItem>)ViewBag.ddlApplyUnitType,"請選擇申請單位類型", new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">申請單位<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ApplyUnitName, new {@class = "form-control", placeholder = "請輸入申請單位"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">申請人<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ApplyMan, new {@class = "form-control", placeholder = "請輸入申請人"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">申請人職稱<span class="required"></span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ApplyTitle, new {@class = "form-control", placeholder = "請輸入申請人職稱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">申請人Email<span class="required"></span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ApplyEmail, new {@class = "form-control", placeholder = "請輸入申請人Email"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">申請人電話/分機<span class="required"></span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ApplyTel, new {@class = "form-control", placeholder = "申請人電話/分機"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">申請目的<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ApplyPurpose, new {@class = "form-control", placeholder = "請輸入申請目的"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">活動名稱<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ActName, new {@class = "form-control", placeholder = "請輸入活動名稱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">使用地點<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.UseLocation, new {@class = "form-control", placeholder = "請輸入使用地點"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">用途及特殊需求說明<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.UseDesc, new {@class = "form-control", placeholder = "請輸入用途及特殊需求說明"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">實際使用起訖日<span class="required">*</span></th>
+                                        <td>
+                                            <div class="input-group">
+                                                @Html.TextBoxFor(m => m.EditModel.UseSDate, new {@class = "form-control", @placeholder="請輸入實際使用日期(起)", @for="finish_date"})
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text" id="basic-addon1">至</span>
+                                                </div>
+                                                @Html.TextBoxFor(m => m.EditModel.UseEDate, new {@class = "form-control", @placeholder="請輸入實際使用日期(訖)", @for="finish_date"})
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">約定領取時間<span class="required"></span></th>
+                                        <td>
+                                            <div class="input-group">
+                                                @Html.TextBoxFor(m => m.EditModel.TakeSDate, new {@class = "form-control", @placeholder="請輸入約定領取時間", @for="finish_date"})
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text" id="basic-addon1">至</span>
+                                                </div>
+                                                @Html.TextBoxFor(m => m.EditModel.TakeEDate, new {@class = "form-control", @placeholder="請輸入約定領取時間", @for="finish_date"})
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">借用資源分類</th>
+                                        <td>@Model.EditModel.MainClassIDText</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">佐證資料</th>
+                                        <td>
+                                            @foreach(var item in Model.EditModel.LstFile)
+                                            {
+                                                <div>
+                                                    <a target="_blank" href="../@item.FilePath">@item.FileName</a>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">備註</th>
+                                        <td>
+                                            @Html.TextAreaFor(m => m.EditModel.BorrowMemo, new {@class = "form-control", placeholder = "請輸入其它備註", rows = "5"})
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="card-body table-responsive-sm">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">狀態歷程<span class="required"></span></th>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <!-- [編輯]的時候才會有紀錄歷程 -->
+                                                    <ul class="list-group list-group-flush text-sm mb-2">
+                                                        @foreach (EventData item in Model.EditModel.LstEventData)
+                                                        {
+                                                            <li class="list-group-item p-1">
+                                                                @item.EventDateTime.Value.ToString("yyyy/MM/dd HH:mm")<span class="badge badge-primary mx-1">@item.EventIDText</span> @item.Text
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="alert alert-default-warning mb-1"
+                                                         role="alert">
+                                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                                        審核完成或有異動，皆會以email方式通知申請人申請結果
+                                                    </div>
+                                                    <div class="input-group">
+                                                        @Html.TextBoxFor(m => m.EditModel.EventDateTime, new { @class = "form-control", @readonly = "readonly"})
+                                                        @Html.DropDownListFor(m => m.EditModel.EventID, (List<SelectListItem>)ViewBag.ddlBorrowActVerify,"請選擇事件狀態", new {@class = "form-control"})
+                                                    </div>
+                                                    @Html.TextAreaFor(m => m.EditModel.EventText, new {@class = "form-control mt-1", @rows="4", @placeholder = "請輸入紀錄（內容將一併email發送給申請人）"})
+                                                    <div class="d-flex justify-content-end mt-1">
+                                                        <button type="button" class="btn btn-sm btn-outline-primary mx-1" id="add_history" onclick="SaveEventData()">
+                                                            <i class="fa-solid fa-plus"></i>
+                                                            新增本次紀錄
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="clean_history">
+                                                            <i class="fa-solid fa-x"></i>
+                                                            清空目前輸入內容
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-3">
+                                                    <label for="">
+                                                        輔導老師或承辦人註記<span class="required"></span>
+                                                    </label>
+                                                    @Html.TextAreaFor(m => m.EditModel.TeacherMark, new {@class = "form-control", placeholder = "請輸入輔導老師或承辦人註記", rows = "5"})
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="">
+                                                        器材專業人員註記<span class="required"></span>
+                                                    </label>
+                                                    @Html.TextAreaFor(m => m.EditModel.DeviceMark, new {@class = "form-control", placeholder = "請輸入器材專業人員註記", rows = "5"})
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="">
+                                                        器材領取註記<span class="required"></span>
+                                                    </label>
+                                                    @Html.TextAreaFor(m => m.EditModel.TakeMark, new {@class = "form-control", placeholder = "請輸入器材領取註記", rows = "5"})
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="">
+                                                        器材歸還註記<span class="required"></span>
+                                                    </label>
+                                                    @Html.TextAreaFor(m => m.EditModel.ReturnMark, new {@class = "form-control", placeholder = "請輸入器材歸還註記", rows = "5"})
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="form-group col-md-12">
+                                                <label for="">
+                                                    其它備註<span class="required"></span>
+                                                </label>
+                                                @Html.TextAreaFor(m => m.EditModel.Memo, new {@class = "form-control", placeholder = "請輸入其它備註", rows = "5"})
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                    @Html.HiddenFor(m => m.EditModel.BorrowMainID)
+                </form> 
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    $(document).ready(function () {
+        $('#clean_history').click(function () {
+            $('#@Html.IdFor(m => m.EditModel.EventText)').val("");
+
+        });
+    });
+
+
+    function SaveEventData() {
+        var data = new FormData()
+
+        var BorrowMainID = $('#@Html.IdFor(m => m.EditModel.BorrowMainID)').val();
+        var EventID = $('#@Html.IdFor(m => m.EditModel.EventID)').val();
+        var EventDateTime = $('#@Html.IdFor(m => m.EditModel.EventDateTime)').val();
+        var EventText = $('#@Html.IdFor(m => m.EditModel.EventText)').val();
+
+        if (BorrowMainID == "") { window.location.reload(); }
+        if (EventDateTime == "") { window.location.reload(); }
+        if (EventID == "") { $.alert("請選擇事件狀態"); return; }
+        if (EventText == "") { $.alert("請輸入本次紀錄內容"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.BorrowMainID)', BorrowMainID);
+        data.append('@Html.NameFor(m => m.EditModel.EventDateTime)', EventDateTime);
+        data.append('@Html.NameFor(m => m.EditModel.EventID)', EventID);
+        data.append('@Html.NameFor(m => m.EditModel.EventText)', EventText);
+
+        SendAjax({
+            url: '@Url.Action("EditOldEventData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    window.location.reload();
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+
+    }
+
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        
+        var BorrowMainID = $('#@Html.IdFor(m => m.EditModel.BorrowMainID)').val();
+        var ApplyUnitType = $('#@Html.IdFor(m => m.EditModel.ApplyUnitType)').val();
+        var ApplyUnitName = $('#@Html.IdFor(m => m.EditModel.ApplyUnitName)').val();
+        var ApplyMan = $('#@Html.IdFor(m => m.EditModel.ApplyMan)').val();
+        var ApplyTitle = $('#@Html.IdFor(m => m.EditModel.ApplyTitle)').val();
+        var ApplyEmail = $('#@Html.IdFor(m => m.EditModel.ApplyEmail)').val();
+        var ApplyTel = $('#@Html.IdFor(m => m.EditModel.ApplyTel)').val();
+        var ApplyPurpose = $('#@Html.IdFor(m => m.EditModel.ApplyPurpose)').val();
+        var ActName = $('#@Html.IdFor(m => m.EditModel.ActName)').val();
+        var UseLocation = $('#@Html.IdFor(m => m.EditModel.UseLocation)').val();
+        var UseDesc = $('#@Html.IdFor(m => m.EditModel.UseDesc)').val();
+        var UseSDate = $('#@Html.IdFor(m => m.EditModel.UseSDate)').val();
+        var UseEDate = $('#@Html.IdFor(m => m.EditModel.UseEDate)').val();
+        var TakeSDate = $('#@Html.IdFor(m => m.EditModel.TakeSDate)').val();
+        var TakeEDate = $('#@Html.IdFor(m => m.EditModel.TakeEDate)').val();
+        var ActVerify = $('#@Html.IdFor(m => m.EditModel.ActVerify)').val();
+        var TeacherMark = $('#@Html.IdFor(m => m.EditModel.TeacherMark)').val();
+        var DeviceMark = $('#@Html.IdFor(m => m.EditModel.DeviceMark)').val();
+        var TakeMark = $('#@Html.IdFor(m => m.EditModel.TakeMark)').val();
+        var ReturnMark = $('#@Html.IdFor(m => m.EditModel.ReturnMark)').val();
+        var BorrowMemo = $('#@Html.IdFor(m => m.EditModel.BorrowMemo)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+
+        if (ApplyUnitType == "") { $.alert("申請單位類型不可為空"); return; }
+        if (ApplyUnitName == "") { $.alert("申請單位不可為空"); return; }
+        if (ApplyMan == "") { $.alert("角色名稱不可為空"); return; }
+        if (ApplyPurpose == "") { $.alert("申請目的不可為空"); return; }
+        if (ActName == "") { $.alert("活動名稱不可為空"); return; }
+        if (UseLocation == "") { $.alert("使用地點不可為空"); return; }
+        if (UseDesc == "") { $.alert("用途及特殊需求說明不可為空"); return; }
+        if (UseSDate == "") { $.alert("實際使用起日不可為空"); return; }
+        if (UseEDate == "") { $.alert("實際使用訖日不可為空"); return; }
+        if (TakeSDate == "") { $.alert("約定領取時間不可為空"); return; }
+        if (TakeEDate == "") { $.alert("約定歸還時間不可為空"); return; }
+        if (ActVerify == "") { $.alert("審核狀態不可為空"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.BorrowMainID)', BorrowMainID);
+        data.append('@Html.NameFor(m => m.EditModel.ApplyUnitType)', ApplyUnitType);
+        data.append('@Html.NameFor(m => m.EditModel.ApplyUnitName)', ApplyUnitName);
+        data.append('@Html.NameFor(m => m.EditModel.ApplyMan)', ApplyMan);
+        data.append('@Html.NameFor(m => m.EditModel.ApplyTitle)', ApplyTitle);
+        data.append('@Html.NameFor(m => m.EditModel.ApplyEmail)', ApplyEmail);
+        data.append('@Html.NameFor(m => m.EditModel.ApplyTel)', ApplyTel);
+        data.append('@Html.NameFor(m => m.EditModel.ApplyPurpose)', ApplyPurpose);
+        data.append('@Html.NameFor(m => m.EditModel.ActName)', ActName);
+        data.append('@Html.NameFor(m => m.EditModel.UseLocation)', UseLocation);
+        data.append('@Html.NameFor(m => m.EditModel.UseDesc)', UseDesc);
+        data.append('@Html.NameFor(m => m.EditModel.UseSDate)', UseSDate);
+        data.append('@Html.NameFor(m => m.EditModel.UseEDate)', UseEDate);
+        data.append('@Html.NameFor(m => m.EditModel.TakeSDate)', TakeSDate);
+        data.append('@Html.NameFor(m => m.EditModel.TakeEDate)', TakeEDate);
+        data.append('@Html.NameFor(m => m.EditModel.ActVerify)', ActVerify);
+        data.append('@Html.NameFor(m => m.EditModel.TeacherMark)', TeacherMark);
+        data.append('@Html.NameFor(m => m.EditModel.DeviceMark)', DeviceMark);
+        data.append('@Html.NameFor(m => m.EditModel.TakeMark)', TakeMark);
+        data.append('@Html.NameFor(m => m.EditModel.ReturnMark)', ReturnMark);
+        data.append('@Html.NameFor(m => m.EditModel.BorrowMemo)', BorrowMemo);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+</script>
