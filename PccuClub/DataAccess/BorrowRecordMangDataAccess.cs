@@ -194,8 +194,8 @@ AND (ID = @ID) ";
 
             string CommendText = $@"INSERT INTO BorrowDevice
                                             (BorrowMainID
+                                            ,MainClassID
                                             ,MainResourceID
-                                            ,SecondResourceNo
                                             ,BorrowStatus
                                             ,BorrowAmt
                                             ,Creator
@@ -204,8 +204,8 @@ AND (ID = @ID) ";
                                             ,LastModified)
                                         VALUES
                                             ('{BorrowMainID}'
+                                            ,@MainClassID
                                             ,@MainResourceID
-                                            ,@SecondResourceNo
                                             ,@BorrowStatus
                                             ,@BorrowAmt
                                             ,'{loginUser.LoginId}'

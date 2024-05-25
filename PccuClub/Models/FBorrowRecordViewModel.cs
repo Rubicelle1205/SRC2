@@ -15,6 +15,8 @@ namespace WebPccuClub.Models
 
         public FBorrowRecordCreateModel CreateModel { get; set; }
 
+        public FBorrowRecordDetailModel DetailModel { get; set; }
+
 
         public class FBorrowRecordConditionModel
         {
@@ -41,6 +43,10 @@ namespace WebPccuClub.Models
             [DisplayName("申請單號")]
             public string? BorrowMainID { get; set; }
 
+            /// <summary>活動名稱</summary>
+            [DisplayName("活動名稱")]
+            public string? ActName { get; set; }
+
             /// <summary>審核狀態</summary>
             [DisplayName("審核狀態")]
             public string? ActVerify { get; set; }
@@ -50,6 +56,76 @@ namespace WebPccuClub.Models
             public string? ActVerifyText { get; set; }
 
             [DisplayName("建立時間")]
+            public DateTime? Created { get; set; }
+        }
+
+        public class FBorrowRecordDetailModel
+        {
+            public List<FBorrowRecordFileModel> LstFile = new List<FBorrowRecordFileModel>();
+            public List<FBorrowRecordDeviceModel> LstDevice = new List<FBorrowRecordDeviceModel>();
+            public string? strDeviceData { get; set; }
+            public string? MainResourceID { get; set; }
+
+            public string? AmtShelves { get; set; }
+
+            public string? AmtOnce { get; set; }
+
+            public string? BorrowAmt { get; set; }
+
+            [DisplayName("業務分類")]
+            public string? MainClassID { get; set; }
+
+            [DisplayName("申請單位類型")]
+            public string? ApplyUnitType { get; set; }
+
+            [DisplayName("申請單位")]
+            public string? ApplyUnitName { get; set; }
+
+            [DisplayName("申請人")]
+            public string? ApplyMan { get; set; }
+
+            [DisplayName("申請人職稱")]
+            public string? ApplyTitle { get; set; }
+
+            [DisplayName("申請人Email")]
+            public string? ApplyEmail { get; set; }
+
+            [DisplayName("申請人電話/分機")]
+            public string? ApplyTel { get; set; }
+
+            [DisplayName("申請目的")]
+            public string? ApplyPurpose { get; set; }
+
+            [DisplayName("活動名稱")]
+            public string? ActName { get; set; }
+
+            [DisplayName("使用地點")]
+            public string? UseLocation { get; set; }
+
+            [DisplayName("用途及特殊需求說明")]
+            public string? UseDesc { get; set; }
+
+            [DisplayName("實際使用起日")]
+            public DateTime? UseSDate { get; set; }
+
+            [DisplayName("實際使用訖日")]
+            public DateTime? UseEDate { get; set; }
+
+            [DisplayName("約定領取時間")]
+            public DateTime? TakeSDate { get; set; }
+
+            [DisplayName("約定領取時間")]
+            public DateTime? TakeEDate { get; set; }
+
+            [DisplayName("借用備註")]
+            public string? BorrowMemo { get; set; }
+
+            public string? ActVerify { get; set; }
+
+            public string? ActVerifyText { get; set; }
+
+            public string? Memo { get; set; }
+
             public DateTime? Created { get; set; }
         }
 
@@ -114,23 +190,6 @@ namespace WebPccuClub.Models
             [DisplayName("借用備註")]
             public string? BorrowMemo { get; set; }
 
-            [DisplayName("輔導老師或承辦人註記")]
-            public string? TeacherMark { get; set; }
-
-            [DisplayName("器材專業人員註記")]
-            public string? DeviceMark { get; set; }
-
-            [DisplayName("器材領取註記")]
-            public string? TakeMark { get; set; }
-
-            [DisplayName("器材歸還註記")]
-            public string? ReturnMark { get; set; }
-
-            [DisplayName("備註")]
-            public string? Memo { get; set; }
-
-            [DisplayName("審核狀態")]
-            public string? ActVerify { get; set; }
         }
 
         public class FBorrowRecordFileModel
@@ -144,9 +203,13 @@ namespace WebPccuClub.Models
         {
             public string? BorrowMainID { get; set; }
 
+            public string? MainClassID { get; set; }
+
+            public string? MainClassIDText { get; set; }
+
             public string? MainResourceID { get; set; }
 
-            public string? SecondResourceNo { get; set; }
+            public string? MainResourceIDText { get; set; }
 
             public string? BorrowStatus { get; set; }
 

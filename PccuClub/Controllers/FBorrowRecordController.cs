@@ -33,11 +33,6 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.首頁)]
         public IActionResult Index()
         {
-            
-            ViewBag.ddlMainClass = dbAccess.GetddlMainClass();
-            ViewBag.ddlApplyUnitType = dbAccess.GetddlApplyUnitType();
-            ViewBag.ddlBorrowActVerify = dbAccess.GetddlBorrowActVerify();
-
             FBorrowRecordViewModel vm = new FBorrowRecordViewModel();
             vm.ConditionModel = new FBorrowRecordConditionModel();
             return View(vm);
@@ -52,10 +47,20 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlSecondResurce = dbAccess.GetddlSecondResurce();
 
             FBorrowRecordViewModel vm = new FBorrowRecordViewModel();
-            //vm.CreateModel = new FBorrowRecordCreateModel();
+            vm.CreateModel = new FBorrowRecordCreateModel();
             return View(vm);
         }
 
+        [Log(LogActionChineseName.新增)]
+        public IActionResult Detail(string id)
+        {
+
+            FBorrowRecordViewModel vm = new FBorrowRecordViewModel();
+            vm.DetailModel = dbAccess.GetEditData(id);
+            vm.DetailModel.LstFile = dbAccess.GetFileData(id);
+            vm.DetailModel.LstDevice = dbAccess.GetDeviceData(id);
+            return View(vm);
+        }
 
         [LogAttribute(LogActionChineseName.查詢)]
         public IActionResult GetSearchResult(FBorrowRecordViewModel vm)
@@ -73,117 +78,123 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.新增儲存)]
         [ValidateInput(false)]
-        public async Task<IActionResult> SaveNewDataAsync(FBorrowRecordViewModel vm)
+        public async Task<IActionResult> SaveNewData(FBorrowRecordViewModel vm)
         {
             try
             {
-                //dbAccess.DbaInitialTransaction();
+                dbAccess.DbaInitialTransaction();
 
-                //if (Request.Form.Files.Count > 0)
-                //{
-                //    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
-                //    {
-                //        if (Request.Form.Files[i].Name.Contains("File"))
-                //        {
-                //            var file = Request.Form.Files[i];
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("File"))
+                        {
+                            var file = Request.Form.Files[i];
 
-                //            string strFilePath = await upload.UploadFileAsync("BorrowRecord", file);
+                            string strFilePath = await upload.UploadFileAsync("BorrowRecord", file);
 
-                //            FBorrowRecordFileModel model = new FBorrowRecordFileModel();
-                //            model.FileName = file.FileName;
-                //            model.FilePath = strFilePath;
+                            FBorrowRecordFileModel model = new FBorrowRecordFileModel();
+                            model.FileName = file.FileName;
+                            model.FilePath = strFilePath;
 
-                //            vm.CreateModel.LstFile.Add(model);
-                //        }
-                //    }
-                //}
+                            vm.CreateModel.LstFile.Add(model);
+                        }
+                    }
+                }
 
-                //List<string> LstMainResourceID = new List<string>();
-                //string[] arr = vm.CreateModel.strDeviceData.Split("|");
+                List<string> LstMainClassID = new List<string>();
+                List<string> LstSavedMainResourceID = new List<string>();
+                string[] arr = vm.CreateModel.strDeviceData.Split("|");
 
-                //for (int i = 0; i <= arr.Length - 1; i++)
-                //{
-                //    string [] arrData = arr[i].Split(",");
+                for (int i = 0; i <= arr.Length - 1; i++)
+                {
+                    string[] arrData = arr[i].Split(",");
 
-                //    string Device = arrData[0];
-                //    string Amt = arrData[1];
+                    string Device = arrData[0];
+                    string Amt = arrData[1];
 
-                //    DataTable dt = dbAccess.GetMainResourceID(Device);
+                    DataTable dt = dbAccess.GetMainResourceID(Device);
 
-                //    string MainResourceID = dt.QueryFieldByDT("MainClass");
-                //    string BorrowType = dt.QueryFieldByDT("BorrowType");
+                    string MainClass = dt.QueryFieldByDT("MainClass");
+                    string BorrowType = dt.QueryFieldByDT("BorrowType");
 
-                //    LstMainResourceID.Add(MainResourceID);
+                    LstMainClassID.Add(MainClass);
 
-                //    FBorrowRecordDeviceModel DeviceModel = new FBorrowRecordDeviceModel();
-                    
-                //    //非大量借用
-                //    if (BorrowType == "02")
-                //    {
-                //        int TotAmt = Int32.Parse(Amt);
+                    FBorrowRecordDeviceModel DeviceModel = new FBorrowRecordDeviceModel();
 
-                //        for (int j = 1; j <= TotAmt; j++)
-                //        {
-                //            DeviceModel.MainResourceID = MainResourceID;
-                //            DeviceModel.SecondResourceNo = Device;
-                //            DeviceModel.BorrowAmt = "1";
-                //            DeviceModel.BorrowStatus = "01";
-                //            vm.CreateModel.LstDevice.Add(DeviceModel);
-                //        }
-                //    }
-                //    else
-                //    {
-                //        DeviceModel.MainResourceID = MainResourceID;
-                //        DeviceModel.SecondResourceNo = Device;
-                //        DeviceModel.BorrowAmt = Amt;
-                //        DeviceModel.BorrowStatus = "01";
-                //        vm.CreateModel.LstDevice.Add(DeviceModel);
-                //    }
-                //}
+                    //非大量借用
+                    if (BorrowType == "02")
+                    {
+                        int TotAmt = Int32.Parse(Amt);
 
-                //for (int i = 0; i <= LstMainResourceID.Count - 1; i++)
-                //{
-                //    DataTable dt = new DataTable();
+                        for (int j = 1; j <= TotAmt; j++)
+                        {
+                            DeviceModel.MainClassID = MainClass;
+                            DeviceModel.MainResourceID = Device;
+                            DeviceModel.BorrowAmt = "1";
+                            DeviceModel.BorrowStatus = "01";
+                            vm.CreateModel.LstDevice.Add(DeviceModel);
+                        }
+                    }
+                    else
+                    {
+                        DeviceModel.MainClassID = MainClass;
+                        DeviceModel.MainResourceID = Device;
+                        DeviceModel.BorrowAmt = Amt;
+                        DeviceModel.BorrowStatus = "01";
+                        vm.CreateModel.LstDevice.Add(DeviceModel);
+                    }
+                }
 
-                //    vm.CreateModel.MainClassID = LstMainResourceID[i];
-                //    var dbResult = dbAccess.InsertMainData(vm, LoginUser, out dt);
+                for (int i = 0; i <= LstMainClassID.Count - 1; i++)
+                {
+                    DataTable dt = new DataTable();
 
-                //    if (!dbResult.isSuccess)
-                //    {
-                //        dbAccess.DbaRollBack();
-                //        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                //        vmRtn.ErrorMsg = "新增失敗";
-                //        return Json(vmRtn);
-                //    }
+                    vm.CreateModel.MainClassID = LstMainClassID[i];
+                    var dbResult = dbAccess.InsertMainData(vm, LoginUser, out dt);
 
-                //    string BorrowMainID = dt.QueryFieldByDT("BorrowMainID");
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "新增失敗";
+                        return Json(vmRtn);
+                    }
+
+                    string BorrowMainID = dt.QueryFieldByDT("BorrowMainID");
 
 
-                //    List<FBorrowRecordDeviceModel> datalist = vm.CreateModel.LstDevice.Where(x => x.MainResourceID == LstMainResourceID[i]).ToList();
-                //    dbResult = dbAccess.InsertDeviceData(datalist, LoginUser, BorrowMainID);
+                    List<FBorrowRecordDeviceModel> datalist = vm.CreateModel.LstDevice.Where(x => x.MainClassID == LstMainClassID[i]).ToList();
+                    dbResult = dbAccess.InsertDeviceData(datalist, LoginUser, BorrowMainID);
 
-                //    if (!dbResult.isSuccess)
-                //    {
-                //        dbAccess.DbaRollBack();
-                //        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                //        vmRtn.ErrorMsg = "新增失敗";
-                //        return Json(vmRtn);
-                //    }
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "新增失敗";
+                        return Json(vmRtn);
+                    }
 
-                //    if (vm.CreateModel.LstFile.Count > 0)
-                //    {
-                //        dbResult = dbAccess.InsertFileData(vm.CreateModel.LstFile, LoginUser, BorrowMainID);
 
-                //        if (!dbResult.isSuccess)
-                //        {
-                //            dbAccess.DbaRollBack();
-                //            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                //            vmRtn.ErrorMsg = "新增失敗";
-                //            return Json(vmRtn);
-                //        }
-                //    }
-                    
-                //}
+                    if (vm.CreateModel.LstFile.Count > 0)
+                    {
+                        if (!LstSavedMainResourceID.Any(x => x == BorrowMainID))
+                        {
+                            dbResult = dbAccess.InsertFileData(vm.CreateModel.LstFile, LoginUser, BorrowMainID);
+
+                            if (!dbResult.isSuccess)
+                            {
+                                dbAccess.DbaRollBack();
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = "新增失敗";
+                                return Json(vmRtn);
+                            }
+
+                            LstSavedMainResourceID.Add(BorrowMainID);
+                        }
+                    }
+                }
 
                 dbAccess.DbaCommit();
             }
@@ -215,7 +226,7 @@ namespace WebPccuClub.Controllers
             string AmtOnce = dt.QueryFieldByDT("AmtOnce");
 
             FBorrowRecordViewModel vm = new FBorrowRecordViewModel();
-            //vm.CreateModel = new FBorrowRecordCreateModel();
+            vm.CreateModel = new FBorrowRecordCreateModel();
             vm.CreateModel.MainResourceID = MainResourceID;
             vm.CreateModel.AmtShelves = AmtShelves;
             vm.CreateModel.AmtOnce = AmtOnce;

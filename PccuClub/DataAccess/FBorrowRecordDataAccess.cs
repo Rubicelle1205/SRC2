@@ -47,7 +47,102 @@ AND Creator = @Creator";
             return new List<FBorrowRecordResultModel>();
         }
 
+        public FBorrowRecordDetailModel GetEditData(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
 
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@ID", Ser);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT A.BorrowMainID, A.MainClassID, A.ApplyUnitType, A.ApplyUnitName, A.ApplyMan, A.ApplyTitle, 
+                                    A.ApplyEmail, A.ApplyTel, A.ApplyPurpose, A.ActName, A.UseLocation, A.UseDesc, 
+                                    A.UseSDate, A.UseEDate, A.TakeSDate, A.TakeEDate, A.BorrowMemo, A.Memo, A.ActVerify, B.Text AS ActVerifyText,
+                                    A.Creator, A.Created, A.LastModifier, A.LastModified
+                               FROM BorrowMain A
+                          LEFT JOIN Code B ON B.Code = A.ActVerify AND B.Type = 'BorrowActVerify'
+WHERE 1 = 1 
+AND (BorrowMainID = @ID) ";
+
+
+            (DbExecuteInfo info, IEnumerable<FBorrowRecordDetailModel> entitys) dbResult = DbaExecuteQuery<FBorrowRecordDetailModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList().FirstOrDefault();
+
+            return null;
+        }
+
+
+        public List<FBorrowRecordFileModel> GetFileData(string submitBtn)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+
+            #region 參數設定
+
+            parameters.Add("@BorrowMainID", submitBtn);
+
+            #endregion
+
+            CommandText = $@"SELECT ID
+      ,BorrowMainID
+      ,FileName
+      ,FilePath
+      ,Creator
+      ,Created
+      ,LastModifier
+      ,LastModified
+                               FROM BorrowFile
+WHERE 1 = 1
+AND BorrowMainID = @BorrowMainID";
+
+
+            (DbExecuteInfo info, IEnumerable<FBorrowRecordFileModel> entitys) dbResult = DbaExecuteQuery<FBorrowRecordFileModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<FBorrowRecordFileModel>();
+        }
+
+
+        public List<FBorrowRecordDeviceModel> GetDeviceData(string submitBtn)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+
+            #region 參數設定
+
+            parameters.Add("@BorrowMainID", submitBtn);
+
+            #endregion
+
+            CommandText = $@"SELECT A.MainClassID, B.Text AS MainClassIDText, A.MainResourceID, C.MainResourceName AS MainResourceIDText, A.BorrowAmt
+                               FROM BorrowDevice A
+                          LEFT JOIN BorrowMainClassMang B ON b.ID = A.MainClassID
+                          LEFT JOIN BorrowMainResourceMang C ON C.MainResourceID = A.MainResourceID
+                              WHERE 1 = 1
+                                AND A.BorrowMainID = @BorrowMainID";
+
+
+            (DbExecuteInfo info, IEnumerable<FBorrowRecordDeviceModel> entitys) dbResult = DbaExecuteQuery<FBorrowRecordDeviceModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<FBorrowRecordDeviceModel>();
+        }
         #region 新增
 
         /// <summary> 新增資料 </summary>
@@ -74,11 +169,7 @@ AND Creator = @Creator";
             parameters.Add("@TakeSDate", vm.CreateModel.TakeSDate);
             parameters.Add("@TakeEDate", vm.CreateModel.TakeEDate);
             parameters.Add("@BorrowMemo", vm.CreateModel.BorrowMemo);
-            parameters.Add("@TeacherMark", vm.CreateModel.TeacherMark);
-            parameters.Add("@DeviceMark", vm.CreateModel.DeviceMark);
-            parameters.Add("@TakeMark", vm.CreateModel.TakeMark);
-            parameters.Add("@ReturnMark", vm.CreateModel.ReturnMark);
-            parameters.Add("@ActVerify", vm.CreateModel.ActVerify);
+            parameters.Add("@ActVerify", "01");
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
@@ -99,10 +190,6 @@ AND Creator = @Creator";
                                                 TakeSDate, 
                                                 TakeEDate, 
                                                 BorrowMemo, 
-                                                TeacherMark, 
-                                                DeviceMark, 
-                                                TakeMark, 
-                                                ReturnMark, 
                                                 ActVerify, 
                                                 Creator, 
                                                 Created, 
@@ -126,10 +213,6 @@ AND Creator = @Creator";
                                                 @TakeSDate, 
                                                 @TakeEDate, 
                                                 @BorrowMemo, 
-                                                @TeacherMark, 
-                                                @DeviceMark, 
-                                                @TakeMark, 
-                                                @ReturnMark, 
                                                 @ActVerify, 
                                                 @LoginId, 
                                                 GETDATE(), 
@@ -151,8 +234,8 @@ AND Creator = @Creator";
 
             string CommendText = $@"INSERT INTO BorrowDevice
                                             (BorrowMainID
+                                            ,MainClassID
                                             ,MainResourceID
-                                            ,SecondResourceNo
                                             ,BorrowStatus
                                             ,BorrowAmt
                                             ,Creator
@@ -161,8 +244,8 @@ AND Creator = @Creator";
                                             ,LastModified)
                                         VALUES
                                             ('{BorrowMainID}'
+                                            ,@MainClassID
                                             ,@MainResourceID
-                                            ,@SecondResourceNo
                                             ,@BorrowStatus
                                             ,@BorrowAmt
                                             ,'{loginUser.LoginId}'
@@ -235,7 +318,6 @@ AND Creator = @Creator";
         }
 
         #endregion
-
 
         public List<SelectListItem> GetddlMainClass()
         {
@@ -362,8 +444,6 @@ AND Creator = @Creator";
 
             return ds.Tables[0];
         }
-
-
 
     }
 }

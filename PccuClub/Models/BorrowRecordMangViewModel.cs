@@ -366,9 +366,9 @@ namespace WebPccuClub.Models
     {
         public string? BorrowMainID { get; set; }
 
-        public string? MainResourceID { get; set; }
+        public string? MainClassID { get; set; }
 
-        public string? SecondResourceNo { get; set; }
+        public string? MainResourceID { get; set; }
 
         public string? BorrowStatus { get; set; }
 

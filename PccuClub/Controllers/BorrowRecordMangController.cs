@@ -111,7 +111,8 @@ namespace WebPccuClub.Controllers
                     }
                 }
 
-                List<string> LstMainResourceID = new List<string>();
+                List<string> LstMainClassID = new List<string>();
+                List<string> LstSavedMainResourceID = new List<string>();
                 string[] arr = vm.CreateModel.strDeviceData.Split("|");
 
                 for (int i = 0; i <= arr.Length - 1; i++)
@@ -123,10 +124,10 @@ namespace WebPccuClub.Controllers
 
                     DataTable dt = dbAccess.GetMainResourceID(Device);
 
-                    string MainResourceID = dt.QueryFieldByDT("MainClass");
+                    string MainClass = dt.QueryFieldByDT("MainClass");
                     string BorrowType = dt.QueryFieldByDT("BorrowType");
 
-                    LstMainResourceID.Add(MainResourceID);
+                    LstMainClassID.Add(MainClass);
 
                     BorrowRecordMangDeviceModel DeviceModel = new BorrowRecordMangDeviceModel();
                     
@@ -137,8 +138,8 @@ namespace WebPccuClub.Controllers
 
                         for (int j = 1; j <= TotAmt; j++)
                         {
-                            DeviceModel.MainResourceID = MainResourceID;
-                            DeviceModel.SecondResourceNo = Device;
+                            DeviceModel.MainClassID = MainClass;
+                            DeviceModel.MainResourceID = Device;
                             DeviceModel.BorrowAmt = "1";
                             DeviceModel.BorrowStatus = "01";
                             vm.CreateModel.LstDevice.Add(DeviceModel);
@@ -146,19 +147,19 @@ namespace WebPccuClub.Controllers
                     }
                     else
                     {
-                        DeviceModel.MainResourceID = MainResourceID;
-                        DeviceModel.SecondResourceNo = Device;
+                        DeviceModel.MainClassID = MainClass;
+                        DeviceModel.MainResourceID = Device;
                         DeviceModel.BorrowAmt = Amt;
                         DeviceModel.BorrowStatus = "01";
                         vm.CreateModel.LstDevice.Add(DeviceModel);
                     }
                 }
 
-                for (int i = 0; i <= LstMainResourceID.Count - 1; i++)
+                for (int i = 0; i <= LstMainClassID.Count - 1; i++)
                 {
                     DataTable dt = new DataTable();
 
-                    vm.CreateModel.MainClassID = LstMainResourceID[i];
+                    vm.CreateModel.MainClassID = LstMainClassID[i];
                     var dbResult = dbAccess.InsertMainData(vm, LoginUser, out dt);
 
                     if (!dbResult.isSuccess)
@@ -172,7 +173,7 @@ namespace WebPccuClub.Controllers
                     string BorrowMainID = dt.QueryFieldByDT("BorrowMainID");
 
 
-                    List<BorrowRecordMangDeviceModel> datalist = vm.CreateModel.LstDevice.Where(x => x.MainResourceID == LstMainResourceID[i]).ToList();
+                    List<BorrowRecordMangDeviceModel> datalist = vm.CreateModel.LstDevice.Where(x => x.MainClassID == LstMainClassID[i]).ToList();
                     dbResult = dbAccess.InsertDeviceData(datalist, LoginUser, BorrowMainID);
 
                     if (!dbResult.isSuccess)
@@ -185,17 +186,21 @@ namespace WebPccuClub.Controllers
 
                     if (vm.CreateModel.LstFile.Count > 0)
                     {
-                        dbResult = dbAccess.InsertFileData(vm.CreateModel.LstFile, LoginUser, BorrowMainID);
-
-                        if (!dbResult.isSuccess)
+                        if (!LstSavedMainResourceID.Any(x => x == BorrowMainID))
                         {
-                            dbAccess.DbaRollBack();
-                            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                            vmRtn.ErrorMsg = "新增失敗";
-                            return Json(vmRtn);
+                            dbResult = dbAccess.InsertFileData(vm.CreateModel.LstFile, LoginUser, BorrowMainID);
+
+                            if (!dbResult.isSuccess)
+                            {
+                                dbAccess.DbaRollBack();
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = "新增失敗";
+                                return Json(vmRtn);
+                            }
+
+                            LstSavedMainResourceID.Add(BorrowMainID);
                         }
                     }
-                    
                 }
 
                 dbAccess.DbaCommit();

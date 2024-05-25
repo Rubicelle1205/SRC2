@@ -37,7 +37,7 @@
                                         {
                                             <button type="submit" value="@item.ID" name="submitBtn" class="btn btn btn-secondary">相關說明</button>
                                         }
-                                        @using (Html.BeginForm("Detail", "FBorrowIndex", FormMethod.Post, new { style = "float:left" }))
+                                        @using (Html.BeginForm("Create", "FBorrowRecord", FormMethod.Post, new { style = "float:left" }))
                                         {
                                             <button type="submit" value="@item.ID" name="submitBtn" class="btn btn btn-primary">前往借用</button>
                                         }
