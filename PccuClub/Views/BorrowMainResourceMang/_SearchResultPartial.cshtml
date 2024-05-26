@@ -15,6 +15,7 @@
                 <th width="10%">狀態</th>
                 <th width="10%">備註</th>
                 <th width="20%">功能</th>
+                <th width="20%">子資源</th>
             </tr>
             </thead>
             <tbody>
@@ -43,6 +44,12 @@
 
                             <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel(@item.MainResourceID);">刪除</a>
 
+                        </td>
+                        <td class="text-center text-sm">
+                            @using (Html.BeginForm("InventoryIndex", "BorrowMainResourceMang", FormMethod.Post, new { style = "float:left" }))
+                            {
+                                <button type="submit" value="@item.MainResourceID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">盤點</button>
+                            }
                         </td>
                     </tr>
                     }

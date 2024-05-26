@@ -17,6 +17,12 @@ namespace WebPccuClub.Models
 
         public BorrowMainResourceMangEditModel EditModel { get; set; }
 
+        public BorrowMainResourceMangInventoryRecordModel InventoryRecordModel { get; set; }
+
+        public List<BorrowMainResourceMangInventoryDetailModel> InventoryDetailModel { get; set; }
+
+        public List<BorrowMainResourceMangInventoryDetailEditModel> InventoryDetailEditModel { get; set; }
+
     }
 
     public class BorrowMainResourceMangConditionModel
@@ -263,5 +269,82 @@ namespace WebPccuClub.Models
         /// <summary>更新時間</summary>
         [DisplayName("更新時間")]
         public string? LastModified { get; set; }
+    }
+
+    public class BorrowMainResourceMangInventoryRecordModel
+    {
+        public string? MainResourceID { get; set; }
+
+        /// <summary>資源名稱</summary>
+        [DisplayName("資源名稱")]
+        public string? MainResourceName { get; set; }
+
+        /// <summary>業務名稱</summary>
+        [DisplayName("業務名稱")]
+        public string? MainClass { get; set; }
+
+        /// <summary>業務名稱</summary>
+        [DisplayName("業務名稱")]
+        public string? MainClassText { get; set; }
+
+        /// <summary>實際庫存</summary>
+        [DisplayName("實際庫存")]
+        public string? AmtReal { get; set; }
+
+        /// <summary>物品類型</summary>
+        [DisplayName("物品類型")]
+        public string? BorrowType { get; set; }
+
+        /// <summary>物品類型</summary>
+        [DisplayName("物品類型")]
+        public string? BorrowTypeText { get; set; }
+    }
+
+    public class BorrowMainResourceMangInventoryDetailModel
+    {
+        /// <summary>資產號碼</summary>
+        [DisplayName("資產號碼")]
+        public string? SecondResourceNo { get; set; }
+
+        /// <summary>子資源名稱</summary>
+        [DisplayName("子資源名稱")]
+        public string? SecondResourceName { get; set; }
+
+        /// <summary>上下架狀態</summary>
+        [DisplayName("上下架狀態")]
+        public string? ShelvesStatus { get; set; }
+
+        /// <summary>借用狀態</summary>
+        [DisplayName("借用狀態")]
+        public string? BorrowStatus { get; set; }
+    }
+
+    public class BorrowMainResourceMangInventoryDetailEditModel
+    {
+        public string? ID { get; set; }
+
+        /// <summary>資產號碼</summary>
+        [DisplayName("資產號碼")]
+        public string? SecondResourceNo { get; set; }
+
+        /// <summary>子資源名稱</summary>
+        [DisplayName("子資源名稱")]
+        public string? SecondResourceName { get; set; }
+
+        /// <summary>上下架狀態</summary>
+        [DisplayName("上下架狀態")]
+        public string? ShelvesStatus { get; set; }
+
+        /// <summary>上下架狀態</summary>
+        [DisplayName("上下架狀態")]
+        public string? ShelvesStatusText { get; set; }
+
+        /// <summary>借用狀態</summary>
+        [DisplayName("借用狀態")]
+        public string? BorrowStatus { get; set; }
+
+        /// <summary>借用狀態</summary>
+        [DisplayName("借用狀態")]
+        public string? BorrowStatusText { get; set; }
     }
 }

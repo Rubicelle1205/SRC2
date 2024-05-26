@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using NPOI.POIFS.Crypt;
 using PccuClub.WebAuth;
 using System.Data;
+using System.Runtime.ConstrainedExecution;
 using System.Text.Encodings.Web;
 using WebPccuClub.Global;
 using WebPccuClub.Global.Extension;
@@ -238,6 +239,118 @@ AND (MainResourceID = @MainResourceID) ";
 
             return ExecuteResult;
         }
+
+
+
+        public BorrowMainResourceMangInventoryRecordModel GetInventoryRecord(string MainResourceID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@MainResourceID", MainResourceID);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT A.MainResourceID, A.MainResourceName, A.MainClass, C.Text AS MainClassText, A.BorrowType, B.Text AS BorrowTypeText, A.AmtReal
+                               FROM BorrowMainResourceMang A
+                           LEFT JOIN Code B ON B.Code = A.BorrowType AND B.Type = 'BorrowMultType'
+                           LEFT JOIN BorrowMainClassMang C ON C.ID = A.MainClass
+                               WHERE 1 = 1
+                                 AND (A.MainResourceID = @MainResourceID) ";
+
+
+            (DbExecuteInfo info, IEnumerable<BorrowMainResourceMangInventoryRecordModel> entitys) dbResult = DbaExecuteQuery<BorrowMainResourceMangInventoryRecordModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList().FirstOrDefault();
+
+            return null;
+        }
+
+        public List<BorrowMainResourceMangInventoryDetailModel> GetInventoryDetailTemplete(string MainResourceID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@MainResourceID", MainResourceID);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT SecondResourceNo, SecondResourceName, ShelvesStatus, BorrowStatus 
+                               FROM BorrowSecondResourceMang 
+                              WHERE MainResourceID = @MainResourceID ";
+
+
+            (DbExecuteInfo info, IEnumerable<BorrowMainResourceMangInventoryDetailModel> entitys) dbResult = DbaExecuteQuery<BorrowMainResourceMangInventoryDetailModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<BorrowMainResourceMangInventoryDetailModel>();
+        }
+
+        public DbExecuteInfo CreateInventoryRecord(string MainResourceID)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@MainResourceID", MainResourceID);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO InventoryRecord 
+                                              (MainResourceName
+                                              ,AmtReal
+                                              ,AmtInventory
+                                              ,BorrowType
+                                              ,Creator
+                                              ,Created
+                                              ,LastModifier
+                                              ,LastModified) 
+                                       VALUES (@MainResourceName
+                                               ,@AmtReal
+                                               ,'0'
+                                               ,@BorrowType
+                                               ,@LoginId
+                                               ,GETDATE()
+                                               ,@LoginId
+                                               ,GETDATE())
+";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         public DataTable GetMainResourceID(string MainResourceID)
         {

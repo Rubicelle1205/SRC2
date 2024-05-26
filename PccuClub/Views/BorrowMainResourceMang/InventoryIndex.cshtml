@@ -1,0 +1,127 @@
+﻿@model WebPccuClub.Models.BorrowMainResourceMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<head>
+    <script src="~/js/backend_case.js"></script>
+</head>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive-sm">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">業務分類</th>
+                                        <td>@Model.InventoryRecordModel.MainClassText</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">主資源代號</th>
+                                        <td>@Model.InventoryRecordModel.MainResourceID</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">主資源名稱</th>
+                                        <td>@Model.InventoryRecordModel.MainResourceName</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">當前實際庫存數</th>
+                                        <td>@Model.InventoryRecordModel.AmtReal</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">物品類型</th>
+                                        <td>@Model.InventoryRecordModel.BorrowTypeText</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+                <form action="" enctype="multipart/form-data" id="SearchForm" method="post">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-tools">
+                                @using (Html.BeginForm("Edit", "BorrowMainResourceMang", FormMethod.Post))
+                                {
+                                    @Html.HiddenFor(m => m.InventoryRecordModel.MainResourceID)
+                                    <input type="button" class="btn btn-sm btn-success" value="開始盤點" onclick="GoSearch(0)">
+                                }
+@*
+                                <a class="btn btn-sm btn-outline-success hide" id="multi_checking_start">批次盤點</a><!--若物品類型為[大量借用],可直接輸入數量進行盤點-->
+                                <a class="btn btn-sm btn-outline-danger hide"
+                                   id="checking_continue">盤點繼續</a>
+                                <a class="btn btn-sm btn-danger hide" id="checking_end">盤點結束</a>*@
+                            </div>
+                        </div>
+
+                        <div id="InventorySearchResultList" class="card-body"></div>
+                        
+                    </div>
+                    <!-- /.card -->
+                </form>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    $(document).ready(function () {
+        GoSearch();
+    });
+
+    function GoSearch(source) {
+
+        SendAjax({
+            url: '@Url.Action("GetInventorySearchResult")',
+            data: $("#SearchForm").serialize(),
+            success: function (result) {
+                $('#InventorySearchResultList').html(result);
+            }
+        });
+    }
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(result.errorMsg);
+            }
+        });
+    }
+
+</script>

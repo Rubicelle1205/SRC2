@@ -70,6 +70,14 @@ namespace WebPccuClub.Controllers
             return View(vm);
         }
 
+        [Log(LogActionChineseName.盤點)]
+        public IActionResult InventoryIndex(string submitBtn, BorrowMainResourceMangViewModel vm)
+        {
+            vm.InventoryRecordModel = dbAccess.GetInventoryRecord(submitBtn);
+            
+            return View(vm);
+        }
+
         [LogAttribute(LogActionChineseName.查詢)]
         public IActionResult GetSearchResult(BorrowMainResourceMangViewModel vm)
         {
@@ -82,6 +90,15 @@ namespace WebPccuClub.Controllers
             #endregion
 
             return PartialView("_SearchResultPartial", vm);
+        }
+
+        [LogAttribute(LogActionChineseName.查詢)]
+        public IActionResult GetInventorySearchResult(BorrowMainResourceMangViewModel vm)
+        {
+            vm.InventoryDetailModel = dbAccess.GetInventoryDetailTemplete(vm.InventoryRecordModel.MainResourceID).ToList();
+
+
+            return PartialView("_InventorySearchResultPartial", vm);
         }
 
         [Log(LogActionChineseName.新增儲存)]
