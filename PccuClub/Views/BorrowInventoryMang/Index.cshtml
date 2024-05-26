@@ -1,0 +1,62 @@
+﻿
+@{
+    Layout = "_BackendLayout";
+
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="SearchForm" enctype="multipart/form-data" action="">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-tools">
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                @Html.AntiForgeryToken()
+
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    <input type="text" class="form-control" data-toggle="tooltip"
+                                           title="資源名稱"
+                                           name="keyword_title"
+                                           placeholder="請輸入資源名稱"
+                                           value="" search_ref>
+                                </div>
+                             
+
+                                <div class="col-md-12 mt-2 row">
+                                    <div class="col-md-6 col-sm-12 float-left">
+                                        <span id="PageNow" class="text-sm text-muted" style="display:none;">
+                                        </span>
+                                        <br />
+                                        <span id="PageEver" class="text-muted text-sm" style="display:none;">
+                                        </span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12 float-right d-flex flex-wrap align-items-end justify-content-end p-0">
+                                        <input type="reset" class="btn btn-sm btn-outline-info mx-1 mt-2" value="清除條件">
+                                        <input type="button" class="btn btn-sm btn-outline-danger mx-1 mt-2" value="搜尋" onclick="GoSearch(0)">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+                <div id="SearchResultList" class="card"></div>
+
+            </div>
+            <!-- /.card -->
+        </div>
+    </div>
+    <!-- /.row -->
+</section>
+
+<script>
+
+</script>
