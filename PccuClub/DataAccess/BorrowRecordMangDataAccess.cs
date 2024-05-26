@@ -515,6 +515,27 @@ AND BorrowMainID = @BorrowMainID";
             return ExecuteResult;
         }
 
+        public DbExecuteInfo UpdDeviceReturnSecondResource(string BorrowMainID, string ReturnSecondResource, UserInfo loginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommendText = $@"UPDATE BorrowDevice 
+                                           SET ReturnSecondResourceID = '{ReturnSecondResource}',
+                                               ReturnRealAmt = '1',
+                                               BorrowStatus = '03', 
+                                               LastModifier = '{loginUser.LoginId}',
+                                               LastModified = GETDATE()
+                                         WHERE BorrowMainID = '{BorrowMainID}'
+                                           AND BorrowSecondResourceID = '{ReturnSecondResource}'
+";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
         public DbExecuteInfo UpdMultDeviceRetrunSecondResource(string DeviceID, string BorrowSecondResourceID, string BorrowAmt, UserInfo loginUser)
         {
 

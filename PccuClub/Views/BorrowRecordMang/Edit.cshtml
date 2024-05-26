@@ -489,8 +489,12 @@
             $("#divReturn").show();
         });
 
-        $("#AAA").click(function () {
-            UpdSingoReturn();
+        $("#btnSingoReturn").click(function () {
+            var BorrowMainID = $('#@Html.IdFor(m => m.EditModel.BorrowMainID)').val();
+            var ReturnSecondResource = $('#@Html.IdFor(m => m.ddlModel.ID)').val();
+
+
+            UpdSingoReturn(BorrowMainID, ReturnSecondResource);
         });
 
         $("#btnSingoCancel").click(function () {
@@ -566,16 +570,27 @@
     }
 
 
-    function UpdSingoReturn() {
+    function UpdSingoReturn(BorrowMainID, ReturnSecondResource) {
 
         SendAjax({
-            url: '@Url.Action("UpdSingoReturn")',
-            data: { },
+            url: '@Url.Action("UpdSingReturn")',
+            data: { 'BorrowMainID': BorrowMainID, 'ReturnSecondResource': ReturnSecondResource },
             success: function (result) {
                 if (result.errorCode == 0) {
-                  
+                    $.confirm({
+                        title: "",
+                        content: "歸還成功",
+                        buttons: {
+                            確定: function () {
+                                window.location.reload();
+                            },
+                        }
+                    });
                 }
                 else { $.alert(result.errorMsg); }
+            },
+            error: function (response) {
+                $.alert(response.errorMsg);
             }
         });
     }

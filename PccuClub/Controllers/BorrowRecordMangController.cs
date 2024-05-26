@@ -366,6 +366,38 @@ namespace WebPccuClub.Controllers
             return Json(vmRtn);
         }
 
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public IActionResult UpdSingReturn(string BorrowMainID, string ReturnSecondResource)
+        {
+
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.UpdDeviceReturnSecondResource(BorrowMainID, ReturnSecondResource, LoginUser);
+
+                if (!dbResult.isSuccess && dbResult.AffectRowCount != 1)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
         private string GenMailBody(string ApplyMan, string EventID)
         {
             string str = string.Empty;
