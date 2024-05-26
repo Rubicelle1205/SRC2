@@ -300,6 +300,72 @@ namespace WebPccuClub.Controllers
             return Json(vmRtn);
         }
 
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public IActionResult UpdSecondResource(string DeviceID, string selectedSecondResourceID)
+        {
+
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.UpdDeviceBorrowSecondResource(DeviceID, selectedSecondResourceID, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public IActionResult UpdMultSecondResource(string DeviceID, string BorrowSecondResourceID, string BorrowAmt)
+        {
+
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.UpdMultDeviceBorrowSecondResource(DeviceID, BorrowSecondResourceID, BorrowAmt, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
         private string GenMailBody(string ApplyMan, string EventID)
         {
             string str = string.Empty;
@@ -352,6 +418,97 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlSecondAmt = LstItem;
 
             return PartialView("_BorrowAmtPartial", vm);
+        }
+
+        [Log(LogActionChineseName.取得上架數量)]
+        [ValidateInput(false)]
+        public IActionResult InitBorrowSecondsResourceID(string MainResourceID, string RowID)
+        {
+            BorrowRecordMangViewModel vm = new BorrowRecordMangViewModel();
+            vm.ddlModel = new BorrowRecordMangddlModel();
+
+
+            ViewBag.ddlSecondResource = dbAccess.GetddlSecondResource(MainResourceID);
+            ViewBag.BorrowType = "0";
+            ViewBag.RowID = RowID;
+
+            return PartialView("_BorrowSecondResourcePartial");
+        }
+
+        [Log(LogActionChineseName.取得上架數量)]
+        [ValidateInput(false)]
+        public IActionResult InitMultBorrowResource(string MainResourceID, string RowID, string BorrowMainID)
+        {
+            //大量借用
+            BorrowRecordMangViewModel vm = new BorrowRecordMangViewModel();
+            vm.ddlModel = new BorrowRecordMangddlModel();
+
+            DataTable dtBorrowAmt = dbAccess.GetOrderBorrowAmt(BorrowMainID, MainResourceID);
+
+            ViewBag.BorrowType = "1";
+            ViewBag.MaxAmt = dtBorrowAmt.QueryFieldByDT("BorrowAmt");
+
+            return PartialView("_BorrowSecondResourcePartial");
+        }
+
+        [Log(LogActionChineseName.取得上架數量)]
+        [ValidateInput(false)]
+        public IActionResult UpdSingoReturn()
+        {
+            //大量歸還
+            BorrowRecordMangViewModel vm = new BorrowRecordMangViewModel();
+            vm.ddlModel = new BorrowRecordMangddlModel();
+
+            ViewBag.BorrowType = "4";
+
+            return PartialView("_BorrowSecondResourcePartial");
+        }
+
+
+        [Log(LogActionChineseName.取得上架數量)]
+        [ValidateInput(false)]
+        public IActionResult InitMultReturnResource()
+        {
+            //大量歸還
+            BorrowRecordMangViewModel vm = new BorrowRecordMangViewModel();
+            vm.ddlModel = new BorrowRecordMangddlModel();
+
+            ViewBag.BorrowType = "3";
+
+            return PartialView("_BorrowSecondResourcePartial");
+        }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public IActionResult UpdMultRetrunResource(string DeviceID, string BorrowSecondResourceID, string ReturnAmt)
+        {
+
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.UpdMultDeviceRetrunSecondResource(DeviceID, BorrowSecondResourceID, ReturnAmt, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
         }
 
         [LogAttribute(LogActionChineseName.匯出Excel)]
@@ -432,6 +589,36 @@ namespace WebPccuClub.Controllers
                 if (!dbResult.isSuccess)
                 {
                     vmRtn.ErrorCode =  (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "刪除失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "刪除失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+        [Log(LogActionChineseName.刪除)]
+        [ValidateInput(false)]
+        public IActionResult DeleteDevice(string Ser)
+        {
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.DeletetDeviceData(Ser);
+
+                if (!dbResult.isSuccess)
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "刪除失敗";
                     return Json(vmRtn);
                 }

@@ -83,7 +83,19 @@
                         <td class="text-center text-sm">
                             @using (Html.BeginForm("Edit", "BorrowRecordMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
                             {
-                                <button type="submit" value="@item.BorrowMainID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
+                                if (item.ActVerify == "02")
+                                {
+                                    <button type="submit" value="@item.BorrowMainID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">編輯(未領取)</button>
+                                }
+                                else if (item.ActVerify == "04")
+                                {
+                                    <button type="submit" value="@item.BorrowMainID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-success">編輯(未歸還)</button>
+                                }
+                                else
+                                {
+                                    <button type="submit" value="@item.BorrowMainID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
+                                }
+                                
                             }
 
                             <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel('@item.BorrowMainID');">刪除</a>

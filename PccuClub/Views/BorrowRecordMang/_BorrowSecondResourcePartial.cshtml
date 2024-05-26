@@ -1,0 +1,45 @@
+﻿@model WebPccuClub.Models.BorrowRecordMangViewModel
+
+@{
+    string RowID = ViewBag.RowID;
+    string BorrowType = ViewBag.BorrowType;
+    string MaxAmt = ViewBag.MaxAmt;
+    string RetrunAmt = ViewBag.RetrunAmt;
+}
+
+<script>
+
+
+</script>
+
+@if (BorrowType == "0") //單筆借用
+{
+    @if (ViewBag.ddlSecondResource != null)
+    {
+        @Html.DropDownListFor(m => m.ddlModel.ID ,(List<SelectListItem>)ViewBag.ddlSecondResource,"請選擇資產編號", new {@class = "form-control", @for= @RowID})
+    }
+
+}
+else if (BorrowType == "1") //大量借用
+{
+    @Html.TextBoxFor(m => m.ddlModel.ID, new {@class = "form-control", placeholder = "請輸入借出數量", @Type = "number", max = @MaxAmt })
+}
+else if (BorrowType == "2") //單筆歸還
+{
+      
+}
+else if (BorrowType == "3") //大量歸還
+{
+    @Html.TextBoxFor(m => m.ddlModel.ID, new {@class = "form-control", placeholder = "請輸入歸還數量", @Type = "number", max = @MaxAmt })
+}
+else if (BorrowType == "4") //單筆歸還完成
+{
+    <span class="text-sm">歸還數量:@RetrunAmt</span>
+}
+else if (BorrowType == "5") //大量歸還完成
+{
+}
+
+<style>
+
+</style>

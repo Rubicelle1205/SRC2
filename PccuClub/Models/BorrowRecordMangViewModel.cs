@@ -18,6 +18,8 @@ namespace WebPccuClub.Models
         public BorrowRecordMangEditModel EditModel { get; set; }
 
         public List<BorrowRecordMangExcelResultModel> ExcelModel { get; set; }
+
+        public BorrowRecordMangddlModel ddlModel {get; set;}
     }
 
     public class BorrowRecordMangConditionModel
@@ -384,15 +386,40 @@ namespace WebPccuClub.Models
 
     public class BorrowRecordMangDeviceModel
     {
+        public string? ID { get; set; }
+
         public string? BorrowMainID { get; set; }
 
         public string? MainClassID { get; set; }
 
         public string? MainResourceID { get; set; }
 
+        public string? MainResourceIDText { get; set; }
+
         public string? BorrowStatus { get; set; }
 
         public string? BorrowAmt { get; set; }
+
+        /// <summary>大量借用</summary>
+        [DisplayName("大量借用")]
+        public string? BorrowType { get; set; }
+
+        /// <summary>大量借用</summary>
+        [DisplayName("大量借用")]
+        public string? BorrowTypeText { get; set; }
+
+        public string? BorrowStatusText { get; set; }
+
+        public string? BorrowSecondResourceID { get; set; }
+
+        public string? BorrowRealAmt { get; set; }
+
+        public string? ReturnRealAmt { get; set; }
+    }
+
+    public class BorrowRecordMangddlModel
+    { 
+        public string? ID { get; set; }
     }
 
 }

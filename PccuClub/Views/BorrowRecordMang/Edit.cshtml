@@ -3,7 +3,10 @@
 @{
     Layout = "_BackendLayout";
 
+    bool show = false;
     List<SelectListItem> LstSubSystemBelong = ViewBag.ddlSubSystemBelong;
+    List<BorrowRecordMangDeviceModel> Lst = Model.EditModel.LstDevice.Where(x => x.BorrowStatus == "02").ToList();
+    if (Lst.Count > 0) { show = true; }
 }
 
 <!-- Main content -->
@@ -100,9 +103,13 @@
                                         <td>@Model.EditModel.MainClassIDText</td>
                                     </tr>
                                     <tr>
+                                        <th width="10%">借用單審核狀態</th>
+                                        <td>@Html.DropDownListFor(m => m.EditModel.ActVerify ,(List<SelectListItem>)ViewBag.ddlBorrowActVerify,"請選擇借用單審核狀態", new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
                                         <th width="10%">佐證資料</th>
                                         <td>
-                                            @foreach(var item in Model.EditModel.LstFile)
+                                            @foreach (var item in Model.EditModel.LstFile)
                                             {
                                                 <div>
                                                     <a target="_blank" href="../@item.FilePath">@item.FileName</a>
@@ -119,6 +126,156 @@
                                 </tbody>
                             </table>
 
+                        </div>
+
+
+                        <div class="card-body">
+                            <div class="accordion" id="accordionExample">
+                                <div class="card bg-light">
+                                    <div class="card-header" id="headingOne">
+                                        <h2 class="mb-0">
+                                            <button class="btn btn-block text-left" type="button"
+                                                    data-toggle="collapse" data-target="#collapseOne"
+                                                    aria-expanded="true" aria-controls="collapseOne">
+                                                借用資源清單(點擊開合)
+                                            </button>
+                                        </h2>
+                                    </div>
+                                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
+                                         data-parent="#accordionExample">
+                                        <div class="card-body table-responsive-md">
+
+                                            @if (show)
+                                            {
+                                                <div id="divReturn" class="d-flex justify-content-end mb-1" style="width: 80%; flex-flow: wrap; flex-direction: row; display:none !important">
+                                                      @Html.TextBoxFor(m => m.ddlModel.ID, new {@class = "form-control", placeholder = "請輸入歸還物品資產編號", @style="width:70%;" })
+                                                        <button id="btnSingoReturn" type="button" class="btn btn-success">確認</button>
+                                                        <button id="btnSingoCancel" type="button" class="btn btn-default">取消</button>
+                                                </div>
+
+                                                <div id="divReturn2">
+                                                <div class="d-flex justify-content-end mb-1">
+                                                    <button type="button" class="ml-1 btn btn-sm btn-outline-danger" id="box_return" data-single="1">單筆歸還</button>
+                                                </div>
+                                                <p class="text-sm text-danger text-right">僅作[歸還]確認，若資源有損壞、遺失請至子資源維護調整狀態</p>
+                                                </div>
+                                            }
+
+                                            <table class="table table-bordered borrow_table">
+                                                <thead>
+                                                <th width="5%">#</th>
+                                                <th>資源名稱</th>
+                                                <th width="8%">物品類型</th>
+                                                <th width="8%">借用數量</th>
+                                                <th width="15%">領取狀態</th>
+                                                <th width="15%">功能</th>
+                                                </thead>
+                                                <tbody>
+                                                    @for(int i = 0; i <= Model.EditModel.LstDevice.Count -1; i++)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                <input type="hidden" id="@string.Format("HiddenID{0}", (i+1))" value="@Model.EditModel.LstDevice[i].ID">
+                                                                @(i + 1)
+                                                            </td>
+                                                            <td>
+                                                                <input type="hidden" id="@string.Format("HiddenMainResourceID{0}", (i+1))" value="@Model.EditModel.LstDevice[i].MainResourceID" >
+                                                                @Model.EditModel.LstDevice[i].MainResourceIDText
+                                                            </td>
+                                                                @if (Model.EditModel.LstDevice[i].BorrowType == "01")
+                                                                {
+                                                                    <td><span class="badge badge-warning">大量借用</span></td>
+                                                                    <td>@Model.EditModel.LstDevice[i].BorrowAmt</td>
+
+                                                                    @if (Model.EditModel.LstDevice[i].BorrowStatus == "01")
+                                                                    {
+                                                                        <td>
+                                                                            <span class="text-muted">尚未領取</span>
+                                                                            <div id="@string.Format("MultshowSecondResource{0}", (i+1))"></div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <button id="@string.Format("MultBorrowSearch{0}", (i+1))" type="button" class="ml-1 btn btn-sm btn-outline-primary">借出</button>
+                                                                            <button id="@string.Format("MultBorrowSave{0}", (i+1))" type="button" class="ml-1 btn btn-sm btn-outline-secondary" style="display:none;">確認借出</button>
+                                                                            <a href="#" class="ml-1 btn btn-sm btn-outline-danger" onclick="ChkDel('@Model.EditModel.LstDevice[i].ID');">刪除</a>
+                                                                        </td>
+                                                                    }
+                                                                    else if(Model.EditModel.LstDevice[i].BorrowStatus == "02")
+                                                                    {
+                                                                    <td>
+                                                                        <span class="text-muted">@Model.EditModel.LstDevice[i].BorrowStatusText</span>
+                                                                        <br/>
+                                                                        <div id="@string.Format("MultshowSecondResource{0}", (i+1))">
+                                                                            <span class="text-sm">數量:@Model.EditModel.LstDevice[i].BorrowRealAmt</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <button id="@string.Format("MultRetrun{0}", (i+1))" type="button" class="ml-1 btn btn-sm btn-outline-danger">大量歸還</button>
+                                                                        <button id="@string.Format("MultRetrunSave{0}", (i+1))" type="button" class="ml-1 btn btn-sm btn-outline-secondary" style="display:none;">確認歸還</button>
+                                                                    </td>
+                                                                    }
+                                                                    else if(Model.EditModel.LstDevice[i].BorrowStatus == "03")
+                                                                    {
+                                                                    <td>
+                                                                        <span class="text-muted">@Model.EditModel.LstDevice[i].BorrowStatusText</span>
+                                                                        <br/>
+                                                                        <div id="@string.Format("MultshowSecondResource{0}", (i+1))">
+                                                                            <span class="text-sm">歸還數量:@Model.EditModel.LstDevice[i].BorrowRealAmt</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                    </td>
+                                                                    }
+                                                                }
+                                                                else    
+                                                                {
+                                                                     @if (Model.EditModel.LstDevice[i].BorrowType == "01")
+                                                                    {
+                                                                        <td><span class="badge badge-success">單筆借用</span></td>
+                                                                        <td>@Model.EditModel.LstDevice[i].BorrowAmt</td>
+                                                                        <td>
+                                                                            <span class="text-muted">尚未領取</span>
+                                                                            <div id="@string.Format("showSecondResource{0}", (i+1))"></div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <button id="@string.Format("BorrowSearch{0}", (i+1))" type="button" class="ml-1 btn btn-sm btn-outline-primary">借出</button>
+                                                                            <button id="@string.Format("BorrowSave{0}", (i+1))" type="button" class="ml-1 btn btn-sm btn-outline-secondary" style="display:none;">確認借出</button>
+                                                                            <a href="#" class="ml-1 btn btn-sm btn-outline-danger" onclick="ChkDel('@Model.EditModel.LstDevice[i].ID');">刪除</a>
+                                                                        </td>                                                                    
+                                                                    }
+                                                                    else if(Model.EditModel.LstDevice[i].BorrowStatus == "02")
+                                                                    {
+                                                                        <td><span class="badge badge-success">單筆借用</span></td>
+                                                                        <td>@Model.EditModel.LstDevice[i].BorrowAmt</td>
+                                                                        <td>
+                                                                            <span class="text-muted">@Model.EditModel.LstDevice[i].BorrowStatusText</span>
+                                                                            <br />
+                                                                            <span class="text-sm">@Model.EditModel.LstDevice[i].BorrowSecondResourceID</span>
+                                                                        </td>
+                                                                        <td>
+                                                                        </td>
+                                                                    }
+                                                                   else if(Model.EditModel.LstDevice[i].BorrowStatus == "03")
+                                                                    {
+                                                                        <td><span class="badge badge-success">單筆借用</span></td>
+                                                                        <td>@Model.EditModel.LstDevice[i].BorrowAmt</td>
+                                                                        <td>
+                                                                            <span class="text-muted">@Model.EditModel.LstDevice[i].BorrowStatusText</span>
+                                                                            <br />
+                                                                            <span class="text-sm">@Model.EditModel.LstDevice[i].BorrowSecondResourceID</span>
+                                                                        </td>
+                                                                        <td>
+                                                                        </td>
+                                                                    }
+                                                                }
+                                                        </tr>
+                                                        
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="card-body table-responsive-sm">
@@ -214,7 +371,7 @@
                     </div>
                     <!-- /.card -->
                     @Html.HiddenFor(m => m.EditModel.BorrowMainID)
-                </form> 
+                </form>
                 <!-- /.form -->
             </div>
         </div>
@@ -227,12 +384,203 @@
 
 <script>
 
+    function ChkDel(Ser) {
+        $.confirm({
+            title: '確定刪除?',
+            content: '刪除後資料無法復原!',
+            buttons: {
+                確定: function () {
+                    SendAjax({
+                        url: '@Url.Action("DeleteDevice")',
+                        data: { 'Ser': Ser },
+                        success: function (result) {
+                            if (result.errorCode == 0) { $.alert("刪除成功"); }
+                            else { $.alert(result.errorMsg); }
+
+                            window.location.reload();
+                        }
+                    });
+                },
+                取消: function () {
+                },
+            }
+        });
+    }
+
     $(document).ready(function () {
         $('#clean_history').click(function () {
             $('#@Html.IdFor(m => m.EditModel.EventText)').val("");
+        });
 
+        $("[id ^= 'BorrowSearch']").click(function () {
+            var buttonId = $(this).attr('id');
+            var rowID = buttonId.replace("BorrowSearch", "");
+            InitBorrowResource(rowID, $("#HiddenMainResourceID" + rowID).val());
+
+            $("#BorrowSearch" + rowID).hide();
+            $("#BorrowSave" + rowID).show();
+        });
+
+        $("[id ^= 'BorrowSave']").click(function () {
+            var buttonId = $(this).attr('id');
+            var rowID = buttonId.replace("BorrowSave", "");
+            var selectedSecondResourceID = $(this).closest('tr').find('select').val();
+
+            if (selectedSecondResourceID == "") { $.alert("需選擇資產編號不可為空"); return; }
+
+            UpdSecondResource($("#HiddenID" + rowID).val(), selectedSecondResourceID);
+
+            $("#BorrowSearch" + rowID).show();
+            $("#BorrowSave" + rowID).hide();
+        });
+
+        $("[id ^= 'MultBorrowSearch']").click(function () {
+            var buttonId = $(this).attr('id');
+            var rowID = buttonId.replace("MultBorrowSearch", "");
+            var BorrowMainID = $('#@Html.IdFor(m => m.EditModel.BorrowMainID)').val();
+
+            InitMultBorrowResource(rowID, $("#HiddenMainResourceID" + rowID).val(), BorrowMainID);
+
+            $("#MultBorrowSearch" + rowID).hide();
+            $("#MultBorrowSave" + rowID).show();
+        });
+
+        $("[id ^= 'MultBorrowSave']").click(function () {
+            var buttonId = $(this).attr('id');
+            var rowID = buttonId.replace("MultBorrowSave", "");
+            var BorrowAmt = $(this).closest('tr').find($('#@Html.IdFor(m => m.ddlModel.ID)')).val();
+            var MainResourceID = $("#HiddenMainResourceID" + rowID).val();
+
+            if (BorrowAmt == "") { $.alert("借出數量不可為空"); return; }
+            if (BorrowAmt < 0) { $.alert("借出數量需大於0"); return; }
+
+            UpdMultSecondResource($("#HiddenID" + rowID).val(), MainResourceID, BorrowAmt);
+
+            $("#MultBorrowSearch" + rowID).show();
+            $("#MultBorrowSave" + rowID).hide();
+        });
+
+        $("[id ^= 'MultRetrun']").click(function () {
+            var buttonId = $(this).attr('id');
+            var rowID = buttonId.replace("MultRetrun", "");
+            var DeviceID = $("#HiddenID" + rowID).val();
+
+            InitMultReturnResource(rowID);
+
+            $("#MultRetrun" + rowID).hide();
+            $("#MultRetrunSave" + rowID).show();
+        });
+
+        $("[id ^= 'MultRetrunSave']").click(function () {
+            var buttonId = $(this).attr('id');
+            var rowID = buttonId.replace("MultRetrunSave", "");
+            var DeviceID = $("#HiddenID" + rowID).val();
+            var MainResourceID = $("#HiddenMainResourceID" + rowID).val()
+            var ReturnAmt = $(this).closest('tr').find($('#@Html.IdFor(m => m.ddlModel.ID)')).val();
+
+            UpdMultRetrunResource(DeviceID, MainResourceID, ReturnAmt);
+
+            $("#MultRetrun" + rowID).show();
+            $("#MultRetrunSave" + rowID).hide();
+        });
+
+        $("#box_return").click(function () {
+            $("#divReturn2").hide();
+            $("#divReturn").show();
+        });
+
+        $("#AAA").click(function () {
+            UpdSingoReturn();
+        });
+
+        $("#btnSingoCancel").click(function () {
+             $("#divReturn2").show();
+            $("#divReturn").attr('style', 'width: 80%; flex-flow: wrap; flex-direction: row; display:none !important');
         });
     });
+
+    function InitBorrowResource(rowID, MainResourceID) {
+
+        SendAjax({
+            url: '@Url.Action("InitBorrowSecondsResourceID")',
+            data: { 'MainResourceID': MainResourceID, 'RowID': rowID },
+            success: function (result) {
+                $('#showSecondResource' + rowID).html(result);
+            }
+        });
+    }
+
+    function InitMultBorrowResource(rowID, MainResourceID, BorrowMainID) {
+
+        SendAjax({
+            url: '@Url.Action("InitMultBorrowResource")',
+            data: { 'MainResourceID': MainResourceID, 'RowID': rowID, 'BorrowMainID' : BorrowMainID },
+            success: function (result) {
+                $('#MultshowSecondResource' + rowID).html(result);
+            }
+        });
+    }
+
+    function UpdSecondResource(DeviceID, selectedSecondResourceID) {
+
+        SendAjax({
+            url: '@Url.Action("UpdSecondResource")',
+            data: { 'DeviceID': DeviceID, 'selectedSecondResourceID': selectedSecondResourceID },
+            success: function (result) {
+                window.location.reload();
+            }
+        });
+    }
+
+    function UpdMultSecondResource(DeviceID, BorrowSecondResourceID, BorrowAmt) {
+
+        SendAjax({
+            url: '@Url.Action("UpdMultSecondResource")',
+            data: { 'DeviceID': DeviceID, 'BorrowSecondResourceID' : BorrowSecondResourceID, 'BorrowAmt': BorrowAmt },
+            success: function (result) {
+                window.location.reload();
+            }
+        });
+    }
+
+    function InitMultReturnResource(rowID) {
+
+        SendAjax({
+            url: '@Url.Action("InitMultReturnResource")',
+            data: { },
+            success: function (result) {
+                $('#MultshowSecondResource' + rowID).html(result);
+            }
+        });
+    }
+
+    function UpdMultRetrunResource(DeviceID, BorrowSecondResourceID, ReturnAmt) {
+
+        SendAjax({
+            url: '@Url.Action("UpdMultRetrunResource")',
+            data: { 'DeviceID': DeviceID, 'BorrowSecondResourceID': BorrowSecondResourceID, 'ReturnAmt': ReturnAmt },
+            success: function (result) {
+                window.location.reload();
+            }
+        });
+    }
+
+
+    function UpdSingoReturn() {
+
+        SendAjax({
+            url: '@Url.Action("UpdSingoReturn")',
+            data: { },
+            success: function (result) {
+                if (result.errorCode == 0) {
+                  
+                }
+                else { $.alert(result.errorMsg); }
+            }
+        });
+    }
+
+
 
 
     function SaveEventData() {
@@ -276,7 +624,7 @@
 
         var data = new FormData()
 
-        
+
         var BorrowMainID = $('#@Html.IdFor(m => m.EditModel.BorrowMainID)').val();
         var ApplyUnitType = $('#@Html.IdFor(m => m.EditModel.ApplyUnitType)').val();
         var ApplyUnitName = $('#@Html.IdFor(m => m.EditModel.ApplyUnitName)').val();

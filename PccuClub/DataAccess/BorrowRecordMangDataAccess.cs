@@ -173,10 +173,14 @@ AND BorrowMainID = @BorrowMainID";
 
             #endregion
 
-            CommandText = $@"SELECT A.MainClassID, B.Text AS MainClassIDText, A.MainResourceID, C.MainResourceName AS MainResourceIDText, A.BorrowAmt
+            CommandText = $@"SELECT A.ID, A.MainClassID, B.Text AS MainClassIDText, A.MainResourceID, C.MainResourceName AS MainResourceIDText, A.BorrowAmt, 
+                                    D.BorrowType, E.Text AS BorrowTypeText, A.BorrowStatus, F.Text AS BorrowStatusText, A.BorrowSecondResourceID, A.BorrowRealAmt, A.ReturnRealAmt
                                FROM BorrowDevice A
                           LEFT JOIN BorrowMainClassMang B ON b.ID = A.MainClassID
                           LEFT JOIN BorrowMainResourceMang C ON C.MainResourceID = A.MainResourceID
+						  LEFT JOIN BorrowMainResourceMang D ON D.MainResourceID = A.MainResourceID
+						  LEFT JOIN Code E ON E.Code = D.BorrowType AND E.Type = 'BorrowMultType'
+						  LEFT JOIN Code F ON F.Code = A.BorrowStatus AND F.Type = 'Borrowstatus'
                               WHERE 1 = 1
                                 AND A.BorrowMainID = @BorrowMainID";
 
@@ -401,6 +405,7 @@ AND BorrowMainID = @BorrowMainID";
             parameters.Add("@TakeSDate", vm.EditModel.TakeSDate);
             parameters.Add("@TakeEDate", vm.EditModel.TakeEDate);
             parameters.Add("@BorrowMemo", vm.EditModel.BorrowMemo);
+            parameters.Add("@ActVerify", vm.EditModel.ActVerify);
             parameters.Add("@TeacherMark", vm.EditModel.TeacherMark);
             parameters.Add("@DeviceMark", vm.EditModel.DeviceMark);
             parameters.Add("@TakeMark", vm.EditModel.TakeMark);
@@ -425,6 +430,7 @@ AND BorrowMainID = @BorrowMainID";
                                             TakeSDate = @TakeSDate, 
                                             TakeEDate = @TakeEDate, 
                                             BorrowMemo = @BorrowMemo, 
+                                            ActVerify = @ActVerify, 
                                             TeacherMark = @TeacherMark, 
                                             TakeMark = @TakeMark, 
                                             ReturnMark = @ReturnMark, 
@@ -464,6 +470,65 @@ AND BorrowMainID = @BorrowMainID";
                                             ,GETDATE()
                                             ,'{loginUser.LoginId}'
                                             ,GETDATE() )";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        public DbExecuteInfo UpdDeviceBorrowSecondResource(string DeviceID, string selectedSecondResourceID, UserInfo loginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommendText = $@"UPDATE BorrowDevice 
+                                           SET BorrowSecondResourceID = '{selectedSecondResourceID}',
+                                               BorrowRealAmt = '1',
+                                               LastModifier = '{loginUser.LoginId}',
+                                               LastModified = GETDATE()
+                                         WHERE ID = '{DeviceID}'
+";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        public DbExecuteInfo UpdMultDeviceBorrowSecondResource(string DeviceID, string BorrowSecondResourceID, string BorrowAmt, UserInfo loginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommendText = $@"UPDATE BorrowDevice 
+                                           SET BorrowSecondResourceID = '{BorrowSecondResourceID}',
+                                               BorrowRealAmt = '{BorrowAmt}',
+                                               BorrowStatus = '02', 
+                                               LastModifier = '{loginUser.LoginId}',
+                                               LastModified = GETDATE()
+                                         WHERE ID = '{DeviceID}'
+";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        public DbExecuteInfo UpdMultDeviceRetrunSecondResource(string DeviceID, string BorrowSecondResourceID, string BorrowAmt, UserInfo loginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommendText = $@"UPDATE BorrowDevice 
+                                           SET BorrowSecondResourceID = '{BorrowSecondResourceID}',
+                                               ReturnRealAmt = '{BorrowAmt}',
+                                               BorrowStatus = '03',    
+                                               LastModifier = '{loginUser.LoginId}',
+                                               LastModified = GETDATE()
+                                         WHERE ID = '{DeviceID}'
+";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -525,7 +590,7 @@ AND BorrowMainID = @BorrowMainID";
             parameters.Add("@ID", ser);
             #endregion 參數設定
 
-            CommendText = $@"DELETE FROM BorrowDevice WHERE BorrowMainID = @ID ";
+            CommendText = $@"DELETE FROM BorrowDevice WHERE ID = @ID ";
             
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -697,6 +762,51 @@ AND BorrowMainID = @BorrowMainID";
             return ds.Tables[0];
         }
 
+        public List<SelectListItem> GetddlSecondResource(string MainResourceID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@MainResourceID", MainResourceID);
+            #endregion
+
+            CommandText = @"SELECT A.SecondResourceNo AS VALUE, '(' + A.SecondResourceNo + ')' + A.SecondResourceName AS TEXT
+                              FROM BorrowSecondResourceMang A
+                         WHERE MainResourceID = @MainResourceID";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public DataTable GetOrderBorrowAmt(string BorrowMainID, string MainResourceID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@BorrowMainID", BorrowMainID);
+            parameters.Add("@MainResourceID", MainResourceID);
+            #endregion
+
+            CommandText = @"SELECT BorrowAmt
+                              FROM BorrowDevice
+                             WHERE 1 = 1
+                               AND MainResourceID = @MainResourceID 
+                               AND BorrowMainID = @BorrowMainID ";
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            return ds.Tables[0];
+        }
 
 
     }
