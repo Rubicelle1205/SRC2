@@ -103,7 +103,12 @@
             UpdSingleInventory(InventoryRecordID, DeviceID);
         });
 
+        $("#btnMultReturn").click(function () {
+            var InventoryRecordID = $('#@Html.IdFor(m => m.InventoryRecordModel.InventoryRecordID)').val();
+            var DeviceID = $('#@Html.IdFor(m => m.InventoryRecordModel.ReturnID)').val();
 
+            UpdSingleInventory(InventoryRecordID, DeviceID);
+        });
 
 
     });

@@ -262,6 +262,37 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
+        public async Task<IActionResult> UpdMultInventory(string InventoryRecordID, string ReturnAmt)
+        {
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.UpdInventoryDetailMultData(InventoryRecordID, ReturnAmt, LoginUser);
+
+                if (!dbResult.isSuccess && dbResult.AffectRowCount != 1)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
         public async Task<IActionResult> updInventoryDetailAsync(string InventoryRecordID, string DeviceID)
         {
             try

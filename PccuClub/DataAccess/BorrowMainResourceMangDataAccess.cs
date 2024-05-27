@@ -484,6 +484,25 @@ AND (MainResourceID = @MainResourceID) ";
             return ExecuteResult;
         }
 
+        public DbExecuteInfo UpdInventoryDetailMultData(string RecordOrderID, string Amt, UserInfo loginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommendText = $@"UPDATE TOP ({Amt}) InventoryDetail 
+                                       SET InventoryAmt = '1', 
+                                           ResourceInventoryStatus = '03', 
+                                           LastModifier = '{loginUser.LoginId}',
+                                           LastModified = GETDATE() 
+                                     WHERE InventoryRecordID = '{RecordOrderID}' ;";
+
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
         public DbExecuteInfo updInventoryAmtToRecord(string ID, string AmtInventory, UserInfo loginUser)
         {
 
