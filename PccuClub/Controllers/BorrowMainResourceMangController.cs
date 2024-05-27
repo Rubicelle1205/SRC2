@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NPOI.HSSF.Model;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -104,7 +105,11 @@ namespace WebPccuClub.Controllers
             
             string RunType = dtt.QueryFieldByDT("InventoryStatus");
 
-            if (RunType == "02") { vm.InventoryRecordModel.RunType = "1"; }
+            if (vm.InventoryRecordModel.RunType != "2")
+            {
+                if (RunType == "02") { vm.InventoryRecordModel.RunType = "1"; }
+            }
+            
 
             switch (vm.InventoryRecordModel.RunType)
             {
@@ -118,51 +123,60 @@ namespace WebPccuClub.Controllers
 
                     try
                     {                    
-                        //更新Flag
+                        
                         dbAccess.DbaInitialTransaction();
 
-                        var dbResult = dbAccess.UpdMainResourceToInventory(vm.InventoryRecordModel.MainResourceID);
-
-                        if (!dbResult.isSuccess)
-                        {
-                            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                            vmRtn.ErrorMsg = "失敗";
-                            return Json(vmRtn);
-                        }
-
-                        dbResult = dbAccess.UpdSecondResourceToInventory(vm.InventoryRecordModel.MainResourceID);
-
-                        if (!dbResult.isSuccess)
-                        {
-                            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                            vmRtn.ErrorMsg = "失敗";
-                            return Json(vmRtn);
-                        }
-
-                        //新增一張Record單
+                        //先找一下有沒有盤點單，沒有的話，新增一張Record單
                         DataTable dt = new DataTable();
-                        dbResult = dbAccess.CreateInventoryRecord(vm.InventoryRecordModel, LoginUser, out dt);
+                        string RecodeOrder = "";
 
-                        if (!dbResult.isSuccess)
+                        dt = dbAccess.SearchInventoryRecord(vm.InventoryRecordModel.MainResourceID);
+                        RecodeOrder = dt.QueryFieldByDT("ID");
+
+                        if (string.IsNullOrEmpty(RecodeOrder))
                         {
-                            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                            vmRtn.ErrorMsg = "失敗";
-                            return Json(vmRtn);
+                            //更新Flag
+                            var dbResult = dbAccess.UpdMainResourceToInventory(vm.InventoryRecordModel.MainResourceID, "02");
+
+                            if (!dbResult.isSuccess)
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = "失敗";
+                                return Json(vmRtn);
+                            }
+
+                            dbResult = dbAccess.UpdSecondResourceToInventory(vm.InventoryRecordModel.MainResourceID);
+
+                            if (!dbResult.isSuccess)
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = "失敗";
+                                return Json(vmRtn);
+                            }
+
+                            dbResult = dbAccess.CreateInventoryRecord(vm.InventoryRecordModel, LoginUser, out dt);
+
+                            if (!dbResult.isSuccess)
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = "失敗";
+                                return Json(vmRtn);
+                            }
+
+                            RecodeOrder = dt.QueryFieldByDT("ID");
+
+
+                            //取得SecondResource資料
+                            vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordModel.MainResourceID).ToList();
+
+                            //回寫進Detail
+                            dbAccess.InserInventoryDetailData(vm.InventoryDetailModel, RecodeOrder, LoginUser);
+
+                            dbAccess.DbaCommit();
                         }
-
-                        string RecodeOrder = dt.QueryFieldByDT("ID");
-
-                        //取得SecondResource資料
-                        vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordModel.MainResourceID).ToList();
-
-                        //回寫進Detail
-                        dbAccess.InserInventoryDetailData(vm.InventoryDetailModel, RecodeOrder, LoginUser);
-
-                        dbAccess.DbaCommit();
-
 
                         //撈取Detail資料到前台
-                        vm.InventoryDetailModel = dbAccess.GetInventoryDetail(vm.InventoryRecordModel.MainResourceID).ToList();
+                        vm.InventoryDetailModel = dbAccess.GetInventoryDetail(RecodeOrder).ToList();
                         vm.InventoryRecordModel.InventoryRecordID = RecodeOrder;
                     }
                     catch (Exception ex)
@@ -175,16 +189,40 @@ namespace WebPccuClub.Controllers
 
                     break;
                 case "2":
-                    //更新Flag 為非盤點
 
-                    //撈取Detail資料
+                    try
+                    {
+                        dbAccess.DbaInitialTransaction();
 
-                    //更新上下架狀態與借用狀態
 
-                    //更新總盤點數到Record
+                        //更新Flag 為非盤點
+                        var dbResult = dbAccess.UpdMainResourceToInventory(vm.InventoryRecordModel.MainResourceID, "01");
 
-                    //顯示SecondResource到前台
-                    vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordModel.MainResourceID).ToList();
+
+                        //撈取Detail資料
+                        vm.InventoryDetailModel = dbAccess.GetInventoryDetail(vm.InventoryRecordModel.InventoryRecordID).ToList();
+
+                        //更新上下架狀態與借用狀態
+                        dbAccess.updSecondResourceStatus(vm.InventoryDetailModel, vm.InventoryRecordModel.InventoryRecordID, LoginUser);
+
+                        //更新總盤點數到Record
+                        DataTable dt2 = dbAccess.GetInventoryAmt(vm.InventoryRecordModel.InventoryRecordID);
+                        string AmtInventory = dt2.QueryFieldByDT("Amt");
+                        dbAccess.updInventoryAmtToRecord(vm.InventoryRecordModel.InventoryRecordID, AmtInventory, LoginUser);
+
+                        //顯示SecondResource到前台
+                        vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordModel.MainResourceID).ToList();
+
+                        dbAccess.DbaCommit();
+                    }
+                    catch (Exception ex)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "刪除失敗" + ex.Message;
+                        return Json(vmRtn);
+                    }
+
                     break;
             }
             

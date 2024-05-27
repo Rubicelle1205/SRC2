@@ -345,6 +345,10 @@ namespace WebPccuClub.Models
 
         //庫存數
         public string? BorrowTypeText { get; set; }
+
+        public string? ResourceInventoryStatus { get; set; }
+
+        public string? ResourceInventoryStatusText { get; set; }
     }
 
     public class BorrowMainResourceMangInventoryDetailEditModel

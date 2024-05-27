@@ -52,12 +52,10 @@
                             <div id="divSingleReturn" class="d-flex justify-content-center mb-1" style="display:none !important;">
                                 @Html.TextBoxFor(m => m.InventoryRecordModel.ReturnID, new {@class = "form-control", placeholder = "請輸入歸還物品資產編號", @style="width:70%;" })
                                 <button id="btnSingleReturn" type="button" class="btn btn-success">確認</button>
-                                <button id="btnSingleCancel" type="button" class="btn btn-default">取消</button>
                             </div>
                             <div id="divMultReturn" class="d-flex justify-content-center mb-1" style="display:none !important;">
                                 @Html.TextBoxFor(m => m.InventoryRecordModel.ReturnAmt, new {@class = "form-control", placeholder = "請輸入歸還物品數量", @style="width:70%;", type = "number" })
                                 <button id="btnMultReturn" type="button" class="btn btn-success">確認</button>
-                                <button id="btnMultCancel" type="button" class="btn btn-default">取消</button>
                             </div>
                             <div class="card-tools">
                                 @Html.HiddenFor(m => m.InventoryRecordModel.RunType)
@@ -121,6 +119,8 @@
             }
         });
     }
+
+
 
     function GoSearch(source) {
         if (typeof source === 'undefined')

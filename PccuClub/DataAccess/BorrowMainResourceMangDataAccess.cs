@@ -271,24 +271,25 @@ AND (MainResourceID = @MainResourceID) ";
             return null;
         }
 
-        public List<BorrowMainResourceMangInventoryDetailModel> GetInventoryDetail(string MainResourceID)
+        public List<BorrowMainResourceMangInventoryDetailModel> GetInventoryDetail(string InventoryRecordID)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
 
             DBAParameter parameters = new DBAParameter();
 
-            parameters.Add("@MainResourceID", MainResourceID);
+            parameters.Add("@InventoryRecordID", InventoryRecordID);
 
             #region 參數設定
             #endregion
 
             CommandText = $@"SELECT A.SecondResourceNo, A.SecondResourceName, A.ShelvesStatus, B.Text AS ShelvesStatusText, 
-                                    A.BorrowStatus, C.Text AS BorrowStatusText
-                               FROM BorrowSecondResourceMang A
+                                    A.BorrowStatus, C.Text AS BorrowStatusText, A.ResourceInventoryStatus, D.Text AS ResourceInventoryStatusText
+                               FROM InventoryDetail A
 							   LEFT JOIN Code B ON B.Code = A.ShelvesStatus AND B.Type = 'ShelvesStatus'
 							   LEFT JOIN Code C ON C.Code = A.BorrowStatus AND C.Type = 'BorrowStatus'
-                              WHERE MainResourceID = @MainResourceID ";
+							   LEFT JOIN Code D ON D.Code = A.ResourceInventoryStatus AND D.Type = 'InventoryStatus'
+                              WHERE A.InventoryRecordID = @InventoryRecordID ";
 
 
             (DbExecuteInfo info, IEnumerable<BorrowMainResourceMangInventoryDetailModel> entitys) dbResult = DbaExecuteQuery<BorrowMainResourceMangInventoryDetailModel>(CommandText, parameters, true, DBAccessException);
@@ -316,7 +317,6 @@ AND (MainResourceID = @MainResourceID) ";
             string CommendText = $@"INSERT INTO InventoryRecord 
                                               (MainResourceID
                                               ,AmtReal
-                                              ,AmtInventory
                                               ,BorrowType
                                               ,Creator
                                               ,Created
@@ -325,7 +325,6 @@ AND (MainResourceID = @MainResourceID) ";
                                        OUTPUT inserted.ID
                                        VALUES (@MainResourceID
                                                ,@AmtReal
-                                               ,'0'
                                                ,@BorrowType
                                                ,@LoginId
                                                ,GETDATE()
@@ -340,7 +339,7 @@ AND (MainResourceID = @MainResourceID) ";
             return ExecuteResult;
         }
 
-        public DbExecuteInfo UpdMainResourceToInventory(string MainResourceID)
+        public DbExecuteInfo UpdMainResourceToInventory(string MainResourceID, string InventoryStatus)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
@@ -350,7 +349,7 @@ AND (MainResourceID = @MainResourceID) ";
             #endregion 參數設定
 
             string CommendText = $@"UPDATE BorrowMainResourceMang 
-                                       SET InventoryStatus = '02'
+                                       SET InventoryStatus = '{InventoryStatus}'
                                      WHERE MainResourceID = @MainResourceID
 ";
 
@@ -445,6 +444,27 @@ AND (MainResourceID = @MainResourceID) ";
             return ExecuteResult;
         }
 
+        public DbExecuteInfo updSecondResourceStatus(List<BorrowMainResourceMangInventoryDetailModel> dataList, string RecodeOrder, UserInfo loginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommendText = "";
+
+            CommendText = $@"UPDATE BorrowSecondResourceMang 
+                                SET ShelvesStatus = @ShelvesStatus, 
+                                    BorrowStatus = @BorrowStatus,
+                                    LastModifier = '{loginUser.LoginId}', 
+                                    LastModified = GETDATE()
+                              WHERE SecondResourceNo = @SecondResourceNo
+";
+
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+            return ExecuteResult;
+        }
+
         public DbExecuteInfo UpdInventoryDetailData(string RecordOrderID, string DeviceID, UserInfo loginUser)
         {
 
@@ -464,16 +484,71 @@ AND (MainResourceID = @MainResourceID) ";
             return ExecuteResult;
         }
 
+        public DbExecuteInfo updInventoryAmtToRecord(string ID, string AmtInventory, UserInfo loginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommendText = $@"UPDATE InventoryRecord 
+                                           SET AmtInventory = '{AmtInventory}',
+                                               LastModifier = '{loginUser.LoginId}',
+                                               LastModified = GETDATE()
+                                         WHERE ID = '{ID}'
+";
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
 
 
 
 
 
+        public DataTable GetInventoryAmt(string InventoryRecordID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@InventoryRecordID", InventoryRecordID);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT SUM(inventoryAmt) AS Amt 
+                               FROM InventoryDetail
+                              WHERE InventoryRecordID = @InventoryRecordID";
 
 
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+            return ds.Tables[0];
+        }
 
 
+        public DataTable SearchInventoryRecord(string MainResourceID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
 
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@MainResourceID", MainResourceID);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"
+                            SELECT ID 
+                              FROM InventoryRecord
+                             WHERE 1 = 1
+                               AND MainResourceID = @MainResourceID AND AmtInventory is null";
+
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+            return ds.Tables[0];
+        }
 
 
         public DataTable GetMainResourceInventoryStatus(string MainResourceID)
