@@ -5,6 +5,7 @@ using NPOI.XSSF.UserModel;
 using System.ComponentModel;
 using System.Data;
 using System.Reflection;
+using System.Runtime.ConstrainedExecution;
 using System.Web.Mvc;
 using Utility;
 using WebPccuClub.DataAccess;
@@ -74,7 +75,9 @@ namespace WebPccuClub.Controllers
         public IActionResult InventoryIndex(string submitBtn, BorrowMainResourceMangViewModel vm)
         {
             vm.InventoryRecordModel = dbAccess.GetInventoryRecord(submitBtn);
-            
+            vm.InventoryRecordModel.RunType = vm.InventoryRecordModel.InventoryStatus == "02" ? "1" : "0";
+
+
             return View(vm);
         }
 
@@ -95,11 +98,162 @@ namespace WebPccuClub.Controllers
         [LogAttribute(LogActionChineseName.查詢)]
         public IActionResult GetInventorySearchResult(BorrowMainResourceMangViewModel vm)
         {
-            vm.InventoryDetailModel = dbAccess.GetInventoryDetailTemplete(vm.InventoryRecordModel.MainResourceID).ToList();
+            //RunType: null / 0:查看SecondResource ；1:盤點中；2:盤點結束
+
+            DataTable dtt = dbAccess.GetMainResourceInventoryStatus(vm.InventoryRecordModel.MainResourceID);
+            
+            string RunType = dtt.QueryFieldByDT("InventoryStatus");
+
+            if (RunType == "02") { vm.InventoryRecordModel.RunType = "1"; }
+
+            switch (vm.InventoryRecordModel.RunType)
+            {
+                case null:
+                    vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordModel.MainResourceID).ToList();
+                break;
+                case "0":
+                    vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordModel.MainResourceID).ToList();
+                    break;
+                case "1":
+
+                    try
+                    {                    
+                        //更新Flag
+                        dbAccess.DbaInitialTransaction();
+
+                        var dbResult = dbAccess.UpdMainResourceToInventory(vm.InventoryRecordModel.MainResourceID);
+
+                        if (!dbResult.isSuccess)
+                        {
+                            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                            vmRtn.ErrorMsg = "失敗";
+                            return Json(vmRtn);
+                        }
+
+                        dbResult = dbAccess.UpdSecondResourceToInventory(vm.InventoryRecordModel.MainResourceID);
+
+                        if (!dbResult.isSuccess)
+                        {
+                            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                            vmRtn.ErrorMsg = "失敗";
+                            return Json(vmRtn);
+                        }
+
+                        //新增一張Record單
+                        DataTable dt = new DataTable();
+                        dbResult = dbAccess.CreateInventoryRecord(vm.InventoryRecordModel, LoginUser, out dt);
+
+                        if (!dbResult.isSuccess)
+                        {
+                            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                            vmRtn.ErrorMsg = "失敗";
+                            return Json(vmRtn);
+                        }
+
+                        string RecodeOrder = dt.QueryFieldByDT("ID");
+
+                        //取得SecondResource資料
+                        vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordModel.MainResourceID).ToList();
+
+                        //回寫進Detail
+                        dbAccess.InserInventoryDetailData(vm.InventoryDetailModel, RecodeOrder, LoginUser);
+
+                        dbAccess.DbaCommit();
 
 
+                        //撈取Detail資料到前台
+                        vm.InventoryDetailModel = dbAccess.GetInventoryDetail(vm.InventoryRecordModel.MainResourceID).ToList();
+                        vm.InventoryRecordModel.InventoryRecordID = RecodeOrder;
+                    }
+                    catch (Exception ex)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "刪除失敗" + ex.Message;
+                        return Json(vmRtn);
+                    }
+
+                    break;
+                case "2":
+                    //更新Flag 為非盤點
+
+                    //撈取Detail資料
+
+                    //更新上下架狀態與借用狀態
+
+                    //更新總盤點數到Record
+
+                    //顯示SecondResource到前台
+                    vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordModel.MainResourceID).ToList();
+                    break;
+            }
+            
             return PartialView("_InventorySearchResultPartial", vm);
         }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> UpdSingleInventory(string InventoryRecordID, string DeviceID)
+        {
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.UpdInventoryDetailData(InventoryRecordID, DeviceID, LoginUser);
+
+                if (!dbResult.isSuccess && dbResult.AffectRowCount != 1)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+        [Log(LogActionChineseName.編輯儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> updInventoryDetailAsync(string InventoryRecordID, string DeviceID)
+        {
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.UpdInventoryDetailData(InventoryRecordID, DeviceID, LoginUser);
+
+                if (!dbResult.isSuccess && dbResult.AffectRowCount != 1)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+
 
         [Log(LogActionChineseName.新增儲存)]
         [ValidateInput(false)]

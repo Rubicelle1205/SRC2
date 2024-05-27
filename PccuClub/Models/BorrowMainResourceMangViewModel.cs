@@ -273,7 +273,15 @@ namespace WebPccuClub.Models
 
     public class BorrowMainResourceMangInventoryRecordModel
     {
+        public string? RunType { get; set; }
+
+        public string? ReturnID { get; set; }
+
+        public string? ReturnAmt { get; set; }
+
         public string? MainResourceID { get; set; }
+
+        public string? InventoryRecordID { get; set; }
 
         /// <summary>資源名稱</summary>
         [DisplayName("資源名稱")]
@@ -298,10 +306,13 @@ namespace WebPccuClub.Models
         /// <summary>物品類型</summary>
         [DisplayName("物品類型")]
         public string? BorrowTypeText { get; set; }
+
+        public string? InventoryStatus { get; set; }
     }
 
     public class BorrowMainResourceMangInventoryDetailModel
     {
+
         /// <summary>資產號碼</summary>
         [DisplayName("資產號碼")]
         public string? SecondResourceNo { get; set; }
@@ -317,6 +328,23 @@ namespace WebPccuClub.Models
         /// <summary>借用狀態</summary>
         [DisplayName("借用狀態")]
         public string? BorrowStatus { get; set; }
+
+        /// <summary>上下架狀態</summary>
+        [DisplayName("上下架狀態")]
+        public string? ShelvesStatusText { get; set; }
+
+        /// <summary>借用狀態</summary>
+        [DisplayName("借用狀態")]
+        public string? BorrowStatusText { get; set; }
+
+        //庫存數
+        public string? ThinkAmt { get; set;  }
+
+        //庫存數
+        public string? BorrowType { get; set; }
+
+        //庫存數
+        public string? BorrowTypeText { get; set; }
     }
 
     public class BorrowMainResourceMangInventoryDetailEditModel

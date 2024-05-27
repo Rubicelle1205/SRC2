@@ -49,17 +49,30 @@
                 <form action="" enctype="multipart/form-data" id="SearchForm" method="post">
                     <div class="card">
                         <div class="card-header">
+                            <div id="divSingleReturn" class="d-flex justify-content-center mb-1" style="display:none !important;">
+                                @Html.TextBoxFor(m => m.InventoryRecordModel.ReturnID, new {@class = "form-control", placeholder = "請輸入歸還物品資產編號", @style="width:70%;" })
+                                <button id="btnSingleReturn" type="button" class="btn btn-success">確認</button>
+                                <button id="btnSingleCancel" type="button" class="btn btn-default">取消</button>
+                            </div>
+                            <div id="divMultReturn" class="d-flex justify-content-center mb-1" style="display:none !important;">
+                                @Html.TextBoxFor(m => m.InventoryRecordModel.ReturnAmt, new {@class = "form-control", placeholder = "請輸入歸還物品數量", @style="width:70%;", type = "number" })
+                                <button id="btnMultReturn" type="button" class="btn btn-success">確認</button>
+                                <button id="btnMultCancel" type="button" class="btn btn-default">取消</button>
+                            </div>
                             <div class="card-tools">
-                                @using (Html.BeginForm("Edit", "BorrowMainResourceMang", FormMethod.Post))
-                                {
-                                    @Html.HiddenFor(m => m.InventoryRecordModel.MainResourceID)
-                                    <input type="button" class="btn btn-sm btn-success" value="開始盤點" onclick="GoSearch(0)">
-                                }
-@*
-                                <a class="btn btn-sm btn-outline-success hide" id="multi_checking_start">批次盤點</a><!--若物品類型為[大量借用],可直接輸入數量進行盤點-->
-                                <a class="btn btn-sm btn-outline-danger hide"
-                                   id="checking_continue">盤點繼續</a>
-                                <a class="btn btn-sm btn-danger hide" id="checking_end">盤點結束</a>*@
+                                @Html.HiddenFor(m => m.InventoryRecordModel.RunType)
+                                @Html.HiddenFor(m => m.InventoryRecordModel.AmtReal)
+                                @Html.HiddenFor(m => m.InventoryRecordModel.BorrowType)
+                                @Html.HiddenFor(m => m.InventoryRecordModel.MainResourceID)
+                                <input id="btnStart" type="button" class="btn btn-sm btn-success" value="開始盤點" onclick="GoSearch(1)">
+                                
+                                <div id="divEnd" class="hide">
+                                    <a id="btnEnd" class="btn btn-sm btn-danger" onclick="GoSearch(2)">盤點結束</a>
+                                </div>
+
+                                <div id="divMultStart" class="hide">
+                                    <a id="btnMultStart" class="btn btn-sm btn-outline-success hide">批次盤點</a>
+                                </div>
                             </div>
                         </div>
 
@@ -81,10 +94,74 @@
 <script>
 
     $(document).ready(function () {
+
+
         GoSearch();
+
+        $("#btnSingleReturn").click(function () {
+            var InventoryRecordID = $('#@Html.IdFor(m => m.InventoryRecordModel.InventoryRecordID)').val();
+            var DeviceID = $('#@Html.IdFor(m => m.InventoryRecordModel.ReturnID)').val();
+
+            UpdSingleInventory(InventoryRecordID, DeviceID);
+        });
+
+
+
+
     });
 
+
+    function UpdSingleInventory(InventoryRecordID, DeviceID) {
+
+        SendAjax({
+            url: '@Url.Action("UpdSingleInventory")',
+            data: { 'InventoryRecordID': InventoryRecordID, 'DeviceID': DeviceID },
+            success: function (result) {
+                GoSearch();
+            }
+        });
+    }
+
     function GoSearch(source) {
+        if (typeof source === 'undefined')
+        {
+            source = $("#@Html.IdFor(m => m.InventoryRecordModel.RunType)").val();
+        }
+
+        $("#@Html.IdFor(m => m.InventoryRecordModel.RunType)").val(source);
+
+
+        var BorrowType = $("#@Html.IdFor(m => m.InventoryRecordModel.BorrowType)").val();
+
+        if(source == "1")
+        {
+            if(BorrowType == "02")
+            {
+                $("#btnStart").addClass("hide");
+                $("#divEnd").removeClass("hide");
+                $("#divSingleReturn").each(function () { this.style.setProperty("display", "none"); });
+            }
+            else if(BorrowType == "01")
+            {
+                $("#btnStart").addClass("hide");
+                $("#divEnd").removeClass("hide");
+                $("#divMultReturn").each(function () { this.style.setProperty("display", "none"); });
+            }
+            
+        }
+        else if(source == "2")
+        {
+            if (BorrowType == "02") {
+                $("#btnStart").removeClass("hide");
+                $("#divEnd").addClass("hide");
+                $("#divSingleReturn").each(function () { this.style.setProperty("display", "none", "important"); });
+            }
+            else if (BorrowType == "01") {
+                $("#btnStart").removeClass("hide");
+                $("#divEnd").addClass("hide");
+                $("#divMultReturn").each(function () { this.style.setProperty("display", "none", "important"); });
+            }
+        }
 
         SendAjax({
             url: '@Url.Action("GetInventorySearchResult")',

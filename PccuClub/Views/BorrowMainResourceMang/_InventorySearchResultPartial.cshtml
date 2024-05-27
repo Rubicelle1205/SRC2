@@ -1,5 +1,10 @@
 ﻿@model WebPccuClub.Models.BorrowMainResourceMangViewModel
 
+@{
+    
+    string RunType = Model.InventoryRecordModel.RunType;
+
+}
 
     <!-- /.card-header -->
 <div class="table-responsive">
@@ -15,16 +20,69 @@
                 <th width="10%">盤點狀態</th>
             </tr>
         </thead>
+
+
         <tbody class="text-center text-sm">
-            <tr>
-                <td><span data-number>A002</span></td>
-                <td>喇叭</td>
-                <td>下架</td>
-                <td>已歸還(不外借)</td>
-                <td><span class="text-muted" data-set="checking">尚未開始盤點</span></td>
-               
-            </tr>
+            @if (Model.InventoryDetailModel.Count > 0)
+                {
+                switch (RunType)
+                {
+                
+                    case null:
+                        foreach (var item in Model.InventoryDetailModel)
+                        {
+                            <tr>
+                                <td><span data-number>@item.SecondResourceNo</span></td>
+                                <td>@item.SecondResourceName</td>
+                                <td>@item.ShelvesStatusText</td>
+                                <td>@item.BorrowStatusText</td>
+                                <td><span class="text-muted" data-set="checking">尚未開始盤點</span></td>
+                            </tr>
+                        }
+                        break;
+                    case "0":
+                        foreach (var item in Model.InventoryDetailModel)
+                        {
+                            <tr>
+                                <td><span data-number>@item.SecondResourceNo</span></td>
+                                <td>@item.SecondResourceName</td>
+                                <td>@item.ShelvesStatusText</td>
+                                <td>@item.BorrowStatusText</td>
+                                <td><span class="text-muted" data-set="checking">尚未開始盤點</span></td>
+                            </tr>
+                        }
+                        break;
+                    case "1":
+                        foreach (var item in Model.InventoryDetailModel)
+                        {
+                            <tr>
+                                <td><span data-number>@item.SecondResourceNo</span></td>
+                                <td>@item.SecondResourceName</td>
+                                <td>@item.ShelvesStatusText<i class="fa-solid fa-lock" data-lock=""></i></td>
+                                <td>@item.BorrowStatusText<i class="fa-solid fa-lock" data-lock=""></i></td>
+                                <td><span class="text-muted" data-set="checking">盤點中</span></td>
+                            </tr>
+                        }
+                        break;
+                    case "2":
+                        foreach (var item in Model.InventoryDetailModel)
+                        {
+                            <tr>
+                                <td><span data-number>@item.SecondResourceNo</span></td>
+                                <td>@item.SecondResourceName</td>
+                                <td>@item.ShelvesStatusText<i class="fa-solid fa-lock" data-lock=""></i></td>
+                                <td>@item.BorrowStatusText<i class="fa-solid fa-lock" data-lock=""></i></td>
+                                <td><span class="text-muted" data-set="checking">盤點中</span></td>
+                            </tr>
+                        }
+                        break;
+                }
+                
+            }
+           
         </tbody>
+        @Html.HiddenFor(m => m.InventoryRecordModel.InventoryRecordID)
+
     </table>
 </div>
     <!-- /.card-body -->
