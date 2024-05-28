@@ -32,7 +32,7 @@ namespace WebPccuClub.Controllers
         };
         public List<string> LstFreeAccessController = new List<string>()
         {
-            "ClubList", "WeekActivity", "ClubHandover", "MenuFront", "ConsultationApply"
+            "ClubList", "WeekActivity", "ClubHandover", "MenuFront", "ConsultationApply", "FBorrowIndex", "FResourceBorrow", "FBorrowRecord"
         };
 
 
@@ -192,6 +192,8 @@ namespace WebPccuClub.Controllers
                 UserInfo thisUser = HttpContext.Session.GetObject<UserInfo>("FLoginUser");
                 thisUser.LoginSystemCode = SystemCode;
                 thisUser.LoginSource = "F";
+
+                if (thisUser.LoginSystemCode != "02") { thisUser.LoginId = thisUser.SSOAccount; } else { thisUser.LoginId = thisUser.ClubId; }
                 HttpContext.Session.SetObject("FLoginUser", thisUser);
 
             }
