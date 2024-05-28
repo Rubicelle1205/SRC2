@@ -105,9 +105,9 @@
 
         $("#btnMultReturn").click(function () {
             var InventoryRecordID = $('#@Html.IdFor(m => m.InventoryRecordModel.InventoryRecordID)').val();
-            var DeviceID = $('#@Html.IdFor(m => m.InventoryRecordModel.ReturnID)').val();
+            var ReturnAmt = $('#@Html.IdFor(m => m.InventoryRecordModel.ReturnAmt)').val();
 
-            UpdSingleInventory(InventoryRecordID, DeviceID);
+            UpdMultInventory(InventoryRecordID, ReturnAmt);
         });
 
 
@@ -125,7 +125,16 @@
         });
     }
 
+    function UpdMultInventory(InventoryRecordID, ReturnAmt) {
 
+        SendAjax({
+            url: '@Url.Action("UpdMultInventory")',
+            data: { 'InventoryRecordID': InventoryRecordID, 'ReturnAmt': ReturnAmt },
+            success: function (result) {
+                GoSearch();
+            }
+        });
+    }
 
     function GoSearch(source) {
         if (typeof source === 'undefined')

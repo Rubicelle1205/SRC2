@@ -1,4 +1,5 @@
-﻿
+﻿@model WebPccuClub.Models.BorrowInventoryMangViewModel
+
 @{
     Layout = "_BackendLayout";
 
@@ -21,20 +22,17 @@
                                 @Html.AntiForgeryToken()
 
                                 <div class="col-md-3 col-sm-6 mt-2">
-                                    <input type="text" class="form-control" data-toggle="tooltip"
-                                           title="資源名稱"
-                                           name="keyword_title"
-                                           placeholder="請輸入資源名稱"
-                                           value="" search_ref>
+                                    @Html.TextBoxFor(m => m.ConditionModel.Text, new {@class="form-control", placeholder="請輸入資源名稱"})
                                 </div>
-                             
 
                                 <div class="col-md-12 mt-2 row">
                                     <div class="col-md-6 col-sm-12 float-left">
                                         <span id="PageNow" class="text-sm text-muted" style="display:none;">
+                                            目前為第 {{:pnow}} 頁 / 共 {{:ptotle}} 頁
                                         </span>
                                         <br />
                                         <span id="PageEver" class="text-muted text-sm" style="display:none;">
+                                            每頁顯示 {{:pever}} 筆 / 共 {{:ptotleever}} 筆
                                         </span>
                                     </div>
                                     <div class="col-md-6 col-sm-12 float-right d-flex flex-wrap align-items-end justify-content-end p-0">
@@ -46,7 +44,9 @@
                             </div>
                         </div>
                     </div>
-
+                    @Html.HiddenFor(m => m.ConditionModel.Page)
+                    @Html.HiddenFor(m => m.ConditionModel.PageSize)
+                    @Html.HiddenFor(m => m.ConditionModel.TotalCount)
                 </form>
                 <div id="SearchResultList" class="card"></div>
 
@@ -59,4 +59,38 @@
 
 <script>
 
+    function GoSearch(source) {
+
+        if (source == 0)
+            $('#@(Html.IdFor(m => m.ConditionModel.Page))').val(0);
+
+        SendAjax({
+            url: '@Url.Action("GetSearchResult")',
+            data: $("#SearchForm").serialize(),
+            success: function (result) {
+                $('#SearchResultList').html(result);
+            }
+        });
+    }
+
+    function ExportSearchResult() {
+        window.open('@Url.Action("ExportSearchResult")' + '?' + $("#SearchForm").serialize());
+    }
+
+    $('#JumpPergroup').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val(e.target.value);
+        GoSearch();
+    });
+    
+    $('#Jumppage').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.Page)").val(e.target.value);
+        GoSearch();
+    });
+
+    $('input:reset').click(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val("10");
+    });
+
+
+    $('#@Html.IdFor(m => m.ConditionModel.Text)').tooltip({ title: "資源名稱" });
 </script>
