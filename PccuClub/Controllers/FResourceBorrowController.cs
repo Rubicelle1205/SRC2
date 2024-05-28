@@ -13,7 +13,7 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WebPccuClub.Controllers
 {
-    [LogAttribute(LogActionChineseName.業務分類維護)]
+    [LogAttribute(LogActionChineseName.資源借用狀況)]
     public class FResourceBorrowController : FBaseController
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
@@ -38,11 +38,11 @@ namespace WebPccuClub.Controllers
             return View();
         }
 
+        #region 本日借用者
+
         [LogAttribute(LogActionChineseName.查詢)]
         public IActionResult GetSearchResult(FResourceBorrowViewModel vm)
         {
-            List<DateTime> LstDate = new List<DateTime>();
-
             vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel).ToList();
 
             #region 分頁
@@ -65,43 +65,49 @@ namespace WebPccuClub.Controllers
             return PartialView("_SearchResultDetailPartial", vm);
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        #endregion
 
         [LogAttribute(LogActionChineseName.查詢)]
         public IActionResult GetSearchResourceResult(FResourceBorrowViewModel vm)
         {
-            //List<DateTime> LstDate = new List<DateTime>();
 
-            //DateTime SDate = DateTime.Parse(vm.ConditionModel.SDate);
+            vm.ResourceResultModel = dbAccess.GetResourceSearchResult(vm.ConditionModel).ToList();
+            vm.ResourceBorrowedResultModel = dbAccess.GetBorrowedResult(vm.ConditionModel).ToList();
 
+            foreach (FResourceBorrowResourceResultModel item in vm.ResourceResultModel)
+            {
+                int diffAmt = 0;
+                string MainResourceID = item.MainResourceID;
+
+                List<FResourceBorrowResourceBorrowedModel>  LstDiff = vm.ResourceBorrowedResultModel.Where(x => x.MainResourceID == MainResourceID).ToList();
+
+                foreach (FResourceBorrowResourceBorrowedModel item2 in LstDiff)
+                {
+                    diffAmt = diffAmt + Int32.Parse(item2.BorrowAmt);
+                }
+
+                item.RemainAmt = (Int32.Parse(item.RemainAmt) - diffAmt).ToString();
+            }
 
             #region 分頁
-            vm.ConditionModel.TotalCount = vm.ResultModel.Count();
+            vm.ConditionModel.TotalCount = vm.ResourceResultModel.Count();
             int StartRow = vm.ConditionModel.Page * vm.ConditionModel.PageSize;
-            vm.ResultModel = vm.ResultModel.Skip(StartRow).Take(vm.ConditionModel.PageSize).ToList();
+            vm.ResourceResultModel = vm.ResourceResultModel.Skip(StartRow).Take(vm.ConditionModel.PageSize).ToList();
             #endregion
 
-            return PartialView("_SearchResultPartial", vm);
+            return PartialView("_SearchResultBorrowedPartial", vm);
+        }
+
+        [Log(LogActionChineseName.編輯)]
+        public IActionResult Edit(string submitBtn, FResourceBorrowViewModel vm)
+        {
+            if (string.IsNullOrEmpty(submitBtn))
+                return RedirectToAction("Index");
+
+            vm.EditModel = dbAccess.GetEditData(submitBtn);
+            vm.EditModel.LstDetail = dbAccess.GetEditDetailData(submitBtn);
+
+            return View(vm);
         }
     }
 }

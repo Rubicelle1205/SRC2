@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NPOI.SS.Formula.Functions;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -17,9 +18,13 @@ namespace WebPccuClub.Models
 
         public List<FResourceBorrowResultModel> ResultModel { get; set; }
 
+        public FResourceBorrowEditModel EditModel { get; set; }
+
         public FResourceBorrowResultDetailModel ResultDetailModel { get; set; }
 
         public List<FResourceBorrowResourceResultModel> ResourceResultModel { get; set; }
+
+        public List<FResourceBorrowResourceBorrowedModel> ResourceBorrowedResultModel { get; set; }
     }
 
     public class FResourceBorrowConditionModel
@@ -112,10 +117,117 @@ namespace WebPccuClub.Models
 
     public class FResourceBorrowResourceResultModel
     {
-        /// <summary>日期</summary>
-        [DisplayName("日期")]
-        public string? Date { get; set; }
+        /// <summary>ID</summary>
+        [DisplayName("ID")]
+        public string? MainResourceID { get; set; }
 
-        public List<PlaceData> LstPlaceData = new List<PlaceData>();
+        /// <summary>資源類別</summary>
+        [DisplayName("資源類別")]
+        public string? MainClass { get; set; }
+
+        /// <summary>資源類別</summary>
+        [DisplayName("資源類別")]
+        public string? MainClassText { get; set; }
+
+        /// <summary>資源名稱</summary>
+        [DisplayName("資源名稱")]
+        public string? MainResourceName { get; set; }
+
+        /// <summary>簡述</summary>
+        [DisplayName("簡述")]
+        public string? ShortDesc { get; set; }
+
+        /// <summary>當日剩餘數量</summary>
+        [DisplayName("當日剩餘數量")]
+        public string? RemainAmt { get; set; }
+
+        /// <summary>資源總數量</summary>
+        [DisplayName("資源總數量")]
+        public string? AmtShelves { get; set; }
+    }
+
+    public class FResourceBorrowResourceBorrowedModel
+    {
+        /// <summary>ID</summary>
+        [DisplayName("ID")]
+        public string? MainResourceID { get; set; }
+
+        /// <summary>借用數量</summary>
+        [DisplayName("借用數量")]
+        public string? BorrowAmt { get; set; }
+
+    }
+
+    public class FResourceBorrowEditModel
+    {
+        public List<FResourceBorrowEditDetailModel> LstDetail = new List<FResourceBorrowEditDetailModel>();
+
+        /// <summary>資源代碼</summary>
+        [DisplayName("資源代碼")]
+        public string? MainResourceID { get; set; }
+
+        /// <summary>資源名稱</summary>
+        [DisplayName("資源名稱")]
+        public string? MainResourceName { get; set; }
+
+        /// <summary>業務分類</summary>
+        [DisplayName("業務分類")]
+        public string? MainClass { get; set; }
+
+        /// <summary>子業務分類</summary>
+        [DisplayName("子業務分類")]
+        public string? SecondClassText { get; set; }
+
+        /// <summary>簡易說明</summary>
+        [DisplayName("簡易說明")]
+        public string? ShortDesc { get; set; }
+
+        /// <summary>借用規範</summary>
+        [DisplayName("借用規範")]
+        public string? BorrowRule { get; set; }
+
+        /// <summary>資源圖片</summary>
+        [DisplayName("資源圖片")]
+        public string? ResourceImg1 { get; set; }
+
+        /// <summary>資源圖片</summary>
+        [DisplayName("資源圖片")]
+        public string? ResourceImg2 { get; set; }
+
+        /// <summary>資源圖片</summary>
+        [DisplayName("備資源圖片註")]
+        public string? ResourceImg3 { get; set; }
+
+        /// <summary>資源圖片</summary>
+        [DisplayName("資源圖片")]
+        public string? ResourceImg4 { get; set; }
+
+    }
+
+    public class FResourceBorrowEditDetailModel
+    {
+        /// <summary>資源名稱</summary>
+        [DisplayName("資源名稱")]
+        public string? MainResourceID { get; set; }
+
+        /// <summary>資源名稱</summary>
+        [DisplayName("資源名稱")]
+        public string? MainResourceName { get; set; }
+
+        /// <summary>資產號碼</summary>
+        [DisplayName("資產號碼")]
+        public string? SecondResourceName { get; set; }
+
+        /// <summary>借出狀態</summary>
+        [DisplayName("借出狀態")]
+        public string? BorrowStatus { get; set; }
+
+        /// <summary>借出狀態</summary>
+        [DisplayName("借出狀態")]
+        public string? BorrowStatusText { get; set; }
+
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
+        public string? Memo { get; set; }
     }
 }

@@ -55,7 +55,7 @@
                         <div class="item"></div>
                     </div>
                 </div>
-                <div class="listBody">
+                <div id="SearchResultList2" class="listBody">
                 </div>
             </div>
         </div>
@@ -65,7 +65,7 @@
 
 <script>
     $(document).ready(function () {
-        //GoSearch();
+        GoSearch();
     });
 
     $('#@Html.IdFor(m => m.ConditionModel.BorrowSecondClassID)').change(function (e) {
@@ -78,6 +78,14 @@
             data: $("#SearchForm").serialize(),
             success: function (result) {
                 $('#SearchResultList').html(result);
+            }
+        });
+
+        SendAjax({
+            url: '@Url.Action("GetSearchResourceResult")',
+            data: $("#SearchForm").serialize(),
+            success: function (result) {
+                $('#SearchResultList2').html(result);
             }
         });
     }
