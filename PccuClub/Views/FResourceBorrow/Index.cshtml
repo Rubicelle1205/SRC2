@@ -1,279 +1,95 @@
-﻿@{
-    Layout = "_FrontCleanLayout";
+﻿@model WebPccuClub.Models.FResourceBorrowViewModel
+
+@{
+    Layout = "_FrontBorrowLayout";
+    
     ViewBag.Title = "資源借用系統";
 }
 
-<!DOCTYPE html>
-<html lang="zh-TW">
-
-<body>
-
-    <div class="body mt-0">
-
-        <header id="header" class=""
-                data-plugin-options="{'stickyScrollUp': true, 'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': false, 'stickyChangeLogo': true, 'stickyStartAt': 42, 'stickyHeaderContainerHeight': 70}">
-            <div class="header-body header-body-bottom-border border-top-0">
-                <div class="header-container container p-static">
-                    <div class="header-row">
-                        <div class="header-column">
-                            <div class="header-row position-relative">
-                                <div class="header-logo">
-                                    <a href="index.html">
-                                        <img src="../assets/img/logo_circle.png" class="img-fluid" alt="" />
-                                    </a>
-                                </div>
-                                <a href="index.html" class="headerTitle">中國文化大學學務資訊系統</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="headerBottom">
-                    <div class="header-container container h-auto">
-                        <div class="header-row">
-                            <div class="header-column justify-content-end">
-                                <div class="header-row">
-                                    <div class="header-nav header-nav-line header-nav-bottom-line header-nav-bottom-line-effect-1">
-                                        <div class="header-nav-main header-nav-main-text-capitalize header-nav-main-square header-nav-main-arrows header-nav-main-dropdown-no-borders header-nav-main-effect-2 header-nav-main-sub-effect-1">
-                                            <nav class="collapse">
-                                                <ul class="nav nav-pills" id="mainNav">
-                                                    <li>
-                                                        <a class="nav-link" href="index.html">
-                                                            借用類別
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="nav-link" href="resource.html">
-                                                            資源借用狀況
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="nav-link active" href="record.html">
-                                                            我的借用紀錄
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="nav-link" href="javascript:void(0)">
-                                                            登出<i class="fas fa-sign-out-alt ms-1"></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </nav>
-                                        </div>
-                                    </div>
-                                    <button class="btn header-btn-collapse-nav" data-bs-toggle="collapse"
-                                            data-bs-target=".header-nav-main nav">
-                                        <i class="fas fa-bars"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <div role="main" class="main">
-
-            <div class="p-relative">
-                <div class="container-fluid p-relative py-md-5 py-4">
-                    <div class="row justify-content-center">
-                        <div class="col-xxl-8 col-xl-8">
-                            <div class="contentWrapper">
-                                <h4 class="pageTitle">我的借用紀錄</h4>
-                                <hr>
-                                <div class="applyList">
-                                    <div class="row justify-content-between">
-                                        <div class="col-md-6">
-                                            <!--篩選項目待確認-->
-                                            <!--<div class="d-flex align-items-center">
-                                                <i class="fas fa-filter text-primary"></i>
-                                                <select name="" id="" class="form-control ms-3">
-                                                    <option value="" selected>請選擇</option>
-                                                    <option value="社團器材">社團器材</option>
-                                                    <option value="海報欄位">海報欄位</option>
-                                                    <option value="醫療用品">醫療用品</option>
-                                                    <option value="學位服">學位服</option>
-                                                </select>
-                                            </div>-->
-                                        </div>
-                                        <div class="col-md-5">
-                                            <div class="text-end mb-3">
-                                                <a class="btn btn-primary btn-modern border-0" href="index.html">
-                                                    新增借用單
-                                                    <i class="fas fa-plus"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="pagelist pagelist-icon2">
-                                        <div class="listItem">
-                                            <div class="textbox">
-                                                <div class="serNum">2024011501</div>
-                                                <div class="title">脫口秀大賽</div>
-                                                <div class="spec">
-                                                    <div class="tag">審核狀態：</div>
-                                                    <div class="content">
-                                                        <div class="badge badge-primary">申請中</div>
-                                                    </div>
-                                                </div>
-                                                <div class="spec">
-                                                    <div class="tag">申請日期：</div>
-                                                    <div class="content">2023/03/10</div>
-                                                </div>
-                                            </div>
-                                            <a href="record_detail.html" class="icon">
-                                                查看 <i class="fas fa-chevron-right"></i>
-                                            </a>
-                                        </div>
-                                        <div class="listItem">
-                                            <div class="textbox">
-                                                <div class="serNum">2022122501</div>
-                                                <div class="title">2022冬季劇展</div>
-                                                <div class="spec">
-                                                    <div class="tag">審核狀態：</div>
-                                                    <div class="content">
-                                                        <div class="badge badge-success">通過</div>
-                                                    </div>
-                                                </div>
-                                                <div class="spec">
-                                                    <div class="tag">申請日期：</div>
-                                                    <div class="content">2023/03/10</div>
-                                                </div>
-                                            </div>
-                                            <a href="record_detail.html" class="icon">
-                                                查看 <i class="fas fa-chevron-right"></i>
-                                            </a>
-                                        </div>
-                                        <div class="listItem">
-                                            <div class="textbox">
-                                                <div class="serNum">2020010522</div>
-                                                <div class="title">使用原因</div>
-                                                <div class="spec">
-                                                    <div class="tag">審核狀態：</div>
-                                                    <div class="content">
-                                                        <div class="badge badge-info">已領取</div>
-                                                    </div>
-                                                </div>
-                                                <div class="spec">
-                                                    <div class="tag">申請日期：</div>
-                                                    <div class="content">2023/03/10</div>
-                                                </div>
-                                            </div>
-                                            <a href="record_detail.html" class="icon">
-                                                查看 <i class="fas fa-chevron-right"></i>
-                                            </a>
-                                        </div>
-                                        <div class="listItem">
-                                            <div class="textbox">
-                                                <div class="serNum">2020010522</div>
-                                                <div class="title">使用原因</div>
-                                                <div class="spec">
-                                                    <div class="tag">審核狀態：</div>
-                                                    <div class="content">
-                                                        <div class="badge badge-secondary">取消</div>
-                                                    </div>
-                                                </div>
-                                                <div class="spec">
-                                                    <div class="tag">申請日期：</div>
-                                                    <div class="content">2023/03/10</div>
-                                                </div>
-                                            </div>
-                                            <a href="record_detail.html" class="icon">
-                                                查看 <i class="fas fa-chevron-right"></i>
-                                            </a>
-                                        </div>
-                                        <div class="listItem">
-                                            <div class="textbox">
-                                                <div class="serNum">2020010522</div>
-                                                <div class="title">使用原因</div>
-                                                <div class="spec">
-                                                    <div class="tag">審核狀態：</div>
-                                                    <div class="content">
-                                                        <div class="badge badge-dark">已歸還</div>
-                                                    </div>
-                                                </div>
-                                                <div class="spec">
-                                                    <div class="tag">申請日期：</div>
-                                                    <div class="content">2023/03/10</div>
-                                                </div>
-                                            </div>
-                                            <a href="record_detail.html" class="icon">
-                                                查看 <i class="fas fa-chevron-right"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <ul class="pagination justify-content-center pt-4">
-                                    <li class="page-item">
-                                        <a class="page-link" href="javascript:void(0)">
-                                            <i class="icon-arrow-left"></i>
-                                        </a>
-                                    </li>
-                                    <li class="page-item active"><a class="page-link" href="javascript:void(0)">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="javascript:void(0)">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="javascript:void(0)">3</a></li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="javascript:void(0)">
-                                            <i class="icon-arrow-right"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
 
+<div class="col-xxl-3">
+    <div class="contentWrapper">
+        <p class="hint"><i class="icon-bulb"></i> 點選日期檢視當日資源借用狀況。</p>
+        <div class="scroll-box d-flex justify-content-center">
+            <div id="calendar"></div>
         </div>
-
-        <footer id="footer" class="position-relative border-top-0">
-
-            <div class="container pt-5-5 pb-3">
-                <div class="row">
-                    <div class="col-lg-8">
-                        <p class="text-3 mb-3">
-                            相關社團法規及相關規定詳見課外組網站，網址：<a href="http://activity.pccu.edu.tw/" target="_blank">http://activity.pccu.edu.tw/</a>
-                        </p>
-
-                        <p class="text-3">
-                            學校地址<span class="px-3">|</span><a href="javascript:papago('臺北市11114陽明山華岡路55號')">臺北市11114陽明山華岡路55號</a>
-                        </p>
-                        <p class="text-3">
-                            聯絡電話<span class="px-3">|</span><a href="tel:+8863-528-2255" target="_blank"
-                                                              title="撥打電話">(02)2861-0511</a> 轉分機 12202~12215
-                        </p>
-                        <p class="text-3">服務時間<span class="px-3">|</span>週一至週五 08:30~16:00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-copyright bg-transparent pb-3">
-                <div class="container">
-                    <div class="row">
-                        <div class="col my-3 text-end">
-                            <p class="text-3 mb-0 opacity-6">中國文化大學 © 2023. All Rights Reserved.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
     </div>
+    <div class="contentWrapper mt-2 mb-2">
+        <h4>本日借用者</h4><!--只顯示審核通過的借用紀錄?-->
+        <hr>
+        <div id="SearchResultList" class="borrowlist">
+        </div>
+    </div>
+</div>
 
-    <!-- Vendor -->
-    <script src="../js/jquery.min.js"></script>
-    <script src="../assets/vendor/plugins/js/plugins.min.js"></script>
-    <script src="../assets/vendor/jquery-ui/jquery-ui.min.js"></script>
-    <script src="../assets/js/theme.js"></script>
-    <script src="../assets/js/views/view.contact.js"></script>
-    <script src="../assets/js/demos/demo.js"></script>
-    <script src="../assets/js/moment.js"></script>
-    <script src="../assets/vendor/vanilla-calendar-master/vanilla-calendar.min.js"></script>
-    <script src="../assets/vendor/jquery-confirm/jquery-confirm.min.js"></script>
-    <script src="../assets/js/custom_borrowing.js?v=1"></script>
+<div class="col-xxl-6">
+    <div class="contentWrapper">
+        <div class="filterbox form-box mb-2">
+            <div class="row justify-content-between">
+                <div class="col-md-6">
+                    <h4 class="pageTitle">
+                        資源借用狀況 <span class="fs-16 dateTitle">2024-01-15</span>
+                    </h4>
+                </div>
+                <form method="post" id="SearchForm" enctype="multipart/form-data" action="" style="display: contents;">
+                <div class="col-md-5">
+                    <div class="d-flex align-items-center">
+                        <label class="flex-shrink-0" for="resource_type">資源類別：</label>
+                        @Html.DropDownListFor(m => m.ConditionModel.BorrowSecondClassID, (List<SelectListItem>)ViewBag.ddlAllBuild,"全部資源", new {@class = "form-control"})
+                            @Html.HiddenFor(m => m.ConditionModel.SDate)
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+        <div class="scroll-hint hint"><i class="fas fa-info-circle"></i> 左右滑動查看完整表格</div>
+        <div class="scroll-box">
+            <div class="memberlist item-9 mb-5">
+                <div class="listHeader">
+                    <div class="listItem">
+                        <div class="item item-sm">資源類別</div>
+                        <div class="item">資源名稱</div>
+                        <div class="item">當日剩餘數量</div>
+                        <div class="item">資源總數量</div>
+                        <div class="item"></div>
+                    </div>
+                </div>
+                <div class="listBody">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <script src="../assets/js/theme.init.js"></script>
 
-</body>
-</html>
+<script>
+    $(document).ready(function () {
+        //GoSearch();
+    });
+
+    $('#@Html.IdFor(m => m.ConditionModel.BorrowSecondClassID)').change(function (e) {
+        GoSearch();
+    });
+
+    function GoSearch() {
+        SendAjax({
+            url: '@Url.Action("GetSearchResult")',
+            data: $("#SearchForm").serialize(),
+            success: function (result) {
+                $('#SearchResultList').html(result);
+            }
+        });
+    }
+    
+    $('#JumpPergroup').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val(e.target.value);
+        GoSearch();
+    });
+
+    $('#Jumppage').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.Page)").val(e.target.value);
+        GoSearch();
+    });
+
+</script>
