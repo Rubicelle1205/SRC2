@@ -13,6 +13,8 @@ namespace WebPccuClub.Models
 
         public List<BorrowInventoryMangResultModel> ResultModel { get; set; }
 
+        public List<BorrowInventoryMangExcelModel> ExcelModel { get; set; }
+
 
     }
 
@@ -73,4 +75,49 @@ namespace WebPccuClub.Models
         public DateTime? Created { get; set; }
     }
 
+    public class BorrowInventoryMangExcelModel
+    {
+        /// <summary>資產號碼</summary>
+        [DisplayName("資產號碼")]
+        public string? SecondResourceNo { get; set; }
+
+        /// <summary>子資源名稱</summary>
+        [DisplayName("子資源名稱")]
+        public string? SecondResourceName { get; set; }
+
+        /// <summary>上下架狀態</summary>
+        [DisplayName("上下架狀態")]
+        public string? ShelvesStatusText { get; set; }
+
+        /// <summary>借用狀態</summary>
+        [DisplayName("借用狀態")]
+        public string? BorrowStatusText { get; set; }
+
+        /// <summary>盤點狀態</summary>
+        [DisplayName("盤點狀態")]
+        public string? ResourceInventoryStatusText { get; set; }
+    }
+
+    public class BorrowInventoryMangExcelHeaderModel
+    {
+        /// <summary>資產號碼</summary>
+        [DisplayName("資產號碼")]
+        public string? SecondResourceNo { get; set; }
+
+        /// <summary>子資源名稱</summary>
+        [DisplayName("子資源名稱")]
+        public string? SecondResourceName { get; set; }
+
+        /// <summary>上下架狀態</summary>
+        [DisplayName("上下架狀態")]
+        public string? TEShelvesStatusText { get; set; }
+
+        /// <summary>借用狀態</summary>
+        [DisplayName("借用狀態")]
+        public string? BorrowStatusText { get; set; }
+
+        /// <summary>盤點狀態</summary>
+        [DisplayName("盤點狀態")]
+        public string? ResourceInventoryStatusText { get; set; }
+    }
 }

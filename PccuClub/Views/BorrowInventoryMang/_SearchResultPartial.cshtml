@@ -27,7 +27,7 @@
                             <td class="text-left text-sm">@item.BorrowTypeText</td>
                             
                             <td class="text-center text-sm" style="display: flex; justify-content: center; align-items: center;">
-                            @using (Html.BeginForm("", "BorrowInventoryMang", FormMethod.Post, new { style = "float:left" }))
+                            @using (Html.BeginForm("ExportSearchResult", "BorrowInventoryMang", FormMethod.Post, new { style = "float:left" }))
                             {
                                 <button type="submit" value="@item.ID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">匯出</button>
                             }

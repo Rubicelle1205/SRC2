@@ -50,6 +50,35 @@ AND (@Text IS NULL OR Text LIKE '%' + @Text + '%') ";
             return new List<BorrowInventoryMangResultModel>();
         }
 
+        public List<BorrowInventoryMangExcelModel> GetExportResult(string InventoryRecordID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@InventoryRecordID", InventoryRecordID);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT A.SecondResourceNo, A.SecondResourceName, A.ShelvesStatus, B.Text AS ShelvesStatusText, 
+		                            A.BorrowStatus, C.Text AS BorrowStatusText, A.ResourceInventoryStatus, D.Text AS ResourceInventoryStatusText
+                               FROM InventoryDetail A
+                          LEFT JOIN Code B ON B.Code = A.ShelvesStatus AND B.Type = 'ShelvesStatus'
+                          LEFT JOIN Code C ON C.Code = A.BorrowStatus AND C.Type = 'BorrowStatus'
+                          LEFT JOIN Code D ON D.Code = A.ResourceInventoryStatus AND D.Type = 'InventoryStatus'
+                              WHERE InventoryRecordID = @InventoryRecordID";
+
+
+            (DbExecuteInfo info, IEnumerable<BorrowInventoryMangExcelModel> entitys) dbResult = DbaExecuteQuery<BorrowInventoryMangExcelModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<BorrowInventoryMangExcelModel>();
+        }
+
         /// <summary>
         /// 刪除資料
         /// </summary>

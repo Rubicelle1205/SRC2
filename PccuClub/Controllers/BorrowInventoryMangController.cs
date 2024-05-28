@@ -50,5 +50,65 @@ namespace WebPccuClub.Controllers
             return PartialView("_SearchResultPartial", vm);
         }
 
+        [LogAttribute(LogActionChineseName.匯出Excel)]
+        public IActionResult ExportSearchResult(string submitBtn, BorrowInventoryMangViewModel vm)
+        {
+            string FileName = string.Format("{0}_{1}", LogActionChineseName.盤點紀錄, DateTime.Now.ToString("yyyyMMdd"));
+            vm.ExcelModel = dbAccess.GetExportResult(submitBtn);
+
+            if (vm.ExcelModel != null && vm.ExcelModel.Count > 0)
+            {
+                IWorkbook workbook = new XSSFWorkbook();
+                List<int> LstWidth = new List<int> { 20, 20, 20, 20, 20};
+
+                ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
+
+                var properties = typeof(BorrowInventoryMangExcelHeaderModel).GetProperties();
+
+                //設定欄位
+                IRow headerRow = sheet.CreateRow(0);
+
+                XSSFCellStyle headStyle = ExcelUtil.GetDefaultHeaderStyle(workbook);
+
+                for (int i = 0; i <= properties.Length - 1; i++)
+                {
+                    var displayAttribute = (DisplayNameAttribute)properties[i].GetCustomAttribute(typeof(DisplayNameAttribute));
+                    var displayName = displayAttribute?.DisplayName ?? properties[i].Name;
+
+                    headerRow.CreateCell(i).SetCellValue(displayName);
+
+                    foreach (ICell cell in headerRow.Cells)
+                        cell.CellStyle = headStyle;
+
+                }
+
+                XSSFCellStyle contentStyle = ExcelUtil.GetDefaultContentStyle(workbook);
+
+                //設定資料
+                for (int i = 0; i <= vm.ExcelModel.Count - 1; i++)
+                {
+                    IRow dataRow = sheet.CreateRow(i + 1);
+
+                    dataRow.CreateCell(0).SetCellValue(vm.ExcelModel[i].SecondResourceNo);
+                    dataRow.CreateCell(1).SetCellValue(vm.ExcelModel[i].SecondResourceName);
+                    dataRow.CreateCell(2).SetCellValue(vm.ExcelModel[i].ShelvesStatusText);
+                    dataRow.CreateCell(3).SetCellValue(vm.ExcelModel[i].BorrowStatusText);
+                    dataRow.CreateCell(4).SetCellValue(vm.ExcelModel[i].ResourceInventoryStatusText);
+
+                    foreach (ICell cell in dataRow.Cells)
+                        cell.CellStyle = contentStyle;
+                }
+
+                MemoryStream ms = new MemoryStream();
+                workbook.Write(ms, true);
+                ms.Flush();
+                ms.Position = 0;
+
+                return File(ms, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName + ".xlsx");
+            }
+
+            return View("Index", vm);
+
+        }
     }
 }
