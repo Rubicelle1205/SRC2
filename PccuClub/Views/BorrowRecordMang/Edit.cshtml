@@ -5,7 +5,7 @@
 
     bool show = false;
     List<SelectListItem> LstSubSystemBelong = ViewBag.ddlSubSystemBelong;
-    List<BorrowRecordMangDeviceModel> Lst = Model.EditModel.LstDevice.Where(x => x.BorrowStatus == "02").ToList();
+    List<BorrowRecordMangDeviceModel> Lst = Model.EditModel.LstDevice.Where(x => x.BorrowStatus == "01").ToList();
     if (Lst.Count > 0) { show = true; }
 }
 
@@ -228,7 +228,7 @@
                                                                 }
                                                                 else    
                                                                 {
-                                                                     @if (Model.EditModel.LstDevice[i].BorrowType == "01")
+                                                                @if (Model.EditModel.LstDevice[i].BorrowStatus == "01")
                                                                     {
                                                                         <td><span class="badge badge-success">單筆借用</span></td>
                                                                         <td>@Model.EditModel.LstDevice[i].BorrowAmt</td>

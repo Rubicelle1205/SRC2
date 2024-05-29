@@ -166,13 +166,14 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
                     for (int i = 0; i <= arrFun.Count() - 1; i++)
                     {
                         parameters.Add("@MenuNode", arrFun[i].ToString());
+                        parameters.Add("@SystemCode", vm.CreateModel.SystemCode);
 
                         CommendText = $@"INSERT INTO SystemRoleFun
                                                (RoleId
-                                               ,MenuNode)
+                                               ,MenuNode, SystemCode)
                                          VALUES
                                                (@RoleId
-                                               ,@MenuNode)";
+                                               ,@MenuNode, @SystemCode)";
 
                         ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
@@ -246,13 +247,16 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             for (int i = 0; i <= arrFun.Count() - 1; i++)
             {
                 parameters.Add("@MenuNode", arrFun[i].ToString());
+                parameters.Add("@SystemCode", vm.EditModel.SystemCode);
 
                 CommendText = $@"INSERT INTO SystemRoleFun
                                                (RoleId
-                                               ,MenuNode)
+                                               ,MenuNode
+                                               ,SystemCode)
                                          VALUES
                                                (@RoleId
-                                               ,@MenuNode)";
+                                               ,@MenuNode
+                                               ,@SystemCode)";
 
                 ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
