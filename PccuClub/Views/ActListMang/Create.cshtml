@@ -376,9 +376,6 @@
             success: function (result) {
                 $("#usedTable").html(result);
             },
-            error: function (response) {
-                $.alert(result.errorMsg);
-            }
         });
 
         GetBrrowStatus();
@@ -440,9 +437,6 @@
                 }
                 else { $.alert(result.errorMsg); return; }
             },
-            error: function (response) {
-                $.alert(result.errorMsg);
-            }
         });
 
 
@@ -523,9 +517,6 @@
             success: function (result) {
                 $("#brrowTable").html(result);
             },
-            error: function (response) {
-                $.alert(result.errorMsg);
-            }
         });
     }
 
@@ -790,9 +781,6 @@
                 }
                 else { $.alert(result.errorMsg); }
             },
-            error: function (response) {
-                $.alert(response.errorMsg);
-            }
         });
     }
 

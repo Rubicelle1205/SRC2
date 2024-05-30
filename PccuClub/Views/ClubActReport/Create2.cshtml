@@ -180,9 +180,6 @@
 			success: function (result) {
 				$("#usedTable_box").html(result);
 			},
-			error: function (response) {
-				$.alert(result.errorMsg);
-			}
 		});
 
 		GetBrrowStatus();
@@ -200,9 +197,6 @@
 			success: function (result) {
 				$("#brrowTable").html(result);
 			},
-			error: function (response) {
-				$.alert(result.errorMsg);
-			}
 		});
 	}
 
@@ -268,9 +262,6 @@
 				}
 				else { $.alert(result.errorMsg); return; }
 			},
-			error: function (response) {
-				$.alert(result.errorMsg);
-			}
 		});
 
 

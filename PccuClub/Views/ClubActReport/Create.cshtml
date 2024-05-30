@@ -159,9 +159,6 @@
             success: function (result) {
                 $("#act_loc_agree").html(result);
             },
-            error: function (response) {
-                $.alert(result.errorMsg);
-            }
         });
     });
 
@@ -175,9 +172,6 @@
                 success: function (result) {
                     $("#act_loc_agree").html(result);
                 },
-                error: function (response) {
-                    $.alert(result.errorMsg);
-                }
             });
         }
 
