@@ -26,25 +26,25 @@
                         @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "02"))
                         {
                             <a href="@Url.Action("Index", "Home")" class="list-group-item list-group-item-action">
-                                <i class="fa-solid fa-cubes"></i> 社團系統
+                                <i class="fa-solid fa-cubes"></i> 活動報備管理/結案管理
                             </a>
                         }
                         @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "03"))
                         {
                             <a href="@Url.Action("Index", "EventHome")" class="list-group-item list-group-item-action">
-                                <i class="fa-solid fa-user-secret"></i> 案件系統
+                                <i class="fa-solid fa-user-secret"></i> 案件管理/校安事件通報/性平事件/霸凌事件
                             </a>
                         }
                         @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "04"))
                         {
                             <a href="@Url.Action("Index", "BorrowHome")" class="list-group-item list-group-item-action">
-                                <i class="fa-solid fa-boxes-packing"></i> 借用資源
+                                <i class="fa-solid fa-boxes-packing"></i> 借用資源管理
                             </a>
                         }
                         @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "05"))
                         {
                             <a href="@Url.Action("Index", "ConsultationHome")" class="list-group-item list-group-item-action">
-                                <i class="fa-solid fa-heart-pulse"></i> 輔導諮商
+                                <i class="fa-solid fa-heart-pulse"></i> 輔導預約系統
                             </a>
                         }
 
