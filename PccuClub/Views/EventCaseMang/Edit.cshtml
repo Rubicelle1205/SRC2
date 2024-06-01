@@ -251,22 +251,26 @@
                                             <div class="row p-2">
                                                 @foreach (SelectListItem item in LstddlReferUnit)
                                                 {
-                                                        if (Model.EditModel.ReferCode.Contains(item.Value))
+                                                        if (Model.EditModel.ReferCode != null)
                                                         {
+                                                            if (Model.EditModel.ReferCode.Contains(item.Value))
+                                                            {
 
-                                                            <div class="col-md-2 custom-control custom-checkbox">
-                                                                <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                                type="checkbox" id="@item.Value" value="@item.Value" checked>
-                                                                <label class="custom-control-label" for="@item.Value">@item.Text</label>
-                                                            </div>
-                                                        }
-                                                        else
-                                                        {
-                                                            <div class="col-md-2 custom-control custom-checkbox">
-                                                                <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                                       type="checkbox" id="@item.Value" value="@item.Value">
-                                                                <label class="custom-control-label" for="@item.Value">@item.Text</label>
-                                                            </div>
+                                                                <div class="col-md-2 custom-control custom-checkbox">
+                                                                    <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                                           type="checkbox" id="@item.Value" value="@item.Value" checked>
+                                                                    <label class="custom-control-label" for="@item.Value">@item.Text</label>
+                                                                </div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="col-md-2 custom-control custom-checkbox">
+                                                                    <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                                           type="checkbox" id="@item.Value" value="@item.Value">
+                                                                    <label class="custom-control-label" for="@item.Value">@item.Text</label>
+                                                                </div>
+                                                            }
+
                                                         }
                                                 }
                                             </div>
@@ -341,12 +345,23 @@
             var $newRow = $lastRow.clone(); 
 
             var newRowNum = parseInt($lastRow.find('th:first').text()) + 1;
-            $newRow.find('th:first').text(newRowNum);
-
-            $newRow.find('input').val('');
-            $newRow.find('select').val('');
-
-            $tableBody.append($newRow);
+            if(isNaN(newRowNum))
+            {
+                SendAjax({
+                    url: '@Url.Action("GeneralNewRow")',
+                    data: '',
+                    success: function (result) {
+                        $('#peo_table tbody').html(result);
+                    }
+                });
+            }
+            else
+            {
+                $newRow.find('th:first').text(newRowNum);
+                $newRow.find('input').val('');
+                $newRow.find('select').val('');
+                $tableBody.append($newRow);
+            }
         });
 
         $('#peo_table').on('click', 'button[name="delete_row"]', function () {

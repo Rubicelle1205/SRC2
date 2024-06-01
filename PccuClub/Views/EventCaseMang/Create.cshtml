@@ -255,12 +255,24 @@
             var $newRow = $lastRow.clone(); 
 
             var newRowNum = parseInt($lastRow.find('th:first').text()) + 1;
-            $newRow.find('th:first').text(newRowNum);
 
-            $newRow.find('input').val('');
-            $newRow.find('select').val('');
-
-            $tableBody.append($newRow);
+            if(isNaN(newRowNum))
+            {
+                SendAjax({
+                    url: '@Url.Action("GeneralNewRow")',
+                    data: '',
+                    success: function (result) {
+                        $('#peo_table tbody').html(result);
+                    }
+                });
+            }
+            else
+            {
+                $newRow.find('th:first').text(newRowNum);
+                $newRow.find('input').val('');
+                $newRow.find('select').val('');
+                $tableBody.append($newRow);
+            }
         });
 
         $('#peo_table').on('click', 'button[name="delete_row"]', function () {

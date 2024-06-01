@@ -620,6 +620,24 @@ namespace WebPccuClub.Controllers
             return PartialView("_SearchReferDataResultPartial", vm);
         }
 
+        
+        [LogAttribute(LogActionChineseName.AjaxMethod)]
+        public IActionResult GeneralNewRow()
+        {
+            ViewBag.ddlSex = dbAccess.GetddlSex();
+            ViewBag.ddlVictimTitle = dbAccess.GetddlVictimTitle();
+            ViewBag.ddlVictimUnit = dbAccess.GetddlVictimUnit();
+            ViewBag.ddlVictimLocation = dbAccess.GetddlVictimLocation();
+            ViewBag.ddlVictimRole = dbAccess.GetddlVictimRole();
+            ViewBag.ddlBirth = dbAccess.GetddlBirth();
+            ViewBag.ddlVictimStatus = dbAccess.GetddlVictimStatus();
+
+            EventCaseMangViewModel vm = new EventCaseMangViewModel();
+            vm.CreateModel = new EventCaseMangCreateModel();
+
+            return PartialView("_NewTableRowPartial", vm);
+        }
+
         [LogAttribute(LogActionChineseName.下載template檔案)]
         public IActionResult DownloadReferDataTemplate()
         {

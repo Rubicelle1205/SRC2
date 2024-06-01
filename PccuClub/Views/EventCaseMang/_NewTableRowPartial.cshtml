@@ -1,0 +1,41 @@
+﻿@model WebPccuClub.Models.EventCaseMangViewModel
+
+
+    <!-- /.card-header -->
+<tr>
+    <th scope="col">1</th>
+    <td>
+        @Html.DropDownList("Sex", (IEnumerable<SelectListItem>)ViewBag.ddlSex, "請選擇性別", new { @class = "form-control  form-control-sm" })
+    </td>
+    <td>
+        @Html.TextBox("Name", null, new { @class = "form-control form-control-sm", placeholder = "請輸入姓名" })
+    </td>
+    <td>
+        @Html.DropDownList("Status", (IEnumerable<SelectListItem>)ViewBag.ddlVictimStatus, "請選擇狀態", new { @class = "form-control  form-control-sm" })
+    </td>
+    <td>
+        @Html.DropDownList("Title", (IEnumerable<SelectListItem>)ViewBag.ddlVictimTitle, "請選擇身分", new { @class = "form-control  form-control-sm" })
+    </td>
+    <td>
+        @Html.DropDownList("Unit", (IEnumerable<SelectListItem>)ViewBag.ddlVictimUnit, "請選擇所屬單位", new { @class = "form-control  form-control-sm" })
+    </td>
+    <td>
+        @Html.TextBox("SNO", null, new { @class = "form-control form-control-sm", placeholder = "請輸入學號" })
+    </td>
+    <td>
+        @Html.DropDownList("BirthYear", (IEnumerable<SelectListItem>)ViewBag.ddlBirth, "請選擇出生年", new { @class = "form-control  form-control-sm" })
+    </td>
+    <td>
+        @Html.DropDownList("Location", (IEnumerable<SelectListItem>)ViewBag.ddlVictimLocation, "請選擇目前位置", new { @class = "form-control  form-control-sm" })
+    </td>
+    <td>
+        @Html.DropDownList("Role", (IEnumerable<SelectListItem>)ViewBag.ddlVictimRole, "請選擇角色", new { @class = "form-control  form-control-sm" })
+    </td>
+    <td>
+        <button type="button"
+                class="btn btn-sm btn-outline-danger"
+                name="delete_row">
+            <i class="fa-solid fa-x"></i>
+        </button>
+    </td>
+</tr>

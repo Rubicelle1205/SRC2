@@ -123,6 +123,7 @@
         我的借用紀錄 = 108,
         取得上架數量 = 109,
         盤點 = 110,
+        AjaxMethod = 111,
     }
 
 	public enum DBActionChineseName
