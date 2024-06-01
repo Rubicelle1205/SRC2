@@ -271,5 +271,25 @@ namespace PccuClub.WebAuth
                 return false;
             }
         }
+
+        public bool ChkUserEnable(SSOUserInfo sSOUserInfo, string BackOrFront)
+        {
+            try
+            {
+                // 查詢後台User啟用狀態
+                (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = dbAccess.CheckBackendUserEnable(sSOUserInfo, BackOrFront);
+                
+                if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0)
+                { return false; }
+
+                if (!mainResult.entitys.FirstOrDefault().IsEnable) { return false; }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

@@ -198,5 +198,36 @@ namespace WebAuth.DataAccess
 
             return result;
         }
+
+        public (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) CheckBackendUserEnable(SSOUserInfo sSOUserInfo, string BackOrFront)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            string CommandTxt = string.Empty;
+            DBAParameter parameter = new DBAParameter();
+
+            #region 參數設定
+            // 登入帳號
+            parameter.Add("SSOAccount", sSOUserInfo.Account);
+
+            #endregion
+
+            if (BackOrFront == "B")
+            {
+                CommandTxt = $@"SELECT IsEnable
+                              FROM UserMain 
+                             WHERE SSOAccount = @SSOAccount ";
+            }
+            else
+            {
+                CommandTxt = $@"SELECT IsEnable
+                              FROM FUserMain 
+                             WHERE FUserId = @SSOAccount ";
+            }
+
+
+            (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) result = dbAccess.DbaExecuteQuery<UserInfo>(CommandTxt, parameter, false, null);
+
+            return result;
+        }
     }
 }

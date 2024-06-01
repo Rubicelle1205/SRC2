@@ -47,6 +47,7 @@ namespace WebPccuClub.Controllers
             LoginLogEntity loginEntity = GetLoginLogEntity(vm);
             DbExecuteInfo dbResult = new DbExecuteInfo();
             bool hasSSOData = false;
+            bool Enable = false;
             UserInfo user = new UserInfo();
             UserInfo LoginUser = new UserInfo();
 
@@ -85,6 +86,14 @@ namespace WebPccuClub.Controllers
                             throw new Exception("新增帳號失敗!");
                         }
 
+                        Enable = auth.ChkUserEnable(sSOUserInfo, "F");
+
+                        if (!Enable)
+                        {
+                            AlertMsg.Add("登入失敗，請確定人員啟用狀態!");
+                            throw new Exception("登入失敗，請確定人員啟用狀態!");
+                        }
+
                         break;
 
                     case "staff":
@@ -94,6 +103,14 @@ namespace WebPccuClub.Controllers
                         {
                             AlertMsg.Add("登入失敗，請確定是否已完成人員設定!");
                             throw new Exception("登入失敗，請確定是否已完成人員設定!");
+                        }
+
+                        Enable = auth.ChkUserEnable(sSOUserInfo, "B");
+
+                        if (!Enable)
+                        {
+                            AlertMsg.Add("登入失敗，請確定人員啟用狀態!");
+                            throw new Exception("登入失敗，請確定人員啟用狀態!");
                         }
 
                         break;
@@ -107,13 +124,24 @@ namespace WebPccuClub.Controllers
                             throw new Exception("登入失敗，請確定是否已完成人員設定!");
                         }
 
+                        Enable = auth.ChkUserEnable(sSOUserInfo, "B");
+
+                        if (!Enable)
+                        {
+                            AlertMsg.Add("登入失敗，請確定人員啟用狀態!");
+                            throw new Exception("登入失敗，請確定人員啟用狀態!");
+                        }
+
                         break;
 
                     default:
                         throw new Exception("Json角色錯誤!" + result.JSONData);
                 }
 
-				bool isAuth = false;
+                
+
+
+                bool isAuth = false;
 
                 if (sSOUserInfo.Role == "student")
                     isAuth = auth.SSOLogin(sSOUserInfo.Account, out LoginUser, "F");
