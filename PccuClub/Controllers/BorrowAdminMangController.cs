@@ -35,7 +35,7 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.首頁)]
         public IActionResult Index()
         {
-            ViewBag.ddlRole = dbAccess.GetRoleData("03");
+            ViewBag.ddlRole = dbAccess.GetRoleData("04");
             ViewBag.ddlIsEnable = dbAccess.GetIsEnable();
             ViewBag.ddlLifeClass = dbAccess.GetAllLifeClass();
 
@@ -50,7 +50,7 @@ namespace WebPccuClub.Controllers
         {
             ViewBag.ddlIsEnable = dbAccess.GetIsEnable();
 
-            ViewBag.ddlRoleConsultation = dbAccess.GetRoleData("03");
+            ViewBag.ddlRoleConsultation = dbAccess.GetRoleData("04");
 
             BorrowAdminMangViewModel vm = new BorrowAdminMangViewModel();
             vm.CreateModel = new BorrowAdminMangCreateModel();
@@ -65,7 +65,7 @@ namespace WebPccuClub.Controllers
 
             ViewBag.ddlIsEnable = dbAccess.GetIsEnable();
 
-            ViewBag.ddlRoleConsultation = dbAccess.GetRoleData("03");
+            ViewBag.ddlRoleConsultation = dbAccess.GetRoleData("04");
 
             vm.EditModel = dbAccess.GetEditData(submitBtn);
 
