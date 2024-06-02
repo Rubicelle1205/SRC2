@@ -202,7 +202,7 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
-                if (!vm.File.FileName.Contains("霸凌事件管理_template"))
+                if (!vm.File.FileName.Contains("霸凌事件管理"))
                 {
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "選擇檔案錯誤";

@@ -195,7 +195,7 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
-                if (!vm.File.FileName.Contains("子資源維護_template"))
+                if (!vm.File.FileName.Contains("子資源維護"))
                 {
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "選擇檔案錯誤";

@@ -323,7 +323,7 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
-                if (!vm.File.FileName.Contains("校安事件管理_template"))
+                if (!vm.File.FileName.Contains("校安事件管理"))
                 {
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "選擇檔案錯誤";
@@ -665,7 +665,7 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
-                if (!vm.File.FileName.Contains("轉介內容歷程_template"))
+                if (!vm.File.FileName.Contains("轉介內容歷程"))
                 {
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "選擇檔案錯誤";
