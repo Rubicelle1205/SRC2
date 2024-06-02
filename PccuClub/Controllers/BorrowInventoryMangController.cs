@@ -50,6 +50,36 @@ namespace WebPccuClub.Controllers
             return PartialView("_SearchResultPartial", vm);
         }
 
+        [Log(LogActionChineseName.刪除)]
+        [ValidateInput(false)]
+        public IActionResult Delete(string Ser)
+        {
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.DeletetData(Ser);
+
+                if (!dbResult.isSuccess)
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "刪除失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "刪除失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
         [LogAttribute(LogActionChineseName.匯出Excel)]
         public IActionResult ExportSearchResult(string submitBtn, BorrowInventoryMangViewModel vm)
         {

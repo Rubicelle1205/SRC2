@@ -345,8 +345,7 @@
             var $newRow = $lastRow.clone(); 
 
             var newRowNum = parseInt($lastRow.find('th:first').text()) + 1;
-            if(isNaN(newRowNum))
-            {
+            if (isNaN(newRowNum)) {
                 SendAjax({
                     url: '@Url.Action("GeneralNewRow")',
                     data: '',
@@ -355,8 +354,7 @@
                     }
                 });
             }
-            else
-            {
+            else {
                 $newRow.find('th:first').text(newRowNum);
                 $newRow.find('input').val('');
                 $newRow.find('select').val('');
