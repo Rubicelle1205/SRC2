@@ -826,6 +826,71 @@ namespace WebPccuClub.Controllers
 
         }
 
+        [LogAttribute(LogActionChineseName.匯出Excel)]
+        public IActionResult ExportReferDataSearchResultByIndex(string submitBtn)
+        {
+            string FileName = string.Format("{0}_{1}", LogActionChineseName.轉介內容歷程, DateTime.Now.ToString("yyyyMMdd"));
+            EventCaseMangViewModel vm = new EventCaseMangViewModel();
+            vm.ReferDataResultModel = dbAccess.GetReferDataSearchResultByIndex(submitBtn);
+
+            if (vm.ReferDataResultModel != null && vm.ReferDataResultModel.Count > 0)
+            {
+                IWorkbook workbook = new XSSFWorkbook();
+                List<int> LstWidth = new List<int> { 40, 40, 40, 40, 40, 40, 40, 40 };
+
+                ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
+
+                var properties = typeof(EventCaseReferDataExcelHeaderMangResultModel).GetProperties();
+
+                //設定欄位
+                IRow headerRow = sheet.CreateRow(0);
+
+                XSSFCellStyle headStyle = ExcelUtil.GetDefaultHeaderStyle(workbook);
+
+                for (int i = 0; i <= properties.Length - 1; i++)
+                {
+                    var displayAttribute = (DisplayNameAttribute)properties[i].GetCustomAttribute(typeof(DisplayNameAttribute));
+                    var displayName = displayAttribute?.DisplayName ?? properties[i].Name;
+
+                    headerRow.CreateCell(i).SetCellValue(displayName);
+
+                    foreach (ICell cell in headerRow.Cells)
+                        cell.CellStyle = headStyle;
+
+                }
+
+                XSSFCellStyle contentStyle = ExcelUtil.GetDefaultContentStyle(workbook);
+
+                //設定資料
+                for (int i = 0; i <= vm.ReferDataResultModel.Count - 1; i++)
+                {
+                    IRow dataRow = sheet.CreateRow(i + 1);
+
+                    dataRow.CreateCell(0).SetCellValue(vm.ReferDataResultModel[i].CaseID);
+                    dataRow.CreateCell(1).SetCellValue(vm.ReferDataResultModel[i].ReferIDText);
+                    dataRow.CreateCell(2).SetCellValue(vm.ReferDataResultModel[i].HandleTime != null ? vm.ReferDataResultModel[i].HandleTime.Value.ToString("yyyy/MM/dd HH:mm") : "");
+                    dataRow.CreateCell(3).SetCellValue(vm.ReferDataResultModel[i].HandleEvent);
+                    dataRow.CreateCell(4).SetCellValue(vm.ReferDataResultModel[i].HandleMan);
+                    dataRow.CreateCell(5).SetCellValue(vm.ReferDataResultModel[i].Leader);
+                    dataRow.CreateCell(6).SetCellValue(vm.ReferDataResultModel[i].Director);
+                    dataRow.CreateCell(7).SetCellValue(vm.ReferDataResultModel[i].Created != null ? vm.ReferDataResultModel[i].Created.Value.ToString("yyyy/MM/dd HH:mm") : "");
+
+                    foreach (ICell cell in dataRow.Cells)
+                        cell.CellStyle = contentStyle;
+                }
+
+                MemoryStream ms = new MemoryStream();
+                workbook.Write(ms, true);
+                ms.Flush();
+                ms.Position = 0;
+
+                return File(ms, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName + ".xlsx");
+            }
+
+            AlertMsg.Add("無資料已供匯出");
+            return Redirect("Index");
+
+        }
         #endregion
     }
 }

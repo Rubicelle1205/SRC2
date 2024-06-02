@@ -539,6 +539,38 @@ AND (@HandleEvent IS NULL OR A.HandleEvent LIKE '%' + @HandleEvent + '%')
             return new List<EventCaseReferDataMangResultModel>();
         }
 
+        /// <summary> 查詢結果 </summary>
+
+        public List<EventCaseReferDataMangResultModel> GetReferDataSearchResultByIndex(string submit)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@CaseID", submit);
+
+
+            #endregion
+
+            CommandText = $@"SELECT A.ID, A.CaseID, A.ReferID, B.ReferName AS ReferIDText, A.HandleMan, A.HandleTime, A.HandleEvent, A.Leader, A.Director, A.Creator, A.Created, A.LastModifier, A.LastModified
+                               FROM hq_PccuCase.dbo.ReferMang A
+                          LEFT JOIN hq_PccuClub.dbo.ReferUnitMang B ON B.ReferID = A.ReferID
+                              WHERE 1 = 1 
+AND (@CaseID IS NULL OR A.CaseID LIKE '%' + @CaseID + '%') 
+";
+
+
+            (DbExecuteInfo info, IEnumerable<EventCaseReferDataMangResultModel> entitys) dbResult = DbaExecuteQuery<EventCaseReferDataMangResultModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<EventCaseReferDataMangResultModel>();
+        }
+
         /// <summary> 新增資料 </summary>
         public DbExecuteInfo ImportData(List<EventCaseImportMangResultModel> dataList, UserInfo LoginUser)
         {
