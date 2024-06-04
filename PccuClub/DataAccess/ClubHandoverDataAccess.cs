@@ -1789,6 +1789,7 @@ namespace WebPccuClub.DataAccess
                           LEFT JOIN HandOverMain B ON B.HoID = A.HoID
                           LEFT JOIN Code C ON C.Code = A.DocType AND C.Type = 'DocType'
                               WHERE B.SchoolYear = @SchoolYear 
+                                AND A.Creator = @ClubId
                            ORDER BY B.HandOverStatus, DocType ";
 
 			(DbExecuteInfo info, IEnumerable<ClubHandoverHistroyResultModel> entitys) dbResult = DbaExecuteQuery<ClubHandoverHistroyResultModel>(CommandText, parameters, true, DBAccessException);
@@ -1823,6 +1824,7 @@ namespace WebPccuClub.DataAccess
                           LEFT JOIN Code C ON C.Code = A.HandOverClass AND C.Type = 'HandOverClass'
                           LEFT JOIN Code D ON D.Code = A.ActVerify AND D.Type = 'ActVerify'
                               WHERE B.SchoolYear = @SchoolYear
+                                AND A.Creator = @ClubId
                                 AND A.DataEnable = '01' ";
 
             (DbExecuteInfo info, IEnumerable<ClubHandoverFileResultModel> entitys) dbResult = DbaExecuteQuery<ClubHandoverFileResultModel>(CommandText, parameters, true, DBAccessException);

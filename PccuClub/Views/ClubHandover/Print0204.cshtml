@@ -17,7 +17,7 @@
 						<div class="text-center">
 							<h2 class="text-10">中國文化大學</h2>
 							<h4 class="text-7 font-weight-normal">
-								<u>@Model.Handover0204Model.SchoolYear</u>學年度改選交接資料表</h3>
+								<u>@(Int32.Parse(Model.Handover0204Model.SchoolYear) + 1)</u>學年度改選交接資料表</h3>
 								<div class="row justify-content-center py-4">
 									<div class="col-5">
 										<img src="../../uploads/others/logo_circle.png" alt="">
@@ -49,10 +49,10 @@
 						<tbody>
 							<tr>
 								<td style="width: 300px;">
-									@PreSchoolYear 學年度社團<strong>負責人</strong>
+									@NowSchoolYear 學年度社團<strong>負責人</strong>
 								</td>
 								<td style="width: 300px;">
-									@Model.Handover0204Model.SchoolYear 學年度社團<strong>負責人</strong>
+									@(Int32.Parse(Model.Handover0204Model.SchoolYear) + 1) 學年度社團<strong>負責人</strong>
 								</td>
 								<td style="width: 300px;">
 									社團印鑑
