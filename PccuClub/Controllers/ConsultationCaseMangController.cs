@@ -53,6 +53,47 @@ namespace WebPccuClub.Controllers
 
             vm.CreateModel = new ConsultationCaseMangCreateModel();
 
+            var initData = new List<object>
+        {
+            new
+            {
+                date = DateTime.Now.ToString("yyyy-MM-dd"),
+                classname = "",
+                markup = "<span class='badge rounded-pill bg-success'>[day]</span>",
+                orders = new List<object>
+                {
+                    new { id = 1, room_id = "room1", room_title = "諮商室X", psychologist_title = "心理師A", student_number = "B852145", start_time = "11:00", end_time = "12:00" },
+                    new { id = 2, room_id = "room1", room_title = "諮商室X", psychologist_title = "心理師B", student_number = "B451348", start_time = "08:00", end_time = "09:00" },
+                    new { id = 5, room_id = "room3", room_title = "諮商室C", psychologist_title = "心理師B", student_number = "B988456", start_time = "09:00", end_time = "10:00" }
+                }
+            },
+            new
+            {
+                date = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd"),
+                classname = "",
+                markup = "<span class='badge rounded-pill bg-success'>[day]</span>",
+                orders = new List<object>
+                {
+                    new { id = 3, room_id = "room1", room_title = "諮商室X", psychologist_title = "心理師A", student_number = "B123456", start_time = "11:00", end_time = "12:00" },
+                    new { id = 4, room_id = "room3", room_title = "諮商室C", psychologist_title = "心理師C", student_number = "B789456", start_time = "15:00", end_time = "17:00" }
+                }
+            },
+            new
+            {
+                date = DateTime.Now.AddDays(-15).ToString("yyyy-MM-dd"),
+                classname = "",
+                markup = "<span class='badge rounded-pill bg-success'>[day]</span>",
+                orders = new List<object>
+                {
+                    new { id = 6, room_id = "room3", room_title = "諮商室C", psychologist_title = "心理師A", student_number = "B852145", start_time = "08:00", end_time = "10:00" },
+                    new { id = 7, room_id = "room2", room_title = "諮商室B", psychologist_title = "心理師A", student_number = "B451348", start_time = "11:00", end_time = "12:00" },
+                    new { id = 8, room_id = "room1", room_title = "諮商室X", psychologist_title = "張書飄", student_number = "B988456", start_time = "09:00", end_time = "10:00" }
+                }
+            }
+        };
+
+            ViewBag.InitData = JsonConvert.SerializeObject(initData);
+
             return View(vm);
         }
 
@@ -175,38 +216,6 @@ namespace WebPccuClub.Controllers
 
             return Json(vmRtn);
         }
-
-        [ValidateInput(false)]
-        public IActionResult GetAllRoomData()
-        {
-            var roomData = new List<RoomDataModel>
-        {
-            new RoomDataModel
-            {
-                Date = DateTime.Now.ToString("yyyy-MM-dd"),
-                Markup = "<span class='badge rounded-pill bg-success'>[day]</span>",
-                Orders = new List<Order>
-                {
-                    new Order { RoomId = "room1", RoomTitle = "諮商室A", PsychologistTitle = "心理師A", StudentNumber = "B852145", StartTime = "11:00", EndTime = "12:00" },
-                    new Order { RoomId = "room1", RoomTitle = "諮商室A", PsychologistTitle = "心理師B", StudentNumber = "B451348", StartTime = "08:00", EndTime = "09:00" },
-                    new Order { RoomId = "room3", RoomTitle = "諮商室C", PsychologistTitle = "心理師B", StudentNumber = "B988456", StartTime = "09:00", EndTime = "10:00" }
-                }
-            },
-            new RoomDataModel
-            {
-                Date = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd"),
-                Markup = "<span class='badge rounded-pill bg-success'>[day]</span>",
-                Orders = new List<Order>
-                {
-                    new Order { RoomId = "room1", RoomTitle = "諮商室A", PsychologistTitle = "心理師A", StudentNumber = "B123456", StartTime = "11:00", EndTime = "12:00" },
-                    new Order { RoomId = "room3", RoomTitle = "諮商室C", PsychologistTitle = "心理師C", StudentNumber = "B789456", StartTime = "15:00", EndTime = "17:00" }
-                }
-            }
-        };
-
-            return Json(roomData);
-        }
-
 
         [LogAttribute(LogActionChineseName.匯出Excel)]
         public IActionResult ExportSearchResult(ConsultationCaseMangViewModel vm)
