@@ -100,7 +100,6 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             #region 參數設定
             parameters.Add("@RoleId", vm.CreateModel.RoleId.TrimStartAndEnd());
             parameters.Add("@RoleName", vm.CreateModel.RoleName.TrimStartAndEnd());
-            parameters.Add("@SystemRoleCode", vm.CreateModel.SystemRoleCode.TrimStartAndEnd() == "01" ? "02" : "01");
             parameters.Add("@Comment", vm.CreateModel.Comment.TrimStartAndEnd());
 
             parameters.Add("@LastModifier", LoginUser.LoginId);
@@ -109,7 +108,6 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
             string CommendText = $@"INSERT INTO SystemRole
                                                (RoleId
                                                ,RoleName
-                                               ,SystemRoleCode
                                                ,Comment
                                                ,SystemCode
                                                ,IsEnable
@@ -121,7 +119,6 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
                                          VALUES
                                                (@RoleId
                                                ,@RoleName
-                                               ,@SystemRoleCode
                                                ,@Comment
                                                ,'04'
                                                ,1
@@ -195,7 +192,6 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
 
             parameters.Add("@RoleId", vm.EditModel.RoleId);
             parameters.Add("@RoleName", vm.EditModel.RoleName.TrimStartAndEnd());
-            parameters.Add("@SystemRoleCode", vm.EditModel.SystemRoleCode.TrimStartAndEnd() == "01" ? "02" : "01");
             parameters.Add("@Comment", vm.EditModel.Comment.TrimStartAndEnd());
 
             parameters.Add("@LastModifier", LoginUser.LoginId);
@@ -203,7 +199,6 @@ AND (@RoleName IS NULL OR A.RoleName LIKE '%' + @RoleName + '%')
 
             CommendText = $@"UPDATE SystemRole 
                                 SET RoleName = @RoleName, 
-                                    SystemRoleCode = @SystemRoleCode, 
                                     Comment = @Comment, 
                                     SystemCode = '04', 
                                     LastModifier = @LastModifier, 
