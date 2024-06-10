@@ -91,9 +91,9 @@ namespace WebPccuClub.Controllers
                 foreach (RoleFunInfo item2 in oRoleFunInfo)
                 {
                     FunInfo fun = new FunInfo();
-                    fun = LstAllFunInfo.Where(x => x.MenuNode == item2.MenuNode && item2.RoleID == item.RoleId).FirstOrDefault();
-                    
-                    if(fun != null)
+                    fun = LstAllFunInfo.Where(x => x.MenuNode == item2.MenuNode && x.FunName != "初始頁" && item2.RoleID == item.RoleId).FirstOrDefault();
+
+                    if (fun != null)
                         oFunInfo.Add(fun);
                 }
 

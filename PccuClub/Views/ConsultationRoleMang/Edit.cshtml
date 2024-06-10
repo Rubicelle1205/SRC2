@@ -7,7 +7,7 @@
     List<FunSelectedItem> BList = LstAllFunInfo.Where(x => x.Group == "B").OrderBy(x => x.SystemCode).ToList();
     List<string> FListShowed = new List<string>();
     List<string> BListShowed = new List<string>();
-    List<string> ListSystemCode = new List<string>() {"01", "02", "03", "04", "05" };
+    List<string> ListSystemCode = new List<string>() { "01", "02", "03", "04", "05" };
 }
 
 <!-- Main content -->
@@ -57,8 +57,8 @@
                                         <td>
                                             <div class="row p-2">
                                                 <div style="width:100%; margin-top: 1em;">
-                                                    <div style="width:100%; font-size: larger; text-align:center;">後台功能</div>
-                                                    <div style="width:100%; display:flex; flex-flow: wrap; padding:1rem;">
+                                                    <div style="width:100%; font-size: larger;">後台功能</div>
+                                                    <div style="width:100%; display:flex; flex-flow: wrap;">
 
                                                         @foreach (string str in ListSystemCode)
                                                         {
@@ -68,80 +68,30 @@
 
                                                                     @foreach (FunSelectedItem item in BList.Where(x => x.SystemCode == str).ToList())
                                                                     {
-                                                                        @if (!BListShowed.Contains(str))
+                                                                        @if (Model.EditModel.LstFunItem.Any(x => x.Value == item.Value))
                                                                         {
-                                                                            <div style="width:100%; font-size: larger;">@item.SystemCodeText</div>
-                                                                            BListShowed.Add(str);
-                                                                        }
-
-                                                                        @if (Model.EditModel.RoleId == "hyperuser")
-                                                                        {
-                                                                            @if (Model.EditModel.LstFunItem.Any(x => x.Value == item.Value))
-                                                                            {
-                                                                                <div class="col-md-3 custom-control custom-checkbox">
-                                                                                    <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                                                           disabled="disabled" type="checkbox" id="@item.Value" value="@item.Value" checked>
-                                                                                    <label class="custom-control-label" for="@item.Value">@item.Text</label>
-                                                                                </div>
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                <div class="col-md-3 custom-control custom-checkbox">
-                                                                                    <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                                                           disabled="disabled" type="checkbox" id="@item.Value" value="@item.Value">
-                                                                                    <label class="custom-control-label" for="@item.Value">@item.Text</label>
-                                                                                </div>
-                                                                            }
+                                                                            <div class="col-md-3 custom-control custom-checkbox">
+                                                                                <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                                                       type="checkbox" id="@item.Value" value="@item.Value" checked>
+                                                                                <label class="custom-control-label" for="@item.Value">@item.Text</label>
+                                                                            </div>
                                                                         }
                                                                         else
                                                                         {
-                                                                            @if (item.SystemCode == "01")
-                                                                            {
-                                                                                @if (Model.EditModel.LstFunItem.Any(x => x.Value == item.Value))
-                                                                                {
-                                                                                    <div class="col-md-3 custom-control custom-checkbox">
-                                                                                        <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                                                               disabled="disabled" type="checkbox" id="@item.Value" value="@item.Value" checked>
-                                                                                        <label class="custom-control-label" for="@item.Value">@item.Text</label>
-                                                                                    </div>
-                                                                                }
-                                                                                else
-                                                                                {
-                                                                                    <div class="col-md-3 custom-control custom-checkbox">
-                                                                                        <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                                                               disabled="disabled" type="checkbox" id="@item.Value" value="@item.Value">
-                                                                                        <label class="custom-control-label" for="@item.Value">@item.Text</label>
-                                                                                    </div>
-                                                                                }
-                                                                            }
-                                                                            else
-                                                                            { 
-                                                                            @if (Model.EditModel.LstFunItem.Any(x => x.Value == item.Value))
-                                                                            {
-                                                                                <div class="col-md-3 custom-control custom-checkbox">
-                                                                                    <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                                                           type="checkbox" id="@item.Value" value="@item.Value" checked>
-                                                                                    <label class="custom-control-label" for="@item.Value">@item.Text</label>
-                                                                                </div>
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                <div class="col-md-3 custom-control custom-checkbox">
-                                                                                    <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                                                           type="checkbox" id="@item.Value" value="@item.Value">
-                                                                                    <label class="custom-control-label" for="@item.Value">@item.Text</label>
-                                                                                </div>
-                                                                            }
-                                                                            }
+                                                                            <div class="col-md-3 custom-control custom-checkbox">
+                                                                                <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                                                       type="checkbox" id="@item.Value" value="@item.Value">
+                                                                                <label class="custom-control-label" for="@item.Value">@item.Text</label>
+                                                                            </div>
                                                                         }
-                                                        }
+                                                                    }
                                                                 </div>
 
                                                             }
                                                         }
                                                     </div>
 
-                                            </div>
+                                                </div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -185,7 +135,7 @@
             }
         });
 
-         if (RoleName == "") {
+        if (RoleName == "") {
             $.alert("角色名稱不可為空");
             return;
         }
