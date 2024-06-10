@@ -103,10 +103,6 @@ namespace WebPccuClub.Models
         [DisplayName("角色說明")]
         public string? Comment { get; set; }
 
-        /// <summary>角色種類</summary>
-        [DisplayName("角色種類")]
-        public string? SystemRoleCode { get; set; }
-
         [DisplayName("更新時間")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm:ss}")]
         public DateTime? LastModified { get; set; }
@@ -131,10 +127,6 @@ namespace WebPccuClub.Models
         /// <summary>角色</summary>
         [DisplayName("角色")]
         public string? RoleName { get; set; }
-
-        /// <summary>角色種類</summary>
-        [DisplayName("角色種類")]
-        public string? SystemRoleCode { get; set; }
 
         /// <summary>角色說明</summary>
         [DisplayName("角色說明")]

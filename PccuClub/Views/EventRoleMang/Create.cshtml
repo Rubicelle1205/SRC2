@@ -32,12 +32,6 @@
                                         <td>@Html.TextBoxFor(m => m.CreateModel.RoleName, new {@class="form-control", placeholder="請輸入角色名稱"})</td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.EditModel.SystemRoleCode)<span class="required">*</span></th>
-                                        <td>
-                                            @Html.DropDownListFor(m => m.EditModel.SystemRoleCode ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇是否為心理師", new {@class = "form-control"})
-                                        </td>
-                                    </tr>
-                                    <tr>
                                         <th width="15%">@Html.LabelFor(m => m.CreateModel.Comment)</th>
                                         <td>@Html.TextAreaFor(m => m.CreateModel.Comment, new {@class="form-control", rows="6"})</td>
                                     </tr>
@@ -94,7 +88,6 @@
 
         var RoleId = $('#@Html.IdFor(m => m.CreateModel.RoleId)').val();
         var RoleName = $('#@Html.IdFor(m => m.CreateModel.RoleName)').val();
-        var SystemRoleCode = $('#@Html.IdFor(m => m.EditModel.SystemRoleCode)').val();
         var Comment = $('#@Html.IdFor(m => m.CreateModel.Comment)').val();
 
         var selectedValues = [];
@@ -121,7 +114,6 @@
 
         data.append('@Html.NameFor(m => m.CreateModel.RoleId)', RoleId);
         data.append('@Html.NameFor(m => m.CreateModel.RoleName)', RoleName);
-        data.append('@Html.NameFor(m => m.CreateModel.SystemRoleCode)', SystemRoleCode);
         data.append('@Html.NameFor(m => m.CreateModel.Comment)', Comment);
         data.append('@Html.NameFor(m => m.CreateModel.strFunInfo)', selectedValues);
 
