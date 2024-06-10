@@ -111,6 +111,10 @@ namespace WebPccuClub.Models
         [DisplayName("角色名稱")]
         public string? RoleName { get; set; }
 
+        /// <summary>是否為心理師</summary>
+        [DisplayName("是否為心理師")]
+        public string? SystemRoleCode { get; set; }
+
         /// <summary>角色說明</summary>
         [DisplayName("角色說明")]
         public string? Comment { get; set; }
@@ -143,6 +147,10 @@ namespace WebPccuClub.Models
         /// <summary>角色</summary>
         [DisplayName("角色")]
         public string? RoleName { get; set; }
+
+        /// <summary>是否為心理師</summary>
+        [DisplayName("是否為心理師")]
+        public string? SystemRoleCode { get; set; }
 
         /// <summary>角色說明</summary>
         [DisplayName("角色說明")]

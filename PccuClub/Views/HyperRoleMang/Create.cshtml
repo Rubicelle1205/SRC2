@@ -5,6 +5,9 @@
     List<FunSelectedItem> LstAllFunInfo = ViewBag.ddlFunInfo;
     List<FunSelectedItem> FList = LstAllFunInfo.Where(x => x.Group == "F").ToList();
     List<FunSelectedItem> BList = LstAllFunInfo.Where(x => x.Group == "B").ToList();
+    List<string> FListShowed = new List<string>();
+    List<string> BListShowed = new List<string>();
+    List<string> ListSystemCode = new List<string>() { "01", "02", "03", "04", "05" };
 }
 
 <!-- Main content -->
@@ -32,6 +35,12 @@
                                         <td>@Html.TextBoxFor(m => m.CreateModel.RoleName, new {@class="form-control", placeholder="請輸入角色名稱"})</td>
                                     </tr>
                                     <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.SystemRoleCode)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.SystemRoleCode ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇是否為心理師", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th width="15%">@Html.LabelFor(m => m.CreateModel.Comment)</th>
                                         <td>@Html.TextAreaFor(m => m.CreateModel.Comment, new {@class="form-control", rows="6"})</td>
                                     </tr>
@@ -47,34 +56,82 @@
                                             <div class="row p-2">
 
                                                 <div style="width:100%;">
-                                                    <div style="width:100%; font-size: larger;">前台功能</div>
-                                                    <div style="width:100%; display:flex; flex-flow: wrap;">
-                                                        @foreach (FunSelectedItem item in FList)
+                                                    <div style="width:100%; font-size: larger; text-align:center;">前台功能</div>
+                                                    <div style="width:100%; display:flex; flex-flow: wrap; padding:1rem;">
+
+                                                        @foreach (string str in ListSystemCode)
                                                         {
-                                                            <div class="col-md-3 custom-control custom-checkbox">
-                                                                <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                                       type="checkbox" id="@item.Value" value="@item.Value">
-                                                                <label class="custom-control-label" for="@item.Value">@item.Text</label>
-                                                            </div>
+                                                            @if (FList.Where(x => x.SystemCode == str).ToList().Count > 0)
+                                                            {
+                                                                <div style="width:100%; display:flex; flex-flow: wrap; padding:0.5rem 0.5rem 0 0.5rem; margin-block:1rem;">
+
+                                                                    @foreach (FunSelectedItem item in FList.Where(x => x.SystemCode == str).ToList())
+                                                                    {
+                                                                        @if (!FListShowed.Contains(str))
+                                                                        {
+                                                                            <div style="width:100%; font-size: larger;">@item.SystemCodeText</div>
+                                                                            FListShowed.Add(str);
+                                                                        }
+
+                                                                            <div class="col-md-3 custom-control custom-checkbox">
+                                                                                <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                                                       type="checkbox" id="@item.Value" value="@item.Value">
+                                                                                <label class="custom-control-label" for="@item.Value">@item.Text</label>
+                                                                            </div>
+                                                                    }
+                                                                </div>
+
+                                                            }
                                                         }
                                                     </div>
                                                 </div>
 
+                                                <hr style="width:100%; border:1px solid #dee2e6;">
                                                 <div style="width:100%; margin-top: 1em;">
-                                                    <div style="width:100%; font-size: larger;">後台功能</div>
-                                                    <div style="width:100%; display:flex; flex-flow: wrap;">
-                                                        @foreach (FunSelectedItem item in BList)
+                                                    <div style="width:100%; font-size: larger; text-align:center;">後台功能</div>
+                                                    <div style="width:100%; display:flex; flex-flow: wrap; padding:1rem;">
+
+                                                        @foreach (string str in ListSystemCode)
                                                         {
-                                                            <div class="col-md-3 custom-control custom-checkbox">
-                                                                <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                                       type="checkbox" id="@item.Value" value="@item.Value">
-                                                                <label class="custom-control-label" for="@item.Value">@item.Text</label>
-                                                            </div>
+                                                            @if (BList.Where(x => x.SystemCode == str).ToList().Count > 0 && str != "01")
+                                                            {
+                                                                <div style="width:100%; display:flex; flex-flow: wrap; padding:0.5rem 0.5rem 0 0.5rem; margin-block:1rem;">
+
+                                                                    @foreach (FunSelectedItem item in BList.Where(x => x.SystemCode == str).ToList())
+                                                                    {
+                                                                        @if (!BListShowed.Contains(str) && item.SystemCode != "01")
+                                                                        {
+                                                                            <div style="width:100%; font-size: larger;">@item.SystemCodeText</div>
+                                                                            BListShowed.Add(str);
+                                                                        }
+
+                                                                        @if (item.SystemCode != "01")
+                                                                        {
+                                                                            @if (Model.CreateModel.LstFunItem.Any(x => x.Value == item.Value))
+                                                                            {
+                                                                                <div class="col-md-3 custom-control custom-checkbox">
+                                                                                    <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                                                           type="checkbox" id="@item.Value" value="@item.Value" checked>
+                                                                                    <label class="custom-control-label" for="@item.Value">@item.Text</label>
+                                                                                </div>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <div class="col-md-3 custom-control custom-checkbox">
+                                                                                    <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                                                           type="checkbox" id="@item.Value" value="@item.Value">
+                                                                                    <label class="custom-control-label" for="@item.Value">@item.Text</label>
+                                                                                </div>
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                </div>
+
+                                                            }
                                                         }
                                                     </div>
-                                                </div>
 
-                                            </div>
+                                                </div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -108,6 +165,7 @@
 
         var RoleId = $('#@Html.IdFor(m => m.CreateModel.RoleId)').val();
         var RoleName = $('#@Html.IdFor(m => m.CreateModel.RoleName)').val();
+        var SystemRoleCode = $('#@Html.IdFor(m => m.EditModel.SystemRoleCode)').val();
         var Comment = $('#@Html.IdFor(m => m.CreateModel.Comment)').val();
         var SystemCode = $('#@Html.IdFor(m => m.CreateModel.SystemCode)').val();
 
@@ -118,13 +176,7 @@
             }
         });
 
-        data.append('@Html.NameFor(m => m.CreateModel.RoleId)', RoleId);
-        data.append('@Html.NameFor(m => m.CreateModel.RoleName)', RoleName);
-        data.append('@Html.NameFor(m => m.CreateModel.Comment)', Comment);
-        data.append('@Html.NameFor(m => m.CreateModel.SystemCode)', SystemCode);
-        data.append('@Html.NameFor(m => m.CreateModel.strFunInfo)', selectedValues);
-
-      
+        
         if (RoleId == "") {
             $.alert("角色ID不可為空");
             return;
@@ -139,6 +191,18 @@
             $.alert("請選擇所屬子系統");
             return;
         }
+
+        if (SystemRoleCode == "") {
+            $.alert("請選擇是否為心理師");
+            return;
+        }
+
+        data.append('@Html.NameFor(m => m.CreateModel.RoleId)', RoleId);
+        data.append('@Html.NameFor(m => m.CreateModel.RoleName)', RoleName);
+        data.append('@Html.NameFor(m => m.CreateModel.SystemRoleCode)', SystemRoleCode);
+        data.append('@Html.NameFor(m => m.CreateModel.Comment)', Comment);
+        data.append('@Html.NameFor(m => m.CreateModel.SystemCode)', SystemCode);
+        data.append('@Html.NameFor(m => m.CreateModel.strFunInfo)', selectedValues);
 
         SendAjax({
             url: '@Url.Action("SaveNewData")',

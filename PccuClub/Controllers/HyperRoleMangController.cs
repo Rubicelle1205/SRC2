@@ -48,7 +48,8 @@ namespace WebPccuClub.Controllers
         public IActionResult Create()
         {
             ViewBag.ddlFunInfo = dbAccess.GetAllFunInfo2();
-            ViewBag.ddlSystemCode = dbAccess.GetAllSystemCode();
+            ViewBag.ddlSystemCode = dbAccess.GetAllSystemCode("01");
+            ViewBag.ddlYesOrNo = dbAccess.GetYesOrNo();
 
             HyperRoleMangViewModel vm = new HyperRoleMangViewModel();
             vm.CreateModel = new HyperRoleMangCreateModel();
@@ -62,7 +63,8 @@ namespace WebPccuClub.Controllers
                 return RedirectToAction("Index");
 
             ViewBag.ddlFunInfo = dbAccess.GetAllFunInfo2();
-            ViewBag.ddlSystemCode = dbAccess.GetAllSystemCode();
+            ViewBag.ddlSystemCode = dbAccess.GetAllSystemCode("01");
+            ViewBag.ddlYesOrNo = dbAccess.GetYesOrNo();
 
             vm.EditModel = dbAccess.GetEditData(submitBtn);
             vm.EditModel.LstFunItem = dbAccess.GetUserFunInfo(vm.EditModel.RoleId);
@@ -92,7 +94,7 @@ namespace WebPccuClub.Controllers
                 foreach (RoleFunInfo item2 in oRoleFunInfo)
                 {
                     FunInfo fun = new FunInfo();
-                    fun = LstAllFunInfo.Where(x => x.MenuNode == item2.MenuNode && x.MenuUpNode != "-1" && item2.RoleID == item.RoleId).FirstOrDefault();
+                    fun = LstAllFunInfo.Where(x => x.MenuNode == item2.MenuNode && x.FunName != "初始頁" && item2.RoleID == item.RoleId).FirstOrDefault();
                     
                     if(fun != null)
                         oFunInfo.Add(fun);
@@ -114,9 +116,9 @@ namespace WebPccuClub.Controllers
 
                 vm.ResultModel = oResult;
             }
-                
-                #region 分頁
-        vm.ConditionModel.TotalCount = vm.ResultModel.Count();
+
+            #region 分頁
+            vm.ConditionModel.TotalCount = vm.ResultModel.Count();
             int StartRow = vm.ConditionModel.Page * vm.ConditionModel.PageSize;
             vm.ResultModel = vm.ResultModel.Skip(StartRow).Take(vm.ConditionModel.PageSize).ToList();
             #endregion

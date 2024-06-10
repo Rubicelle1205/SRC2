@@ -7,7 +7,7 @@
     List<FunSelectedItem> BList = LstAllFunInfo.Where(x => x.Group == "B").OrderBy(x => x.SystemCode).ToList();
     List<string> FListShowed = new List<string>();
     List<string> BListShowed = new List<string>();
-    List<string> ListSystemCode = new List<string>() {"01", "02", "03", "04", "05" };
+    List<string> ListSystemCode = new List<string>() { "01", "02", "03", "04", "05" };
 }
 
 <!-- Main content -->
@@ -43,6 +43,12 @@
                                         <td>@Html.TextBoxFor(m => m.EditModel.RoleName, new {@class="form-control", placeholder="請輸入名稱"})</td>
                                     </tr>
                                     <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.SystemRoleCode)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.SystemRoleCode ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇是否為心理師", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.Comment)</th>
                                         <td>@Html.TextAreaFor(m => m.EditModel.Comment, new {@class="form-control", rows="6"})</td>
                                     </tr>
@@ -63,7 +69,7 @@
 
                                                         @foreach (string str in ListSystemCode)
                                                         {
-                                                            @if (FList.Where(x => x.SystemCode== str).ToList().Count > 0)
+                                                            @if (FList.Where(x => x.SystemCode == str).ToList().Count > 0)
                                                             {
                                                                 <div style="width:100%; display:flex; flex-flow: wrap; padding:0.5rem 0.5rem 0 0.5rem; margin-block:1rem;">
 
@@ -115,7 +121,7 @@
                                                                         }
                                                                     }
                                                                 </div>
-                                                                
+
                                                             }
                                                         }
                                                     </div>
@@ -128,60 +134,20 @@
 
                                                         @foreach (string str in ListSystemCode)
                                                         {
-                                                            @if (BList.Where(x => x.SystemCode == str).ToList().Count > 0)
+                                                            @if (BList.Where(x => x.SystemCode == str).ToList().Count > 0 && str != "01")
                                                             {
                                                                 <div style="width:100%; display:flex; flex-flow: wrap; padding:0.5rem 0.5rem 0 0.5rem; margin-block:1rem;">
 
                                                                     @foreach (FunSelectedItem item in BList.Where(x => x.SystemCode == str).ToList())
                                                                     {
-                                                                        @if (!BListShowed.Contains(str))
+                                                                        @if (!BListShowed.Contains(str) && item.SystemCode != "01")
                                                                         {
                                                                             <div style="width:100%; font-size: larger;">@item.SystemCodeText</div>
                                                                             BListShowed.Add(str);
                                                                         }
 
-                                                                        @if (Model.EditModel.RoleId == "hyperuser")
+                                                                        @if (item.SystemCode != "01")
                                                                         {
-                                                                            @if (Model.EditModel.LstFunItem.Any(x => x.Value == item.Value))
-                                                                            {
-                                                                                <div class="col-md-3 custom-control custom-checkbox">
-                                                                                    <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                                                           disabled="disabled" type="checkbox" id="@item.Value" value="@item.Value" checked>
-                                                                                    <label class="custom-control-label" for="@item.Value">@item.Text</label>
-                                                                                </div>
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                <div class="col-md-3 custom-control custom-checkbox">
-                                                                                    <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                                                           disabled="disabled" type="checkbox" id="@item.Value" value="@item.Value">
-                                                                                    <label class="custom-control-label" for="@item.Value">@item.Text</label>
-                                                                                </div>
-                                                                            }
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            @if (item.SystemCode == "01")
-                                                                            {
-                                                                                @if (Model.EditModel.LstFunItem.Any(x => x.Value == item.Value))
-                                                                                {
-                                                                                    <div class="col-md-3 custom-control custom-checkbox">
-                                                                                        <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                                                               disabled="disabled" type="checkbox" id="@item.Value" value="@item.Value" checked>
-                                                                                        <label class="custom-control-label" for="@item.Value">@item.Text</label>
-                                                                                    </div>
-                                                                                }
-                                                                                else
-                                                                                {
-                                                                                    <div class="col-md-3 custom-control custom-checkbox">
-                                                                                        <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
-                                                                                               disabled="disabled" type="checkbox" id="@item.Value" value="@item.Value">
-                                                                                        <label class="custom-control-label" for="@item.Value">@item.Text</label>
-                                                                                    </div>
-                                                                                }
-                                                                            }
-                                                                            else
-                                                                            { 
                                                                             @if (Model.EditModel.LstFunItem.Any(x => x.Value == item.Value))
                                                                             {
                                                                                 <div class="col-md-3 custom-control custom-checkbox">
@@ -198,16 +164,15 @@
                                                                                     <label class="custom-control-label" for="@item.Value">@item.Text</label>
                                                                                 </div>
                                                                             }
-                                                                            }
                                                                         }
-                                                        }
+                                                                    }
                                                                 </div>
 
                                                             }
                                                         }
                                                     </div>
 
-                                            </div>
+                                                </div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -241,6 +206,7 @@
 
         var RoleId = $('#@Html.IdFor(m => m.EditModel.RoleId)').val();
         var RoleName = $('#@Html.IdFor(m => m.EditModel.RoleName)').val();
+        var SystemRoleCode = $('#@Html.IdFor(m => m.EditModel.SystemRoleCode)').val();
         var Comment = $('#@Html.IdFor(m => m.EditModel.Comment)').val();
         var SystemCode = $('#@Html.IdFor(m => m.EditModel.SystemCode)').val();
 
@@ -251,13 +217,7 @@
             }
         });
 
-        data.append('@Html.NameFor(m => m.EditModel.RoleId)', RoleId);
-        data.append('@Html.NameFor(m => m.EditModel.RoleName)', RoleName);
-        data.append('@Html.NameFor(m => m.EditModel.Comment)', Comment);
-        data.append('@Html.NameFor(m => m.EditModel.SystemCode)', SystemCode);
-        data.append('@Html.NameFor(m => m.EditModel.strFunInfo)', selectedValues);
-
-        if (RoleName == "") {
+         if (RoleName == "") {
             $.alert("角色名稱不可為空");
             return;
         }
@@ -266,6 +226,18 @@
             $.alert("請選擇所屬子系統");
             return;
         }
+
+        if (SystemRoleCode == "") {
+            $.alert("請選擇是否為心理師");
+            return;
+        }
+
+        data.append('@Html.NameFor(m => m.EditModel.RoleId)', RoleId);
+        data.append('@Html.NameFor(m => m.EditModel.RoleName)', RoleName);
+        data.append('@Html.NameFor(m => m.EditModel.SystemRoleCode)', SystemRoleCode);
+        data.append('@Html.NameFor(m => m.EditModel.Comment)', Comment);
+        data.append('@Html.NameFor(m => m.EditModel.SystemCode)', SystemCode);
+        data.append('@Html.NameFor(m => m.EditModel.strFunInfo)', selectedValues);
 
         SendAjax({
             url: '@Url.Action("EditOldData")',
