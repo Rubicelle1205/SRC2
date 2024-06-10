@@ -152,14 +152,10 @@ namespace WebAuth.DataAccess
 
             parameter.Add("@BackOrFront", BackOrFront);
 
-            string SQL = @"SELECT SM.MenuNode, SM.MenuName, SM.MenuUpNode, SM.IconTag, F.Url, SM.IsEnable, SM.IsVisIble, SM.SortOrder
-                           FROM SystemRole SR
-                           INNER JOIN UserRole R ON R.RoleId = SR.RoleId
-                           INNER JOIN SystemRoleFun RF ON RF.RoleId = R.RoleId
-                           INNER JOIN SystemMenu SM ON SM.MenuNode = RF.MenuNode
-                           INNER JOIN SystemFun F ON F.FunId=SM.FunId
-                           WHERE 1 = 1
-                           AND (@BackOrFront IS NULL OR SM.BackOrFront = @BackOrFront) ";
+            string SQL = @"SELECT B.MenuNode, B.MenuUpNode, A.FunName, A.Url
+                             FROM SystemFun A
+                        LEFT JOIN SystemMenu B ON B.MenuNode = A.FunId AND B.SystemCode = A.SystemCode
+                              AND (@BackOrFront IS NULL OR B.BackOrFront = @BackOrFront) ";
 
             (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) result = dbAccess.DbaExecuteQuery<FunInfo>(SQL, parameter, false, null);
 
