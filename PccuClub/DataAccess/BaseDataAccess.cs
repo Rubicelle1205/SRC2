@@ -1,4 +1,5 @@
 ﻿using DataAccess;
+using PccuClub.WebAuth;
 using System.Data;
 using WebPccuClub.Global;
 using WebPccuClub.Models;
@@ -56,7 +57,33 @@ namespace WebPccuClub.DataAccess
             return str;
         }
 
-		public string GetRemind(string ControllerName)
+        public string GetUnitName(UserInfo userinfo, string SystemCode)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+            DataSet ds = new DataSet();
+
+            string str = "";
+            string CommendText = "";
+
+            CommendText = $@"SELECT C.SystemCode, C.RoleName AS UnitName
+                               FROM UserMain A
+                          LEFT JOIN UserRole B ON B.LoginId = A.LoginId
+                          LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
+                              WHERE 1 = 1
+                                AND A.LoginId = '{userinfo.LoginId}' AND C.SystemCode = '{SystemCode}'";
+
+            DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                str = ds.Tables[0].QueryFieldByDT("UnitName");
+            }
+
+            return str;
+        }
+
+        public string GetRemind(string ControllerName)
 		{
 			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
 			DBAParameter parameters = new DBAParameter();

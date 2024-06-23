@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 <div class="infoItem">
-                    <div class="tag">活動人數</div>
+                    <div class="tag">活動人數<span class="req-star">*</span></div>
                     <div class="content">
                         <div class="d-flex align-items-center">
                             <input asp-for="CreateModel.Capacity" class="form-control" placeholder="活動人數" />
@@ -63,7 +63,7 @@
                     </div>
                 </div>
                 <div class="infoItem">
-                    <div class="tag">活動性質</div>
+                    <div class="tag">活動性質<span class="req-star">*</span></div>
                     <div class="content warning-box">
                         <select asp-for="CreateModel.ActType" asp-items="@ViewBag.ddlActType" class="form-control">
                             <option value="">請選擇活動性質</option>

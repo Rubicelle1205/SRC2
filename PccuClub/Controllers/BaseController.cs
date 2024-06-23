@@ -186,10 +186,13 @@ namespace WebPccuClub.Controllers
             var controllerAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetCustomAttributes(typeof(LogAttribute), false);
             var actionAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetMethod(actionName)?.GetCustomAttributes(typeof(LogAttribute), false);
             string SystemCode = dbAccess.GetSystemCode(controllerName);
+            
 
             if (LoginUser != null)
             {
                 UserInfo thisUser = HttpContext.Session.GetObject<UserInfo>("FLoginUser");
+                string UnitName = dbAccess.GetUnitName(thisUser, SystemCode);
+                thisUser.UnitName = UnitName;
                 thisUser.LoginSystemCode = SystemCode;
                 thisUser.LoginSource = "B";
                 HttpContext.Session.SetObject("FLoginUser", thisUser);
