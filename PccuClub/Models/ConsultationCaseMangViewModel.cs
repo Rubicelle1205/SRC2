@@ -344,19 +344,34 @@ namespace WebPccuClub.Models
 
     public class RoomDataModel
     {
-        public string Date { get; set; }
-        public string ClassName { get; set; } = ""; // td樣式
-        public string Markup { get; set; } // HTML 標記
-        public List<Order> Orders { get; set; } = new List<Order>();
+        public string date { get; set; }
+        public string classname { get; set; }
+        public string markup { get; set; }
+
+        public List<object> orders = new List<object>();
     }
 
     public class Order
     {
+        public int ID { get; set; }
+        public string Date { get; set; }
         public string RoomId { get; set; }
         public string RoomTitle { get; set; }
         public string PsychologistTitle { get; set; }
         public string StudentNumber { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
+    }
+
+    public class Order2
+    {
+        public string id { get; set; }
+        public string Date { get; set; }
+        public string room_id { get; set; }
+        public string room_title { get; set; }
+        public string psychologist_title { get; set; }
+        public string student_number { get; set; }
+        public string start_time { get; set; }
+        public string end_time { get; set; }
     }
 }

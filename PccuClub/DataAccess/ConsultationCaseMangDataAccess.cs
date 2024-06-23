@@ -133,6 +133,31 @@ AND (@AssignCaseStatus IS NULL OR A.AssignCaseStatus = @AssignCaseStatus)
             return null;
         }
 
+        public List<Order> GetOrder()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT A.ID AS ID, A.SNO AS StudentNumber, A.TalkDate AS Date, A.TalkSTime AS StartTime, A.TalkETime AS EndTime, 
+	                                A.RoomID, B.RoomName AS RoomTitle, A.Psychologist, C.UserName AS PsychologistTitle
+                               FROM ConsultationCaseMang A
+							   LEFT JOIN ConsultationRoomMang B ON B.ID = A.RoomID
+							   LEFT JOIN UserMain C on C.LoginId = A.Psychologist
+                              WHERE 1 = 1
+";
+
+            (DbExecuteInfo info, IEnumerable<Order> entitys) dbResult = DbaExecuteQuery<Order>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<Order>();
+        }
 
         public DbExecuteInfo InsertData(ConsultationCaseMangViewModel vm, UserInfo LoginUser)
         {

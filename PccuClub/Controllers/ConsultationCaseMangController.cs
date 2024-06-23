@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using NPOI.XWPF.UserModel;
 using System.ComponentModel;
 using System.Reflection;
 using System.Text.Json;
@@ -53,44 +54,48 @@ namespace WebPccuClub.Controllers
 
             vm.CreateModel = new ConsultationCaseMangCreateModel();
 
-            var initData = new List<object>
-        {
-            new
+            List<Order> LstOrder = dbAccess.GetOrder();
+            List<string> LstDate = new List<string>();
+            List<RoomDataModel> initData = new List<RoomDataModel>();
+
+            foreach (Order item in LstOrder)
             {
-                date = DateTime.Now.ToString("yyyy-MM-dd"),
-                classname = "",
-                markup = "<span class='badge rounded-pill bg-success'>[day]</span>",
-                orders = new List<object>
+                string date = LstDate.Where(x => x == item.Date).FirstOrDefault();
+
+                if (date == null)
                 {
-                    new { id = 1, room_id = "room1", room_title = "諮商室X", psychologist_title = "心理師A", student_number = "B852145", start_time = "11:00", end_time = "12:00" },
-                    new { id = 2, room_id = "room1", room_title = "諮商室X", psychologist_title = "心理師B", student_number = "B451348", start_time = "08:00", end_time = "09:00" },
-                    new { id = 5, room_id = "room3", room_title = "諮商室C", psychologist_title = "心理師B", student_number = "B988456", start_time = "09:00", end_time = "10:00" }
+                    RoomDataModel room = new RoomDataModel();
+                    room.date = item.Date;
+                    room.classname = "";
+                    room.markup = "<span class='badge rounded-pill bg-success'>[day]</span>";
+
+                    List<Order> lstOrder = LstOrder.Where(x => x.Date == item.Date).ToList();
+
+                    foreach (Order item2 in lstOrder)
+                    {
+                        var order = new List<object>
+                        {
+                            new 
+                            { 
+                                id = item2.ID, 
+                                room_id = item2.RoomId, 
+                                room_title = item2.RoomTitle, 
+                                psychologist_title = item2.PsychologistTitle, 
+                                student_number = item2.StudentNumber, 
+                                start_time = item2.StartTime, 
+                                end_time = item2.EndTime 
+                            }
+                        };
+
+                        room.orders.AddRange(order);
+                    }
+
+                    initData2.Add(room);
                 }
-            },
-            new
-            {
-                date = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd"),
-                classname = "",
-                markup = "<span class='badge rounded-pill bg-success'>[day]</span>",
-                orders = new List<object>
-                {
-                    new { id = 3, room_id = "room1", room_title = "諮商室X", psychologist_title = "心理師A", student_number = "B123456", start_time = "11:00", end_time = "12:00" },
-                    new { id = 4, room_id = "room3", room_title = "諮商室C", psychologist_title = "心理師C", student_number = "B789456", start_time = "15:00", end_time = "17:00" }
-                }
-            },
-            new
-            {
-                date = DateTime.Now.AddDays(-15).ToString("yyyy-MM-dd"),
-                classname = "",
-                markup = "<span class='badge rounded-pill bg-success'>[day]</span>",
-                orders = new List<object>
-                {
-                    new { id = 6, room_id = "room3", room_title = "諮商室C", psychologist_title = "心理師A", student_number = "B852145", start_time = "08:00", end_time = "10:00" },
-                    new { id = 7, room_id = "room2", room_title = "諮商室B", psychologist_title = "心理師A", student_number = "B451348", start_time = "11:00", end_time = "12:00" },
-                    new { id = 8, room_id = "room1", room_title = "諮商室X", psychologist_title = "張書飄", student_number = "B988456", start_time = "09:00", end_time = "10:00" }
-                }
+
+                LstDate.Add(item.Date);
             }
-        };
+
 
             ViewBag.InitData = JsonConvert.SerializeObject(initData);
 

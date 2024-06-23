@@ -75,12 +75,22 @@
 <script>
 
     $(document).ready(function () {
+        $.fn.scheduler.locales['zh-tw'] = {
+            AM: '上午',
+            PM: '下午',
+            TIME_TITLE: '時間',
+            WEEK_TITLE: '星期',
+            WEEK_DAYS: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'],
+            DRAG_TIP: '可移動滑鼠游標選擇時段',
+            RESET: '清空選擇'
+        };
+
         var rawData = $('#@Html.IdFor(m => m.EditModel.strAppointmentTime)').val();
         let obj = JSON.parse(rawData);
 
         $('#psychologist-schedule-table').scheduler({
             data: obj, // 初始資料
-            locale: 'language', // 本地化文字
+            locale: 'zh-tw', // 本地化文字
             footer: true, // 是否顯示footer
             onSelect: function (newData) {
                 console.log(newData); // 列出當前選擇的所有時段(格式同initData)

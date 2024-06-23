@@ -66,8 +66,8 @@ namespace WebPccuClub.Models
         [DisplayName("空間名稱")]
         public string? RoomName { get; set; }
 
-        /// <summary>Memo</summary>
-        [DisplayName("Memo")]
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
         public string? Memo { get; set; }
 
         public string? strAppointmentTime { get; set; }

@@ -804,7 +804,7 @@ $(function () {
             }
         }
 
-        if ((location.pathname).indexOf("/room_mang") >= 0 || (location.pathname).indexOf("/ConsultationPsyMang") >= 0) {
+        if ((location.pathname).indexOf("/room_mang") >= 0 || (location.pathname).indexOf("/ConsultationPsyMang") >= 0 || (location.pathname).indexOf("/ConsultationSpaceMang") >= 0) {
             var model = getUrlParam("model") !== "" ? getUrlParam("model") : "add";
 
             /* 套件範例: https://duoani.github.io/jquery.scheduler/example/ */
