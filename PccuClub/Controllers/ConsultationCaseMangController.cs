@@ -90,7 +90,7 @@ namespace WebPccuClub.Controllers
                         room.orders.AddRange(order);
                     }
 
-                    initData2.Add(room);
+                    initData.Add(room);
                 }
 
                 LstDate.Add(item.Date);
