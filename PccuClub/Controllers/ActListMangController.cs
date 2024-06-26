@@ -39,7 +39,7 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlLifeClass = dbAccess.GetAllLifeClass();
             ViewBag.ddlActVerify = dbAccess.GetAllActVerify();
-
+            ViewBag.ddlPassPort = dbAccess.GetPassport();
 
             ActListMangViewModel vm = new ActListMangViewModel();
             vm.ConditionModel = new ActListMangConditionModel();
@@ -114,6 +114,71 @@ namespace WebPccuClub.Controllers
             if (vm.ResultModel != null && vm.ResultModel.Count > 0)
             {
                 IWorkbook workbook = new XSSFWorkbook();
+                List<int> LstWidth = new List<int> { 20, 20, 50, 50, 30, 30, 30, 30, 50 };
+
+                ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
+
+                var properties = typeof(ActListMangExcelResultModel).GetProperties();
+
+                //設定欄位
+                IRow headerRow = sheet.CreateRow(0);
+
+                XSSFCellStyle headStyle = ExcelUtil.GetDefaultHeaderStyle(workbook);
+
+                for (int i = 0; i <= properties.Length - 1; i++)
+                {
+                    var displayAttribute = (DisplayNameAttribute)properties[i].GetCustomAttribute(typeof(DisplayNameAttribute));
+                    var displayName = displayAttribute?.DisplayName ?? properties[i].Name;
+
+                    headerRow.CreateCell(i).SetCellValue(displayName);
+
+                    foreach (ICell cell in headerRow.Cells)
+                        cell.CellStyle = headStyle;
+
+                }
+
+                XSSFCellStyle contentStyle = ExcelUtil.GetDefaultContentStyle(workbook);
+
+                //設定資料
+                for (int i = 0; i <= vm.ResultModel.Count - 1; i++)
+                {
+                    IRow dataRow = sheet.CreateRow(i + 1);
+
+                    dataRow.CreateCell(0).SetCellValue(vm.ResultModel[i].ActId);
+                    dataRow.CreateCell(1).SetCellValue(vm.ResultModel[i].SchoolYear);
+                    dataRow.CreateCell(2).SetCellValue(vm.ResultModel[i].ClubName);
+                    dataRow.CreateCell(3).SetCellValue(vm.ResultModel[i].ActName);
+                    dataRow.CreateCell(4).SetCellValue(vm.ResultModel[i].SDate.Value.ToString("yyyy/MM/dd"));
+                    dataRow.CreateCell(5).SetCellValue(vm.ResultModel[i].EDate.Value.ToString("yyyy/MM/dd"));
+                    dataRow.CreateCell(6).SetCellValue(vm.ResultModel[i].ActVerifyText);
+                    dataRow.CreateCell(7).SetCellValue(vm.ResultModel[i].PassPortText);
+                    dataRow.CreateCell(8).SetCellValue(vm.ResultModel[i].Created.Value.ToString("yyyy/MM/dd HH:mm:ss"));
+
+                    foreach (ICell cell in dataRow.Cells)
+                        cell.CellStyle = contentStyle;
+                }
+
+                MemoryStream ms = new MemoryStream();
+                workbook.Write(ms, true);
+                ms.Flush();
+                ms.Position = 0;
+
+                return File(ms, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName + ".xlsx");
+            }
+
+            return View("Index", vm);
+
+        }
+
+        [LogAttribute(LogActionChineseName.匯出Excel)]
+        public IActionResult ExportPassAndPort(ActListMangViewModel vm)
+        {
+            string FileName = string.Format("{0}_{1}", LogActionChineseName.已報備活動 + "_審核通過且提出全人學習護照申請", DateTime.Now.ToString("yyyyMMdd"));
+            vm.ResultModel = dbAccess.GetExportResult(vm.ConditionModel);
+
+            if (vm.ResultModel != null && vm.ResultModel.Count > 0)
+            {
+                IWorkbook workbook = new XSSFWorkbook();
                 List<int> LstWidth = new List<int> { 20, 20, 50, 50, 30, 30, 30, 50 };
 
                 ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
@@ -168,8 +233,6 @@ namespace WebPccuClub.Controllers
             return View("Index", vm);
 
         }
-
-
 
         [Log(LogActionChineseName.新增儲存)]
         [ValidateInput(false)]
