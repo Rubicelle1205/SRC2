@@ -15,7 +15,7 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 namespace WebPccuClub.Controllers
 {
     [LogAttribute(LogActionChineseName.全人學習護照管理)]
-    public class ClubHolisticPassportController : BaseController
+    public class ClubHolisticPassportController : FBaseController
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
         ClubHolisticPassportDataAccess dbAccess = new ClubHolisticPassportDataAccess();
