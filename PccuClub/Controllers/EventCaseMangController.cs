@@ -45,8 +45,10 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public IActionResult Create()
         {
+           
+
             ViewBag.ddlMainClass = dbAccess.GetddlMainClass();
-            ViewBag.ddlSecondClass = dbAccess.GetddlSecondClass();
+            
             ViewBag.ddlCaseFinish = dbAccess.GetddlCaseFinishClass();
             ViewBag.ddlReferUnit = dbAccess.GetddlReferUnit();
             ViewBag.ddlYesOrNo = dbAccess.GetddlYesOrNo();
@@ -59,6 +61,15 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlVictimRole = dbAccess.GetddlVictimRole();
             ViewBag.ddlBirth = dbAccess.GetddlBirth();
             ViewBag.ddlVictimStatus = dbAccess.GetddlVictimStatus();
+
+            //先檢查是否存在轉介單位，若沒有轉介單位先跳轉至轉介單位新增頁面
+            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstReferUnit = ViewBag.ddlReferUnit;
+            if (LstReferUnit.Count == 0)
+            {
+                AlertMsg.Add(string.Format(@"{0}", "轉介單位尚未設定，請先新增轉介單位資料"));
+                return RedirectToAction("Index", "EventCaseReferMang");
+            }
+
 
             EventCaseMangViewModel vm = new EventCaseMangViewModel();
             vm.CreateModel = new EventCaseMangCreateModel();
@@ -73,7 +84,7 @@ namespace WebPccuClub.Controllers
                 return RedirectToAction("Index");
 
             ViewBag.ddlMainClass = dbAccess.GetddlMainClass();
-            ViewBag.ddlSecondClass = dbAccess.GetddlSecondClass();
+            
             ViewBag.ddlCaseFinish = dbAccess.GetddlCaseFinishClass();
             ViewBag.ddlReferUnit = dbAccess.GetddlReferUnit();
             ViewBag.ddlYesOrNo = dbAccess.GetddlYesOrNo();
@@ -93,6 +104,7 @@ namespace WebPccuClub.Controllers
             {
                 vm.EditModel.LstVictim = dbAccess.GetLstVictimData(vm.EditModel.CaseID);
                 vm.EditModel.LstEventData = dbAccess.GetEventData(vm.EditModel.CaseID);
+                ViewBag.ddlSecondClass = dbAccess.GetddlSecondClass(vm.EditModel.MainClass);
             }
 
             return View(vm);
@@ -580,6 +592,23 @@ namespace WebPccuClub.Controllers
             LstEventData.Add(ed);
 
             return LstEventData;
+        }
+
+        
+        [ValidateInput(false)]
+
+        public IActionResult GetSecond(string MainClass, string Source, string CaseID)
+        {
+            EventCaseMangViewModel vm = new EventCaseMangViewModel();
+
+            if (Source == "Create")
+                vm.CreateModel = new EventCaseMangCreateModel();
+            else if (Source == "Edit")
+                vm.EditModel = dbAccess.GetEditData(CaseID);
+
+            ViewBag.ddlSecondClass = dbAccess.GetddlSecondClass(MainClass);
+
+            return PartialView("_SecondClassPartial", vm);
         }
 
         #endregion

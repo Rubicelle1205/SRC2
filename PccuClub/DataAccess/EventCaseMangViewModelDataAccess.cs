@@ -674,7 +674,7 @@ AND (@CaseID IS NULL OR A.CaseID LIKE '%' + @CaseID + '%')
             return new List<SelectListItem>();
         }
 
-        public List<SelectListItem> GetddlSecondClass()
+        public List<SelectListItem> GetddlSecondClass(string MainClass = null)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -682,9 +682,10 @@ AND (@CaseID IS NULL OR A.CaseID LIKE '%' + @CaseID + '%')
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
+            parameters.Add("MainClass", MainClass);
             #endregion
 
-            CommandText = @"SELECT ID AS Value, Text AS Text FROM EventSecondClassMang WHERE CaseSystemType = '01'";
+            CommandText = @"SELECT ID AS Value, Text AS Text FROM EventSecondClassMang WHERE CaseSystemType = '01' AND (@MainClass IS NULL OR MainID = @MainClass)";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 

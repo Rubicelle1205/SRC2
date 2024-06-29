@@ -37,7 +37,11 @@
                                     </tr>
                                     <tr>
                                         <th width="10%">校安事件次類別<span class="required">*</span></th>
-                                        <td>@Html.DropDownListFor(m => m.EditModel.SecondClass ,(List<SelectListItem>)ViewBag.ddlSecondClass,"請選擇校安事件次類別", new {@class = "form-control"})</td>
+                                        <td>
+                                            <div id="divSecondClass">
+                                                    @Html.DropDownListFor(m => m.EditModel.SecondClass, (List<SelectListItem>)ViewBag.ddlSecondClass, "請選擇校安事件次類別", new { @class = "form-control" })
+                                            </div>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th width="10%">事件發生地點<span class="required">*</span></th>
@@ -385,7 +389,11 @@
         });
     });
 
-    function SaveEventData(){
+    
+
+
+
+        function SaveEventData(){
         var data = new FormData()
 
         var CaseID = $('#@Html.IdFor(m => m.EditModel.CaseID)').val();
@@ -418,6 +426,22 @@
 
     }
 
+    $('#@Html.IdFor(m => m.EditModel.MainClass)').change(function (e) {
+        GetSecond();
+    });
+
+    function GetSecond() {
+        var CaseID = $('#@Html.IdFor(m => m.EditModel.CaseID)').val();
+        var MainClass = $('#@Html.IdFor(m => m.EditModel.MainClass)').val();
+
+        SendAjax({
+            url: '@Url.Action("GetSecond")',
+            data: { 'MainClass': MainClass, 'Source': 'Edit', 'CaseID': CaseID },
+            success: function (result) {
+                $('#divSecondClass').html(result);
+            }
+        });
+    }
 
     function SaveData() {
 

@@ -34,7 +34,11 @@
                                     </tr>
                                     <tr>
                                         <th width="10%">校安事件次類別<span class="required">*</span></th>
-                                        <td>@Html.DropDownListFor(m => m.CreateModel.SecondClass ,(List<SelectListItem>)ViewBag.ddlSecondClass,"請選擇校安事件次類別", new {@class = "form-control"})</td>
+                                        <td>
+                                            <div id="divSecondClass">
+                                                
+                                            </div>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th width="10%">事件發生地點<span class="required">*</span></th>
@@ -297,6 +301,22 @@
 
         });
     });
+
+    $('#@Html.IdFor(m => m.CreateModel.MainClass)').change(function (e) {
+        GetSecond();
+    });
+
+    function GetSecond() {
+        var MainClass = $('#@Html.IdFor(m => m.CreateModel.MainClass)').val();
+
+        SendAjax({
+            url: '@Url.Action("GetSecond")',
+            data: { 'MainClass': MainClass, 'Source': 'Create', 'CaseID': '' },
+            success: function (result) {
+                $('#divSecondClass').html(result);
+            }
+        });
+    }
 
     function SaveData() {
 
