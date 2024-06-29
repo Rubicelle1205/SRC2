@@ -67,7 +67,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ShortInfo)<span class="required">*</span></th>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ShortInfo)</th>
                                         <td>@Html.TextAreaFor(m => m.EditModel.ShortInfo, new {@class="form-control", rows="5", placeholder="請輸入活動資訊簡述"})</td>
                                     </tr>
                                     <tr class="table-warning">
@@ -265,8 +265,9 @@
         if (ActDate == "") { $.alert("活動日期不可為空白"); return; }
         if (ActName == "") { $.alert("活動名稱不可為空白"); return; }
         if (Course == "") { $.alert("活動辦理時程不可為空白"); return; }
-        if (ShortInfo == "") { $.alert("活動資訊簡述不可為空白"); return; }
         if (ActFinishVerify == "") { $.alert("審核狀態不可為空白"); return; }
+
+        if (!moment(ActDate, "YYYY-MM-DD", true).isValid()) { $.alert("活動日期格式不正確"); return; }
 
         data.append('@Html.NameFor(m => m.EditModel.ClubId)', ClubId);
 

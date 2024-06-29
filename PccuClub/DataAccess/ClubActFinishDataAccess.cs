@@ -73,7 +73,7 @@ namespace WebPccuClub.DataAccess
             #endregion
 
             CommandText = $@"SELECT A.ActFinishId, A.ActID, A.ActDetailId, A.ClubId, A.ClubCName, A.Caseman, A.Email, A.Tel, A.ActDate, A.ActName, A.Course, 
-                                    A.ShortInfo, A.ElseFile, A.ActFinishVerify, B.Text AS ActVerifyText
+                                    A.ShortInfo, A.ElseFile, A.ActFinishVerify, B.Text AS ActVerifyText, A.Memo
                                FROM ActFinish A
                           LEFT JOIN Code B ON B.Code = A.ActFinishVerify AND B.Type = 'ActVerify'
                               WHERE 1 = 1

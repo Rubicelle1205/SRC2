@@ -752,7 +752,7 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@Caseman", vm.ClubActFinish.Caseman);
             parameters.Add("@Email", vm.ClubActFinish.Email);
             parameters.Add("@Tel", vm.ClubActFinish.Tel);
-            parameters.Add("@ActDate", vm.ClubActFinish.ActDate);
+            parameters.Add("@ActDate", vm.ClubActFinish.ActDate?.ToString("yyyy-MM-dd"));
             parameters.Add("@ActName", vm.ClubActFinish.ActName);
             parameters.Add("@Course", vm.ClubActFinish.Course);
             parameters.Add("@ShortInfo", vm.ClubActFinish.ShortInfo);

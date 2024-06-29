@@ -930,6 +930,14 @@ namespace WebPccuClub.Controllers
                         }
                     }
 
+                    if (LstActFinishPersonDetail.Count == 0)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "新增失敗，學號匯入清單資料數為0";
+                        return Json(vmRtn);
+                    }
+
                     dbResult = dbAccess.InsertPersonData(ActFinishId, LstActFinishPersonDetail, LoginUser);
 
                     if (!dbResult.isSuccess)

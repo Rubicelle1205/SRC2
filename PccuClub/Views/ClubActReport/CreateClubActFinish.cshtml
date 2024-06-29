@@ -181,6 +181,8 @@
         if (ActName == "") { $.alert("活動名稱不可為空白"); return; }
         if (Course == "") { $.alert("活動辦理時程不可為空白"); return; }
 
+        if (!moment(ActDate, "YYYY-MM-DD", true).isValid()) { $.alert("活動日期格式不正確"); return; }
+
         data.append('@Html.NameFor(m => m.ClubActFinish.ClubId)', ClubId);
         data.append('@Html.NameFor(m => m.ClubActFinish.ActID)', ActID);
         data.append('@Html.NameFor(m => m.ClubActFinish.ActDetailId)', ActDetailId);

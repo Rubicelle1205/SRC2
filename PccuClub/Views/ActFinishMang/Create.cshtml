@@ -67,7 +67,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ShortInfo)<span class="required">*</span></th>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.ShortInfo)</th>
                                         <td>@Html.TextAreaFor(m => m.CreateModel.ShortInfo, new {@class="form-control", rows="5", placeholder="請輸入活動資訊簡述"})</td>
                                     </tr>
                                     <tr class="table-warning">
@@ -159,7 +159,6 @@
 <!-- /.content -->
 
 <script>
-
     $(document).ready(function () {
         $('#updFile').change(function (e) {
             
@@ -238,7 +237,6 @@
             data.append('@Html.NameFor(m => m.File)', File);
         }
 
-
         if (ClubId == "") { $.alert("社團代號不可為空白"); return; }
         if (ActID == "") { $.alert("活動報備編號不可為空白"); return; }
         if (ClubCName == "") { $.alert("主辦單位不可為空白"); return; }
@@ -248,8 +246,9 @@
         if (ActDate == "") { $.alert("活動日期不可為空白"); return; }
         if (ActName == "") { $.alert("活動名稱不可為空白"); return; }
         if (Course == "") { $.alert("活動辦理時程不可為空白"); return; }
-        if (ShortInfo == "") { $.alert("活動資訊簡述不可為空白"); return; }
         if (ActFinishVerify == "") { $.alert("審核狀態不可為空白"); return; }
+
+        if (!moment(ActDate, "YYYY-MM-DD", true).isValid()) { $.alert("活動日期格式不正確"); return; }
 
         data.append('@Html.NameFor(m => m.CreateModel.ClubId)', ClubId);
         data.append('@Html.NameFor(m => m.CreateModel.ActID)', ActID);
