@@ -222,11 +222,11 @@ namespace WebPccuClub.Models
 
         /// <summary>發生時間</summary>
         [DisplayName("發生時間")]
-        public DateTime? OccurTime { get; set; }
+        public string? OccurTime { get; set; }
 
         /// <summary>知悉時間</summary>
         [DisplayName("知悉時間")]
-        public DateTime? KnowTime { get; set; }
+        public string? KnowTime { get; set; }
 
         /// <summary>媒體是否得知</summary>
         [DisplayName("媒體是否得知")]

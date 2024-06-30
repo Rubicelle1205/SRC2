@@ -509,6 +509,9 @@
         if (strVictim == "") { $.alert("需填寫相關人員"); return; }
         if (selectedValues == "") { $.alert("需選擇轉介單位"); return; }
 
+        if (!moment(OccurTime, "YYYY-MM-DD HH:mm", true).isValid()) { $.alert("事件發生時間格式不正確"); return; }
+        if (!moment(KnowTime, "YYYY-MM-DD HH:mm", true).isValid()) { $.alert("知悉時間格式不正確"); return; }
+
         data.append('@Html.NameFor(m => m.EditModel.CaseID)', CaseID);
         data.append('@Html.NameFor(m => m.EditModel.MainClass)', MainClass);
         data.append('@Html.NameFor(m => m.EditModel.SecondClass)', SecondClass);
@@ -530,6 +533,8 @@
         data.append('@Html.NameFor(m => m.EditModel.CaseFinishDateTime)', CaseFinishDateTime);
 
         data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+        
 
         SendAjax({
             url: '@Url.Action("EditOldData")',

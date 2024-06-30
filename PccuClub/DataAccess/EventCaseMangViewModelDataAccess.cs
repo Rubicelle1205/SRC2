@@ -73,8 +73,9 @@ AND (@CaseID IS NULL OR A.CaseID LIKE '%' + @CaseID + '%')  ";
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT A.CaseID, A.MainClass, A.SecondClass, A.CaseStatus, A.CaseFinishDateTime, A.OccurTime, A.KnowTime, A.ReferCode,
-                                    A.Location, A.MediaKnow, A.DeathAmt, A.HurtAmt, A.SickAmt, A.ElseAmt, A.Created, A.LastModified, A.Memo
+            CommandText = $@"SELECT A.CaseID, A.MainClass, A.SecondClass, A.CaseStatus, A.CaseFinishDateTime, 
+                                    LEFT(CONVERT(VARCHAR, A.OccurTime, 120), 16) AS OccurTime, LEFT(CONVERT(VARCHAR, A.KnowTime, 120), 16) AS KnowTime,
+                                    A.ReferCode, A.Location, A.MediaKnow, A.DeathAmt, A.HurtAmt, A.SickAmt, A.ElseAmt, A.Created, A.LastModified, A.Memo
                                FROM hq_PccuCase.dbo.CaseMainMang A
                           LEFT JOIN hq_PccuClub.dbo.EventMainClassMang B ON B.ID = A.MainClass
                           LEFT JOIN hq_PccuClub.dbo.EventSecondClassMang C ON C.ID = A.SecondClass
@@ -457,6 +458,47 @@ AND (A.CaseID = @ID) ";
             return ExecuteResult;
         }
 
+        /// <summary>
+        /// 刪除相關人員資料
+        /// </summary>
+        /// <param name="ser"></param>
+        /// <returns></returns>
+        public DbExecuteInfo DeleteVictimData(string ser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ID", ser);
+            #endregion 參數設定
+
+            string CommendText = $@"DELETE FROM hq_PccuCase.dbo.CaseVictimMang WHERE CaseID = @ID ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        /// <summary>
+        /// 刪除事件原因及經過
+        /// </summary>
+        /// <param name="ser"></param>
+        /// <returns></returns>
+        public DbExecuteInfo DeleteEventDetail(string ser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ID", ser);
+            #endregion 參數設定
+
+            string CommendText = $@"DELETE FROM hq_PccuCase.dbo.EventDetailMang WHERE CaseID = @ID ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
 
         /// <summary> 查詢結果 </summary>
         public List<EventCaseMangResultModel> GetExportResult(EventCaseMangConditionModel model)
