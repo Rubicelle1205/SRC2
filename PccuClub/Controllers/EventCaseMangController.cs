@@ -133,6 +133,14 @@ namespace WebPccuClub.Controllers
                 if (!string.IsNullOrEmpty(vm.CreateModel.strLstVictim))
                     vm.CreateModel.LstVictim = TransToLstVictim(vm.CreateModel.strLstVictim);
 
+                vm.EditModel = dbAccess.GetEditData(vm.CreateModel.CaseID);
+                if (vm.EditModel != null) 
+                {
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = @$"新增失敗，事件編號{vm.CreateModel.CaseID}已存在!";
+                    return Json(vmRtn);
+                }
+
                 vm.CreateModel.LstEventData = TransToLstEventData(vm);
 
                 dbAccess.DbaInitialTransaction();
