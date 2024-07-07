@@ -220,11 +220,11 @@ namespace WebPccuClub.Controllers
                     for (int i = 1; i <= sheet.LastRowNum; i++)
                     {
                         IRow row = sheet.GetRow(i);
+                        row.GetCell(0).SetCellType(CellType.String);
                         bool CanGo = true;
 
                         for (int j = 0; j <= row.Count() - 1; j++)
                         {
-                            row.GetCell(j)?.SetCellType(CellType.String);
                             string Celldata = row.GetCell(j)?.ToString();
                             if (string.IsNullOrEmpty(Celldata))
                                 CanGo = false;
@@ -296,23 +296,32 @@ namespace WebPccuClub.Controllers
                                 CaseFinishClass = LstddlCaseFinishClass.Where(m => m.Text == row.GetCell(8)?.ToString()).FirstOrDefault().Value;
                             }
 
-
-                            EventGenderMangImportModel excel = new EventGenderMangImportModel
+                            try
                             {
-                                CaseID = row.GetCell(0)?.StringCellValue.TrimStartAndEnd(),
-                                SubCaseID = row.GetCell(1)?.StringCellValue.TrimStartAndEnd(),
-                                OccurTime = DateTime.Parse(row.GetCell(2)?.StringCellValue),
-                                KnowTime = DateTime.Parse(row.GetCell(3).StringCellValue),
-                                GenderMainClass = MainClass,
-                                GenderSecondClass = SecondClass,
-                                AcceptStatus = AcceptStatus,
-                                AcceptTime = DateTime.Parse(row.GetCell(7).StringCellValue),
-                                CaseStatus = CaseFinishClass,
-                                CaseFinishDateTime = DateTime.Parse(row.GetCell(9)?.StringCellValue),
-                                Created = DateTime.Now
-                            };
+                                EventGenderMangImportModel excel = new EventGenderMangImportModel
+                                {
+                                    CaseID = row.GetCell(0)?.StringCellValue.TrimStartAndEnd(),
+                                    SubCaseID = row.GetCell(1)?.StringCellValue.TrimStartAndEnd(),
+                                    OccurTime = DateTime.Parse(row.GetCell(2)?.StringCellValue),
+                                    KnowTime = DateTime.Parse(row.GetCell(3).StringCellValue),
+                                    GenderMainClass = MainClass,
+                                    GenderSecondClass = SecondClass,
+                                    AcceptStatus = AcceptStatus,
+                                    AcceptTime = DateTime.Parse(row.GetCell(7).StringCellValue),
+                                    CaseStatus = CaseFinishClass,
+                                    CaseFinishDateTime = DateTime.Parse(row.GetCell(9)?.StringCellValue),
+                                    Created = DateTime.Now
+                                };
 
-                            LstExcel.Add(excel);
+                                LstExcel.Add(excel);
+                            }
+                            catch (Exception ex)
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = "上傳失敗，" + ex.Message;
+                                return Json(vmRtn);
+                            }
+                            
                         }
                     }
                 }

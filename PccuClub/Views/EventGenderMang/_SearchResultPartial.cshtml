@@ -52,13 +52,13 @@
                         <td class="text-center text-sm">
                             @if(item.OccurTime != null)
                             {
-                                item.OccurTime.Value.ToString("yyyy/MM/dd HH:mm");
+                                @item.OccurTime.Value.ToString("yyyy/MM/dd HH:mm");
                             }
                             <br />
                             <span class="text-muted">
                                 @if (item.KnowTime != null)
                              {
-                                item.KnowTime.Value.ToString("yyyy/MM/dd HH:mm");
+                                @item.KnowTime.Value.ToString("yyyy/MM/dd HH:mm");
                              }
                             </span>
                         </td>

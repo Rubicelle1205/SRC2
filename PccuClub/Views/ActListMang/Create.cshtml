@@ -663,6 +663,8 @@
         var ManagerPhone = $('#@Html.IdFor(m => m.CreateModel.ManagerPhone)').val();
         var ManagerTel = $('#@Html.IdFor(m => m.CreateModel.ManagerTel)').val();
 
+
+
         var allEmpty = true;
         for (var i = 0; i <= 8; i++) {
             var file = $('#ProposalFile' + i);
@@ -737,6 +739,7 @@
         if (PassPort == "") { $.alert("申請全人學習護照不可為空白"); return; }
         if (strSDGs == "") { $.alert("需選擇SDGs"); return; }
         if (ActVerify == "") { $.alert("審核狀態不可為空白"); return; }
+        if (strRundown == "") { $.alert("活動行程不可為空白"); return; }
 
         data.append('@Html.NameFor(m => m.CreateModel.ClubId)', ClubId);
         data.append('@Html.NameFor(m => m.CreateModel.SchoolYear)', SchoolYear);
