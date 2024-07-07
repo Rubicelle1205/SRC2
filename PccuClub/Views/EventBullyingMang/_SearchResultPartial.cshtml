@@ -9,7 +9,7 @@
                 <th width="10%">
                     校安事件編號
                     <br />
-                    <span class="text-sm text-secondary">性平號</span>
+                    <span class="text-sm text-secondary">霸凌號</span>
                 </th>
                 <th width="10%">
                     發生時間
@@ -17,9 +17,9 @@
                     <span class="text-sm text-secondary">知悉時間</span>
                 </th>
                 <th width="10%">
-                    性平事件主類別
+                    霸凌事件主類別
                     <br />
-                    <span class="text-sm text-secondary">性平事件次類別</span>
+                    <span class="text-sm text-secondary">霸凌事件次類別</span>
                 </th>
                 <th width="10%">
                     是否受理
@@ -52,13 +52,13 @@
                         <td class="text-center text-sm">
                             @if (item.OccurTime != null)
                             {
-                                item.OccurTime.Value.ToString("yyyy/MM/dd HH:mm");
+                                @item.OccurTime.Value.ToString("yyyy/MM/dd HH:mm");
                             }
                             <br />
                             <span class="text-muted">
                                 @if (item.OccurTime != null)
                                 {
-                                    item.KnowTime.Value.ToString("yyyy/MM/dd HH:mm");
+                                    @item.KnowTime.Value.ToString("yyyy/MM/dd HH:mm");
                                 }
 
                             </span>
