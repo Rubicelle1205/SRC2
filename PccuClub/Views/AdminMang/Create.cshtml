@@ -54,7 +54,7 @@
                                     </tr>
                                     <tr>
                                         <th width="15%">
-                                            @Html.LabelFor(m => m.CreateModel.Pwd)
+                                            @Html.LabelFor(m => m.CreateModel.Pwd)<span class="required">*</span>
                                             <br />
                                             <span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
                                         </th>
@@ -69,7 +69,7 @@
                                     </tr>
                                     <tr>
                                         <th width="15%">
-                                            @Html.LabelFor(m => m.CreateModel.ConformPwd)
+                                            @Html.LabelFor(m => m.CreateModel.ConformPwd)<span class="required">*</span>
                                             <br />
                                             <span class="text-xs text-danger font-weight-normal">不填寫表示不修改</span>
                                         </th>
@@ -163,18 +163,22 @@
             $.alert("管理者信箱不可為空");
             return;
         }
+        
         if (Pwd == "") {
             $.alert("密碼不可為空");
             return;
         }
-        if (ConformPwd == "") {
-            $.alert("確認密碼不可為空");
-            return;
-        }
 
-        if (Pwd != ConformPwd) {
-            $.alert("密碼與確認密碼需相符");
-            return;
+        if (Pwd != "") {
+            if (ConformPwd == "") {
+                $.alert("確認密碼不可為空");
+                return;
+            }
+
+            if (Pwd != ConformPwd) {
+                $.alert("密碼與確認密碼需相符");
+                return;
+            }
         }
 
         data.append('@Html.NameFor(m => m.CreateModel.Enable)', Enable);

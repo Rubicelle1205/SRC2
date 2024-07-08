@@ -175,7 +175,7 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
-            if (vm.EditModel.UserType == "01")
+            if (vm.CreateModel.UserType == "01")
             {
                 CommendText = $@"INSERT INTO UserRole (LoginId, RoleId, SystemCode) VALUES (@LoginId, 'hyperuser', '01')";
 
