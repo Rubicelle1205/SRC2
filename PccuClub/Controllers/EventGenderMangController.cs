@@ -225,9 +225,19 @@ namespace WebPccuClub.Controllers
 
                         for (int j = 0; j <= row.Count() - 1; j++)
                         {
-                            string Celldata = row.GetCell(j)?.ToString();
-                            if (string.IsNullOrEmpty(Celldata))
-                                CanGo = false;
+                            if (j != 7 && j != 9)
+                            {
+                                string Celldata = row.GetCell(j)?.ToString();
+                                if (string.IsNullOrEmpty(Celldata))
+                                    CanGo = false;
+                            }
+
+                            if (!CanGo)
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("檢核資料失敗:必填資料未填寫");
+                                return Json(vmRtn);
+                            }
                         }
 
                         if (row != null && CanGo)
@@ -239,16 +249,24 @@ namespace WebPccuClub.Controllers
                             string CaseFinishClass = "";
 
                             List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlCaseID = dbAccess.GetddlCaseID();
+                            List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlGenderCaseID = dbAccess.GetddlGenderCaseID(row.GetCell(0)?.ToString().TrimStartAndEnd());
                             List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlMainClass = dbAccess.GetddlMainClass();
                             List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlSecondClass = dbAccess.GetddlSecondClass();
                             List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlAcceptStatus = dbAccess.GetddlAcceptStatus();
                             List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlCaseFinishClass = dbAccess.GetddlCaseFinishClass();
-                            
+
 
                             if (!LstddlCaseID.Any(m => m.Text == row.GetCell(0)?.ToString()))
                             {
                                 vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                                 vmRtn.ErrorMsg = string.Format("檢核資料失敗:校安事件編號{0}不存在", row.GetCell(0)?.ToString().TrimStartAndEnd());
+                                return Json(vmRtn);
+                            }
+
+                            if (LstddlGenderCaseID.Any(m => m.Text == row.GetCell(1)?.ToString()))
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = string.Format("檢核資料失敗:校安事件編號{0}內已經存在性平號{1}", row.GetCell(0)?.ToString().TrimStartAndEnd(), row.GetCell(1)?.ToString().TrimStartAndEnd());
                                 return Json(vmRtn);
                             }
 
@@ -321,7 +339,12 @@ namespace WebPccuClub.Controllers
                                 vmRtn.ErrorMsg = "上傳失敗，" + ex.Message;
                                 return Json(vmRtn);
                             }
-                            
+                        }
+                        else
+                        {
+                            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                            vmRtn.ErrorMsg = "上傳失敗";
+                            return Json(vmRtn);
                         }
                     }
                 }

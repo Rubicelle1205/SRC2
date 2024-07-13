@@ -511,6 +511,27 @@ AND (A.CaseID = @ID) ";
             return new List<SelectListItem>();
         }
 
+        public List<SelectListItem> GetddlBullyCaseID(string CaseID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("CaseID", CaseID);
+            #endregion
+
+            CommandText = $@"SELECT SubCaseID AS Value, SubCaseID AS Text FROM hq_PccuCase.dbo.EventMainMang WHERE CaseID = @CaseID AND CaseSystemType = '03'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
         public List<SelectListItem> GetddlMainClass()
         {
             string CommandText = string.Empty;

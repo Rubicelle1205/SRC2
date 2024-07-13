@@ -111,7 +111,7 @@
                             @item.Created.Value.ToString("yyyy/MM/dd  HH:mm:ss")
                         </td>
                         <td class="text-center text-sm">
-                            @using (Html.BeginForm("Edit", "EventBullyingMang", FormMethod.Post, new { style = "float:left" }))
+                            @using (Html.BeginForm("Edit", "EventBullyingMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
                             {
                                 <button type="submit" value="@item.CaseID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
                             }
