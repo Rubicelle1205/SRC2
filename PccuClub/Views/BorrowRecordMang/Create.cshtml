@@ -287,6 +287,8 @@
             var MainResourceID = $('#@Html.IdFor(m => m.CreateModel.MainResourceID) option:selected' );
             var BorrowAmt = $('#@Html.IdFor(m => m.CreateModel.BorrowAmt) option:selected');
 
+            if (MainResourceID.val() == "") { $.alert("請選擇資源名稱"); return; }
+            if (BorrowAmt.val() == "0") { $.alert("借用數量需大於0"); return; }
             
             if (addedItems[MainResourceID.val()]) {
                     if (confirm('此項目已存在。是否要更新數量？')) {
