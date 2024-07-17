@@ -1,0 +1,7 @@
+﻿@model WebPccuClub.Models.EventGenderMangViewModel
+
+
+@if (Model != null)
+{
+    @Html.DropDownListFor(m => m.EditModel.GenderSecondClass, (List<SelectListItem>)ViewBag.ddlGenderSecondClass, "請選擇性平事件次類別", new { @class = "form-control" })
+}

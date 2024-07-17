@@ -54,10 +54,13 @@ namespace WebPccuClub.Controllers
 
             vm.EditModel = dbAccess.GetEditData(submitBtn);
             vm.EditModel.GenderEventDateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            
             if (vm.EditModel != null)
             {
                 vm.EditModel.LstVictim = dbAccess.GetLstVictimData(vm.EditModel.CaseID);
                 vm.EditModel.LstEventData = dbAccess.GetEventData(vm.EditModel.CaseID);
+
+                ViewBag.ddlGenderSecondClass = dbAccess.GetddlSecondClass(vm.EditModel.GenderMainClass);
             }
             return View(vm);
         }
@@ -440,5 +443,18 @@ namespace WebPccuClub.Controllers
             return View("Index", vm);
 
         }
+
+        [ValidateInput(false)]
+
+        public IActionResult GetSecond(string MainClass, string Source, string CaseID)
+        {
+            EventGenderMangViewModel vm = new EventGenderMangViewModel();
+            vm.EditModel = dbAccess.GetEditData(CaseID);
+
+            ViewBag.ddlGenderSecondClass = dbAccess.GetddlSecondClass(MainClass);
+
+            return PartialView("_SecondClassPartial", vm);
+        }
+
     }
 }

@@ -128,7 +128,9 @@
                                     <tr>
                                         <th width="10%">霸凌事件次類別<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.EditModel.BullyingSecondClass ,(List<SelectListItem>)ViewBag.ddlBullyingSecondClass,"請選擇霸凌事件次類別", new {@class = "form-control"})
+                                            <div id="divSecondClass">
+                                                @Html.DropDownListFor(m => m.EditModel.BullyingSecondClass ,(List<SelectListItem>)ViewBag.ddlBullyingSecondClass,"請選擇霸凌事件次類別", new {@class = "form-control"})
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>
@@ -278,6 +280,23 @@
 
         });
     });
+
+    $('#@Html.IdFor(m => m.EditModel.BullyingMainClass)').change(function (e) {
+        GetSecond();
+    });
+
+    function GetSecond() {
+        var CaseID = $('#@Html.IdFor(m => m.EditModel.CaseID)').val();
+        var BullyingMainClass = $('#@Html.IdFor(m => m.EditModel.BullyingMainClass)').val();
+
+        SendAjax({
+            url: '@Url.Action("GetSecond")',
+            data: { 'MainClass': BullyingMainClass, 'Source': 'Edit', 'CaseID': CaseID },
+            success: function (result) {
+                $('#divSecondClass').html(result);
+            }
+        });
+    }
 
     function SaveEventData() {
         var data = new FormData()

@@ -58,6 +58,9 @@ namespace WebPccuClub.Controllers
             {
                 vm.EditModel.LstVictim = dbAccess.GetLstVictimData(vm.EditModel.CaseID);
                 vm.EditModel.LstEventData = dbAccess.GetEventData(vm.EditModel.CaseID);
+
+                ViewBag.ddlBullyingSecondClass = dbAccess.GetddlSecondClass(vm.EditModel.BullyingMainClass);
+
             }
             return View(vm);
         }
@@ -440,6 +443,18 @@ namespace WebPccuClub.Controllers
             AlertMsg.Add("無資料已供匯出");
             return Redirect("Index");
 
+        }
+
+        [ValidateInput(false)]
+
+        public IActionResult GetSecond(string MainClass, string Source, string CaseID)
+        {
+            EventBullyingMangViewModel vm = new EventBullyingMangViewModel();
+            vm.EditModel = dbAccess.GetEditData(CaseID);
+
+            ViewBag.ddlBullyingSecondClass = dbAccess.GetddlSecondClass(MainClass);
+
+            return PartialView("_SecondClassPartial", vm);
         }
     }
 }

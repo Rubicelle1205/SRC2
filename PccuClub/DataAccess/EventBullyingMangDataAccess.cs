@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NPOI.POIFS.Crypt;
 using PccuClub.WebAuth;
+using System.Collections.Generic;
 using System.Data;
 using System.Text.Encodings.Web;
 using WebPccuClub.Global;
 using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
+using static NPOI.HSSF.Util.HSSFColor;
 
 namespace WebPccuClub.DataAccess
 {
@@ -552,7 +554,7 @@ AND (A.CaseID = @ID) ";
             return new List<SelectListItem>();
         }
 
-        public List<SelectListItem> GetddlSecondClass()
+        public List<SelectListItem> GetddlSecondClass(string MainClass = null)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -560,9 +562,10 @@ AND (A.CaseID = @ID) ";
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
+            parameters.Add("MainClass", MainClass);
             #endregion
 
-            CommandText = @"SELECT ID AS Value, Text AS Text FROM EventSecondClassMang WHERE CaseSystemType = '03'";
+            CommandText = @"SELECT ID AS Value, Text AS Text FROM EventSecondClassMang WHERE CaseSystemType = '03' AND (@MainClass IS NULL OR MainID = @MainClass)";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
@@ -584,7 +587,7 @@ AND (A.CaseID = @ID) ";
 
             CommandText = @"SELECT Code AS Value, Text AS Text FROM Code WHERE Type = 'CaseFinish' ";
 
-            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+            (DbExecuteInfo info, IEnumerable < SelectListItem > entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList();
