@@ -593,5 +593,28 @@ AND (A.CaseID = @ID) ";
 
             return new List<SelectListItem>();
         }
+
+        public DataTable GetSystemMember(string SystemCode)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@SystemCode", SystemCode);
+            #endregion
+
+            CommandText = $@"SELECT C.SystemCode, D.Text, A.EMail
+                               FROM UserMain A
+                          LEFT JOIN UserRole B ON B.LoginId = A.LoginId
+                          LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
+                          LEFT JOIN Code D ON D.Code = C.SystemCode AND D.Type = 'SystemCode'
+                              WHERE C.SystemCode = @SystemCode";
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            return ds.Tables[0];
+        }
     }
 }

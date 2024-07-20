@@ -2,6 +2,7 @@
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using PccuClub.WebAuth;
 using System.ComponentModel;
 using System.Data;
 using System.Reflection;
@@ -19,6 +20,7 @@ namespace WebPccuClub.Controllers
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
         EventBullyingMangDataAccess dbAccess = new EventBullyingMangDataAccess();
+        MailUtil mail = new MailUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
@@ -98,6 +100,20 @@ namespace WebPccuClub.Controllers
                 }
 
                 dbAccess.DbaCommit();
+
+                //結案發送Mail
+                if (vm.EditModel.CaseStatus == "01")
+                {
+                    string MailBody = GenMailBody(vm, LoginUser);
+                    string CaseID = vm.EditModel.CaseID;
+                    DataTable dtTeacher = dbAccess.GetSystemMember("03");
+
+                    foreach (DataRow dr in dtTeacher.Rows)
+                    {
+                        mail.ExecuteSendMail(dr["EMail"].ToString(), string.Format("案件結案通知-{0}", CaseID),
+                            MailBody, System.Net.Mail.MailPriority.High, null);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -455,6 +471,16 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlBullyingSecondClass = dbAccess.GetddlSecondClass(MainClass);
 
             return PartialView("_SecondClassPartial", vm);
+        }
+
+        private string GenMailBody(EventBullyingMangViewModel vm, UserInfo loginUser)
+        {
+            string str = string.Empty;
+
+            str = $@"<p>案件結案通知-{vm.EditModel.CaseID}</p>
+                    <p>霸凌號：{vm.EditModel.SubCaseID}已結案，結案人：{loginUser.UserName}</p>";
+
+            return str;
         }
     }
 }
