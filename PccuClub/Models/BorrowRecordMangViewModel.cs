@@ -322,16 +322,16 @@ namespace WebPccuClub.Models
         public string? UseDesc { get; set; }
 
         [DisplayName("實際使用起日")]
-        public DateTime? UseSDate { get; set; }
+        public string? UseSDate { get; set; }
 
         [DisplayName("實際使用訖日")]
-        public DateTime? UseEDate { get; set; }
+        public string? UseEDate { get; set; }
 
         [DisplayName("約定領取時間")]
-        public DateTime? TakeSDate { get; set; }
+        public string? TakeSDate { get; set; }
 
         [DisplayName("約定領取時間")]
-        public DateTime? TakeEDate { get; set; }
+        public string? TakeEDate { get; set; }
 
         [DisplayName("借用備註")]
         public string? BorrowMemo { get; set; }

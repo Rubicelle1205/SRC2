@@ -5,6 +5,10 @@
     ViewBag.Title = "我的借用紀錄";
 }
 
+<head>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+
 <div class="col-xxl-8 col-xl-8">
     
 <div class="contentWrapper">
@@ -128,7 +132,7 @@
                 <!--例如: 如預約課外組[社團器材]室、同時預約衛保組[醫療用品]，-->
                 <div class="tag">已加入資源</div>
                 <div class="content">
-                    <div id="event_des" class="dateItem" title="尚未加入資源">
+                    <div id="event_des" class="dateItem">
                         <ul id="borrow-list" class="list-group list-group-flush text-sm mb-2">
                         
                         </ul>
@@ -250,32 +254,39 @@
             InitBorrowAmt($("[id $= 'MainResourceID']").val());
         });
 
+        function updateRecordText() {
+            var itemList = Object.keys(addedItems).map(function (key) {
+                return addedItems[key].text + ',' + addedItems[key].quantity;
+            }).join('|');
+
+            $('#@Html.IdFor(m => m.CreateModel.strDeviceData)').val(itemList);
+        }
+
         $('#btnAddevent').click(function () {
             
-
-            function updateRecordText() {
-                var itemList = Object.keys(addedItems).map(function(key) {
-                    return addedItems[key].text + ',' + addedItems[key].quantity;
-                }).join('|');
-
-                $('#@Html.IdFor(m => m.CreateModel.strDeviceData)').val(itemList);
-            }
-
             var MainResourceID = $('#@Html.IdFor(m => m.CreateModel.MainResourceID) option:selected' );
             var BorrowAmt = $('#@Html.IdFor(m => m.CreateModel.BorrowAmt) option:selected');
 
+            if (MainResourceID.val() == "") { $.alert("請選擇資源名稱"); return; }
+            if (BorrowAmt.val() == "") { $.alert("請選擇借用數量"); return; }
+
             
             if (addedItems[MainResourceID.val()]) {
-                    if (confirm('此項目已存在。是否要更新數量？')) {
-                    var existingItem = $('#item-' + MainResourceID.val());
-                    existingItem.find('.quantity').text(BorrowAmt.val());
+                if (confirm('此項目已存在。是否要更新數量？')) {
+                    var existingItem = $('#borrow-list').find(`[data-id="${MainResourceID.val()}"]`);
+                    existingItem.find('.quantity').text(BorrowAmt.text());
                     addedItems[MainResourceID.val()].quantity = BorrowAmt.val();
-                    }
-                } else {
-
-                var listItem = $('<li>', { class: 'list-group-item d-flex justify-content-between p-1' }).html(
-                    '<span class="location"> ' + MainResourceID.text() + ' <i class="fas fa-x"></i> ' + BorrowAmt.text() +
-                    '</span><button class="del-btn btn btn-sm btn-outline-dark mx-1" type="button">移除 <i class="fas fa-times"></i></button>');
+                    updateRecordText();
+                }
+            } else {
+                var listItem = $('<li>', {
+                    class: 'list-group-item d-flex justify-content-between p-1',
+                    'data-id': MainResourceID.val()
+                }).html(
+                    '<span class="location">' + MainResourceID.text() + ' <i class="fas fa-x"></i> ' +
+                    '<span class="quantity">' + BorrowAmt.text() + '</span>' +
+                    '</span><button class="del-btn btn btn-sm btn-outline-dark mx-1" type="button">移除 <i class="fas fa-times"></i></button>'
+                );
 
                 $('#borrow-list').append(listItem);
 
@@ -285,13 +296,13 @@
                 };
 
                 listItem.find('.del-btn').click(function () {
+                    delete addedItems[MainResourceID.val()];
                     listItem.remove();
                     updateRecordText();
                 });
-                }
-            
-            updateRecordText();
 
+                updateRecordText();
+            }
         });
     });
 
@@ -337,11 +348,34 @@
         if (UseDesc == "") { $.alert("用途及特殊需求說明不可為空"); return; }
         if (UseSDate == "") { $.alert("實際使用起日不可為空"); return; }
         if (UseEDate == "") { $.alert("實際使用訖日不可為空"); return; }
-        if (TakeSDate == "") { $.alert("約定領取時間不可為空"); return; }
-        if (TakeEDate == "") { $.alert("約定歸還時間不可為空"); return; }
+        if (TakeSDate == "") { $.alert("計畫領取日期不可為空"); return; }
+        if (TakeEDate == "") { $.alert("計畫歸還日期不可為空"); return; }
         if (strDeviceData == "") { $.alert("需選擇借用設備"); return; }
 
+        if (!moment(UseSDate, "YYYY-MM-DD", true).isValid()) { $.alert("實際使用起日格式不正確"); return; }
+        if (!moment(UseEDate, "YYYY-MM-DD", true).isValid()) { $.alert("實際使用訖日格式不正確"); return; }
+        if (!moment(TakeSDate, "YYYY-MM-DD", true).isValid()) { $.alert("計畫領取日期格式不正確"); return; }
+        if (!moment(TakeEDate, "YYYY-MM-DD", true).isValid()) { $.alert("計畫歸還日期格式不正確"); return; }
 
+        if (UseSDate > UseEDate) {
+            $.alert("實際使用起日不可大於實際使用訖日");
+            return false;
+        }
+
+        if (TakeSDate > TakeEDate) {
+            $.alert("計畫領取日期不可大於計畫歸還日期");
+            return false;
+        }
+
+        if (TakeSDate > UseSDate) {
+            $.alert("計畫領取日期不可大於實際使用起日");
+            return false;
+        }
+
+        if (UseEDate > TakeEDate) {
+            $.alert("實際使用訖日不可大於計畫歸還日期");
+            return false;
+        }
 
         data.append('@Html.NameFor(m => m.CreateModel.ApplyUnitType)', ApplyUnitType);
         data.append('@Html.NameFor(m => m.CreateModel.ApplyUnitName)', ApplyUnitName);

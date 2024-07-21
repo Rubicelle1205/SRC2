@@ -14,8 +14,8 @@
                 <th width="10%">物品類型</th>
                 <th width="10%">狀態</th>
                 <th width="10%">備註</th>
-                <th width="20%">功能</th>
-                <th width="20%">子資源</th>
+                <th width="10%">功能</th>
+                <th width="10%">子資源</th>
             </tr>
             </thead>
             <tbody>
@@ -24,19 +24,19 @@
                     foreach (var item in Model.ResultModel)
                     {
                     <tr>
-                        <td class="text-left text-sm">@item.MainResourceID</td>
-                        <td class="text-left text-sm">
+                        <td class="text-center text-sm">@item.MainResourceID</td>
+                        <td class="text-center text-sm">
                             @item.MainResourceName
                             <br>
                             <span class="text-muted">@item.ShortDesc</span>
                         </td>
-                        <td class="text-left text-sm">@item.MainClassText</td>
-                        <td class="text-left text-sm">@item.AmtReal</td>
-                        <td class="text-left text-sm">@item.AmtShelves</td>
-                        <td class="text-left text-sm">@item.BorrowTypeText</td>
-                        <td class="text-left text-sm">@item.EnableText</td>
-                        <td class="text-left text-sm">@item.Memo</td>
-                        <td class="text-center text-sm" style="display: flex; justify-content: center; align-items: center;">
+                        <td class="text-center text-sm">@item.MainClassText</td>
+                        <td class="text-center text-sm">@item.AmtReal</td>
+                        <td class="text-center text-sm">@item.AmtShelves</td>
+                        <td class="text-center text-sm">@item.BorrowTypeText</td>
+                        <td class="text-center text-sm">@item.EnableText</td>
+                        <td class="text-center text-sm">@item.Memo</td>
+                        <td class="text-center text-sm">
                             @using (Html.BeginForm("Edit", "BorrowMainResourceMang", FormMethod.Post, new { style = "float:left" }))
                             {
                                 <button type="submit" value="@item.MainResourceID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">編輯</button>
