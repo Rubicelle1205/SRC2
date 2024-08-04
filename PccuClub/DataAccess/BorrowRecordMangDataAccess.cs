@@ -193,6 +193,41 @@ AND BorrowMainID = @BorrowMainID";
             return new List<BorrowRecordMangDeviceModel>();
         }
 
+        public List<BorrowRecordMangDeviceModel> GetDeviceDataBySecondResourceNo(string BorrowMainID, string ReturnSecondResource)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+
+            #region 參數設定
+
+            parameters.Add("@BorrowMainID", BorrowMainID);
+            parameters.Add("@BorrowSecondResourceID", ReturnSecondResource);
+            #endregion
+
+            CommandText = $@"SELECT A.ID, A.MainClassID, B.Text AS MainClassIDText, A.MainResourceID, C.MainResourceName AS MainResourceIDText, A.BorrowAmt, 
+                                    D.BorrowType, E.Text AS BorrowTypeText, A.BorrowStatus, F.Text AS BorrowStatusText, A.BorrowSecondResourceID, A.BorrowRealAmt, A.ReturnRealAmt
+                               FROM BorrowDevice A
+                          LEFT JOIN BorrowMainClassMang B ON b.ID = A.MainClassID
+                          LEFT JOIN BorrowMainResourceMang C ON C.MainResourceID = A.MainResourceID
+						  LEFT JOIN BorrowMainResourceMang D ON D.MainResourceID = A.MainResourceID
+						  LEFT JOIN Code E ON E.Code = D.BorrowType AND E.Type = 'BorrowMultType'
+						  LEFT JOIN Code F ON F.Code = A.BorrowStatus AND F.Type = 'Borrowstatus'
+                              WHERE 1 = 1
+                                AND A.BorrowMainID = @BorrowMainID
+                                AND A.BorrowSecondResourceID = @BorrowSecondResourceID
+";
+
+
+            (DbExecuteInfo info, IEnumerable<BorrowRecordMangDeviceModel> entitys) dbResult = DbaExecuteQuery<BorrowRecordMangDeviceModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<BorrowRecordMangDeviceModel>();
+        }
         #region 新增
 
         /// <summary> 新增資料 </summary>
@@ -485,6 +520,7 @@ AND BorrowMainID = @BorrowMainID";
             string CommendText = $@"UPDATE BorrowDevice 
                                            SET BorrowSecondResourceID = '{selectedSecondResourceID}',
                                                BorrowRealAmt = '1',
+                                               BorrowStatus = '02', 
                                                LastModifier = '{loginUser.LoginId}',
                                                LastModified = GETDATE()
                                          WHERE ID = '{DeviceID}'

@@ -5,7 +5,7 @@
 
     bool show = false;
     List<SelectListItem> LstSubSystemBelong = ViewBag.ddlSubSystemBelong;
-    List<BorrowRecordMangDeviceModel> Lst = Model.EditModel.LstDevice.Where(x => x.BorrowStatus == "01").ToList();
+    List<BorrowRecordMangDeviceModel> Lst = Model.EditModel.LstDevice.Where(x => x.BorrowStatus == "02").ToList();
     if (Lst.Count > 0) { show = true; }
 }
 
@@ -132,7 +132,6 @@
 
                         </div>
 
-
                         <div class="card-body">
                             <div class="accordion" id="accordionExample">
                                 <div class="card bg-light">
@@ -153,8 +152,8 @@
                                             {
                                                 <div id="divReturn" class="d-flex justify-content-end mb-1" style="width: 80%; flex-flow: wrap; flex-direction: row; display:none !important">
                                                       @Html.TextBoxFor(m => m.ddlModel.ID, new {@class = "form-control", placeholder = "請輸入歸還物品資產編號", @style="width:70%;" })
-                                                        <button id="btnSingoReturn" type="button" class="btn btn-success">確認</button>
-                                                        <button id="btnSingoCancel" type="button" class="btn btn-default">取消</button>
+                                                    <button id="SingleReturn" type="button" class="btn btn-success">確認</button>
+                                                    <button id="btnSingleCancel" type="button" class="btn btn-default">取消</button>
                                                 </div>
 
                                                 <div id="divReturn2">
@@ -171,7 +170,7 @@
                                                 <th>資源名稱</th>
                                                 <th width="8%">物品類型</th>
                                                 <th width="8%">借用數量</th>
-                                                <th width="15%">領取狀態</th>
+                                                <th width="25%">領取狀態</th>
                                                 <th width="15%">功能</th>
                                                 </thead>
                                                 <tbody>
@@ -232,7 +231,7 @@
                                                                 }
                                                                 else    
                                                                 {
-                                                                @if (Model.EditModel.LstDevice[i].BorrowStatus == "01")
+                                                                    @if (Model.EditModel.LstDevice[i].BorrowStatus == "01")
                                                                     {
                                                                         <td><span class="badge badge-success">單筆借用</span></td>
                                                                         <td>@Model.EditModel.LstDevice[i].BorrowAmt</td>
@@ -251,19 +250,19 @@
                                                                         <td><span class="badge badge-success">單筆借用</span></td>
                                                                         <td>@Model.EditModel.LstDevice[i].BorrowAmt</td>
                                                                         <td>
-                                                                            <span class="text-muted">@Model.EditModel.LstDevice[i].BorrowStatusText</span>
+                                                                        <span class="text-success">@Model.EditModel.LstDevice[i].BorrowStatusText</span>
                                                                             <br />
                                                                             <span class="text-sm">@Model.EditModel.LstDevice[i].BorrowSecondResourceID</span>
                                                                         </td>
                                                                         <td>
                                                                         </td>
                                                                     }
-                                                                   else if(Model.EditModel.LstDevice[i].BorrowStatus == "03")
+                                                                    else if(Model.EditModel.LstDevice[i].BorrowStatus == "03")
                                                                     {
                                                                         <td><span class="badge badge-success">單筆借用</span></td>
                                                                         <td>@Model.EditModel.LstDevice[i].BorrowAmt</td>
                                                                         <td>
-                                                                            <span class="text-muted">@Model.EditModel.LstDevice[i].BorrowStatusText</span>
+                                                                        <span class="text-danger">@Model.EditModel.LstDevice[i].BorrowStatusText</span>
                                                                             <br />
                                                                             <span class="text-sm">@Model.EditModel.LstDevice[i].BorrowSecondResourceID</span>
                                                                         </td>
@@ -493,15 +492,14 @@
             $("#divReturn").show();
         });
 
-        $("#btnSingoReturn").click(function () {
+        $("#SingleReturn").click(function () {
             var BorrowMainID = $('#@Html.IdFor(m => m.EditModel.BorrowMainID)').val();
             var ReturnSecondResource = $('#@Html.IdFor(m => m.ddlModel.ID)').val();
 
-
-            UpdSingoReturn(BorrowMainID, ReturnSecondResource);
+            UpdSingleReturn(BorrowMainID, ReturnSecondResource);
         });
 
-        $("#btnSingoCancel").click(function () {
+        $("#btnSingleCancel").click(function () {
              $("#divReturn2").show();
             $("#divReturn").attr('style', 'width: 80%; flex-flow: wrap; flex-direction: row; display:none !important');
         });
@@ -573,11 +571,10 @@
         });
     }
 
-
-    function UpdSingoReturn(BorrowMainID, ReturnSecondResource) {
+    function UpdSingleReturn(BorrowMainID, ReturnSecondResource) {
 
         SendAjax({
-            url: '@Url.Action("UpdSingReturn")',
+            url: '@Url.Action("UpdSingleReturn")',
             data: { 'BorrowMainID': BorrowMainID, 'ReturnSecondResource': ReturnSecondResource },
             success: function (result) {
                 if (result.errorCode == 0) {
@@ -631,7 +628,6 @@
         });
 
     }
-
 
     function SaveData() {
 

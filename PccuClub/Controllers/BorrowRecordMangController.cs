@@ -300,6 +300,7 @@ namespace WebPccuClub.Controllers
             return Json(vmRtn);
         }
 
+        //單筆借出
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
         public IActionResult UpdSecondResource(string DeviceID, string selectedSecondResourceID)
@@ -368,11 +369,23 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
-        public IActionResult UpdSingReturn(string BorrowMainID, string ReturnSecondResource)
+        public IActionResult UpdSingleReturn(string BorrowMainID, string ReturnSecondResource)
         {
 
             try
             {
+                //先確認本次歸還的資產編號是否存在
+                List<BorrowRecordMangDeviceModel> LstDevice = new List<BorrowRecordMangDeviceModel>();
+                LstDevice = dbAccess.GetDeviceDataBySecondResourceNo(BorrowMainID, ReturnSecondResource);
+
+                if (LstDevice.Count == 0)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "本次借用中，查無此資產編號";
+                    return Json(vmRtn);
+                }
+
                 dbAccess.DbaInitialTransaction();
 
                 var dbResult = dbAccess.UpdDeviceReturnSecondResource(BorrowMainID, ReturnSecondResource, LoginUser);

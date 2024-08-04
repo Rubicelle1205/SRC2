@@ -29,14 +29,14 @@ namespace WebPccuClub.DataAccess
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@SDate", model.SDate.HasValue ? model.SDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
+            parameters.Add("@SDate", model.SDate.HasValue ? model.SDate.Value.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"));
 
             #endregion
 
             CommandText = $@"SELECT A.BorrowMainID, A.ApplyUnitName 
                                FROM BorrowMain A
                               WHERE 1 = 1 
-{(model.SDate.HasValue ? " AND @SDate BETWEEN A.TakeSDate AND A.TakeEDate " : " ")}
+                              AND @SDate BETWEEN A.TakeSDate AND A.TakeEDate
 ";
 
             (DbExecuteInfo info, IEnumerable<FResourceBorrowResultModel> entitys) dbResult = DbaExecuteQuery<FResourceBorrowResultModel>(CommandText, parameters, true, DBAccessException);
@@ -142,16 +142,16 @@ AND (A.BorrowMainID = @ID) ";
 
             #region 參數設定
             parameters.Add("@MainResourceID", model.BorrowSecondClassID);
-            parameters.Add("@SDate", model.SDate.HasValue ? model.SDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
+            parameters.Add("@SDate", model.SDate.HasValue ? model.SDate.Value.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"));
             #endregion
 
-            CommandText = $@"SELECT A.BorrowMainID, A.TakeSDate, B.MainResourceID, B.BorrowAmt
+            CommandText = $@"SELECT A.BorrowMainID, A.TakeSDate, A.TakeEDate, B.MainResourceID, B.BorrowAmt
                                FROM BorrowMain A
                           LEFT JOIN BorrowDevice B on B.BorrowMainID = A.BorrowMainID
                               WHERE 1 = 1
                                 AND A.ActVerify IN ('02','04')
-                                AND B.MainResourceID = @MainResourceID
-{(model.SDate.HasValue ? " AND @SDate BETWEEN A.TakeSDate AND A.TakeEDate " : " ")}
+                                --AND (@MainResourceID IS NULL OR B.MainResourceID = @MainResourceID) 
+                                AND @SDate BETWEEN A.TakeSDate AND A.TakeEDate 
 ";
 
             (DbExecuteInfo info, IEnumerable<FResourceBorrowResourceBorrowedModel> entitys) dbResult = DbaExecuteQuery<FResourceBorrowResourceBorrowedModel>(CommandText, parameters, true, DBAccessException);
