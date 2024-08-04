@@ -321,10 +321,6 @@
             data.append('@Html.NameFor(m => m.EditModel.ResourceImg4)', ResourceImg4);
         }
 
-        if (typeof ResourceImg1 === 'undefined' && typeof ResourceImg2 === 'undefined' && typeof ResourceImg3 === 'undefined' && typeof ResourceImg4 === 'undefined') {
-            $.alert("資源圖片需上傳"); return;
-        }
-
         data.append('@Html.NameFor(m => m.EditModel.Enable)', Enable);
         data.append('@Html.NameFor(m => m.EditModel.MainResourceID)', MainResourceID);
         data.append('@Html.NameFor(m => m.EditModel.MainResourceName)', MainResourceName);

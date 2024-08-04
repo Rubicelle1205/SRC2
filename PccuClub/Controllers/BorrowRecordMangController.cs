@@ -447,17 +447,27 @@ namespace WebPccuClub.Controllers
 
             List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstItem = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>();
 
-            for (int i = 1; i <= Int32.Parse(AmtShelves); i++)
+            if (Int32.Parse(AmtOnce) == 0)
             {
-                if (i > Int32.Parse(AmtOnce))
+                for (int i = 1; i <= Int32.Parse(AmtShelves); i++)
                 {
-                    LstItem.Add(new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem() { Value = i.ToString(), Text = string.Format("{0}", i), Disabled = true });
+                        LstItem.Add(new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem() { Value = i.ToString(), Text = string.Format("{0}", i) });
                 }
-                else
+            }
+            else
+            {
+                for (int i = 1; i <= Int32.Parse(AmtShelves); i++)
                 {
-                    LstItem.Add(new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem() { Value = i.ToString(), Text = string.Format("{0}", i)});
+                    if (i > Int32.Parse(AmtOnce))
+                    {
+                        LstItem.Add(new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem() { Value = i.ToString(), Text = string.Format("{0}", i), Disabled = true });
+                    }
+                    else
+                    {
+                        LstItem.Add(new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem() { Value = i.ToString(), Text = string.Format("{0}", i) });
+                    }
+
                 }
-                
             }
 
             ViewBag.ddlSecondAmt = LstItem;
