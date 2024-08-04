@@ -250,13 +250,6 @@ namespace WebPccuClub.Controllers
                                 if (string.IsNullOrEmpty(Celldata))
                                     CanGo = false;
                             }
-
-                            if (!CanGo)
-                            {
-                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                                vmRtn.ErrorMsg = string.Format("檢核資料失敗:必填資料未填寫");
-                                return Json(vmRtn);
-                            }
                         }
 
                         if (row != null && CanGo)
@@ -266,6 +259,22 @@ namespace WebPccuClub.Controllers
                             string SecondClass = "";
                             string AcceptStatus = "";
                             string CaseFinishClass = "";
+
+                            //檢查一下
+                            for (i = 0; i <= row.Count() - 1; i++)
+                            {
+                                if (i != 7 && i != 9)
+                                {
+                                    string str = row.GetCell(i)?.ToString();
+
+                                    if (string.IsNullOrEmpty(str))
+                                    {
+                                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                        vmRtn.ErrorMsg = string.Format("檢核資料失敗:必填資料未填寫");
+                                        return Json(vmRtn);
+                                    }
+                                }
+                            }
 
                             List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlCaseID = dbAccess.GetddlCaseID();
                             List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> LstddlBullyCaseID = dbAccess.GetddlBullyCaseID(row.GetCell(0)?.ToString().TrimStartAndEnd());
@@ -344,9 +353,9 @@ namespace WebPccuClub.Controllers
                                     BullyingMainClass = MainClass,
                                     BullyingSecondClass = SecondClass,
                                     AcceptStatus = AcceptStatus,
-                                    AcceptTime = DateTime.Parse(row.GetCell(7).StringCellValue),
+                                    AcceptTime = string.IsNullOrEmpty(row.GetCell(7)?.StringCellValue) ? (DateTime?)null : DateTime.Parse(row.GetCell(7).StringCellValue),
                                     CaseStatus = CaseFinishClass,
-                                    CaseFinishDateTime = DateTime.Parse(row.GetCell(9)?.StringCellValue),
+                                    CaseFinishDateTime = string.IsNullOrEmpty(row.GetCell(9)?.StringCellValue) ? (DateTime?)null : DateTime.Parse(row.GetCell(9).StringCellValue),
                                     Created = DateTime.Now
                                 };
 
@@ -358,12 +367,6 @@ namespace WebPccuClub.Controllers
                                 vmRtn.ErrorMsg = "上傳失敗，" + ex.Message;
                                 return Json(vmRtn);
                             }
-                        }
-                        else
-                        {
-                            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                            vmRtn.ErrorMsg = "上傳失敗";
-                            return Json(vmRtn);
                         }
                     }
                 }
