@@ -6,6 +6,8 @@
 
 <head>
     <script src="~/js/backend_case.js"></script>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+
 </head>
 
 <!-- Main content -->
@@ -77,14 +79,14 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="10%">約定領取時間<span class="required"></span></th>
+                                        <th width="10%">約定領取日期<span class="required"></span></th>
                                         <td>
                                             <div class="input-group">
-                                                @Html.TextBoxFor(m => m.CreateModel.TakeSDate, new {@class = "form-control", @placeholder="請輸入約定領取時間", @for="finish_date"})
+                                                @Html.TextBoxFor(m => m.CreateModel.TakeSDate, new {@class = "form-control", @placeholder="請輸入約定領取日期", @for="finish_date"})
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="basic-addon1">至</span>
                                                 </div>
-                                                @Html.TextBoxFor(m => m.CreateModel.TakeEDate, new {@class = "form-control", @placeholder="請輸入約定領取時間", @for="finish_date"})
+                                                @Html.TextBoxFor(m => m.CreateModel.TakeEDate, new { @class = "form-control", @placeholder = "請輸入約定歸還日期", @for = "finish_date" })
                                             </div>
                                         </td>
                                     </tr>
@@ -273,10 +275,8 @@
             InitBorrowAmt($("[id $= 'MainResourceID']").val());
         });
 
-        $('#btnAddevent').click(function () {
-            
+        function updateRecordText() {
 
-            function updateRecordText() {
                 var itemList = Object.keys(addedItems).map(function(key) {
                     return addedItems[key].text + ',' + addedItems[key].quantity;
                 }).join('|');
@@ -284,23 +284,30 @@
                 $('#@Html.IdFor(m => m.CreateModel.strDeviceData)').val(itemList);
             }
 
-            var MainResourceID = $('#@Html.IdFor(m => m.CreateModel.MainResourceID) option:selected' );
+        $('#btnAddevent').click(function () {
+
+            var MainResourceID = $('#@Html.IdFor(m => m.CreateModel.MainResourceID) option:selected');
             var BorrowAmt = $('#@Html.IdFor(m => m.CreateModel.BorrowAmt) option:selected');
 
             if (MainResourceID.val() == "") { $.alert("請選擇資源名稱"); return; }
-            if (BorrowAmt.val() == "0") { $.alert("借用數量需大於0"); return; }
-            
-            if (addedItems[MainResourceID.val()]) {
-                    if (confirm('此項目已存在。是否要更新數量？')) {
-                    var existingItem = $('#item-' + MainResourceID.val());
-                    existingItem.find('.quantity').text(BorrowAmt.val());
-                    addedItems[MainResourceID.val()].quantity = BorrowAmt.val();
-                    }
-                } else {
+            if (BorrowAmt.val() == "") { $.alert("請選擇借用數量"); return; }
 
-                var listItem = $('<li>', { class: 'list-group-item d-flex justify-content-between p-1' }).html(
-                    '<span class="location"> ' + MainResourceID.text() + ' <i class="fas fa-x"></i> ' + BorrowAmt.text() +
-                    '</span><button class="del-btn btn btn-sm btn-outline-dark mx-1" type="button">移除 <i class="fas fa-times"></i></button>');
+            if (addedItems[MainResourceID.val()]) {
+                if (confirm('此項目已存在。是否要更新數量？')) {
+
+                    var existingItem = $('#borrow-list').find(`[data-id="${MainResourceID.val()}"]`);
+                    existingItem.find('.quantity').text(BorrowAmt.text());
+                    addedItems[MainResourceID.val()].quantity = BorrowAmt.val();
+                    updateRecordText();
+                }
+            } else {
+                var listItem = $('<li>', { class: 'list-group-item d-flex justify-content-between p-1',
+                    'data-id': MainResourceID.val()
+                }).html(
+                    '<span class="location">' + MainResourceID.text() + ' <i class="fas fa-x"></i> ' +
+                    '<span class="quantity">' + BorrowAmt.text() + '</span>' +
+                    '</span><button class="del-btn btn btn-sm btn-outline-dark mx-1" type="button">移除 <i class="fas fa-times"></i></button>'
+                );
 
                 $('#borrow-list').append(listItem);
 
@@ -310,17 +317,15 @@
                 };
 
                 listItem.find('.del-btn').click(function () {
+                    delete addedItems[MainResourceID.val()];
                     listItem.remove();
                     updateRecordText();
                 });
-                }
-            
-            updateRecordText();
 
+                updateRecordText();
+            }
         });
     });
-
-
 
     function InitBorrowAmt(MainResourceID) {
 
@@ -369,10 +374,36 @@
         if (UseDesc == "") { $.alert("用途及特殊需求說明不可為空"); return; }
         if (UseSDate == "") { $.alert("實際使用起日不可為空"); return; }
         if (UseEDate == "") { $.alert("實際使用訖日不可為空"); return; }
-        if (TakeSDate == "") { $.alert("約定領取時間不可為空"); return; }
-        if (TakeEDate == "") { $.alert("約定歸還時間不可為空"); return; }
+        if (TakeSDate == "") { $.alert("約定領取日期不可為空"); return; }
+        if (TakeEDate == "") { $.alert("約定歸還日期不可為空"); return; }
         if (ActVerify == "") { $.alert("審核狀態不可為空"); return; }
         if (strDeviceData == "") { $.alert("需選擇借用設備"); return; }
+
+        if (!moment(UseSDate, "YYYY-MM-DD", true).isValid()) { $.alert("實際使用起日格式不正確"); return; }
+        if (!moment(UseEDate, "YYYY-MM-DD", true).isValid()) { $.alert("實際使用訖日格式不正確"); return; }
+        if (!moment(TakeSDate, "YYYY-MM-DD", true).isValid()) { $.alert("約定領取日期格式不正確"); return; }
+        if (!moment(TakeEDate, "YYYY-MM-DD", true).isValid()) { $.alert("約定歸還日期格式不正確"); return; }
+
+        if (UseSDate > UseEDate) {
+            $.alert("實際使用起日不可大於實際使用訖日");
+            return false;
+        }
+
+        if (TakeSDate > TakeEDate) {
+            $.alert("約定領取日期不可大於約定歸還日期");
+            return false;
+        }
+
+        if (TakeSDate > UseSDate) {
+            $.alert("約定領取日期不可大於實際使用起日");
+            return false;
+        }
+
+        if (UseEDate > TakeEDate) {
+            $.alert("實際使用訖日不可大於約定歸還日期");
+            return false;
+        }
+
 
 
 

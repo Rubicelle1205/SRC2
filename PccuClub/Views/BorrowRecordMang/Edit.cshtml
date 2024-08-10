@@ -91,14 +91,14 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="10%">約定領取時間<span class="required"></span></th>
+                                        <th width="10%">約定領取日期<span class="required"></span></th>
                                         <td>
                                             <div class="input-group">
-                                                @Html.TextBoxFor(m => m.EditModel.TakeSDate, new {@class = "form-control", @placeholder="請輸入約定領取時間", @for="finish_date"})
+                                                @Html.TextBoxFor(m => m.EditModel.TakeSDate, new { @class = "form-control", @placeholder = "請輸入約定領取日期", @for = "finish_date" })
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="basic-addon1">至</span>
                                                 </div>
-                                                @Html.TextBoxFor(m => m.EditModel.TakeEDate, new {@class = "form-control", @placeholder="請輸入約定領取時間", @for="finish_date"})
+                                                @Html.TextBoxFor(m => m.EditModel.TakeEDate, new { @class = "form-control", @placeholder = "請輸入約定歸還日期", @for = "finish_date" })
                                             </div>
                                         </td>
                                     </tr>
@@ -667,8 +667,8 @@
         if (UseDesc == "") { $.alert("用途及特殊需求說明不可為空"); return; }
         if (UseSDate == "") { $.alert("實際使用起日不可為空"); return; }
         if (UseEDate == "") { $.alert("實際使用訖日不可為空"); return; }
-        if (TakeSDate == "") { $.alert("約定領取時間不可為空"); return; }
-        if (TakeEDate == "") { $.alert("約定歸還時間不可為空"); return; }
+        if (TakeSDate == "") { $.alert("約定領取日期不可為空"); return; }
+        if (TakeEDate == "") { $.alert("約定歸還日期不可為空"); return; }
         if (ActVerify == "") { $.alert("審核狀態不可為空"); return; }
 
         data.append('@Html.NameFor(m => m.EditModel.BorrowMainID)', BorrowMainID);

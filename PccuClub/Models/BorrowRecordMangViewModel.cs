@@ -249,10 +249,10 @@ namespace WebPccuClub.Models
         [DisplayName("實際使用訖日")]
         public DateTime? UseEDate { get; set; }
 
-        [DisplayName("約定領取時間")]
+        [DisplayName("約定領取日期")]
         public DateTime? TakeSDate { get; set; }
 
-        [DisplayName("約定領取時間")]
+        [DisplayName("約定領取日期")]
         public DateTime? TakeEDate { get; set; }
 
         [DisplayName("借用備註")]
@@ -327,10 +327,10 @@ namespace WebPccuClub.Models
         [DisplayName("實際使用訖日")]
         public string? UseEDate { get; set; }
 
-        [DisplayName("約定領取時間")]
+        [DisplayName("約定領取日期")]
         public string? TakeSDate { get; set; }
 
-        [DisplayName("約定領取時間")]
+        [DisplayName("約定領取日期")]
         public string? TakeEDate { get; set; }
 
         [DisplayName("借用備註")]

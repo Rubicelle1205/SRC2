@@ -14,8 +14,8 @@
                 <th width="10%">物品類型</th>
                 <th width="10%">狀態</th>
                 <th width="10%">備註</th>
-                <th width="10%">功能</th>
-                <th width="10%">子資源</th>
+                <th width="15%">功能</th>
+                <th width="5%">子資源</th>
             </tr>
             </thead>
             <tbody>
@@ -46,7 +46,7 @@
 
                         </td>
                         <td class="text-center text-sm">
-                            @using (Html.BeginForm("InventoryIndex", "BorrowMainResourceMang", FormMethod.Post, new { style = "float:left" }))
+                            @using (Html.BeginForm("InventoryIndex", "BorrowMainResourceMang", FormMethod.Post, new {}))
                             {
                                 <button type="submit" value="@item.MainResourceID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">盤點</button>
                             }
