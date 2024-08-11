@@ -616,6 +616,29 @@ AND (MainResourceID = @MainResourceID) ";
             return ds.Tables[0];
         }
 
+        public DataTable GetSubResource(string MainResourceID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@MainResourceID", MainResourceID);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"
+                            SELECT ID, SecondResourceNo, SecondResourceName 
+                              FROM BorrowSecondResourceMang
+                             WHERE 1 = 1
+                               AND MainResourceID = @MainResourceID";
+
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+            return ds.Tables[0];
+        }
+
         public List<SelectListItem> GetddlMainClass()
         {
             string CommandText = string.Empty;

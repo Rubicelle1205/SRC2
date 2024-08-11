@@ -42,8 +42,8 @@
                                         <td>@Html.DropDownListFor(m => m.EditModel.BorrowStatus ,(List<SelectListItem>)ViewBag.ddlBorrowStatus,"請選擇借用狀態", new {@class = "form-control"})</td>
                                     </tr>
                                     <tr>
-                                        <th width="10%">借用狀態<span class="required">*</span></th>
-                                        <td>@Html.DropDownListFor(m => m.EditModel.MainResourceID ,(List<SelectListItem>)ViewBag.ddlMainResource,"請選擇業務分類", new {@class = "form-control"})</td>
+                                        <th width="10%">主資源名稱<span class="required">*</span></th>
+                                        <td>@Html.DropDownListFor(m => m.EditModel.MainResourceID, (List<SelectListItem>)ViewBag.ddlMainResource, "請選擇主資源名稱", new { @class = "form-control" })</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">資產號碼<span class="required">*</span></th>
@@ -117,7 +117,7 @@
         var Location = $('#@Html.IdFor(m => m.EditModel.Location)').val();
         var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
 
-        if (MainResourceID == "") { $.alert("需選擇業務分類"); return; }
+        if (MainResourceID == "") { $.alert("需選擇主資源名稱"); return; }
         if (ShelvesStatus == "") { $.alert("需選擇上下架狀態"); return; }
         if (BorrowStatus == "") { $.alert("需選擇借用狀態"); return; }
         if (SecondResourceNo == "") { $.alert("資產號碼不可空白"); return; }

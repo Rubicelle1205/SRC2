@@ -6,7 +6,6 @@
 
 }
 
-    <!-- /.card-header -->
 <div class="table-responsive">
     <table class="table table-sm table-hover text-nowrap">
         <thead>
@@ -22,7 +21,7 @@
         </thead>
 
 
-        <tbody class="text-center text-sm">
+        <tbody id="inventoryTable_tBody" class="text-center text-sm">
             @if (Model.InventoryDetailModel.Count > 0)
                 {
                 switch (RunType)
@@ -85,10 +84,3 @@
 
     </table>
 </div>
-    <!-- /.card-body -->
-
-<script>
-    
-
-
-</script>

@@ -137,34 +137,31 @@
     }
 
     function GoSearch(source) {
-        if (typeof source === 'undefined')
-        {
+        if (typeof source === 'undefined') {
             source = $("#@Html.IdFor(m => m.InventoryRecordModel.RunType)").val();
         }
 
         $("#@Html.IdFor(m => m.InventoryRecordModel.RunType)").val(source);
-
-
         var BorrowType = $("#@Html.IdFor(m => m.InventoryRecordModel.BorrowType)").val();
 
-        if(source == "1")
-        {
-            if(BorrowType == "02")
-            {
+        if (source == "1") {
+
+            var tbody = document.getElementById("inventoryTable_tBody");
+            if (tbody && tbody.children.length == "") { $.alert("查無子資源，無法進行盤點"); return; }
+
+            if (BorrowType == "02") {
                 $("#btnStart").addClass("hide");
                 $("#divEnd").removeClass("hide");
                 $("#divSingleReturn").each(function () { this.style.setProperty("display", "none"); });
             }
-            else if(BorrowType == "01")
-            {
+            else if (BorrowType == "01") {
                 $("#btnStart").addClass("hide");
                 $("#divEnd").removeClass("hide");
                 $("#divMultReturn").each(function () { this.style.setProperty("display", "none"); });
             }
-            
+
         }
-        else if(source == "2")
-        {
+        else if (source == "2") {
             if (BorrowType == "02") {
                 $("#btnStart").removeClass("hide");
                 $("#divEnd").addClass("hide");
@@ -181,9 +178,24 @@
             url: '@Url.Action("GetInventorySearchResult")',
             data: $("#SearchForm").serialize(),
             success: function (result) {
-                $('#InventorySearchResultList').html(result);
+                if (result.errorCode == 0) {
+
+                }
+                else if (result.errorCode == 1) {
+                    $("#btnStart").removeClass("hide");
+                    $("#divEnd").addClass("hide");
+                    $("#divSingleReturn").each(function () { this.style.setProperty("display", "none", "important"); });
+                    $("#divMultReturn").each(function () { this.style.setProperty("display", "none", "important"); });
+
+                    $.alert(result.errorMsg);
+                }
+                else {
+                    $('#InventorySearchResultList').html(result);
+                }
+                
             }
         });
+
     }
 
     function SaveData() {

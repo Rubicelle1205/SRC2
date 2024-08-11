@@ -122,8 +122,18 @@ namespace WebPccuClub.Controllers
                 case "1":
 
                     try
-                    {                    
-                        
+                    {
+                        //確認是否存在子資源，不存在子資料需跳出
+                        DataTable dtSubResource = dbAccess.GetSubResource(vm.InventoryRecordModel.MainResourceID);
+
+                        if (dtSubResource.Rows.Count == 0)
+                        {
+                            vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                            vmRtn.ErrorMsg = "查無子資源，無法進行盤點";
+                            return Json(vmRtn);
+                        }
+
+
                         dbAccess.DbaInitialTransaction();
 
                         //先找一下有沒有盤點單，沒有的話，新增一張Record單
