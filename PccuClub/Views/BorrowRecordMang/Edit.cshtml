@@ -186,7 +186,7 @@
                                                 <th width="8%">物品類型</th>
                                                 <th width="8%">借用數量</th>
                                                 <th width="25%">領取狀態</th>
-                                                <th width="15%">功能</th>
+                                                <th width="20%">功能</th>
                                                 </thead>
                                                 <tbody>
                                                     @for(int i = 0; i <= Model.EditModel.LstDevice.Count -1; i++)
@@ -213,7 +213,8 @@
                                                                         </td>
                                                                         <td>
                                                                             <button id="@string.Format("MultBorrowSearch{0}", (i+1))" type="button" class="ml-1 btn btn-sm btn-outline-primary">借出</button>
-                                                                            <button id="@string.Format("MultBorrowSave{0}", (i+1))" type="button" class="ml-1 btn btn-sm btn-outline-secondary" style="display:none;">確認借出</button>
+                                                                            <button id="@string.Format("MultBorrowSave{0}", (i+1))" type="button" class="ml-1 btn btn-sm btn-outline-success" style="display:none;">確認借出</button>
+                                                                            <button id="@string.Format("MultBorrowCancel{0}", (i+1))" type="button" class="ml-1 btn btn-sm btn-outline-primary" style="display:none;">取消</button>
                                                                             <a href="#" class="ml-1 btn btn-sm btn-outline-danger" onclick="ChkDel('@Model.EditModel.LstDevice[i].ID');">刪除</a>
                                                                         </td>
                                                                     }
@@ -256,7 +257,8 @@
                                                                         </td>
                                                                         <td>
                                                                             <button id="@string.Format("BorrowSearch{0}", (i+1))" type="button" class="ml-1 btn btn-sm btn-outline-primary">借出</button>
-                                                                            <button id="@string.Format("BorrowSave{0}", (i+1))" type="button" class="ml-1 btn btn-sm btn-outline-secondary" style="display:none;">確認借出</button>
+                                                                            <button id="@string.Format("BorrowSave{0}", (i+1))" type="button" class="ml-1 btn btn-sm btn-outline-success" style="display:none;">確認借出</button>
+                                                                            <button id="@string.Format("BorrowCancel{0}", (i+1))" type="button" class="ml-1 btn btn-sm btn-outline-secondary" style="display:none;">取消</button>
                                                                             <a href="#" class="ml-1 btn btn-sm btn-outline-danger" onclick="ChkDel('@Model.EditModel.LstDevice[i].ID');">刪除</a>
                                                                         </td>                                                                    
                                                                     }
@@ -425,18 +427,45 @@
         });
     }
 
+    function restoreScrollPosition() {
+        const scrollPosition = localStorage.getItem('scrollPosition');
+        if (scrollPosition !== null) {
+            window.scrollTo(0, parseInt(scrollPosition, 10));
+            localStorage.removeItem('scrollPosition');
+        }
+    }
+
+    window.onload = function () {
+        restoreScrollPosition();
+    };
+
     $(document).ready(function () {
         $('#clean_history').click(function () {
             $('#@Html.IdFor(m => m.EditModel.EventText)').val("");
         });
 
+        //#region 非大量
+
         $("[id ^= 'BorrowSearch']").click(function () {
+
+            var visibleRowID = null;
+            $("[id ^= 'BorrowSave']").each(function () {
+                if ($(this).is(":visible")) {
+                    visibleRowID = $(this).attr('id').replace("BorrowSave", "");
+                    return false;
+                }
+            });
+
+            if (visibleRowID !== null) { $.alert("請先處理資料行" + visibleRowID + "的借用"); return; }
+
             var buttonId = $(this).attr('id');
             var rowID = buttonId.replace("BorrowSearch", "");
             InitBorrowResource(rowID, $("#HiddenMainResourceID" + rowID).val());
 
+
             $("#BorrowSearch" + rowID).hide();
             $("#BorrowSave" + rowID).show();
+            $("#BorrowCancel" + rowID).show();
         });
 
         $("[id ^= 'BorrowSave']").click(function () {
@@ -450,9 +479,36 @@
 
             $("#BorrowSearch" + rowID).show();
             $("#BorrowSave" + rowID).hide();
+            $("#BorrowCancel" + rowID).hide();
         });
 
+        $("[id ^= 'BorrowCancel']").click(function () {
+            var buttonId = $(this).attr('id');
+            var rowID = buttonId.replace("BorrowCancel", "");
+
+            $("#BorrowSearch" + rowID).show();
+            $("#BorrowSave" + rowID).hide();
+            $("#BorrowCancel" + rowID).hide();
+
+            $('#showSecondResource' + rowID).html("");
+        });
+
+        //#endregion
+
+        //#region 大量
+
         $("[id ^= 'MultBorrowSearch']").click(function () {
+
+            var visibleRowID = null;
+            $("[id ^= 'MultBorrowSearch']").each(function () {
+                if ($(this).is(":visible")) {
+                    visibleRowID = $(this).attr('id').replace("MultBorrowSearch", "");
+                    return false;
+                }
+            });
+
+            if (visibleRowID !== null) { $.alert("請先處理資料行" + visibleRowID + "的借用"); return; }
+
             var buttonId = $(this).attr('id');
             var rowID = buttonId.replace("MultBorrowSearch", "");
             var BorrowMainID = $('#@Html.IdFor(m => m.EditModel.BorrowMainID)').val();
@@ -461,6 +517,7 @@
 
             $("#MultBorrowSearch" + rowID).hide();
             $("#MultBorrowSave" + rowID).show();
+            $("#MultBorrowCancel" + rowID).show();
         });
 
         $("[id ^= 'MultBorrowSave']").click(function () {
@@ -476,7 +533,21 @@
 
             $("#MultBorrowSearch" + rowID).show();
             $("#MultBorrowSave" + rowID).hide();
+            $("#MultBorrowCancel" + rowID).hide();
         });
+
+        $("[id ^= 'MultBorrowCancel']").click(function () {
+            var buttonId = $(this).attr('id');
+            var rowID = buttonId.replace("MultBorrowCancel", "");
+
+            $("#MultBorrowSearch" + rowID).show();
+            $("#MultBorrowSave" + rowID).hide();
+            $("#MultBorrowCancel" + rowID).hide();
+
+            $('#showSecondResource' + rowID).html("");
+        });
+
+        //#endregion
 
         $("[id ^= 'MultRetrun']").click(function () {
             var buttonId = $(this).attr('id');
@@ -548,6 +619,7 @@
             url: '@Url.Action("UpdSecondResource")',
             data: { 'DeviceID': DeviceID, 'selectedSecondResourceID': selectedSecondResourceID },
             success: function (result) {
+                localStorage.setItem('scrollPosition', window.scrollY);
                 window.location.reload();
             }
         });
@@ -559,6 +631,7 @@
             url: '@Url.Action("UpdMultSecondResource")',
             data: { 'DeviceID': DeviceID, 'BorrowSecondResourceID' : BorrowSecondResourceID, 'BorrowAmt': BorrowAmt },
             success: function (result) {
+                localStorage.setItem('scrollPosition', window.scrollY);
                 window.location.reload();
             }
         });
@@ -607,9 +680,6 @@
             },
         });
     }
-
-
-
 
     function SaveEventData() {
         var data = new FormData()

@@ -351,6 +351,16 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
+                dbResult = dbAccess.UpdBorrowSecondResourceMangBorrowStatus(DeviceID, selectedSecondResourceID, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
                 dbAccess.DbaCommit();
 
             }

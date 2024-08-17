@@ -512,6 +512,8 @@ AND BorrowMainID = @BorrowMainID";
             return ExecuteResult;
         }
 
+        #region 單筆借用
+
         public DbExecuteInfo UpdDeviceBorrowSecondResource(string DeviceID, string selectedSecondResourceID, UserInfo loginUser)
         {
 
@@ -531,6 +533,28 @@ AND BorrowMainID = @BorrowMainID";
 
             return ExecuteResult;
         }
+
+        public DbExecuteInfo UpdBorrowSecondResourceMangBorrowStatus(string DeviceID, string selectedSecondResourceID, UserInfo loginUser)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommendText = $@"UPDATE BorrowSecondResourceMang 
+                                           SET BorrowStatus = '02', 
+                                               LastModifier = '{loginUser.LoginId}',
+                                               LastModified = GETDATE()
+                                         WHERE 1 = 1
+                                           AND SecondResourceNo = '{selectedSecondResourceID}' ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        #endregion
+
+
 
         public DbExecuteInfo UpdMultDeviceBorrowSecondResource(string DeviceID, string BorrowSecondResourceID, string BorrowAmt, UserInfo loginUser)
         {
