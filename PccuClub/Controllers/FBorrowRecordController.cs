@@ -119,7 +119,8 @@ namespace WebPccuClub.Controllers
                     string MainClass = dt.QueryFieldByDT("MainClass");
                     string BorrowType = dt.QueryFieldByDT("BorrowType");
 
-                    LstMainClassID.Add(MainClass);
+                    if (!LstMainClassID.Contains(MainClass))
+                        LstMainClassID.Add(MainClass);
 
                     FBorrowRecordDeviceModel DeviceModel = new FBorrowRecordDeviceModel();
 

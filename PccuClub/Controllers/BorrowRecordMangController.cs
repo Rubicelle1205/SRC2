@@ -72,7 +72,37 @@ namespace WebPccuClub.Controllers
             vm.EditModel.LstFile = dbAccess.GetFileData(submitBtn);
             vm.EditModel.LstDevice = dbAccess.GetDeviceData(submitBtn);
             vm.EditModel.LstEventData = dbAccess.GetEventData(submitBtn);
+
             vm.EditModel.EventDateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+            if (vm.EditModel != null)
+            {
+                //將符合這段起訖的借用設備列表撈出
+                DataTable dt = dbAccess.GetBorrowDeviceBetweenRange(vm.EditModel);
+                List<string> LstSafeMessage = new List<string>();
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    string MainResourceID = dr["MainResourceID"].ToString();
+                    int BorrowCnt = Int32.Parse(dr["BorrowCnt"].ToString());
+                    int AmtShelves = Int32.Parse(vm.EditModel.LstDevice.Where(x => x.MainResourceID == MainResourceID).FirstOrDefault().AmtShelves);
+                    int AmtSafe = Int32.Parse(vm.EditModel.LstDevice.Where(x => x.MainResourceID == MainResourceID).FirstOrDefault().AmtSafe);
+                    string SafeMessage = vm.EditModel.LstDevice.Where(x => x.MainResourceID == MainResourceID).FirstOrDefault().SafeMessage;
+
+                    if (AmtSafe != 0)
+                    {
+                        int RemaindAmt = AmtShelves - BorrowCnt;
+
+                        if (RemaindAmt - 1 <= AmtSafe)
+                        {
+                            LstSafeMessage.Add(SafeMessage);
+                        }
+                    }
+                }
+
+                ViewBag.SafeMessage = LstSafeMessage;
+            }
+
             return View(vm);
         }
 
@@ -133,7 +163,8 @@ namespace WebPccuClub.Controllers
                     string MainClass = dt.QueryFieldByDT("MainClass");
                     string BorrowType = dt.QueryFieldByDT("BorrowType");
 
-                    LstMainClassID.Add(MainClass);
+                    if(!LstMainClassID.Contains(MainClass))
+                        LstMainClassID.Add(MainClass);
 
                     BorrowRecordMangDeviceModel DeviceModel = new BorrowRecordMangDeviceModel();
                     

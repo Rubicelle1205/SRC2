@@ -6,6 +6,7 @@
     bool show = false;
     List<SelectListItem> LstSubSystemBelong = ViewBag.ddlSubSystemBelong;
     List<BorrowRecordMangDeviceModel> Lst = Model.EditModel.LstDevice.Where(x => x.BorrowStatus == "02").ToList();
+    List<string> LstSafeMessage = ViewBag.SafeMessage;
     if (Lst.Count > 0) { show = true; }
 }
 
@@ -27,6 +28,20 @@
                                 <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
                                 <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
                             </h6>
+
+                            @if (null != LstSafeMessage)
+                            {
+                                foreach (string StrSafeMessage in LstSafeMessage)
+                                {
+                                    <div class="alert alert-default-danger mb-1" role="alert">
+                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                        @StrSafeMessage
+                                    </div>
+                                }
+
+                            }
+                            
+
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>

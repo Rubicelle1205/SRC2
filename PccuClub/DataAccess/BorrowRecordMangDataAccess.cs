@@ -174,7 +174,8 @@ AND BorrowMainID = @BorrowMainID";
             #endregion
 
             CommandText = $@"SELECT A.ID, A.MainClassID, B.Text AS MainClassIDText, A.MainResourceID, C.MainResourceName AS MainResourceIDText, A.BorrowAmt, 
-                                    D.BorrowType, E.Text AS BorrowTypeText, A.BorrowStatus, F.Text AS BorrowStatusText, A.BorrowSecondResourceID, A.BorrowRealAmt, A.ReturnRealAmt
+                                    D.BorrowType, E.Text AS BorrowTypeText, A.BorrowStatus, F.Text AS BorrowStatusText, A.BorrowSecondResourceID, A.BorrowRealAmt, A.ReturnRealAmt, 
+                                    C.AmtShelves, C.AmtSafe, C.SafeMessage
                                FROM BorrowDevice A
                           LEFT JOIN BorrowMainClassMang B ON b.ID = A.MainClassID
                           LEFT JOIN BorrowMainResourceMang C ON C.MainResourceID = A.MainResourceID
@@ -249,10 +250,10 @@ AND BorrowMainID = @BorrowMainID";
             parameters.Add("@ActName", vm.CreateModel.ActName);
             parameters.Add("@UseLocation", vm.CreateModel.UseLocation);
             parameters.Add("@UseDesc", vm.CreateModel.UseDesc);
-            parameters.Add("@UseSDate", vm.CreateModel.UseSDate);
-            parameters.Add("@UseEDate", vm.CreateModel.UseEDate);
-            parameters.Add("@TakeSDate", vm.CreateModel.TakeSDate);
-            parameters.Add("@TakeEDate", vm.CreateModel.TakeEDate);
+            parameters.Add("@UseSDate", vm.CreateModel.UseSDate.Value.ToString("yyyy-MM-dd"));
+            parameters.Add("@UseEDate", vm.CreateModel.UseEDate.Value.ToString("yyyy-MM-dd"));
+            parameters.Add("@TakeSDate", vm.CreateModel.TakeSDate.Value.ToString("yyyy-MM-dd"));
+            parameters.Add("@TakeEDate", vm.CreateModel.TakeEDate.Value.ToString("yyyy-MM-dd"));
             parameters.Add("@BorrowMemo", vm.CreateModel.BorrowMemo);
             parameters.Add("@TeacherMark", vm.CreateModel.TeacherMark);
             parameters.Add("@DeviceMark", vm.CreateModel.DeviceMark);
@@ -613,6 +614,62 @@ AND BorrowMainID = @BorrowMainID";
             return ds.Tables[0];
         }
 
+        public DataTable GetBorrowDeviceBetweenRange(BorrowRecordMangEditModel vm)
+        {
+            string CommandText = string.Empty;
+            string strDevice = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@UseSDate", vm.UseSDate);
+            parameters.Add("@UseEDate", vm.UseEDate);
+
+            if (vm.LstDevice.Count > 0)
+            {
+                List<string> list = new List<string>();
+
+                for(int i = 0; i <= vm.LstDevice.Count -1; i++)
+                {
+                    if (!list.Contains(vm.LstDevice[i].MainResourceID))
+                        list.Add(vm.LstDevice[i].MainResourceID);
+                }
+
+                for(int i = 0; i <= list.Count -1; i++)
+                {
+                    if (i != list.Count - 1)
+                    {
+                        strDevice += $@"'{list[i].ToString()}', ";
+                    }
+                    else
+                    {
+                        strDevice += $@"'{list[i].ToString()}'";
+                    }
+                }
+            }
+            #endregion
+
+            CommandText = @$"SELECT T.MainResourceID, SUM(T.BorrowCnt) AS BorrowCnt
+                               FROM (SELECT BorrowMainID, MainResourceID, SUM(BorrowAmt) AS BorrowCnt
+                                       FROM BorrowDevice A
+                                       WHERE 1 = 1
+                                         AND A.MainResourceID IN ({strDevice})
+                                         AND A.BorrowMainID IN (SELECT BorrowMainID 
+                                                                  FROM BorrowMain
+                                                                 WHERE 1 = 1
+                                                                   AND UseSDate <= @UseSDate
+                                                                   AND UseEDate >= @UseEDate)
+                                    GROUP BY BorrowMainID, MainResourceID) T
+                           GROUP BY T.MainResourceID
+";
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            return ds.Tables[0];
+        }
+
+
         #region 刪除
 
         /// <summary>
@@ -765,7 +822,9 @@ AND BorrowMainID = @BorrowMainID";
 
             CommandText = @"SELECT A.MainResourceID AS VALUE, '(' + B.Text + ')' + A.MainResourceName AS TEXT
                               FROM BorrowMainResourceMang A
-                         LEFT JOIN BorrowMainClassMang B ON B.ID = A.MainClass";
+                         LEFT JOIN BorrowMainClassMang B ON B.ID = A.MainClass
+                             WHERE 1 = 1
+                               AND A.Enable = 1 ";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
@@ -832,7 +891,10 @@ AND BorrowMainID = @BorrowMainID";
 
             CommandText = @"SELECT A.SecondResourceNo AS VALUE, '(' + A.SecondResourceNo + ')' + A.SecondResourceName AS TEXT
                               FROM BorrowSecondResourceMang A
-                         WHERE MainResourceID = @MainResourceID";
+                         WHERE 1 = 1
+                           AND MainResourceID = @MainResourceID
+                           AND A.ShelvesStatus = '01'
+                           AND A.BorrowStatus = '01'";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 

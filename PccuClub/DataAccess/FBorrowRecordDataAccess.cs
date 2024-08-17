@@ -391,7 +391,9 @@ AND BorrowMainID = @BorrowMainID";
 
             CommandText = @"SELECT A.MainResourceID AS VALUE, '(' + B.Text + ')' + A.MainResourceName AS TEXT
                               FROM BorrowMainResourceMang A
-                         LEFT JOIN BorrowMainClassMang B ON B.ID = A.MainClass";
+                         LEFT JOIN BorrowMainClassMang B ON B.ID = A.MainClass
+                             WHERE 1 = 1
+                               AND A.Enable = 1 ";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 

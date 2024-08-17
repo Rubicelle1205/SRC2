@@ -415,6 +415,12 @@ namespace WebPccuClub.Models
         public string? BorrowRealAmt { get; set; }
 
         public string? ReturnRealAmt { get; set; }
+
+        public string? AmtShelves { get; set; }
+
+        public string? AmtSafe { get; set; }
+
+        public string? SafeMessage { get; set; }
     }
 
     public class BorrowRecordMangddlModel
