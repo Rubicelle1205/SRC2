@@ -96,7 +96,7 @@ namespace WebPccuClub.Controllers
             return PartialView("_SearchResultPartial", vm);
         }
 
-        [LogAttribute(LogActionChineseName.查詢)]
+        [LogAttribute(LogActionChineseName.盤點查詢)]
         public IActionResult GetInventorySearchResult(BorrowMainResourceMangViewModel vm)
         {
             //RunType: null / 0:查看SecondResource ；1:盤點中；2:盤點結束
@@ -116,9 +116,11 @@ namespace WebPccuClub.Controllers
                 case null:
                     vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordConditionModel.MainResourceID).ToList();
                 break;
+                
                 case "0":
                     vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordConditionModel.MainResourceID).ToList();
                     break;
+                
                 case "1":
 
                     try
@@ -192,11 +194,12 @@ namespace WebPccuClub.Controllers
                     {
                         dbAccess.DbaRollBack();
                         vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        vmRtn.ErrorMsg = "刪除失敗" + ex.Message;
+                        vmRtn.ErrorMsg = "[失敗]" + ex.Message;
                         return Json(vmRtn);
                     }
 
                     break;
+                
                 case "2":
 
                     try
@@ -214,11 +217,12 @@ namespace WebPccuClub.Controllers
 
                         //更新總盤點數到Record
                         DataTable dt2 = dbAccess.GetInventoryAmt(vm.InventoryRecordConditionModel.InventoryRecordID);
+
                         string AmtInventory = dt2.QueryFieldByDT("Amt");
+
                         dbAccess.updInventoryAmtToRecord(vm.InventoryRecordConditionModel.InventoryRecordID, AmtInventory, LoginUser);
 
                         dbAccess.DbaCommit();
-
 
                         //顯示SecondResource到前台
                         vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordConditionModel.MainResourceID).ToList();
@@ -337,8 +341,6 @@ namespace WebPccuClub.Controllers
 
             return Json(vmRtn);
         }
-
-
 
         [Log(LogActionChineseName.新增儲存)]
         [ValidateInput(false)]

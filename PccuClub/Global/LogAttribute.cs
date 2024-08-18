@@ -124,6 +124,7 @@
         取得上架數量 = 109,
         盤點 = 110,
         AjaxMethod = 111,
+        盤點查詢 = 112,
     }
 
 	public enum DBActionChineseName
