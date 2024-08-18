@@ -844,11 +844,13 @@ AND BorrowMainID = @BorrowMainID";
             #region 參數設定
             #endregion
 
+            //啟用且非盤點中
             CommandText = @"SELECT A.MainResourceID AS VALUE, '(' + B.Text + ')' + A.MainResourceName AS TEXT
                               FROM BorrowMainResourceMang A
                          LEFT JOIN BorrowMainClassMang B ON B.ID = A.MainClass
                              WHERE 1 = 1
-                               AND A.Enable = 1 ";
+                               AND A.Enable = 1 
+                               AND A.InventoryStatus = '01' ";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 

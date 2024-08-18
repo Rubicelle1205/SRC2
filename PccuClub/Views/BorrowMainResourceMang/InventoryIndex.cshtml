@@ -100,16 +100,13 @@
         GoSearch();
     });
 
-    $(document).ready(function () {
-
-
-        GoSearch();
-
-        $("#btnSingleReturn").click(function () {
+    $("#btnSingleReturn").click(function () {
             var InventoryRecordID = $('#@Html.IdFor(m => m.InventoryRecordConditionModel.InventoryRecordID)').val();
             var DeviceID = $('#@Html.IdFor(m => m.InventoryRecordConditionModel.ReturnID)').val();
 
             UpdSingleInventory(InventoryRecordID, DeviceID);
+
+            $('#@Html.IdFor(m => m.InventoryRecordConditionModel.ReturnID)').val("");
         });
 
         $("#btnMultReturn").click(function () {
@@ -119,9 +116,9 @@
             UpdMultInventory(InventoryRecordID, ReturnAmt);
         });
 
-
+    $(document).ready(function () {
+        GoSearch();
     });
-
 
     function UpdSingleInventory(InventoryRecordID, DeviceID) {
 

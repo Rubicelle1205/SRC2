@@ -393,7 +393,8 @@ AND BorrowMainID = @BorrowMainID";
                               FROM BorrowMainResourceMang A
                          LEFT JOIN BorrowMainClassMang B ON B.ID = A.MainClass
                              WHERE 1 = 1
-                               AND A.Enable = 1 ";
+                               AND A.Enable = 1 
+                               AND A.InventoryStatus = '01' ";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 

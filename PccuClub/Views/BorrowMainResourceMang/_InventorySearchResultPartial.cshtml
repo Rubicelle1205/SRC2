@@ -57,7 +57,22 @@
                                 <td>@item.SecondResourceName</td>
                                 <td>@item.ShelvesStatusText<i class="fa-solid fa-lock" data-lock=""></i></td>
                                 <td>@item.BorrowStatusText<i class="fa-solid fa-lock" data-lock=""></i></td>
-                                <td><span class="text-muted" data-set="checking">@item.ResourceInventoryStatusText</span></td>
+                                <td>
+                                    @if (item.ResourceInventoryStatus == "01")
+                                    {
+                                        <span class="text-warning" data-set="checking">@item.ResourceInventoryStatusText</span>
+                                    }
+                                    else if (item.ResourceInventoryStatus == "02")
+                                    {
+                                        <span class="text-muted" data-set="checking">@item.ResourceInventoryStatusText</span>
+                                    }
+                                    else if (item.ResourceInventoryStatus == "03")
+                                    {
+                                        <span class="text-success" data-set="checking">@item.ResourceInventoryStatusText</span>
+                                    }
+                                    
+                                    
+                                </td>
                             </tr>
                         }
                         break;

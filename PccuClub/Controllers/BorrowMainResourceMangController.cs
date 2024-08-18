@@ -156,15 +156,6 @@ namespace WebPccuClub.Controllers
                                 return Json(vmRtn);
                             }
 
-                            dbResult = dbAccess.UpdSecondResourceToInventory(vm.InventoryRecordConditionModel.MainResourceID);
-
-                            if (!dbResult.isSuccess)
-                            {
-                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                                vmRtn.ErrorMsg = "失敗";
-                                return Json(vmRtn);
-                            }
-
                             dbResult = dbAccess.CreateInventoryRecord(vm.InventoryRecordConditionModel, LoginUser, out dt);
 
                             if (!dbResult.isSuccess)
@@ -176,12 +167,28 @@ namespace WebPccuClub.Controllers
 
                             RecodeOrder = dt.QueryFieldByDT("ID");
 
-
                             //取得SecondResource資料
                             vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordConditionModel.MainResourceID).ToList();
 
                             //回寫進Detail
                             dbAccess.InserInventoryDetailData(vm.InventoryDetailModel, RecodeOrder, LoginUser);
+
+                            if (!dbResult.isSuccess)
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = "失敗";
+                                return Json(vmRtn);
+                            }
+
+                            //更新SecondResource狀態為盤點中
+                            dbResult = dbAccess.UpdSecondResourceToInventory(vm.InventoryRecordConditionModel.MainResourceID);
+
+                            if (!dbResult.isSuccess)
+                            {
+                                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                                vmRtn.ErrorMsg = "失敗";
+                                return Json(vmRtn);
+                            }
 
                             dbAccess.DbaCommit();
                         }
