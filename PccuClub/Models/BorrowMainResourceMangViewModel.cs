@@ -17,7 +17,7 @@ namespace WebPccuClub.Models
 
         public BorrowMainResourceMangEditModel EditModel { get; set; }
 
-        public BorrowMainResourceMangInventoryRecordModel InventoryRecordModel { get; set; }
+        public BorrowMainResourceMangInventoryRecordModel InventoryRecordConditionModel { get; set; }
 
         public List<BorrowMainResourceMangInventoryDetailModel> InventoryDetailModel { get; set; }
 
@@ -273,6 +273,22 @@ namespace WebPccuClub.Models
 
     public class BorrowMainResourceMangInventoryRecordModel
     {
+        public BorrowMainResourceMangInventoryRecordModel()
+        {
+            this.Page = 0;
+            this.PageSize = 10;
+            this.TotalCount = 0;
+        }
+
+        /// <summary> 目前頁數 </summary>
+        public int Page { get; set; }
+
+        /// <summary> 預設每頁顯示筆數 - 依需求更改 </summary>
+        public int PageSize { get; set; }
+
+        /// <summary> 總筆數 </summary>
+        public int TotalCount { get; set; }
+
         public string? RunType { get; set; }
 
         public string? ReturnID { get; set; }

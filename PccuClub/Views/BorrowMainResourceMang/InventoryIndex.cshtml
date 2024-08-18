@@ -21,23 +21,23 @@
                                 <tbody>
                                     <tr>
                                         <th width="10%">業務分類</th>
-                                        <td>@Model.InventoryRecordModel.MainClassText</td>
+                                        <td>@Model.InventoryRecordConditionModel.MainClassText</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">主資源代號</th>
-                                        <td>@Model.InventoryRecordModel.MainResourceID</td>
+                                        <td>@Model.InventoryRecordConditionModel.MainResourceID</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">主資源名稱</th>
-                                        <td>@Model.InventoryRecordModel.MainResourceName</td>
+                                        <td>@Model.InventoryRecordConditionModel.MainResourceName</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">當前實際庫存數</th>
-                                        <td>@Model.InventoryRecordModel.AmtReal</td>
+                                        <td>@Model.InventoryRecordConditionModel.AmtReal</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">物品類型</th>
-                                        <td>@Model.InventoryRecordModel.BorrowTypeText</td>
+                                        <td>@Model.InventoryRecordConditionModel.BorrowTypeText</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -50,18 +50,22 @@
                     <div class="card">
                         <div class="card-header">
                             <div id="divSingleReturn" class="d-flex justify-content-center mb-1" style="display:none !important;">
-                                @Html.TextBoxFor(m => m.InventoryRecordModel.ReturnID, new {@class = "form-control", placeholder = "請輸入歸還物品資產編號", @style="width:70%;" })
+                                @Html.TextBoxFor(m => m.InventoryRecordConditionModel.ReturnID, new {@class = "form-control", placeholder = "請輸入歸還物品資產編號", @style="width:70%;" })
                                 <button id="btnSingleReturn" type="button" class="btn btn-success">確認</button>
                             </div>
                             <div id="divMultReturn" class="d-flex justify-content-center mb-1" style="display:none !important;">
-                                @Html.TextBoxFor(m => m.InventoryRecordModel.ReturnAmt, new {@class = "form-control", placeholder = "請輸入歸還物品數量", @style="width:70%;", type = "number" })
+                                @Html.TextBoxFor(m => m.InventoryRecordConditionModel.ReturnAmt, new {@class = "form-control", placeholder = "請輸入歸還物品數量", @style="width:70%;", type = "number" })
                                 <button id="btnMultReturn" type="button" class="btn btn-success">確認</button>
                             </div>
                             <div class="card-tools">
-                                @Html.HiddenFor(m => m.InventoryRecordModel.RunType)
-                                @Html.HiddenFor(m => m.InventoryRecordModel.AmtReal)
-                                @Html.HiddenFor(m => m.InventoryRecordModel.BorrowType)
-                                @Html.HiddenFor(m => m.InventoryRecordModel.MainResourceID)
+                                @Html.HiddenFor(m => m.InventoryRecordConditionModel.Page)
+                                @Html.HiddenFor(m => m.InventoryRecordConditionModel.PageSize)
+                                @Html.HiddenFor(m => m.InventoryRecordConditionModel.TotalCount)
+
+                                @Html.HiddenFor(m => m.InventoryRecordConditionModel.RunType)
+                                @Html.HiddenFor(m => m.InventoryRecordConditionModel.AmtReal)
+                                @Html.HiddenFor(m => m.InventoryRecordConditionModel.BorrowType)
+                                @Html.HiddenFor(m => m.InventoryRecordConditionModel.MainResourceID)
                                 <input id="btnStart" type="button" class="btn btn-sm btn-success" value="開始盤點" onclick="GoSearch(1)">
                                 
                                 <div id="divEnd" class="hide">
@@ -91,21 +95,26 @@
 
 <script>
 
+    $('#Jumppage').change(function (e) {
+        $("#@Html.IdFor(m => m.InventoryRecordConditionModel.Page)").val(e.target.value);
+        GoSearch();
+    });
+
     $(document).ready(function () {
 
 
         GoSearch();
 
         $("#btnSingleReturn").click(function () {
-            var InventoryRecordID = $('#@Html.IdFor(m => m.InventoryRecordModel.InventoryRecordID)').val();
-            var DeviceID = $('#@Html.IdFor(m => m.InventoryRecordModel.ReturnID)').val();
+            var InventoryRecordID = $('#@Html.IdFor(m => m.InventoryRecordConditionModel.InventoryRecordID)').val();
+            var DeviceID = $('#@Html.IdFor(m => m.InventoryRecordConditionModel.ReturnID)').val();
 
             UpdSingleInventory(InventoryRecordID, DeviceID);
         });
 
         $("#btnMultReturn").click(function () {
-            var InventoryRecordID = $('#@Html.IdFor(m => m.InventoryRecordModel.InventoryRecordID)').val();
-            var ReturnAmt = $('#@Html.IdFor(m => m.InventoryRecordModel.ReturnAmt)').val();
+            var InventoryRecordID = $('#@Html.IdFor(m => m.InventoryRecordConditionModel.InventoryRecordID)').val();
+            var ReturnAmt = $('#@Html.IdFor(m => m.InventoryRecordConditionModel.ReturnAmt)').val();
 
             UpdMultInventory(InventoryRecordID, ReturnAmt);
         });
@@ -137,12 +146,13 @@
     }
 
     function GoSearch(source) {
+        
         if (typeof source === 'undefined') {
-            source = $("#@Html.IdFor(m => m.InventoryRecordModel.RunType)").val();
+            source = $("#@Html.IdFor(m => m.InventoryRecordConditionModel.RunType)").val();
         }
 
-        $("#@Html.IdFor(m => m.InventoryRecordModel.RunType)").val(source);
-        var BorrowType = $("#@Html.IdFor(m => m.InventoryRecordModel.BorrowType)").val();
+        $("#@Html.IdFor(m => m.InventoryRecordConditionModel.RunType)").val(source);
+        var BorrowType = $("#@Html.IdFor(m => m.InventoryRecordConditionModel.BorrowType)").val();
 
         if (source == "1") {
 

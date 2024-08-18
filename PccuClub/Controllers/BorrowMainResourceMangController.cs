@@ -75,8 +75,8 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.盤點)]
         public IActionResult InventoryIndex(string submitBtn, BorrowMainResourceMangViewModel vm)
         {
-            vm.InventoryRecordModel = dbAccess.GetInventoryRecord(submitBtn);
-            vm.InventoryRecordModel.RunType = vm.InventoryRecordModel.InventoryStatus == "02" ? "1" : "0";
+            vm.InventoryRecordConditionModel = dbAccess.GetInventoryRecord(submitBtn);
+            vm.InventoryRecordConditionModel.RunType = vm.InventoryRecordConditionModel.InventoryStatus == "02" ? "1" : "0";
 
 
             return View(vm);
@@ -101,30 +101,30 @@ namespace WebPccuClub.Controllers
         {
             //RunType: null / 0:查看SecondResource ；1:盤點中；2:盤點結束
 
-            DataTable dtt = dbAccess.GetMainResourceInventoryStatus(vm.InventoryRecordModel.MainResourceID);
+            DataTable dtt = dbAccess.GetMainResourceInventoryStatus(vm.InventoryRecordConditionModel.MainResourceID);
             
             string RunType = dtt.QueryFieldByDT("InventoryStatus");
 
-            if (vm.InventoryRecordModel.RunType != "2")
+            if (vm.InventoryRecordConditionModel.RunType != "2")
             {
-                if (RunType == "02") { vm.InventoryRecordModel.RunType = "1"; }
+                if (RunType == "02") { vm.InventoryRecordConditionModel.RunType = "1"; }
             }
             
 
-            switch (vm.InventoryRecordModel.RunType)
+            switch (vm.InventoryRecordConditionModel.RunType)
             {
                 case null:
-                    vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordModel.MainResourceID).ToList();
+                    vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordConditionModel.MainResourceID).ToList();
                 break;
                 case "0":
-                    vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordModel.MainResourceID).ToList();
+                    vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordConditionModel.MainResourceID).ToList();
                     break;
                 case "1":
 
                     try
                     {
                         //確認是否存在子資源，不存在子資料需跳出
-                        DataTable dtSubResource = dbAccess.GetSubResource(vm.InventoryRecordModel.MainResourceID);
+                        DataTable dtSubResource = dbAccess.GetSubResource(vm.InventoryRecordConditionModel.MainResourceID);
 
                         if (dtSubResource.Rows.Count == 0)
                         {
@@ -133,20 +133,19 @@ namespace WebPccuClub.Controllers
                             return Json(vmRtn);
                         }
 
-
                         dbAccess.DbaInitialTransaction();
 
                         //先找一下有沒有盤點單，沒有的話，新增一張Record單
                         DataTable dt = new DataTable();
                         string RecodeOrder = "";
 
-                        dt = dbAccess.SearchInventoryRecord(vm.InventoryRecordModel.MainResourceID);
+                        dt = dbAccess.SearchInventoryRecord(vm.InventoryRecordConditionModel.MainResourceID);
                         RecodeOrder = dt.QueryFieldByDT("ID");
 
                         if (string.IsNullOrEmpty(RecodeOrder))
                         {
                             //更新Flag
-                            var dbResult = dbAccess.UpdMainResourceToInventory(vm.InventoryRecordModel.MainResourceID, "02");
+                            var dbResult = dbAccess.UpdMainResourceToInventory(vm.InventoryRecordConditionModel.MainResourceID, "02");
 
                             if (!dbResult.isSuccess)
                             {
@@ -155,7 +154,7 @@ namespace WebPccuClub.Controllers
                                 return Json(vmRtn);
                             }
 
-                            dbResult = dbAccess.UpdSecondResourceToInventory(vm.InventoryRecordModel.MainResourceID);
+                            dbResult = dbAccess.UpdSecondResourceToInventory(vm.InventoryRecordConditionModel.MainResourceID);
 
                             if (!dbResult.isSuccess)
                             {
@@ -164,7 +163,7 @@ namespace WebPccuClub.Controllers
                                 return Json(vmRtn);
                             }
 
-                            dbResult = dbAccess.CreateInventoryRecord(vm.InventoryRecordModel, LoginUser, out dt);
+                            dbResult = dbAccess.CreateInventoryRecord(vm.InventoryRecordConditionModel, LoginUser, out dt);
 
                             if (!dbResult.isSuccess)
                             {
@@ -177,7 +176,7 @@ namespace WebPccuClub.Controllers
 
 
                             //取得SecondResource資料
-                            vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordModel.MainResourceID).ToList();
+                            vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordConditionModel.MainResourceID).ToList();
 
                             //回寫進Detail
                             dbAccess.InserInventoryDetailData(vm.InventoryDetailModel, RecodeOrder, LoginUser);
@@ -187,7 +186,7 @@ namespace WebPccuClub.Controllers
 
                         //撈取Detail資料到前台
                         vm.InventoryDetailModel = dbAccess.GetInventoryDetail(RecodeOrder).ToList();
-                        vm.InventoryRecordModel.InventoryRecordID = RecodeOrder;
+                        vm.InventoryRecordConditionModel.InventoryRecordID = RecodeOrder;
                     }
                     catch (Exception ex)
                     {
@@ -204,26 +203,26 @@ namespace WebPccuClub.Controllers
                     {
                         dbAccess.DbaInitialTransaction();
 
-
                         //更新Flag 為非盤點
-                        var dbResult = dbAccess.UpdMainResourceToInventory(vm.InventoryRecordModel.MainResourceID, "01");
-
+                        var dbResult = dbAccess.UpdMainResourceToInventory(vm.InventoryRecordConditionModel.MainResourceID, "01");
 
                         //撈取Detail資料
-                        vm.InventoryDetailModel = dbAccess.GetInventoryDetail(vm.InventoryRecordModel.InventoryRecordID).ToList();
+                        vm.InventoryDetailModel = dbAccess.GetInventoryDetail(vm.InventoryRecordConditionModel.InventoryRecordID).ToList();
 
                         //更新上下架狀態與借用狀態
-                        dbAccess.updSecondResourceStatus(vm.InventoryDetailModel, vm.InventoryRecordModel.InventoryRecordID, LoginUser);
+                        dbAccess.updSecondResourceStatus(vm.InventoryDetailModel, vm.InventoryRecordConditionModel.InventoryRecordID, LoginUser);
 
                         //更新總盤點數到Record
-                        DataTable dt2 = dbAccess.GetInventoryAmt(vm.InventoryRecordModel.InventoryRecordID);
+                        DataTable dt2 = dbAccess.GetInventoryAmt(vm.InventoryRecordConditionModel.InventoryRecordID);
                         string AmtInventory = dt2.QueryFieldByDT("Amt");
-                        dbAccess.updInventoryAmtToRecord(vm.InventoryRecordModel.InventoryRecordID, AmtInventory, LoginUser);
-
-                        //顯示SecondResource到前台
-                        vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordModel.MainResourceID).ToList();
+                        dbAccess.updInventoryAmtToRecord(vm.InventoryRecordConditionModel.InventoryRecordID, AmtInventory, LoginUser);
 
                         dbAccess.DbaCommit();
+
+
+                        //顯示SecondResource到前台
+                        vm.InventoryDetailModel = dbAccess.GetSecondResource(vm.InventoryRecordConditionModel.MainResourceID).ToList();
+
                     }
                     catch (Exception ex)
                     {
@@ -235,7 +234,14 @@ namespace WebPccuClub.Controllers
 
                     break;
             }
-            
+
+
+            #region 分頁
+            vm.InventoryRecordConditionModel.TotalCount = vm.InventoryDetailModel.Count();
+            int StartRow = vm.InventoryRecordConditionModel.Page * vm.InventoryRecordConditionModel.PageSize;
+            vm.InventoryDetailModel = vm.InventoryDetailModel.Skip(StartRow).Take(vm.InventoryRecordConditionModel.PageSize).ToList();
+            #endregion
+
             return PartialView("_InventorySearchResultPartial", vm);
         }
 

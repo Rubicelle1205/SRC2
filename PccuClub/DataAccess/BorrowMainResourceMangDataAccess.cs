@@ -339,24 +339,6 @@ AND (MainResourceID = @MainResourceID) ";
             return ExecuteResult;
         }
 
-        public DbExecuteInfo UpdMainResourceToInventory(string MainResourceID, string InventoryStatus)
-        {
-            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
-            DBAParameter parameters = new DBAParameter();
-
-            #region 參數設定
-            parameters.Add("@MainResourceID", MainResourceID);
-            #endregion 參數設定
-
-            string CommendText = $@"UPDATE BorrowMainResourceMang 
-                                       SET InventoryStatus = '{InventoryStatus}'
-                                     WHERE MainResourceID = @MainResourceID
-";
-
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-            return ExecuteResult;
-        }
 
         public DbExecuteInfo UpdSecondResourceToInventory(string MainResourceID)
         {
@@ -545,7 +527,9 @@ AND (MainResourceID = @MainResourceID) ";
             return ds.Tables[0];
         }
 
+        #region 盤點開始流程
 
+        //確認盤點單是否存在
         public DataTable SearchInventoryRecord(string MainResourceID)
         {
             string CommandText = string.Empty;
@@ -568,6 +552,31 @@ AND (MainResourceID = @MainResourceID) ";
             DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
             return ds.Tables[0];
         }
+
+
+        //更新盤點狀態(非盤點、盤點中、盤點無誤)
+        public DbExecuteInfo UpdMainResourceToInventory(string MainResourceID, string InventoryStatus)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@MainResourceID", MainResourceID);
+            #endregion 參數設定
+
+            string CommendText = $@"UPDATE BorrowMainResourceMang 
+                                       SET InventoryStatus = '{InventoryStatus}'
+                                     WHERE MainResourceID = @MainResourceID
+";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        #endregion
+
+
 
 
         public DataTable GetMainResourceInventoryStatus(string MainResourceID)
@@ -616,6 +625,7 @@ AND (MainResourceID = @MainResourceID) ";
             return ds.Tables[0];
         }
 
+        //確認是否有設定子資源
         public DataTable GetSubResource(string MainResourceID)
         {
             string CommandText = string.Empty;
