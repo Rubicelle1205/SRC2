@@ -229,7 +229,7 @@
                                                                     </td>
                                                                     <td>
                                                                         <button id="@string.Format("MultRetrun{0}", (i+1))" type="button" class="ml-1 btn btn-sm btn-outline-danger">大量歸還</button>
-                                                                        <button id="@string.Format("MultRetrunSave{0}", (i+1))" type="button" class="ml-1 btn btn-sm btn-outline-secondary" style="display:none;">確認歸還</button>
+                                                                        <button id="@string.Format("MMultRetrunSave{0}", (i+1))" type="button" class="ml-1 btn btn-sm btn-outline-secondary" style="display:none;">確認歸還</button>
                                                                     </td>
                                                                     }
                                                                     else if(Model.EditModel.LstDevice[i].BorrowStatus == "03")
@@ -238,7 +238,7 @@
                                                                         <span class="text-muted">@Model.EditModel.LstDevice[i].BorrowStatusText</span>
                                                                         <br/>
                                                                         <div id="@string.Format("MultshowSecondResource{0}", (i+1))">
-                                                                            <span class="text-sm">歸還數量:@Model.EditModel.LstDevice[i].BorrowRealAmt</span>
+                                                                            <span class="text-sm">歸還數量:@Model.EditModel.LstDevice[i].ReturnRealAmt</span>
                                                                         </div>
                                                                     </td>
                                                                     <td>
@@ -500,9 +500,9 @@
         $("[id ^= 'MultBorrowSearch']").click(function () {
 
             var visibleRowID = null;
-            $("[id ^= 'MultBorrowSearch']").each(function () {
+            $("[id ^= 'MultBorrowSave']").each(function () {
                 if ($(this).is(":visible")) {
-                    visibleRowID = $(this).attr('id').replace("MultBorrowSearch", "");
+                    visibleRowID = $(this).attr('id').replace("MultBorrowSave", "");
                     return false;
                 }
             });
@@ -527,7 +527,7 @@
             var MainResourceID = $("#HiddenMainResourceID" + rowID).val();
 
             if (BorrowAmt == "") { $.alert("借出數量不可為空"); return; }
-            if (BorrowAmt < 0) { $.alert("借出數量需大於0"); return; }
+            if (BorrowAmt <= 0) { $.alert("借出數量需大於0"); return; }
 
             UpdMultSecondResource($("#HiddenID" + rowID).val(), MainResourceID, BorrowAmt);
 
@@ -544,7 +544,7 @@
             $("#MultBorrowSave" + rowID).hide();
             $("#MultBorrowCancel" + rowID).hide();
 
-            $('#showSecondResource' + rowID).html("");
+            $('#MultshowSecondResource' + rowID).html("");
         });
 
         //#endregion
@@ -557,20 +557,23 @@
             InitMultReturnResource(rowID);
 
             $("#MultRetrun" + rowID).hide();
-            $("#MultRetrunSave" + rowID).show();
+            $("#MMultRetrunSave" + rowID).show();
         });
 
-        $("[id ^= 'MultRetrunSave']").click(function () {
+        $("[id ^= 'MMultRetrunSave']").click(function () {
             var buttonId = $(this).attr('id');
-            var rowID = buttonId.replace("MultRetrunSave", "");
+            var rowID = buttonId.replace("MMultRetrunSave", "");
             var DeviceID = $("#HiddenID" + rowID).val();
             var MainResourceID = $("#HiddenMainResourceID" + rowID).val()
-            var ReturnAmt = $(this).closest('tr').find($('#@Html.IdFor(m => m.ddlModel.ID)')).val();
+            var ReturnAmt = $(this).closest('tr').find('input[id="ddlModel_ID"]').val();
+
+            if (!ReturnAmt) { $.alert("歸還數量不可為空"); return; }
+            if (ReturnAmt <= 0) { $.alert("歸還數量需大於0"); return; }
 
             UpdMultRetrunResource(DeviceID, MainResourceID, ReturnAmt);
 
             $("#MultRetrun" + rowID).show();
-            $("#MultRetrunSave" + rowID).hide();
+            $("#MMultRetrunSave" + rowID).hide();
         });
 
         $("#box_return").click(function () {
