@@ -132,9 +132,6 @@
         //取頁面數
         $("#@Html.IdFor(m => m.InventoryRecordConditionModel.Page)").val(idx - 1);
 
-        alert($('#SearchForm').find("input[name='@Html.NameFor(m => m.InventoryRecordConditionModel.Page)']").val());
-        alert($("#@Html.IdFor(m => m.InventoryRecordConditionModel.Page)").val());
-
         GoSearch();
     }
     
