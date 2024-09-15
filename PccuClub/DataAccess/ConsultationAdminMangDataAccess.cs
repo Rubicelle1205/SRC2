@@ -113,6 +113,7 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
             parameters.Add("@Password", EncryptPw);
             parameters.Add("@UserName", vm.CreateModel.UserName.TrimStartAndEnd());
             parameters.Add("@EMail", vm.CreateModel.EMail.TrimStartAndEnd());
+            parameters.Add("@SSOAccount", vm.CreateModel.SSOAccount.TrimStartAndEnd());
             parameters.Add("@Memo", vm.CreateModel.Memo.TrimStartAndEnd());
 
             parameters.Add("@LastModifier", LoginUser.LoginId);
@@ -124,6 +125,7 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
                                                 ,UserName
                                                 ,EMail
                                                 ,UserType
+                                                ,SSOAccount
                                                 ,Memo
                                                 ,IsEnable
                                                 ,Creator
@@ -136,6 +138,7 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
                                                 ,@UserName
                                                 ,@EMail
                                                 ,'01'
+                                                ,@SSOAccount
                                                 ,@Memo
                                                 ,@IsEnable
                                                 ,@LastModifier
@@ -338,6 +341,26 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
             return ExecuteResult;
         }
 
+        /// <summary>
+        /// 刪除心理師資料
+        /// </summary>
+        /// <param name="ser"></param>
+        /// <returns></returns>
+        public DbExecuteInfo DeletetPsychologistMang(string LoginId)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@LoginId", LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"DELETE FROM PsychologistMang WHERE LoginId = @LoginId ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
         #endregion
 
 

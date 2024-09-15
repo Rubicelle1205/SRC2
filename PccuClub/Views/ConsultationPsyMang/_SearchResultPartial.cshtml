@@ -22,10 +22,9 @@
                         <td class="text-center text-sm" style="display: flex; justify-content: center; align-items: center;">
                             @using (Html.BeginForm("Edit", "ConsultationPsyMang", FormMethod.Post, new { style = "float:left" }))
                             {
-                                <button type="submit" value="@item.LoginID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
+                                <button type="submit" value="@item.LoginID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">編輯</button>
                             }
 
-                            <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel('@item.LoginID');">刪除</a>
                         </td>
                     </tr>
                 }

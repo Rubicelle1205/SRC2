@@ -41,7 +41,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.SSOAccount)<span class="required">*</span></th>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.SSOAccount)</th>
                                         <td>@Html.TextBoxFor(m => m.CreateModel.SSOAccount, new {@class="form-control", placeholder="請輸入學校/人員代號"})</td>
                                     </tr>
                                     <tr>
@@ -155,10 +155,7 @@
             $.alert("管理者帳號不可為空");
             return;
         }
-        if (SSOAccount == "") {
-            $.alert("學校/人員代號不可為空");
-            return;
-        }
+
         if (EMail == "") {
             $.alert("管理者信箱不可為空");
             return;

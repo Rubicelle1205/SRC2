@@ -75,6 +75,7 @@ namespace WebPccuClub.DataAccess
                               WHERE 1 = 1
                                 AND C.SystemCode = '05' 
                                 AND C.SystemRoleCode = '02' 
+                                AND A.IsEnable = '1'
                                 AND A.LoginID = @LoginID ";
 
 

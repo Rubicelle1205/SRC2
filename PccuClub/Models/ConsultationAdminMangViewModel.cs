@@ -131,8 +131,8 @@ namespace WebPccuClub.Models
         [DisplayName("角色-諮商系統")]
         public string? RoleConsultation { get; set; }
 
-        /// <summary>角色-諮商系統</summary>
-        [DisplayName("角色-諮商系統")]
+        /// <summary>學校/人員代號</summary>
+        [DisplayName("學校/人員代號")]
         public string? SSOAccount { get; set; }
         
         /// <summary>信箱</summary>
