@@ -6,6 +6,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using NPOI.XWPF.UserModel;
 using System.ComponentModel;
+using System.Data;
 using System.Reflection;
 using System.Text.Json;
 using System.Web.Helpers;
@@ -49,8 +50,7 @@ namespace WebPccuClub.Controllers
         {
             ViewBag.ddlPsy = dbAccess.GetddlPsy();
             ViewBag.ddlRoom = dbAccess.GetddlRoom();
-            ViewBag.ddlTalkSTime = dbAccess.GetddlTalkSTime();
-            ViewBag.ddlTalkETime = dbAccess.GetddlTalkETime();
+            
 
             vm.CreateModel = new ConsultationCaseMangCreateModel();
 
@@ -287,5 +287,22 @@ namespace WebPccuClub.Controllers
             return Redirect("Index");
 
         }
+
+        [Log(LogActionChineseName.取得諮商空間可用時間)]
+        [ValidateInput(false)]
+        public IActionResult InitBoomTime(string RoomID, string TalkDate)
+        {
+            //大量借用
+            ConsultationCaseMangViewModel vm = new ConsultationCaseMangViewModel();
+            vm.CreateModel = new ConsultationCaseMangCreateModel();
+            vm.CreateModel.RoomID = RoomID;
+            vm.CreateModel.TalkDate = TalkDate;
+
+            ViewBag.ddlTalkSTime = dbAccess.GetddlTalkSTime(RoomID, TalkDate);
+            ViewBag.ddlTalkETime = dbAccess.GetddlTalkETime(RoomID, TalkDate);
+
+            return PartialView("_RoomUseTimePartial", vm);
+        }
+        
     }
 }

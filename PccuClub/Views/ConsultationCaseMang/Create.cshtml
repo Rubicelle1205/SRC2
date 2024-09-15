@@ -16,7 +16,10 @@
     <script src="~/js/backend_counselling.js"></script>
     <script src="~/dist/plugins/calendar/dist/zabuto_calendar.min.js"></script>
     <script src="~/dist/plugins/calendar-plugin/calendar.min.js"></script>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+
 </head>
+
 
 <!-- Main content -->
 <section class="content">
@@ -78,17 +81,7 @@
                                                 </div>
                                                 @Html.TextBoxFor(m => m.CreateModel.TalkDate, new {@class = "form-control", @placeholder="請點擊輸入框並選擇諮商日期", @for="finish_date"})
                                             </div>
-                                            <div class="row">
-                                                <div class="input-group col-md-6">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text">開始時間</span>
-                                                    </div>
-                                                    @Html.DropDownListFor(m => m.CreateModel.TalkSTime ,(List<SelectListItem>)ViewBag.ddlTalkSTime,"請選擇諮商開始時間", new {@class = "form-control"})
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text">結束時間</span>
-                                                    </div>
-                                                    @Html.DropDownListFor(m => m.CreateModel.TalkETime ,(List<SelectListItem>)ViewBag.ddlTalkETime,"請選擇諮商結束時間", new {@class = "form-control"})
-                                                </div>
+                                            <div id="RoomTimePartial" class="row">
                                             </div>
                                         </td>
                                     </tr>
@@ -127,6 +120,15 @@
 
 <script>
     $(document).ready(function () {
+
+        $("[id $= 'RoomID']").on('change', function () {
+            InitBoomTime();
+        });
+
+        $("[id $= 'TalkDate']").on('apply.daterangepicker', function () {
+            InitBoomTime();
+        });
+
         var $calendar = $('#view-calendar');
 
         var initData = @Html.Raw(initData);
@@ -250,4 +252,20 @@
         });
     }
 
+    function InitBoomTime() {
+
+        var RoomID = $("[id $= 'RoomID']").val();
+        var TalkDate = $("[id $= 'TalkDate']").val();
+
+        if (RoomID == "") { return; }
+        if (!moment(TalkDate, "YYYY-MM-DD", true).isValid()) { return; }
+
+        SendAjax({
+            url: '@Url.Action("InitBoomTime")',
+            data: { 'RoomID': RoomID, "TalkDate": TalkDate },
+            success: function (result) {
+                $('#RoomTimePartial').html(result);
+            }
+        });
+    }
 </script>

@@ -330,52 +330,112 @@ AND (@AssignCaseStatus IS NULL OR A.AssignCaseStatus = @AssignCaseStatus)
             return new List<SelectListItem>();
         }
 
-        public List<SelectListItem> GetddlTalkSTime()
+        public List<SelectListItem> GetddlTalkSTime(string RoomID, string TalkDate)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
 
             DBAParameter parameters = new DBAParameter();
 
+            DateTime date = DateTime.Parse(TalkDate);
+            DayOfWeek dayOfWeek = date.DayOfWeek;
+            int dayOfWeekNumber = ((int)dayOfWeek == 0) ? 7 : (int)dayOfWeek;
+
+            parameters.Add("@ID", RoomID);
+            parameters.Add("@Week", dayOfWeekNumber);
+
+
             #region 參數設定
             #endregion
 
-            CommandText = @"SELECT STime AS VALUE, STime AS TEXT
-                              FROM (SELECT '08:00' AS STime UNION ALL SELECT '09:00' AS STime UNION ALL SELECT '10:00' AS STime UNION ALL 
-                                    SELECT '11:00' AS STime UNION ALL SELECT '12:00' AS STime UNION ALL SELECT '13:00' AS STime UNION ALL 
-                                    SELECT '14:00' AS STime UNION ALL SELECT '15:00' AS STime UNION ALL SELECT '16:00' AS STime UNION ALL  
-                                    SELECT '17:00' AS STime UNION ALL SELECT '18:00' AS STime UNION ALL SELECT '19:00' AS STime UNION ALL 
-                                    SELECT '20:00' AS STime UNION ALL SELECT '21:00' AS STime) T";
+            //CommandText = @"SELECT STime AS VALUE, STime AS TEXT
+            //                  FROM (SELECT '08:00' AS STime UNION ALL SELECT '09:00' AS STime UNION ALL SELECT '10:00' AS STime UNION ALL 
+            //                        SELECT '11:00' AS STime UNION ALL SELECT '12:00' AS STime UNION ALL SELECT '13:00' AS STime UNION ALL 
+            //                        SELECT '14:00' AS STime UNION ALL SELECT '15:00' AS STime UNION ALL SELECT '16:00' AS STime UNION ALL  
+            //                        SELECT '17:00' AS STime UNION ALL SELECT '18:00' AS STime UNION ALL SELECT '19:00' AS STime UNION ALL 
+            //                        SELECT '20:00' AS STime UNION ALL SELECT '21:00' AS STime) T";
+
+            CommandText = @"SELECT Hour AS VALUE, Hour AS TEXT
+                              FROM AppointmentTimeMang
+                             WHERE TYPE = '02' 
+                               AND ID = @ID 
+                               AND Week = @Week 
+";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
-                return dbResult.entitys.ToList();
+            {
+                List<SelectListItem> list = new List<SelectListItem>();
+
+                for (int i = 0; i < dbResult.entitys.Count() - 1; i++)
+                {
+                    SelectListItem item = new SelectListItem();
+                    string formattedNumber = i.ToString("D2");
+
+                    item.Value = string.Format("{0}:00", formattedNumber);
+                    item.Text = string.Format("{0}:00", formattedNumber);
+
+                    list.Add(item);
+                }
+
+                return list;
+            }
 
             return new List<SelectListItem>();
         }
 
-        public List<SelectListItem> GetddlTalkETime()
+        public List<SelectListItem> GetddlTalkETime(string RoomID, string TalkDate)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
 
             DBAParameter parameters = new DBAParameter();
 
+            DateTime date = DateTime.Parse(TalkDate);
+            DayOfWeek dayOfWeek = date.DayOfWeek;
+            int dayOfWeekNumber = ((int)dayOfWeek == 0) ? 7 : (int)dayOfWeek;
+
+            parameters.Add("@ID", RoomID);
+            parameters.Add("@Week", dayOfWeekNumber);
+
+
             #region 參數設定
             #endregion
 
-            CommandText = @"SELECT ETime AS VALUE, ETime AS TEXT
-                              FROM (SELECT '09:00' AS ETime UNION ALL SELECT '10:00' AS ETime UNION ALL 
-                                    SELECT '11:00' AS ETime UNION ALL SELECT '12:00' AS ETime UNION ALL SELECT '13:00' AS ETime UNION ALL 
-                                    SELECT '14:00' AS ETime UNION ALL SELECT '15:00' AS ETime UNION ALL SELECT '16:00' AS ETime UNION ALL  
-                                    SELECT '17:00' AS ETime UNION ALL SELECT '18:00' AS ETime UNION ALL SELECT '19:00' AS ETime UNION ALL 
-                                    SELECT '20:00' AS ETime UNION ALL SELECT '21:00' AS ETime UNION ALL SELECT '22:00' AS ETime) T";
+            //CommandText = @"SELECT STime AS VALUE, STime AS TEXT
+            //                  FROM (SELECT '08:00' AS STime UNION ALL SELECT '09:00' AS STime UNION ALL SELECT '10:00' AS STime UNION ALL 
+            //                        SELECT '11:00' AS STime UNION ALL SELECT '12:00' AS STime UNION ALL SELECT '13:00' AS STime UNION ALL 
+            //                        SELECT '14:00' AS STime UNION ALL SELECT '15:00' AS STime UNION ALL SELECT '16:00' AS STime UNION ALL  
+            //                        SELECT '17:00' AS STime UNION ALL SELECT '18:00' AS STime UNION ALL SELECT '19:00' AS STime UNION ALL 
+            //                        SELECT '20:00' AS STime UNION ALL SELECT '21:00' AS STime) T";
+
+            CommandText = @"SELECT Hour + 1 AS VALUE, Hour + 1 AS TEXT
+                              FROM AppointmentTimeMang
+                             WHERE TYPE = '02' 
+                               AND ID = @ID 
+                               AND Week = @Week 
+";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
-                return dbResult.entitys.ToList();
+            {
+                List<SelectListItem> list = new List<SelectListItem>();
+
+                for (int i = 0; i < dbResult.entitys.Count() - 1; i++)
+                {
+                    SelectListItem item = new SelectListItem();
+                    string formattedNumber = i.ToString("D2");
+
+                    item.Value = string.Format("{0}:00", formattedNumber);
+                    item.Text = string.Format("{0}:00", formattedNumber);
+
+                    list.Add(item);
+                }
+
+                return list;
+            }
 
             return new List<SelectListItem>();
         }
