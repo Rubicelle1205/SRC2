@@ -94,8 +94,6 @@ namespace WebPccuClub.Controllers
             }
 
             return Json(vmRtn);
-
-
         }
 
         private string GenMailBody(ConsultationApplyViewModel vm, UserInfo loginUser)

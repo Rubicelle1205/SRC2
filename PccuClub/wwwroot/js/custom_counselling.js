@@ -45,10 +45,10 @@ $(document).ready(function () {
     $.each(time_arr, function (index, time) {
         time_table += '<tr class="text-center">\n';
         time_table += '<th>' + time + '-' + (time + 1);
-        time_table += '<input type="checkbox" name="toggle-all-horizontal" class="form-check-input mx-2" data-bs-toggle="tooltip" data-bs-title="每天' + time + '-' + (time + 1) + '"></th>\n';
+        time_table += '<input type="checkbox" name="toggle-all-horizontal" class="form-check-input mx-2" data-bs-toggle="tooltip" style="width: 1rem; height: 1rem; border-radius: 0.25rem; background-color: transparent !important;" data-bs-title="每天' + time + '-' + (time + 1) + '"></th>\n';
         $.each(week_arr, function (index, week) {
             var val = week + '-' + time;
-            time_table += '<td><input type="checkbox" value="' + val + '" name="chktime" class="form-check-input"></td>\n';
+            time_table += '<td><input type="checkbox" value="' + val + '" name="chktime" class="form-check-input" style = "width: 1rem; height: 1rem; border-radius: 0.25rem; background-color: transparent !important;"></td >\n';
         })
         time_table += '</tr>';
     })

@@ -13,6 +13,8 @@ namespace WebPccuClub.Models
 
         public List<ConsultationFirstTalkMangResultModel> ResultModel { get; set; }
 
+        public ConsultationFirstTalkMangCreateModel CreateModel { get; set; }
+
         public ConsultationFirstTalkMangEditModel EditModel { get; set; }
 
         public List<ConsultationFirstTalkMangExcelModel> ExcelModel { get; set; }
@@ -119,6 +121,45 @@ namespace WebPccuClub.Models
         [DisplayName("填表時間")]
         public DateTime? Created { get; set; }
 
+    }
+
+    public class ConsultationFirstTalkMangCreateModel
+    {
+        /// <summary>姓名</summary>
+        [DisplayName("姓名")]
+        public string? Name { get; set; }
+
+        /// <summary>系級</summary>
+        [DisplayName("系級")]
+        public string? Department { get; set; }
+
+        /// <summary>學號</summary>
+        [DisplayName("學號")]
+        public string? SNO { get; set; }
+
+        /// <summary>電話</summary>
+        [DisplayName("電話")]
+        public string? Tel { get; set; }
+
+        /// <summary>性別</summary>
+        [DisplayName("性別")]
+        public string? Sex { get; set; }
+
+        /// <summary>國籍</summary>
+        [DisplayName("國籍")]
+        public string? Citizenship { get; set; }
+
+        /// <summary>國家名稱</summary>
+        [DisplayName("國家名稱")]
+        public string? CitizenshipName { get; set; }
+
+        /// <summary>過去2週曾出現這些想法或計劃</summary>
+        [DisplayName("過去2週曾出現這些想法或計劃")]
+        public string? strCounsellingStatus { get; set; }
+
+        /// <summary>可初談時段</summary>
+        [DisplayName("可初談時段")]
+        public string? strAppointmentTime { get; set; }
     }
 
     public class ConsultationFirstTalkMangEditModel

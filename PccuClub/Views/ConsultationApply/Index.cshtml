@@ -19,32 +19,32 @@
         <a style="visibility:hidden" id="Next" href="@Url.Action("Result")"></a>
         <hr>
         <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
-            <div class="infoWrapper mb-4">
-                <div class="infoItem">
-                    <div class="tag">姓名<span class="req-star">*</span></div>
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.CreateModel.Name, new { @class="form-control w-auto", @placeholder="姓名"})
-                    </div>
+        <div class="infoWrapper mb-4">
+            <div class="infoItem">
+                <div class="tag">姓名<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextBoxFor(m => m.CreateModel.Name, new { @class = "form-control w-auto", @placeholder = "姓名" })
                 </div>
-                <div class="infoItem">
-                    <div class="tag">系級<span class="req-star">*</span></div>
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.CreateModel.Department, new { @class="form-control w-auto", @placeholder="系級"})
-                    </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">系級<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextBoxFor(m => m.CreateModel.Department, new { @class = "form-control w-auto", @placeholder = "系級" })
                 </div>
-                <div class="infoItem">
-                    <div class="tag">學號<span class="req-star">*</span></div>
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.CreateModel.SNO, new { @class="form-control w-auto", @placeholder="學號"})
-                        <p class="hint mb-0 py-1"><i class="fas fa-info-circle"></i> 請填寫正確的學號</p>
-                    </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">學號<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextBoxFor(m => m.CreateModel.SNO, new { @class = "form-control w-auto", @placeholder = "學號" })
+                    <p class="hint mb-0 py-1"><i class="fas fa-info-circle"></i> 請填寫正確的學號</p>
                 </div>
-                <div class="infoItem">
-                    <div class="tag">電話<span class="req-star">*</span></div>
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.CreateModel.Tel, new { @class="form-control w-auto", @placeholder="電話"})
-                    </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">電話<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextBoxFor(m => m.CreateModel.Tel, new { @class = "form-control w-auto", @placeholder = "電話" })
                 </div>
+            </div>
             <div class="infoItem">
                 <div class="tag">性別<span class="req-star">*</span></div>
                 <div class="content warning-box">
@@ -52,105 +52,105 @@
                     @foreach (SelectListItem item in LstSex)
                     {
                         <div class="form-check form-check-inline">
-                            @Html.RadioButtonFor(m => m.CreateModel.Sex, item.Value, new { @id = string.Format("Sex_{0}", item.Value), @class="form-check-input" })
+                            @Html.RadioButtonFor(m => m.CreateModel.Sex, item.Value, new { @id = string.Format("Sex_{0}", item.Value), @class = "form-check-input" })
                             <label for=@string.Format("Sex_{0}", item.Value)>@item.Text</label>
                         </div>
                     }
                 </div>
             </div>
-                <div class="infoItem">
-                    <div class="tag">國籍<span class="req-star">*</span></div>
-                    <div class="content warning-box">
+            <div class="infoItem">
+                <div class="tag">國籍<span class="req-star">*</span></div>
+                <div class="content warning-box">
 
-                        @foreach (SelectListItem item in LstNational)
-                        {
-                            <div class="form-check form-check-inline">
-                                @Html.RadioButtonFor(m => m.CreateModel.Citizenship, item.Value, new { @id = string.Format("Citizenship_{0}", item.Value), @class="form-check-input national_trigger" })
-                                <label for=@string.Format("Citizenship_{0}", item.Value)>@item.Text</label>
-                            </div>
-                        }
-                        <div id="national_agree" class="">
-                            <div class="hideBox" data-name="02">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="d-flex align-items-center pt-2">
-                                            <label class="flex-shrink-0 me-2"
-                                                   for="jq_input1">國家名稱：</label>
-                                            <div class="jq_box1 position-relative w-100">
-                                                @Html.TextBoxFor(m => m.CreateModel.CitizenshipName, new { @class="form-control national_info_req", @placeholder="國家名稱"})
-                                            </div>
+                    @foreach (SelectListItem item in LstNational)
+                    {
+                        <div class="form-check form-check-inline">
+                            @Html.RadioButtonFor(m => m.CreateModel.Citizenship, item.Value, new { @id = string.Format("Citizenship_{0}", item.Value), @class = "form-check-input national_trigger" })
+                            <label for=@string.Format("Citizenship_{0}", item.Value)>@item.Text</label>
+                        </div>
+                    }
+                    <div id="national_agree" class="">
+                        <div class="hideBox" data-name="02">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="d-flex align-items-center pt-2">
+                                        <label class="flex-shrink-0 me-2"
+                                               for="jq_input1">國家名稱：</label>
+                                        <div class="jq_box1 position-relative w-100">
+                                            @Html.TextBoxFor(m => m.CreateModel.CitizenshipName, new { @class = "form-control national_info_req", @placeholder = "國家名稱" })
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
 
-                    </div>
                 </div>
-                <div class="infoItem">
-                    <div class="tag">過去2週曾出現這些想法或計劃<br />(可複選)<span class="req-star">*</span></div>
-                    <div class="content warning-box">
-                        @foreach (SelectListItem item in LstCounsellingStatus)
-                        {
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input mindset_trigger" type="checkbox"
-                                       name="mindset" id="@string.Format("CounsellingStatus_{0}", item.Value)" value=@item.Value>
-                                <label class="form-check-label" for="@string.Format("CounsellingStatus_{0}", item.Value)">@item.Text</label>
-                            </div>
-                        }
+            </div>
+            <div class="infoItem">
+                <div class="tag">過去2週曾出現這些想法或計劃<br />(可複選)<span class="req-star">*</span></div>
+                <div class="content warning-box">
+                    @foreach (SelectListItem item in LstCounsellingStatus)
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input mindset_trigger" type="checkbox"
+                                   name="mindset" id="@string.Format("CounsellingStatus_{0}", item.Value)" value=@item.Value>
+                            <label class="form-check-label" for="@string.Format("CounsellingStatus_{0}", item.Value)">@item.Text</label>
+                        </div>
+                    }
 
-                    </div>
                 </div>
             </div>
-            <div class="infoWrapper mb-4">
-                <div class="infoItem">
-                    <div class="tag">可初談時段<br />(可複選，約30分鐘)<span class="req-star">*</span></div>
-                    <div class="content warning-box">
-                        <table class="table table-sm table-bordered">
-                            <thead class="text-center table-secondary">
-                            <th>
-                                時段\星期<input type="checkbox" name="toggle-all"
-                                            class="form-check-input mx-2"
-                                            data-bs-toggle="tooltip" data-bs-title="所有時段">
-                            </th>
-                            <th>
-                                一<br /><input type="checkbox" name="toggle-all-vertical"
-                                              class="form-check-input" value="mon"
-                                              data-bs-toggle="tooltip" data-bs-title="星期一所有時段">
-                            </th>
-                            <th>
-                                二<br /><input type="checkbox" name="toggle-all-vertical"
-                                              class="form-check-input" value="tue"
-                                              data-bs-toggle="tooltip" data-bs-title="星期二所有時段">
-                            </th>
-                            <th>
-                                三<br /><input type="checkbox" name="toggle-all-vertical"
-                                              class="form-check-input" value="wed"
-                                              data-bs-toggle="tooltip" data-bs-title="星期三所有時段">
-                            </th>
-                            <th>
-                                四<br /><input type="checkbox" name="toggle-all-vertical"
-                                              class="form-check-input" value="thu"
-                                              data-bs-toggle="tooltip" data-bs-title="星期四所有時段">
-                            </th>
-                            <th>
-                                五<br /><input type="checkbox" name="toggle-all-vertical"
-                                              class="form-check-input" value="fri"
-                                              data-bs-toggle="tooltip" data-bs-title="星期五所有時段">
-                            </th>
-                            </thead>
-                            <tbody id="time-table">
-                            </tbody>
-                        </table>
-                    </div>
+        </div>
+        <div class="infoWrapper mb-4">
+            <div class="infoItem">
+                <div class="tag">可初談時段<br />(可複選，約30分鐘)<span class="req-star">*</span></div>
+                <div class="content warning-box">
+                    <table class="table table-sm table-bordered">
+                        <thead class="text-center table-secondary">
+                        <th>
+                            時段\星期<input type="checkbox" name="toggle-all"
+                                        class="form-check-input mx-2"
+                                        data-bs-toggle="tooltip" data-bs-title="所有時段">
+                        </th>
+                        <th>
+                            一<br /><input type="checkbox" name="toggle-all-vertical"
+                                          class="form-check-input" value="mon"
+                                          data-bs-toggle="tooltip" data-bs-title="星期一所有時段">
+                        </th>
+                        <th>
+                            二<br /><input type="checkbox" name="toggle-all-vertical"
+                                          class="form-check-input" value="tue"
+                                          data-bs-toggle="tooltip" data-bs-title="星期二所有時段">
+                        </th>
+                        <th>
+                            三<br /><input type="checkbox" name="toggle-all-vertical"
+                                          class="form-check-input" value="wed"
+                                          data-bs-toggle="tooltip" data-bs-title="星期三所有時段">
+                        </th>
+                        <th>
+                            四<br /><input type="checkbox" name="toggle-all-vertical"
+                                          class="form-check-input" value="thu"
+                                          data-bs-toggle="tooltip" data-bs-title="星期四所有時段">
+                        </th>
+                        <th>
+                            五<br /><input type="checkbox" name="toggle-all-vertical"
+                                          class="form-check-input" value="fri"
+                                          data-bs-toggle="tooltip" data-bs-title="星期五所有時段">
+                        </th>
+                        </thead>
+                        <tbody id="time-table">
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="row justify-content-center mb-5">
-                <div class="col-lg-4">
-                    <button class="submit-btn btn btn-primary btn-modern border-0 w-100" type="submit" onclick="return SaveData()">送出預約 <i class="icon-check"></i></button>
-                </div>
+        </div>
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-4">
+                <button class="submit-btn btn btn-primary btn-modern border-0 w-100" type="submit" onclick="return SaveData()">送出預約 <i class="icon-check"></i></button>
             </div>
+        </div>
     </div>
 </div>
 
@@ -186,7 +186,7 @@
         if (Citizenship == "02") {
             if (CitizenshipName == "") { $.alert("國家名稱不可為空白"); return false; }
         }
-        else{
+        else {
             data.append('@Html.NameFor(m => m.CreateModel.CitizenshipName)', "");
         }
 

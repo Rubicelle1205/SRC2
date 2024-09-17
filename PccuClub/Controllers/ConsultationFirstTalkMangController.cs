@@ -5,6 +5,7 @@ using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.ComponentModel;
+using System.Data;
 using System.Reflection;
 using System.Text.Json;
 using System.Web.Helpers;
@@ -39,6 +40,19 @@ namespace WebPccuClub.Controllers
 
             ConsultationFirstTalkMangViewModel vm = new ConsultationFirstTalkMangViewModel();
             vm.ConditionModel = new ConsultationFirstTalkMangConditionModel();
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.新增)]
+        public IActionResult Create()
+        {
+            ViewBag.ddlAllNational = dbAccess.GetAllNational();
+            ViewBag.ddlCounsellingStatus = dbAccess.GetAllCounsellingStatus();
+            ViewBag.ddlSex = dbAccess.GetddlSex();
+
+            ConsultationFirstTalkMangViewModel vm = new ConsultationFirstTalkMangViewModel();
+            vm.CreateModel = new ConsultationFirstTalkMangCreateModel();
+
             return View(vm);
         }
 
@@ -147,6 +161,58 @@ namespace WebPccuClub.Controllers
                 dbAccess.DbaRollBack();
                 vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                 vmRtn.ErrorMsg = "刪除失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+        [Log(LogActionChineseName.新增儲存)]
+        [ValidateInput(false)]
+        public IActionResult SaveNewData(ConsultationFirstTalkMangViewModel vm)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.InsertData(vm, LoginUser, out dt);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                dbResult = dbAccess.UpdateAppointmentTime(vm, LoginUser, dt);
+
+                dbAccess.DbaCommit();
+
+                //if (vm.CreateModel.strCounsellingStatus.Contains("01") || vm.CreateModel.strCounsellingStatus.Contains("02") || vm.CreateModel.strCounsellingStatus.Contains("03"))
+                //{
+                //    DataTable dtReceiver = dbAccess.GetConsultationReceiver();
+                //    string MailBody = GenMailBody(vm, LoginUser);
+                //    string Receiver = dtReceiver.QueryFieldByDT("NotifyMail");
+
+                //    if (!string.IsNullOrEmpty(Receiver))
+                //    {
+                //        string[] arrReceiver = Receiver.Trim().TrimStartAndEnd().Split(',');
+
+                //        for (int i = 0; i <= arrReceiver.Length - 1; i++)
+                //        {
+                //            mail.ExecuteSendMail(arrReceiver[i].ToString(), "諮商緊急通知", MailBody, System.Net.Mail.MailPriority.High, null);
+                //        }
+                //    }
+                //}
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "新增失敗" + ex.Message;
                 return Json(vmRtn);
             }
 
