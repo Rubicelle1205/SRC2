@@ -368,15 +368,16 @@ AND (@AssignCaseStatus IS NULL OR A.AssignCaseStatus = @AssignCaseStatus)
             {
                 List<SelectListItem> list = new List<SelectListItem>();
 
-                for (int i = 0; i < dbResult.entitys.Count() - 1; i++)
+                foreach (SelectListItem dbitem in dbResult.entitys.ToList())
                 {
                     SelectListItem item = new SelectListItem();
-                    string formattedNumber = i.ToString("D2");
+                    string formattedNumber = int.Parse(dbitem.Value).ToString("D2");
 
                     item.Value = string.Format("{0}:00", formattedNumber);
                     item.Text = string.Format("{0}:00", formattedNumber);
 
                     list.Add(item);
+
                 }
 
                 return list;
@@ -423,15 +424,16 @@ AND (@AssignCaseStatus IS NULL OR A.AssignCaseStatus = @AssignCaseStatus)
             {
                 List<SelectListItem> list = new List<SelectListItem>();
 
-                for (int i = 0; i < dbResult.entitys.Count() - 1; i++)
+                foreach (SelectListItem dbitem in dbResult.entitys.ToList())
                 {
                     SelectListItem item = new SelectListItem();
-                    string formattedNumber = i.ToString("D2");
+                    string formattedNumber = int.Parse(dbitem.Value).ToString("D2");
 
                     item.Value = string.Format("{0}:00", formattedNumber);
                     item.Text = string.Format("{0}:00", formattedNumber);
 
                     list.Add(item);
+
                 }
 
                 return list;

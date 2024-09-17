@@ -216,10 +216,11 @@
         if (TalkSTime == "") { $.alert("請選擇諮商開始時間"); return; }
         if (TalkETime == "") { $.alert("請選擇諮商結束時間"); return; }
 
+        if (!moment(TalkDate, "YYYY-MM-DD", true).isValid()) { $.alert("請輸入正確的日期格式"); return; }
+
         if (TalkSTime > TalkETime) {
             $.alert("諮商開始時間需小於諮商結束時間"); return;
         }
-
 
         data.append('@Html.NameFor(m => m.CreateModel.Name)', Name);
         data.append('@Html.NameFor(m => m.CreateModel.SNO)', SNO);
