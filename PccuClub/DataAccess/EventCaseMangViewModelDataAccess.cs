@@ -918,6 +918,8 @@ AND (@CaseID IS NULL OR A.CaseID LIKE '%' + @CaseID + '%')
 
             int NowYear = DateTime.Now.Year - 1911;
 
+            LstItem.Add(new SelectListItem() { Value = "000", Text = "不詳" });
+
             for (int i = NowYear; i >= NowYear - 100; i--)
             {
                 LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("民國{0}年", i) });
