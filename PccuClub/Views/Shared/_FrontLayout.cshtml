@@ -12,7 +12,7 @@
 
     if (LoginUser != null && LoginUser.LoginSource == "F")
     {
-        UnitName = LoginUser.UserRole[0].RoleName != null ? LoginUser.UserRole[0].RoleName : "訪客";
+        UnitName = LoginUser.UserRole.Count > 0 ? LoginUser.UserRole[0].RoleName != null ? LoginUser.UserRole[0].RoleName : "訪客" : "訪客";
         LoginId = LoginUser.LoginId;
         LoginName = LoginUser.UserName;
         LastLoginDate = LoginUser.LastLoginDate.Value.ToString("yyyy/MM/dd HH:mm");
@@ -78,10 +78,11 @@
 
     <!-- Theme Custom CSS -->
     <link rel="stylesheet" href="~/assets/css/tools.css">
-    <link rel="stylesheet" href="~/assets/css/custom.css?v=1">
+    @*<link rel="stylesheet" href="~/assets/css/custom.css?v=1">*@
+    <link rel="stylesheet" href="@string.Format("/assets/css/custom.css?v={0}", DateTime.Now.ToString("HHmmss"))">
 
     <script src="~/js/jquery.min.js"></script>
-
+    <script src="~/js/moment.min.js"></script>
     
 <style>
     .scroll-to-top .fas {
@@ -161,7 +162,7 @@
                 <div class="row justify-content-center">
                     <div class="col-xxl-2 col-xl-2">
 
-                        @if (LoginUser != null && LoginUser.LoginSource == "F")
+                        @if (LoginUser != null && LoginUser.LoginSource == "F" && LoginUser.UserRoleFun.Count > 0)
                         {
                             <div class="user-acinfo">
                                 <div class="greetings font-weight-6">歡迎！</div>

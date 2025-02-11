@@ -1,0 +1,295 @@
+﻿@model WebPccuClub.Models.ConsultationFirstTalkMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+    List<SelectListItem> LstAllCounsellingStatus = ViewBag.ddlCounsellingStatus;
+    Dictionary<string, List<int>> DictSchedule = ViewBag.Schedule;
+}
+
+<head>
+    <script src="~/js/backend_counselling.js"></script>
+</head>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-md-12">
+                <form action="" enctype="multipart/form-data" id="form" method="post">
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <!--修改時才顯示 (start)-->
+                                    <tr>
+                                        <th width="10%">建立時間</th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.Created)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">更新時間</th>
+                                        <td>
+                                            @if (Model.EditModel.LastModified != null)
+                                            {
+                                                @Html.DisplayFor(m => m.EditModel.LastModified)
+                                            }
+                                            </td>
+                                    </tr>
+                                    <!--修改時才顯示 (end)-->
+                                    <tr>
+                                        <th width="10%">姓名<span class="required"></span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.Name)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">性別<span class="required"></span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.SexText)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">系級<span class="required"></span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.Department)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">學號<span class="required"></span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.SNO)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">行動電話<span class="required"></span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.Tel)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">國籍<span class="required"></span></th>
+                                        <td>
+                                            @if (Model.EditModel.Citizenship == "01")
+                                            {
+                                                @Html.DisplayFor(m => m.EditModel.CitizenshipText)
+                                            }
+                                            else
+                                            {
+                                                @string.Format("{0}({1})", Model.EditModel.CitizenshipText, Model.EditModel.CitizenshipName);
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">過去2周曾出現以下想法或計畫</th>
+                                        <td>
+                                            <div class="row">
+                                                @foreach (SelectListItem item in LstAllCounsellingStatus)
+                                                {
+                                                    @if (Model.EditModel.CounsellingStatus.Contains(item.Value))
+                                                    {
+                                                        <div class="icheck-primary d-inline col-md-2">
+                                                            <input checked type="checkbox" value="@item.Value"><label>@item.Text</label>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                    <div class="icheck-primary d-inline col-md-2">
+                                                        <input type="checkbox" value="@item.Value"><label>@item.Text</label>
+                                                    </div>    
+                                                    }
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-body table-responsive-sm">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">可初談時段</th>
+                                        <td>
+                                            <table>
+                                                <thead>
+                                                <th>時段\星期</th>
+                                                <th>一</th>
+                                                <th>二</th>
+                                                <th>三</th>
+                                                <th>四</th>
+                                                <th>五</th>
+                                                </thead>
+                                                <tbody id="time-table">
+                                                    @foreach (var timeSlot in DictSchedule)
+                                                    {
+                                                        <tr>
+                                                            <th>@timeSlot.Key-@((int.Parse(timeSlot.Key) + 1).ToString())</th>
+                                                            @for (int i = 1; i <= 5; i++)
+                                                            {
+                                                                <td>
+                                                                    @if (timeSlot.Value.Contains(i))
+                                                                    {
+                                                                        <i class="fa-solid fa-check text-success"></i>
+                                                                    }
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-body table-responsive-sm">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <!-- 如果有派案才出現 -->
+                                        <th width="10%">派案時間</th>
+                                        <td>
+                                            @if(Model.EditModel.AssignCaseTime != null)
+                                            {
+                                                <span>由<span class="font-weight-bold">@Model.EditModel.AssignCaseManText</span> 於 @Model.EditModel.AssignCaseTime.Value.ToString("yyyy/MM/dd HH:mm:ss")派案</span>
+                                            }
+                                            
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">負責心理師<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.Psychologist ,(List<SelectListItem>)ViewBag.ddlPsy,"請選擇負責心理師", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">是否完成初談<span class="required">*</span></th>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-md-6">
+
+                                                    @if (Model.EditModel.FirstTalkStatus == "04")
+                                                    {
+                                                        List<SelectListItem> LstFirstTalkStatus = ViewBag.ddlFirstTalkStatus;
+                                                        LstFirstTalkStatus.RemoveAt(0);
+                                                        LstFirstTalkStatus.RemoveAt(0);
+                                                        LstFirstTalkStatus.RemoveAt(0);
+                                                        ViewBag.ddlFirstTalkStatus = LstFirstTalkStatus;
+                                                    }
+                                                    else if (string.IsNullOrEmpty(Model.EditModel.AssignCaseMan))
+                                                    {
+                                                        List<SelectListItem> LstFirstTalkStatus = ViewBag.ddlFirstTalkStatus;
+                                                        LstFirstTalkStatus.RemoveAt(2);
+                                                        ViewBag.ddlFirstTalkStatus = LstFirstTalkStatus;
+                                                    }
+                                                    
+                                                        @Html.DropDownListFor(m => m.EditModel.FirstTalkStatus ,(List<SelectListItem>)ViewBag.ddlFirstTalkStatus,"請選擇是否完成初談", new {@class = "form-control"})
+                                                    
+                                                        <div class="input-group p-0 hide">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">完成初談時間</span>
+                                                        </div>
+                                                        @Html.TextBoxFor(m => m.EditModel.FirstTalkTime, new {@class = "form-control", @placeholder="請點擊並選擇完成初談時間", @for="finish_time"})
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="alert alert-default-danger mb-0"
+                                                         role="alert">
+                                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                                        若一旦取消，將不可退回其他狀態。
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">備註<span class="required"></span></th>
+                                        <td>
+                                            @Html.TextAreaFor(m => m.EditModel.Memo, new {@class="form-control", placeholder="請輸入備註", rows="6"})
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        @Html.HiddenFor(m => m.EditModel.ID)
+                        @Html.HiddenFor(m => m.EditModel.AssignCaseMan)
+                        <!-- /.card-body -->
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" onclick="SaveEditData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </form>
+                <!-- /.form -->
+            </div> 
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    $(document).ready(function () {
+
+        var selecter = $('#@Html.IdFor(m => m.EditModel.FirstTalkStatus)');
+
+        selecter.change(function () {
+            if (selecter.val() == "03") {
+                $("[for=finish_time]").parents('div:first').removeClass("hide");
+            }
+            else {
+                $("[for=finish_time]").parents('div:first').addClass("hide");
+            }
+        });
+
+        if(selecter.val() == "03"){
+            $("[for=finish_time]").parents('div:first').removeClass("hide");
+        }
+        else {
+            $("[for=finish_time]").parents('div:first').addClass("hide");
+        }
+
+    });
+
+
+    function SaveEditData() {
+
+        var data = new FormData()
+
+        var ID = $('#@Html.IdFor(m => m.EditModel.ID)').val();
+        var Psychologist = $('#@Html.IdFor(m => m.EditModel.Psychologist)').val();
+        var AssignCaseMan = $('#@Html.IdFor(m => m.EditModel.AssignCaseMan)').val();
+        var FirstTalkStatus = $('#@Html.IdFor(m => m.EditModel.FirstTalkStatus)').val();
+        var FirstTalkTime = $('#@Html.IdFor(m => m.EditModel.FirstTalkTime)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+        if (FirstTalkStatus == "") { $.alert("請選擇是否完成初談"); return false; }
+        if (Psychologist == "") { $.alert("請選擇負責心理師"); return false; }
+
+        data.append('@Html.NameFor(m => m.EditModel.ID)', ID);
+        data.append('@Html.NameFor(m => m.EditModel.Psychologist)', Psychologist);
+        data.append('@Html.NameFor(m => m.EditModel.AssignCaseMan)', AssignCaseMan);
+        data.append('@Html.NameFor(m => m.EditModel.FirstTalkStatus)', FirstTalkStatus);
+        data.append('@Html.NameFor(m => m.EditModel.FirstTalkTime)', FirstTalkTime);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+
+    }
+</script>

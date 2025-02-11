@@ -80,8 +80,7 @@ namespace WebPccuClub.Controllers
                 }
                 isAuth = auth.Login(vm.LoginID, vm.Pwd, out UserInfo LoginUser, "B");
 #endif
-
-
+                
                 if (!isAuth)
                 {
                     user.ErrorCount += 1;
@@ -100,7 +99,7 @@ namespace WebPccuClub.Controllers
                 LoginUser.IP = loginEntity.Ip;
                 loginEntity.Issuccess = true;
 
-                HttpContext.Session.SetObject("LoginUser", LoginUser);
+                HttpContext.Session.SetObject("FLoginUser", LoginUser);
 
                 UpdateLoginInfo(user);
                 InsertLoginLog(loginEntity);
@@ -108,7 +107,7 @@ namespace WebPccuClub.Controllers
 
                 dbAccess.WriteLog($"[帳號登入]帳號:{vm.LoginID}, Pwd:{vm.Pwd}", LoginUser, enumLogConst.Information);
 
-                return RedirectToAction("Index", "Home", new { area = "" });
+                return RedirectToAction("Index", "MenuBackend", new { area = "" });
             }
             catch (Exception ex)
             {
@@ -128,7 +127,7 @@ namespace WebPccuClub.Controllers
 
             BakeendLoginViewModel vm = new BakeendLoginViewModel();
 
-            return View("Index", vm);
+            return RedirectToAction("Index", "MenuFront");
         }
 
         /// <summary> 忘記密碼 </summary>

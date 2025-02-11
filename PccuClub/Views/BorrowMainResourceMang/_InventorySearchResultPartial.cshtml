@@ -1,0 +1,139 @@
+﻿@model WebPccuClub.Models.BorrowMainResourceMangViewModel
+
+@{
+    string RunType = Model.InventoryRecordConditionModel.RunType;
+}
+
+<div class="table-responsive">
+    <table class="table table-sm table-hover text-nowrap">
+        <thead>
+            <tr class="text-center">
+                <th width="10%">
+                    資產號碼<br><span class="text-muted text-sm font-weight-normal">內部管理用</span>
+                </th>
+                <th width="10%">子資源名稱</th>
+                <th width="5%">上下架狀態</th>
+                <th width="10%">借用狀態</th>
+                <th width="10%">盤點狀態</th>
+            </tr>
+        </thead>
+
+
+        <tbody id="inventoryTable_tBody" class="text-center text-sm">
+            @if (Model.InventoryDetailModel.Count > 0)
+                {
+                switch (RunType)
+                {
+                
+                    case null:
+                        foreach (var item in Model.InventoryDetailModel)
+                        {
+                            <tr>
+                                <td><span data-number>@item.SecondResourceNo</span></td>
+                                <td>@item.SecondResourceName</td>
+                                <td>@item.ShelvesStatusText</td>
+                                <td>@item.BorrowStatusText</td>
+                                <td><span class="text-muted" data-set="checking">尚未開始盤點</span></td>
+                            </tr>
+                        }
+                        break;
+                    case "0":
+                        foreach (var item in Model.InventoryDetailModel)
+                        {
+                            <tr>
+                                <td><span data-number>@item.SecondResourceNo</span></td>
+                                <td>@item.SecondResourceName</td>
+                                <td>@item.ShelvesStatusText</td>
+                                <td>@item.BorrowStatusText</td>
+                                <td><span class="text-muted" data-set="checking">尚未開始盤點</span></td>
+                            </tr>
+                        }
+                        break;
+                    case "1":
+                        foreach (var item in Model.InventoryDetailModel)
+                        {
+                            <tr>
+                                <td><span data-number>@item.SecondResourceNo</span></td>
+                                <td>@item.SecondResourceName</td>
+                                <td>@item.ShelvesStatusText<i class="fa-solid fa-lock" data-lock=""></i></td>
+                                <td>@item.BorrowStatusText<i class="fa-solid fa-lock" data-lock=""></i></td>
+                                <td>
+                                    @if (item.ResourceInventoryStatus == "01")
+                                    {
+                                        <span class="text-warning" data-set="checking">@item.ResourceInventoryStatusText</span>
+                                    }
+                                    else if (item.ResourceInventoryStatus == "02")
+                                    {
+                                        <span class="text-muted" data-set="checking">@item.ResourceInventoryStatusText</span>
+                                    }
+                                    else if (item.ResourceInventoryStatus == "03")
+                                    {
+                                        <span class="text-success" data-set="checking">@item.ResourceInventoryStatusText</span>
+                                    }
+                                    
+                                    
+                                </td>
+                            </tr>
+                        }
+                        break;
+                    case "2":
+                        foreach (var item in Model.InventoryDetailModel)
+                        {
+                            <tr>
+                                <td><span data-number>@item.SecondResourceNo</span></td>
+                                <td>@item.SecondResourceName</td>
+                                <td>@item.ShelvesStatusText</td>
+                                <td>@item.BorrowStatusText</td>
+                                <td><span class="text-muted" data-set="checking">尚未開始盤點</span></td>
+                            </tr>
+                        }
+                        break;
+                }
+                
+            }
+           
+        </tbody>
+        @Html.HiddenFor(m => m.InventoryRecordConditionModel.InventoryRecordID)
+
+    </table>
+</div>
+
+
+<div class="card-footer clearfix">
+    <div class="pagination justify-content-end" id="SearchResultListPagination"></div>
+</div>
+
+                                
+<script>
+    $("#SearchResultListPagination").solventoPageBar(
+        {
+            containerHtml: "<ul class='pagination justify-content-end'>{{:firstPageRender}}{{:prePageRender}}{{:pageRender}}{{:nextPageRender}}{{:lastPageRender}}</ul>{{:totalPageRender}}", // render: pagesbarHtml
+            firstPageHtml: "<li class='page-item {{:disable}}'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-double-left'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            lastPageHtml: "<li class='page-item {{:disable}}'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-double-right'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            pageHtml: " <li class='page-item {{:selectedHtml}}'><a {{:idx}} class='page-link {{:pageClass}}'>{{:pageNumber}}</a></li>",//pageClass: clickEventClass, pageNumber: pageNumber, selectedHtml : selectedHtml,idx : idx
+            prePageHtml: "<li class='page-item'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-left'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            nextPageHtml: "<li class='page-item'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-right'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            //totalPageHtml: "<div class='page-intro'>共<span>{{:totalCount}}</span>筆資料</div>",
+            totalPageHtml: "",
+            pNow: "目前為第 {{:pnow}} 頁 / 共 {{:ptotle}} 頁",
+            pEver: "每頁顯示 {{:pever}} 筆 / 共 {{:ptotleever}} 筆",
+            pageSelectedHtml: "active",
+        },
+        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.InventoryRecordConditionModel.Page)']").val()) + 1,
+        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.InventoryRecordConditionModel.PageSize)']").val()),
+
+    @Model.InventoryRecordConditionModel.TotalCount,
+        changePage
+    );
+
+    function changePage(idx) {
+        //動畫
+        $('#SearchForm').find("input[name='@Html.NameFor(m => m.InventoryRecordConditionModel.Page)']").val(idx - 1);
+        //取頁面數
+        $("#@Html.IdFor(m => m.InventoryRecordConditionModel.Page)").val(idx - 1);
+
+        GoSearch();
+    }
+    
+
+</script>

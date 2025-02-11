@@ -43,6 +43,10 @@
                                 </div>
 
                                 <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.DropDownListFor(m => m.ConditionModel.PassPort,(List<SelectListItem>)ViewBag.ddlPassPort,"全部全人申請狀態", new {@class = "form-control"})
+                                </div>
+
+                                <div class="col-md-3 col-sm-6 mt-2">
                                     <input type="text" class="form-control auto-input" placeholder="請輸入活動編號" id="@Html.IdFor(m => m.ConditionModel.ActId)" name="@Html.NameFor(m => m.ConditionModel.ActId)">
                                 </div>
 

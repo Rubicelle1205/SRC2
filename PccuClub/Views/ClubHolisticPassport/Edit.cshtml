@@ -1,0 +1,332 @@
+﻿@model WebPccuClub.Models.ClubHolisticPassportViewModel
+
+@{
+    Layout = "_FrontLayout";
+    ViewBag.Title = "全人學習護照填報";
+    List<SelectListItem> LstPlaceSource = ViewBag.ddlActInOrOut;
+}
+
+
+<div class="col-xxl-8 col-xl-8">
+    <div class="contentWrapper">
+        <h4 class="pageTitle">全人學習護照填報</h4>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index")">活動報備</a></li>
+                <li class="breadcrumb-item active">全人學習護照填報</li>
+            </ol>
+        </nav>
+        <hr>
+        <div class="mb-4">
+            <a id="Back" href="@Url.Action("Index")"><i class="fas fa-chevron-left"></i>返回列表</a>
+        </div>
+
+        <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
+        <form action="" class="form-box checkthisform" enctype="multipart/form-data" method="post">
+            <div class="infoWrapper mb-4">
+                <div class="infoItem">
+                    <div class="tag">全人端名稱<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.EditModel.HolisticActName, new {@class="form-control", placeholder = "全人端名稱"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動名稱<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.EditModel.ActName, new {@class="form-control", placeholder = "活動名稱"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動說明<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextAreaFor(m => m.EditModel.ActDesc, new {@class="form-control", placeholder = "活動說明"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">全人學習認證群組<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.DropDownListFor(m => m.EditModel.MainID ,(List<SelectListItem>)ViewBag.ddlHolisticMainClass,"請選擇全人學習認證群組", new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">全人學習認證類別<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.DropDownListFor(m => m.EditModel.SecondID ,(List<SelectListItem>)ViewBag.ddlHolisticSecondClass,"請選擇全人學習認證類別", new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">全人學習認證項目<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.DropDownListFor(m => m.EditModel.ThridID ,(List<SelectListItem>)ViewBag.ddlHolisticThridClass,"請選擇全人學習認證項目", new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動開始時間<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.EditModel.ActSTime, new {@class = "form-control", @type="datetime-local", @placeholder = "活動開始時間"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動結束時間<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.EditModel.ActETime, new {@class = "form-control", @type="datetime-local", @placeholder = "活動結束時間"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">報名方式<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.EditModel.RegistrationWay, new {@class="form-control", placeholder = "報名方式"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動地點<span class="req-star">*</span></div>
+                    <div class="content warning-box">
+
+                        @foreach (SelectListItem item in LstPlaceSource)
+                        {
+                            <div class="form-check form-check-inline">
+                                @Html.RadioButtonFor(m => m.EditModel.PlaceSource, item.Value, new { @id = string.Format("PlaceSource_{0}", item.Value), @class = "form-check-input class_input_trigger" })
+                                <label for=@string.Format("PlaceSource_{0}", item.Value)>@item.Text</label>
+                            </div>
+                        }
+
+                        <div id="class_input_box"></div>
+
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主講人<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.EditModel.Presenter, new {@class="form-control", placeholder = "主講人"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主講人介紹<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextAreaFor(m => m.EditModel.Presenter, new {@class="form-control", placeholder = "主講人介紹", rows = "5"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主持人<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.EditModel.Host, new {@class="form-control", placeholder = "主持人"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主持人介紹<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextAreaFor(m => m.EditModel.HostIntro, new {@class="form-control", placeholder = "主持人介紹", rows = "5"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主辦單位<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.EditModel.ClubCName, new {@class="form-control", placeholder = "主辦單位"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">聯絡人<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.EditModel.ContactMan, new {@class="form-control", placeholder = "聯絡人"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">負責補登者<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.EditModel.RegistrationMan, new {@class="form-control", placeholder = "負責補登者"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">開放對象<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.EditModel.OpenObject, new {@class="form-control", placeholder = "開放對象"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">關鍵字標籤<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.EditModel.Tag, new {@class="form-control", placeholder = "關鍵字標籤"})
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-4 font-weight-bold py-2"><i class="fas fa-tag"></i> 上傳附件</div>
+            <div class="infoWrapper mb-5">
+                <div class="infoItem">
+                    <div class="tag">海報縮圖<span class="req-star"></span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.EditModel.PosterIconPath, new{ @class="form-control w-auto", title="請上傳海報縮圖", type="file", accept=".jpg,.jpeg,.png"})
+
+                        <div class="fs-90percent red-hint pt-2">僅接受以下格式：jpg, jpeg, png</div>
+                        <p class="hint mb-0 py-1"><i class="fas fa-info-circle"></i> 最大10MB</p>
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">備註<span class="req-star"></span></div>
+                    <div class="content">
+                        @Html.TextAreaFor(m => m.EditModel.Memo, new {@class="form-control", placeholder = "備註", rows = "5"})
+                    </div>
+                </div>
+            </div>
+
+            @Html.HiddenFor(m => m.EditModel.SchoolYear)
+            @Html.HiddenFor(m => m.EditModel.ClubID)
+            @Html.HiddenFor(m => m.EditModel.ActID)
+            @Html.HiddenFor(m => m.EditModel.ID)
+
+            <div class="row justify-content-center mb-5">
+
+                <div class="col-lg-4">
+                    <button class="submit-btn btn btn-primary btn-modern border-0 w-100" type="submit" onclick="return SaveData()">送出審核 <i class="icon-check"></i></button>
+                </div>
+            </div>
+        </form>
+
+
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $("[id ^= 'PlaceSource_']").on('change', function () {
+
+            InitBuildSelect($("[id ^= 'PlaceSource_']:checked").val());
+        });
+
+    });
+
+    function InitBuildSelect(PlaceSource) {
+
+        SendAjax({
+            url: '@Url.Action("InitBuildSelect")',
+            data: { 'PlaceSource': PlaceSource },
+            success: function (result) {
+                $('#class_input_box').html(result);
+            }
+        });
+    }
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var PosterIconPath = $('#@Html.IdFor(m => m.EditModel.PosterIconPath)')[0].files[0];
+        if (typeof PosterIconPath !== 'undefined') {
+            var fileExtension = PosterIconPath.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.EditModel.PosterIconPath)', PosterIconPath);
+        }
+
+        var ID = $('#@Html.IdFor(m => m.EditModel.ID)').val();
+        var SchoolYear = $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val();
+        var ClubID = $('#@Html.IdFor(m => m.EditModel.ClubID)').val();
+        var ActID = $('#@Html.IdFor(m => m.EditModel.ActID)').val();
+
+        var ActName = $('#@Html.IdFor(m => m.EditModel.ActName)').val();
+        var HolisticActName = $('#@Html.IdFor(m => m.EditModel.HolisticActName)').val();
+        var ActDesc = $('#@Html.IdFor(m => m.EditModel.ActDesc)').val();
+        var MainID = $('#@Html.IdFor(m => m.EditModel.MainID)').val();
+        var SecondID = $('#@Html.IdFor(m => m.EditModel.SecondID)').val();
+        var ThridID = $('#@Html.IdFor(m => m.EditModel.ThridID)').val();
+        var ActSTime = $('#@Html.IdFor(m => m.EditModel.ActSTime)').val();
+        var ActETime = $('#@Html.IdFor(m => m.EditModel.ActETime)').val();
+
+        var RegistrationWay = $('#@Html.IdFor(m => m.EditModel.RegistrationWay)').val();
+        var PlaceSource = $('#@Html.IdFor(m => m.EditModel.PlaceSource)').val();
+        var BuildID = $('#@Html.IdFor(m => m.EditModel.BuildID)').val();
+        var PlaceID = $('#@Html.IdFor(m => m.EditModel.PlaceID)').val();
+        var PlaceName = $('#@Html.IdFor(m => m.EditModel.PlaceName)').val();
+        var Presenter = $('#@Html.IdFor(m => m.EditModel.Presenter)').val();
+        var PresenterIntro = $('#@Html.IdFor(m => m.EditModel.PresenterIntro)').val();
+        var Host = $('#@Html.IdFor(m => m.EditModel.Host)').val();
+        var HostIntro = $('#@Html.IdFor(m => m.EditModel.HostIntro)').val();
+        var ClubCName = $('#@Html.IdFor(m => m.EditModel.ClubCName)').val();
+        var ContactMan = $('#@Html.IdFor(m => m.EditModel.ContactMan)').val();
+        var RegistrationMan = $('#@Html.IdFor(m => m.EditModel.RegistrationMan)').val();
+        var OpenObject = $('#@Html.IdFor(m => m.EditModel.OpenObject)').val();
+        var Tag = $('#@Html.IdFor(m => m.EditModel.Tag)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+        if (ActName == "") { $.alert("活動名稱不可為空白"); return; }
+        if (HolisticActName == "") { $.alert("全人端名稱不可為空白"); return; }
+        if (ActDesc == "") { $.alert("活動說明不可為空白"); return; }
+        if (MainID == "") { $.alert("全人學習認證群組需選擇"); return; }
+        if (SecondID == "") { $.alert("全人學習認證類別需選擇"); return; }
+        if (ThridID == "") { $.alert("全人學習認證項目需選擇"); return; }
+        if (ActSTime == "") { $.alert("活動開始時間不可為空白"); return; }
+        if (ActETime == "") { $.alert("活動結束時間不可為空白"); return; }
+
+        if (RegistrationWay == "") { $.alert("報名方式不可為空白"); return; }
+        if (PlaceSource == "") { $.alert("活動地點需選擇"); return; }
+        if (Presenter == "") { $.alert("主講人不可為空白"); return; }
+        if (PresenterIntro == "") { $.alert("主講人介紹不可為空白"); return; }
+        if (Host == "") { $.alert("主持人不可為空白"); return; }
+        if (HostIntro == "") { $.alert("主持人介紹不可為空白"); return; }
+        if (ClubCName == "") { $.alert("主辦單位不可為空白"); return; }
+        if (ContactMan == "") { $.alert("聯絡人不可為空白"); return; }
+        if (RegistrationMan == "") { $.alert("負責補登者不可為空白"); return; }
+        if (OpenObject == "") { $.alert("開放對象不可為空白"); return; }
+        if (Tag == "") { $.alert("關鍵字標籤不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.ID)', ID);
+        data.append('@Html.NameFor(m => m.EditModel.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.EditModel.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.EditModel.ActID)', ActID);
+
+        data.append('@Html.NameFor(m => m.EditModel.ActName)', ActName);
+        data.append('@Html.NameFor(m => m.EditModel.HolisticActName)', HolisticActName);
+        data.append('@Html.NameFor(m => m.EditModel.ActDesc)', ActDesc);
+        data.append('@Html.NameFor(m => m.EditModel.MainID)', MainID);
+        data.append('@Html.NameFor(m => m.EditModel.SecondID)', SecondID);
+        data.append('@Html.NameFor(m => m.EditModel.ThridID)', ThridID);
+        data.append('@Html.NameFor(m => m.EditModel.ActSTime)', ActSTime);
+        data.append('@Html.NameFor(m => m.EditModel.ActETime)', ActETime);
+        data.append('@Html.NameFor(m => m.EditModel.RegistrationWay)', RegistrationWay);
+        data.append('@Html.NameFor(m => m.EditModel.PlaceSource)', PlaceSource);
+        data.append('@Html.NameFor(m => m.EditModel.BuildID)', BuildID);
+        data.append('@Html.NameFor(m => m.EditModel.PlaceID)', PlaceID);
+        data.append('@Html.NameFor(m => m.EditModel.PlaceName)', PlaceName);
+        data.append('@Html.NameFor(m => m.EditModel.Presenter)', Presenter);
+        data.append('@Html.NameFor(m => m.EditModel.PresenterIntro)', PresenterIntro);
+        data.append('@Html.NameFor(m => m.EditModel.Host)', Host);
+        data.append('@Html.NameFor(m => m.EditModel.HostIntro)', HostIntro);
+        data.append('@Html.NameFor(m => m.EditModel.ClubCName)', ClubCName);
+        data.append('@Html.NameFor(m => m.EditModel.ContactMan)', ContactMan);
+        data.append('@Html.NameFor(m => m.EditModel.RegistrationMan)', RegistrationMan);
+        data.append('@Html.NameFor(m => m.EditModel.OpenObject)', OpenObject);
+        data.append('@Html.NameFor(m => m.EditModel.Tag)', Tag);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+
+    }
+
+</script>

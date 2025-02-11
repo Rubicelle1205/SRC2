@@ -69,7 +69,7 @@ namespace WebPccuClub.DataAccess
             // 使用者姓名
             parameters.Add("UserName", LoginUser.UserName);
             // 角色姓名
-            parameters.Add("RoleName", LoginUser.UserRole[0].RoleName);
+            parameters.Add("RoleName", LoginUser.UserRole.Count > 0 ? LoginUser.UserRole[0].RoleName: "");
             // 登入IP
             parameters.Add("IP", thisEntity.Ip);
             // 功能
@@ -198,7 +198,7 @@ namespace WebPccuClub.DataAccess
             return ExecuteResult;
         }
 
-		public DbExecuteInfo InsertNewUser(SSOUserInfo sSOUserInfo)
+		public DbExecuteInfo InsertFrontNewUser(SSOUserInfo sSOUserInfo)
 		{
 			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
 			string CommandTxt = string.Empty;
@@ -250,5 +250,7 @@ namespace WebPccuClub.DataAccess
 
 			return ExecuteResult;
 		}
-	}
+
+        
+    }
 }

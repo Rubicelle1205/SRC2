@@ -12,7 +12,7 @@
         <h4 class="pageTitle">新增活動報備</h4>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="apply.html">活動報備</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Index")">活動報備</a></li>
                 <li class="breadcrumb-item active">新增活動報備</li>
             </ol>
         </nav>
@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 <div class="infoItem">
-                    <div class="tag">活動人數</div>
+                    <div class="tag">活動人數<span class="req-star">*</span></div>
                     <div class="content">
                         <div class="d-flex align-items-center">
                             <input asp-for="CreateModel.Capacity" class="form-control" placeholder="活動人數" />
@@ -63,7 +63,7 @@
                     </div>
                 </div>
                 <div class="infoItem">
-                    <div class="tag">活動性質</div>
+                    <div class="tag">活動性質<span class="req-star">*</span></div>
                     <div class="content warning-box">
                         <select asp-for="CreateModel.ActType" asp-items="@ViewBag.ddlActType" class="form-control">
                             <option value="">請選擇活動性質</option>
@@ -159,9 +159,6 @@
             success: function (result) {
                 $("#act_loc_agree").html(result);
             },
-            error: function (response) {
-                $.alert(result.errorMsg);
-            }
         });
     });
 
@@ -175,9 +172,6 @@
                 success: function (result) {
                     $("#act_loc_agree").html(result);
                 },
-                error: function (response) {
-                    $.alert(result.errorMsg);
-                }
             });
         }
 

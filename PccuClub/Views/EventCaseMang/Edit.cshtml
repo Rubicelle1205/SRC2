@@ -1,0 +1,561 @@
+﻿@model WebPccuClub.Models.EventCaseMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+    List<SelectListItem> LstddlReferUnit = ViewBag.ddlReferUnit;
+    int LstVictimIndex = 0;
+}
+
+<head>
+    <script src="~/js/backend_case.js"></script>
+</head>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form action="" enctype="multipart/form-data" id="form" method="post">
+                    <div class="card">
+                        @if (Model != null)
+                        { 
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">事件編號<span class="required">*</span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.CaseID)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">校安事件主類別<span class="required">*</span></th>
+                                        <td>@Html.DropDownListFor(m => m.EditModel.MainClass ,(List<SelectListItem>)ViewBag.ddlMainClass,"請選擇校安事件主類別", new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">校安事件次類別<span class="required">*</span></th>
+                                        <td>
+                                            <div id="divSecondClass">
+                                                    @Html.DropDownListFor(m => m.EditModel.SecondClass, (List<SelectListItem>)ViewBag.ddlSecondClass, "請選擇校安事件次類別", new { @class = "form-control" })
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">事件發生地點<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Location, new {@class = "form-control", placeholder = "請輸入事件發生地點"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">事件發生時間<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.OccurTime, new {@class = "form-control col-md-6", @placeholder="請點擊輸入框並選擇事件發生時間", @for="finish_time"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">知悉時間<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.KnowTime, new {@class = "form-control col-md-6", @placeholder="請點擊輸入框並選擇知悉時間", @for="finish_time"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">媒體是否得知<span class="required">*</span></th>
+                                        <td>@Html.DropDownListFor(m => m.EditModel.MediaKnow ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇媒體是否得知", new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">相關人員<span class="required">*</span></th>
+                                        <td>
+                                        <div class="row">
+                                            <div class="input-group col-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">死亡人數</span>
+                                                </div>
+                                                    @Html.TextBoxFor(m => m.EditModel.DeathAmt, new {@class = "form-control"})
+                                            </div>
+                                            <div class="input-group col-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">受傷人數</span>
+                                                </div>
+                                                    @Html.TextBoxFor(m => m.EditModel.HurtAmt, new {@class = "form-control"})
+                                            </div>
+                                            <div class="input-group col-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">患病人數</span>
+                                                </div>
+                                                    @Html.TextBoxFor(m => m.EditModel.SickAmt, new {@class = "form-control"})
+                                            </div>
+                                            <div class="input-group col-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">其他人數</span>
+                                                </div>
+                                                    @Html.TextBoxFor(m => m.EditModel.ElseAmt, new {@class = "form-control"})
+                                            </div>
+                                        </div>
+                                        <table class="table table-sm mt-2" id="peo_table">
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">性別</th>
+                                                    <th scope="col">姓名</th>
+                                                    <th scope="col">狀態</th>
+                                                    <th scope="col">職稱</th>
+                                                    <th scope="col">所屬單位</th>
+                                                    <th scope="col">學號</th>
+                                                    <th scope="col">出生年</th>
+                                                    <th scope="col">目前位置</th>
+                                                    <th scope="col">角色</th>
+                                                    <th scope="col">
+                                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                                                name="add_row">
+                                                            <i class="fa-solid fa-plus"></i>
+                                                        </button>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                        @if (Model.EditModel.LstVictim.Count > 0)
+                                                        {
+                                                            foreach (Victim item in Model.EditModel.LstVictim)
+                                                            {
+                                                                LstVictimIndex = LstVictimIndex + 1;
+                                                                <tr>
+                                                                    <th scope="col">@LstVictimIndex</th>
+                                                                    <td>
+                                                                        @Html.DropDownListFor(m => item.Sex, (IEnumerable<SelectListItem>)ViewBag.ddlSex, "請選擇性別", new { @class = "form-control form-control-sm" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBox("Name", item.Name, new { @class = "form-control form-control-sm", placeholder = "請輸入姓名", })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.DropDownListFor(m => item.Status, (IEnumerable<SelectListItem>)ViewBag.ddlVictimStatus, "請選擇狀態", new { @class = "form-control  form-control-sm" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.DropDownListFor(m => item.Title, (IEnumerable<SelectListItem>)ViewBag.ddlVictimTitle, "請選擇身分", new { @class = "form-control  form-control-sm" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.DropDownListFor(m => item.Unit, (IEnumerable<SelectListItem>)ViewBag.ddlVictimUnit, "請選擇所屬單位", new { @class = "form-control  form-control-sm" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.TextBox("SNO", item.SNO, new { @class = "form-control form-control-sm", placeholder = "請輸入學號" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.DropDownListFor(m => item.BirthYear, (IEnumerable<SelectListItem>)ViewBag.ddlBirth, "請選擇出生年", new { @class = "form-control  form-control-sm" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.DropDownListFor(m => item.Location, (IEnumerable<SelectListItem>)ViewBag.ddlVictimLocation, "請選擇目前位置", new { @class = "form-control  form-control-sm" })
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.DropDownListFor(m => item.Role, (IEnumerable<SelectListItem>)ViewBag.ddlVictimRole, "請選擇角色", new { @class = "form-control  form-control-sm" })
+                                                                    </td>
+                                                                    <td>
+                                                                        <button type="button"
+                                                                                class="btn btn-sm btn-outline-danger"
+                                                                                name="delete_row">
+                                                                            <i class="fa-solid fa-x"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <tr>
+                                                                <th scope="col">1</th>
+                                                                <td>
+                                                                    @Html.DropDownList("Sex", (IEnumerable<SelectListItem>)ViewBag.ddlSex, "請選擇性別", new { @class = "form-control  form-control-sm" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBox("Name", null, new { @class = "form-control form-control-sm", placeholder = "請輸入姓名" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.DropDownList("Status", (IEnumerable<SelectListItem>)ViewBag.ddlVictimStatus, "請選擇狀態", new { @class = "form-control  form-control-sm" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.DropDownList("Title", (IEnumerable<SelectListItem>)ViewBag.ddlVictimTitle, "請選擇身分", new { @class = "form-control  form-control-sm" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.DropDownList("Unit", (IEnumerable<SelectListItem>)ViewBag.ddlVictimUnit, "請選擇所屬單位", new { @class = "form-control  form-control-sm" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.TextBox("SNO", null, new { @class = "form-control form-control-sm", placeholder = "請輸入學號" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.DropDownList("BirthYear", (IEnumerable<SelectListItem>)ViewBag.ddlBirth, "請選擇出生年", new { @class = "form-control  form-control-sm" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.DropDownList("Location", (IEnumerable<SelectListItem>)ViewBag.ddlVictimLocation, "請選擇目前位置", new { @class = "form-control  form-control-sm" })
+                                                                </td>
+                                                                <td>
+                                                                    @Html.DropDownList("Role", (IEnumerable<SelectListItem>)ViewBag.ddlVictimRole, "請選擇角色", new { @class = "form-control  form-control-sm" })
+                                                                </td>
+                                                                <td>
+                                                                    <button type="button"
+                                                                            class="btn btn-sm btn-outline-danger"
+                                                                            name="delete_row">
+                                                                        <i class="fa-solid fa-x"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                            </tbody>
+                                        </table>
+                                        <div class="d-flex justify-content-between">
+                                            <button type="button" class="btn btn-sm btn-outline-danger"
+                                                    name="clean_all">
+                                                <i class="fa-solid fa-x"></i>
+                                                刪除所有人員
+                                            </button>
+                                        </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-body table-responsive-sm">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">事件原因及經過<span class="required"></span></th>
+                                        <td>
+                                            <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h6><u>事件紀錄歷程</u></h6>
+                                                        <ul class="list-group list-group-flush text-sm">
+                                                            @foreach(EventData item in Model.EditModel.LstEventData)
+                                                            {
+                                                                <li class="list-group-item p-1">
+                                                                    @item.EventDateTime.Value.ToString("yyyy/MM/dd HH:mm")<span class="badge badge-primary mx-1">@item.EventIDText</span> @item.Text
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="input-group">
+                                                            @Html.TextBoxFor(m => m.EditModel.EventDateTime, new { @class = "form-control", @readonly = "readonly"})
+                                                            @Html.DropDownListFor(m => m.EditModel.EventID, (List<SelectListItem>)ViewBag.ddlEventStatus,"請選擇事件狀態", new {@class = "form-control"})
+                                                        </div>
+                                                        @Html.TextAreaFor(m => m.EditModel.EventText, new {@class = "form-control mt-1", @rows="4", @placeholder = "請輸入事件原因及經過"})
+
+
+                                                        <!-- [編輯]事件時，才出現按鈕 -->
+                                                        <div class="d-flex justify-content-end mt-1">
+                                                            <button type="button" class="btn btn-sm btn-outline-primary mx-1" id="add_history" onclick="SaveEventData()">
+                                                                <i class="fa-solid fa-plus"></i>
+                                                                新增本次紀錄
+                                                            </button>
+                                                            <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="clean_history">
+                                                                <i class="fa-solid fa-x"></i>
+                                                                清空目前輸入內容
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">轉介單位<span class="required">*</span></th>
+                                        <td>
+                                            <div class="row p-2">
+                                                @foreach (SelectListItem item in LstddlReferUnit)
+                                                {
+                                                        if (Model.EditModel.ReferCode != null)
+                                                        {
+                                                            if (Model.EditModel.ReferCode.Contains(item.Value))
+                                                            {
+
+                                                                <div class="col-md-2 custom-control custom-checkbox">
+                                                                    <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                                           type="checkbox" id="@item.Value" value="@item.Value" checked>
+                                                                    <label class="custom-control-label" for="@item.Value">@item.Text</label>
+                                                                </div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="col-md-2 custom-control custom-checkbox">
+                                                                    <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                                           type="checkbox" id="@item.Value" value="@item.Value">
+                                                                    <label class="custom-control-label" for="@item.Value">@item.Text</label>
+                                                                </div>
+                                                            }
+
+                                                        }
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">是否結案<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.CaseStatus, (List<SelectListItem>)ViewBag.ddlCaseFinish,"請選擇是否結案", new {@class = "form-control col-md-6"})
+                                            <div class="input-group col-md-6 p-0 hide">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">結案時間</span>
+                                                </div>
+                                                @Html.TextBoxFor(m => m.EditModel.CaseFinishDateTime, new {@class = "form-control", @placeholder="請點擊輸入框並選擇結案時間", @for="finish_time2"})
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">備註<span class="required"></span></th>
+                                        <td>
+                                            @Html.TextAreaFor(m => m.EditModel.Memo, new {@class="form-control", placeholder="請輸入備註", rows="6"})
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        @Html.HiddenFor(m => m.EditModel.CaseID)
+                        <!-- /.card-body -->
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                        }
+                    </div>
+                    <!-- /.card -->
+                </form>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+    $(document).ready(function () {
+
+        var selecter = $('#@Html.IdFor(m => m.EditModel.CaseStatus)');
+
+        selecter.change(function () {
+            if (selecter.val() == "01") {
+                $("[for=finish_time2]").parents('div:first').removeClass("hide");
+            }
+            else {
+                $("[for=finish_time2]").parents('div:first').addClass("hide");
+            }
+        });
+
+        if (selecter.val() == "01") {
+            $("[for=finish_time2]").parents('div:first').removeClass("hide");
+        }
+        else {
+            $("[for=finish_time2]").parents('div:first').addClass("hide");
+        }
+
+        ///////////////////////////////////////////////////////////////////
+
+        $('button[name="add_row"]').click(function () {
+            var $tableBody = $('#peo_table tbody'); 
+            var $lastRow = $tableBody.find('tr:last');
+            var $newRow = $lastRow.clone(); 
+
+            var newRowNum = parseInt($lastRow.find('th:first').text()) + 1;
+            if (isNaN(newRowNum)) {
+                SendAjax({
+                    url: '@Url.Action("GeneralNewRow")',
+                    data: '',
+                    success: function (result) {
+                        $('#peo_table tbody').html(result);
+                    }
+                });
+            }
+            else {
+                $newRow.find('th:first').text(newRowNum);
+                $newRow.find('input').val('');
+                $newRow.find('select').val('');
+                $tableBody.append($newRow);
+            }
+        });
+
+        $('#peo_table').on('click', 'button[name="delete_row"]', function () {
+            $(this).closest('tr').remove();
+
+            $('#peo_table tbody tr').each(function (index) {
+                $(this).find('th:first').text(index + 1);
+            });
+        });
+
+        $('#peo_table').on('click', 'button[name="delete_row"]', function () {
+            $(this).closest('tr').remove();
+        });
+
+        $('button[name="clean_all"]').click(function () {
+            $('#peo_table tbody').empty();
+        });
+        ///////////////////////////////////////////////////////////////////
+
+        $('#clean_history').click(function () {
+            $('#@Html.IdFor(m => m.EditModel.EventText)').val("");
+
+        });
+    });
+
+    
+
+
+
+        function SaveEventData(){
+        var data = new FormData()
+
+        var CaseID = $('#@Html.IdFor(m => m.EditModel.CaseID)').val();
+        var EventID = $('#@Html.IdFor(m => m.EditModel.EventID)').val();
+        var EventDateTime = $('#@Html.IdFor(m => m.EditModel.EventDateTime)').val();
+        var EventText = $('#@Html.IdFor(m => m.EditModel.EventText)').val();
+
+        if (CaseID == "") { window.location.reload(); }
+        if (EventDateTime == "") { window.location.reload(); }
+        if (EventID == "") { $.alert("請選擇事件狀態"); return; }
+        if (EventText == "") { $.alert("請輸入本次紀錄內容"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.CaseID)', CaseID);
+        data.append('@Html.NameFor(m => m.EditModel.EventDateTime)', EventDateTime);
+        data.append('@Html.NameFor(m => m.EditModel.EventID)', EventID);
+        data.append('@Html.NameFor(m => m.EditModel.EventText)', EventText);
+
+        SendAjax({
+            url: '@Url.Action("EditOldEventData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    window.location.reload();
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+
+    }
+
+    $('#@Html.IdFor(m => m.EditModel.MainClass)').change(function (e) {
+        GetSecond();
+    });
+
+    function GetSecond() {
+        var CaseID = $('#@Html.IdFor(m => m.EditModel.CaseID)').val();
+        var MainClass = $('#@Html.IdFor(m => m.EditModel.MainClass)').val();
+
+        SendAjax({
+            url: '@Url.Action("GetSecond")',
+            data: { 'MainClass': MainClass, 'Source': 'Edit', 'CaseID': CaseID },
+            success: function (result) {
+                $('#divSecondClass').html(result);
+            }
+        });
+    }
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var CaseID = $('#@Html.IdFor(m => m.EditModel.CaseID)').val();
+        var MainClass = $('#@Html.IdFor(m => m.EditModel.MainClass)').val();
+        var SecondClass = $('#@Html.IdFor(m => m.EditModel.SecondClass)').val();
+        var Location = $('#@Html.IdFor(m => m.EditModel.Location)').val();
+        var OccurTime = $('#@Html.IdFor(m => m.EditModel.OccurTime)').val();
+        var KnowTime = $('#@Html.IdFor(m => m.EditModel.KnowTime)').val();
+        var MediaKnow = $('#@Html.IdFor(m => m.EditModel.MediaKnow)').val();
+
+        var DeathAmt = $('#@Html.IdFor(m => m.EditModel.DeathAmt)').val();
+        var HurtAmt = $('#@Html.IdFor(m => m.EditModel.HurtAmt)').val();
+        var SickAmt = $('#@Html.IdFor(m => m.EditModel.SickAmt)').val();
+        var ElseAmt = $('#@Html.IdFor(m => m.EditModel.ElseAmt)').val();
+
+        var CaseStatus = $('#@Html.IdFor(m => m.EditModel.CaseStatus)').val();
+        var CaseFinishDateTime = $('#@Html.IdFor(m => m.EditModel.CaseFinishDateTime)').val();
+        
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        var dataString = '';
+        $('#peo_table tbody tr').each(function (index) {
+            var rowNum = index + 1;
+            var sex = $(this).find('[name$="Sex"]').val();
+            var name = $(this).find('[name="Name"]').val();
+            var status = $(this).find('[name$="Status"]').val();
+            var title = $(this).find('[name$="Title"]').val();
+            var unit = $(this).find('[name$="Unit"]').val();
+            var sno = $(this).find('[name="SNO"]').val();
+            var birthYear = $(this).find('[name$="BirthYear"]').val();
+            var location = $(this).find('[name$="Location"]').val();
+            var role = $(this).find('[name$="Role"]').val();
+
+            dataString += rowNum + ':' + sex + ',' + name + ',' + status + ',' + title + ',' + unit + ',' + sno + ',' + birthYear + ',' + location + ',' + role + '|';
+        });
+
+        dataString = dataString.slice(0, -1);
+        var strVictim = dataString;
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        var selectedValues = [];
+        $(".custom-control-input-outline").each(function () {
+            if ($(this).is(":checked")) {
+                selectedValues.push($(this).val());
+            }
+        });
+
+        if (CaseID == "") { $.alert("事件編號不可為空白"); return; }
+        if (MainClass == "") { $.alert("主類別名稱不可為空白"); return; }
+        if (SecondClass == "") { $.alert("次類別名稱不可為空白"); return; }
+        if (Location == "") { $.alert("事件發生地點不可為空白"); return; }
+        if (OccurTime == "") { $.alert("事件發生時間不可為空白"); return; }
+        if (KnowTime == "") { $.alert("知悉時間不可為空白"); return; }
+        if (MediaKnow == "") { $.alert("媒體是否得知不可為空白"); return; }
+
+        if (DeathAmt == "") { $.alert("死亡人數不可為空白"); return; }
+        if (HurtAmt == "") { $.alert("受傷人數不可為空白"); return; }
+        if (SickAmt == "") { $.alert("患病人數不可為空白"); return; }
+        if (ElseAmt == "") { $.alert("其他人數不可為空白"); return; }
+
+        if (CaseStatus == "") { $.alert("需選擇是否結案"); return; }
+        
+        if (strVictim == "") { $.alert("需填寫相關人員"); return; }
+        if (selectedValues == "") { $.alert("需選擇轉介單位"); return; }
+
+        if (!moment(OccurTime, "YYYY-MM-DD HH:mm", true).isValid()) { $.alert("事件發生時間格式不正確"); return; }
+        if (!moment(KnowTime, "YYYY-MM-DD HH:mm", true).isValid()) { $.alert("知悉時間格式不正確"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.CaseID)', CaseID);
+        data.append('@Html.NameFor(m => m.EditModel.MainClass)', MainClass);
+        data.append('@Html.NameFor(m => m.EditModel.SecondClass)', SecondClass);
+        data.append('@Html.NameFor(m => m.EditModel.Location)', Location);
+        data.append('@Html.NameFor(m => m.EditModel.OccurTime)', OccurTime);
+        data.append('@Html.NameFor(m => m.EditModel.KnowTime)', KnowTime);
+        data.append('@Html.NameFor(m => m.EditModel.MediaKnow)', MediaKnow);
+        
+        data.append('@Html.NameFor(m => m.EditModel.DeathAmt)', DeathAmt);
+        data.append('@Html.NameFor(m => m.EditModel.HurtAmt)', HurtAmt);
+        data.append('@Html.NameFor(m => m.EditModel.SickAmt)', SickAmt);
+        data.append('@Html.NameFor(m => m.EditModel.ElseAmt)', ElseAmt);
+
+        data.append('@Html.NameFor(m => m.EditModel.strLstVictim)', strVictim);
+
+        data.append('@Html.NameFor(m => m.EditModel.ReferCode)', selectedValues);
+
+        data.append('@Html.NameFor(m => m.EditModel.CaseStatus)', CaseStatus);
+        data.append('@Html.NameFor(m => m.EditModel.CaseFinishDateTime)', CaseFinishDateTime);
+
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+        
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+    }
+
+</script>

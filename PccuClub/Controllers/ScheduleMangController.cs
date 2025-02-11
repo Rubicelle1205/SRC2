@@ -408,7 +408,8 @@ namespace WebPccuClub.Controllers
                 return File(ms, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName + ".xlsx");
             }
 
-            return View("Index", vm);
+            AlertMsg.Add("無資料已供匯出");
+            return Redirect("Index");
 
         }
 

@@ -19,6 +19,9 @@ namespace WebPccuClub.Models
         [DisplayName("社團基本資料提醒內容")]
         public string? ClubInfoConform { get; set; }
 
+        [DisplayName("活動結案管理提醒內容")]
+        public string? ActFinishConform { get; set; }
+
         [DisplayName("建立者")]
         public string? Creator { get; set; }
 

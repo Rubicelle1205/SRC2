@@ -1,0 +1,329 @@
+﻿@model WebPccuClub.Models.ClubActReportViewModel
+
+@{
+    Layout = "_FrontLayout";
+    ViewBag.Title = "全人學習護照填報";
+    List<SelectListItem> LstPlaceSource = ViewBag.ddlActInOrOut;
+}
+
+
+<div class="col-xxl-8 col-xl-8">
+    <div class="contentWrapper">
+        <h4 class="pageTitle">全人學習護照填報</h4>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index")">活動報備</a></li>
+                <li class="breadcrumb-item active">全人學習護照填報</li>
+            </ol>
+        </nav>
+        <hr>
+        <div class="mb-4">
+            <a id="Back" href="@Url.Action("Index")"><i class="fas fa-chevron-left"></i>返回列表</a>
+        </div>
+
+        <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
+        <form action="" class="form-box checkthisform" enctype="multipart/form-data" method="post">
+            <div class="infoWrapper mb-4">
+                <div class="infoItem">
+                    <div class="tag">全人端名稱<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.ClubHolisticPassport.HolisticActName, new {@class="form-control", placeholder = "全人端名稱"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動名稱<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.ClubHolisticPassport.ActName, new {@class="form-control", placeholder = "活動名稱"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動說明<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextAreaFor(m => m.ClubHolisticPassport.ActDesc, new {@class="form-control", placeholder = "活動說明"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">全人學習認證群組<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.DropDownListFor(m => m.ClubHolisticPassport.MainID ,(List<SelectListItem>)ViewBag.ddlHolisticMainClass,"請選擇全人學習認證群組", new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">全人學習認證類別<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.DropDownListFor(m => m.ClubHolisticPassport.SecondID ,(List<SelectListItem>)ViewBag.ddlHolisticSecondClass,"請選擇全人學習認證類別", new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">全人學習認證項目<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.DropDownListFor(m => m.ClubHolisticPassport.ThridID ,(List<SelectListItem>)ViewBag.ddlHolisticThridClass,"請選擇全人學習認證項目", new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動開始時間<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.ClubHolisticPassport.ActSTime, new {@class = "form-control", @type="datetime-local", @placeholder = "活動開始時間"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動結束時間<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.ClubHolisticPassport.ActETime, new {@class = "form-control", @type="datetime-local", @placeholder = "活動結束時間"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">報名方式<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.ClubHolisticPassport.RegistrationWay, new {@class="form-control", placeholder = "報名方式"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">活動地點<span class="req-star">*</span></div>
+                    <div class="content warning-box">
+
+                        @foreach (SelectListItem item in LstPlaceSource)
+                        {
+                            <div class="form-check form-check-inline">
+                                @Html.RadioButtonFor(m => m.ClubHolisticPassport.PlaceSource, item.Value, new { @id = string.Format("PlaceSource_{0}", item.Value), @class = "form-check-input class_input_trigger" })
+                                <label for=@string.Format("PlaceSource_{0}", item.Value)>@item.Text</label>
+                            </div>
+                        }
+
+                        <div id="class_input_box"></div>
+
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主講人<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.ClubHolisticPassport.Presenter, new {@class="form-control", placeholder = "主講人"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主講人介紹<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextAreaFor(m => m.ClubHolisticPassport.Presenter, new {@class="form-control", placeholder = "主講人介紹", rows = "5"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主持人<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.ClubHolisticPassport.Host, new {@class="form-control", placeholder = "主持人"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主持人介紹<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextAreaFor(m => m.ClubHolisticPassport.HostIntro, new {@class="form-control", placeholder = "主持人介紹", rows = "5"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">主辦單位<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.ClubHolisticPassport.ClubCName, new {@class="form-control", placeholder = "主辦單位"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">聯絡人<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.ClubHolisticPassport.ContactMan, new {@class="form-control", placeholder = "聯絡人"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">負責補登者<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.ClubHolisticPassport.RegistrationMan, new {@class="form-control", placeholder = "負責補登者"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">開放對象<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.ClubHolisticPassport.OpenObject, new {@class="form-control", placeholder = "開放對象"})
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">關鍵字標籤<span class="req-star">*</span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.ClubHolisticPassport.Tag, new {@class="form-control", placeholder = "關鍵字標籤"})
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-4 font-weight-bold py-2"><i class="fas fa-tag"></i> 上傳附件</div>
+            <div class="infoWrapper mb-5">
+                <div class="infoItem">
+                    <div class="tag">海報縮圖<span class="req-star"></span></div>
+                    <div class="content">
+                        @Html.TextBoxFor(m => m.ClubHolisticPassport.PosterIconPath, new{ @class="form-control w-auto", title="請上傳海報縮圖", type="file", accept=".jpg,.jpeg,.png"})
+                        
+                        <div class="fs-90percent red-hint pt-2">僅接受以下格式：jpg, jpeg, png</div>
+                        <p class="hint mb-0 py-1"><i class="fas fa-info-circle"></i> 最大10MB</p>
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">備註<span class="req-star"></span></div>
+                    <div class="content">
+                        @Html.TextAreaFor(m => m.ClubHolisticPassport.Memo, new {@class="form-control", placeholder = "備註", rows = "5"})
+                    </div>
+                </div>
+            </div>
+
+            @Html.HiddenFor(m => m.ClubHolisticPassport.SchoolYear)
+            @Html.HiddenFor(m => m.ClubHolisticPassport.ClubID)
+            @Html.HiddenFor(m => m.ClubHolisticPassport.ActID)
+
+            <div class="row justify-content-center mb-5">
+
+                <div class="col-lg-4">
+                    <button class="submit-btn btn btn-primary btn-modern border-0 w-100" type="submit" onclick="return SaveData()">送出審核 <i class="icon-check"></i></button>
+                </div>
+            </div>
+        </form>
+
+
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $("[id ^= 'PlaceSource_']").on('change', function () {
+
+            HolisticInitBuildSelect($("[id ^= 'PlaceSource_']:checked").val());
+        });
+
+    });
+
+    function HolisticInitBuildSelect(PlaceSource) {
+
+        SendAjax({
+            url: '@Url.Action("HolisticInitBuildSelect")',
+            data: { 'PlaceSource': PlaceSource },
+            success: function (result) {
+                $('#class_input_box').html(result);
+            }
+        });
+    }
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var PosterIconPath = $('#@Html.IdFor(m => m.ClubHolisticPassport.PosterIconPath)')[0].files[0];
+        if (typeof PosterIconPath !== 'undefined') {
+            var fileExtension = PosterIconPath.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.ClubHolisticPassport.PosterIconPath)', PosterIconPath);
+        }
+
+        var SchoolYear = $('#@Html.IdFor(m => m.ClubHolisticPassport.SchoolYear)').val();
+        var ClubID = $('#@Html.IdFor(m => m.ClubHolisticPassport.ClubID)').val();
+        var ActID = $('#@Html.IdFor(m => m.ClubHolisticPassport.ActID)').val();
+        
+        var ActName = $('#@Html.IdFor(m => m.ClubHolisticPassport.ActName)').val();
+        var HolisticActName = $('#@Html.IdFor(m => m.ClubHolisticPassport.HolisticActName)').val();
+        var ActDesc = $('#@Html.IdFor(m => m.ClubHolisticPassport.ActDesc)').val();
+        var MainID = $('#@Html.IdFor(m => m.ClubHolisticPassport.MainID)').val();
+        var SecondID = $('#@Html.IdFor(m => m.ClubHolisticPassport.SecondID)').val();
+        var ThridID = $('#@Html.IdFor(m => m.ClubHolisticPassport.ThridID)').val();
+        var ActSTime = $('#@Html.IdFor(m => m.ClubHolisticPassport.ActSTime)').val();
+        var ActETime = $('#@Html.IdFor(m => m.ClubHolisticPassport.ActETime)').val();
+
+        var RegistrationWay = $('#@Html.IdFor(m => m.ClubHolisticPassport.RegistrationWay)').val();
+        var PlaceSource = $('#@Html.IdFor(m => m.ClubHolisticPassport.PlaceSource)').val();
+        var BuildID = $('#@Html.IdFor(m => m.ClubHolisticPassport.BuildID)').val();
+        var PlaceID = $('#@Html.IdFor(m => m.ClubHolisticPassport.PlaceID)').val();
+        var PlaceName = $('#@Html.IdFor(m => m.ClubHolisticPassport.PlaceName)').val();
+        var Presenter = $('#@Html.IdFor(m => m.ClubHolisticPassport.Presenter)').val();
+        var PresenterIntro = $('#@Html.IdFor(m => m.ClubHolisticPassport.PresenterIntro)').val();
+        var Host = $('#@Html.IdFor(m => m.ClubHolisticPassport.Host)').val();
+        var HostIntro = $('#@Html.IdFor(m => m.ClubHolisticPassport.HostIntro)').val();
+        var ClubCName = $('#@Html.IdFor(m => m.ClubHolisticPassport.ClubCName)').val();
+        var ContactMan = $('#@Html.IdFor(m => m.ClubHolisticPassport.ContactMan)').val();
+        var RegistrationMan = $('#@Html.IdFor(m => m.ClubHolisticPassport.RegistrationMan)').val();
+        var OpenObject = $('#@Html.IdFor(m => m.ClubHolisticPassport.OpenObject)').val();
+        var Tag = $('#@Html.IdFor(m => m.ClubHolisticPassport.Tag)').val();
+        var Memo = $('#@Html.IdFor(m => m.ClubHolisticPassport.Memo)').val();
+
+        if (ActName == "") { $.alert("活動名稱不可為空白"); return; }
+        if (HolisticActName == "") { $.alert("全人端名稱不可為空白"); return; }
+        if (ActDesc == "") { $.alert("活動說明不可為空白"); return; }
+        if (MainID == "") { $.alert("全人學習認證群組需選擇"); return; }
+        if (SecondID == "") { $.alert("全人學習認證類別需選擇"); return; }
+        if (ThridID == "") { $.alert("全人學習認證項目需選擇"); return; }
+        if (ActSTime == "") { $.alert("活動開始時間不可為空白"); return; }
+        if (ActETime == "") { $.alert("活動結束時間不可為空白"); return; }
+
+        if (RegistrationWay == "") { $.alert("報名方式不可為空白"); return; }
+        if (PlaceSource == "") { $.alert("活動地點需選擇"); return; }
+        if (Presenter == "") { $.alert("主講人不可為空白"); return; }
+        if (PresenterIntro == "") { $.alert("主講人介紹不可為空白"); return; }
+        if (Host == "") { $.alert("主持人不可為空白"); return; }
+        if (HostIntro == "") { $.alert("主持人介紹不可為空白"); return; }
+        if (ClubCName == "") { $.alert("主辦單位不可為空白"); return; }
+        if (ContactMan == "") { $.alert("聯絡人不可為空白"); return; }
+        if (RegistrationMan == "") { $.alert("負責補登者不可為空白"); return; }
+        if (OpenObject == "") { $.alert("開放對象不可為空白"); return; }
+        if (Tag == "") { $.alert("關鍵字標籤不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.ActID)', ActID);
+
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.ActName)', ActName);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.HolisticActName)', HolisticActName);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.ActDesc)', ActDesc);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.MainID)', MainID);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.SecondID)', SecondID);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.ThridID)', ThridID);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.ActSTime)', ActSTime);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.ActETime)', ActETime);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.RegistrationWay)', RegistrationWay);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.PlaceSource)', PlaceSource);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.BuildID)', BuildID);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.PlaceID)', PlaceID);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.PlaceName)', PlaceName);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.Presenter)', Presenter);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.PresenterIntro)', PresenterIntro);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.Host)', Host);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.HostIntro)', HostIntro);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.ClubCName)', ClubCName);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.ContactMan)', ContactMan);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.RegistrationMan)', RegistrationMan);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.OpenObject)', OpenObject);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.Tag)', Tag);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.Memo)', Memo);
+
+
+        SendAjax({
+            url: '@Url.Action("SavebHolisticPassportNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+
+    }
+
+</script>

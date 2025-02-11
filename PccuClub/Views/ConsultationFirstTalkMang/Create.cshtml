@@ -1,0 +1,336 @@
+﻿@model WebPccuClub.Models.ConsultationFirstTalkMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+
+    List<SelectListItem> LstNational = ViewBag.ddlAllNational;
+    List<SelectListItem> LstCounsellingStatus = ViewBag.ddlCounsellingStatus;
+    List<SelectListItem> LstSex = ViewBag.ddlSex;
+
+}
+
+<head>
+    <script src="~/js/custom_counselling.js?v=1"></script>
+</head>
+
+<style>
+    .form-check-input {
+        position: inherit;
+        margin-top: 0rem;
+        margin-left: 0rem;
+    }
+</style>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form action="" enctype="multipart/form-data" id="form" method="post">
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">姓名<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.Name, new { @class = "form-control", @placeholder = "請輸入姓名" })</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">系級<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.Department, new { @class = "form-control", @placeholder = "請輸入系級" })</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">學號<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.CreateModel.SNO, new { @class = "form-control", @placeholder = "請輸入系級" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">電話<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.CreateModel.Tel, new { @class = "form-control", @placeholder = "請輸入電話" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">性別<span class="required">*</span></th>
+                                        <td>
+                                            @foreach (SelectListItem item in LstSex)
+                                            {
+                                                <div class="icheck-primary d-inline">
+                                                    @Html.RadioButtonFor(m => m.CreateModel.Sex, item.Value, new { @id = string.Format("Sex_{0}", item.Value), @class = "form-check-input" })
+                                                    <label for=@string.Format("Sex_{0}", item.Value)>@item.Text</label>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">國籍<span class="required">*</span></th>
+                                        <td>
+                                            <div class="content warning-box">
+
+                                                @foreach (SelectListItem item in LstNational)
+                                                {
+                                                    <div class="icheck-primary d-inline">
+                                                        @Html.RadioButtonFor(m => m.CreateModel.Citizenship, item.Value, new { @id = string.Format("Citizenship_{0}", item.Value), @class = "form-check-input national_trigger" })
+                                                        <label for=@string.Format("Citizenship_{0}", item.Value)>@item.Text</label>
+                                                    </div>
+                                                }
+                                                <div id="national_agree" class="">
+                                                    <div class="hideBox" data-name="02">
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="d-flex align-items-center pt-2">
+                                                                    <label class="flex-shrink-0 me-2"
+                                                                           for="jq_input1">國家名稱：</label>
+                                                                    <div class="jq_box1 position-relative w-100">
+                                                                        @Html.TextBoxFor(m => m.CreateModel.CitizenshipName, new { @class = "form-control national_info_req", @placeholder = "國家名稱" })
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">過去2週曾出現這些想法或計劃<br />(可複選)<span class="required">*</span></th>
+                                        <td>
+                                            <div style="width:100%; display:flex; flex-flow: wrap;">
+                                                @foreach (SelectListItem item in LstCounsellingStatus)
+                                                {
+                                                    <div class="col-md-3 custom-control custom-checkbox">
+                                                        <input class="mindset_trigger custom-control-input custom-control-input-primary custom-control-input-outline" type="checkbox"
+                                                               name="mindset" id="@string.Format("CounsellingStatus_{0}", item.Value)" value=@item.Value>
+                                                        <label class="custom-control-label" for="@string.Format("CounsellingStatus_{0}", item.Value)">@item.Text</label>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">可初談時段<br />(可複選，約30分鐘)<span class="required">*</span></th>
+                                        <td>
+                                            <div class="content warning-box">
+                                                <table class="table table-sm table-bordered">
+                                                    <thead class="text-center table-secondary">
+                                                    <th>
+                                                        時段\星期
+                                                        <input type="checkbox" name="toggle-all" class="form-check-input mx-2"
+                                                               style="width: 1rem; height: 1rem; border-radius: 0.25rem; background-color: transparent !important;"
+                                                               data-bs-toggle="tooltip" data-bs-title="所有時段">
+                                                    </th>
+                                                    <th>
+                                                        一<br />
+                                                        <input type="checkbox" name="toggle-all-vertical" class="form-check-input" value="mon"
+                                                               style="width: 1rem; height: 1rem; border-radius: 0.25rem; background-color: transparent !important;"
+                                                               data-bs-toggle="tooltip" data-bs-title="星期一所有時段">
+                                                    </th>
+                                                    <th>
+                                                        二<br />
+                                                        <input type="checkbox" name="toggle-all-vertical" class="form-check-input" value="tue"
+                                                               style="width: 1rem; height: 1rem; border-radius: 0.25rem; background-color: transparent !important;"
+                                                               data-bs-toggle="tooltip" data-bs-title="星期二所有時段">
+                                                    </th>
+                                                    <th>
+                                                        三<br />
+                                                        <input type="checkbox" name="toggle-all-vertical" class="form-check-input" value="wed"
+                                                               style="width: 1rem; height: 1rem; border-radius: 0.25rem; background-color: transparent !important;"
+                                                               data-bs-toggle="tooltip" data-bs-title="星期三所有時段">
+                                                    </th>
+                                                    <th>
+                                                        四<br />
+                                                        <input type="checkbox" name="toggle-all-vertical" class="form-check-input" value="thu"
+                                                               style="width: 1rem; height: 1rem; border-radius: 0.25rem; background-color: transparent !important;"
+                                                               data-bs-toggle="tooltip" data-bs-title="星期四所有時段">
+                                                    </th>
+                                                    <th>
+                                                        五<br />
+                                                        <input type="checkbox" name="toggle-all-vertical" class="form-check-input" value="fri"
+                                                               style="width: 1rem; height: 1rem; border-radius: 0.25rem; background-color: transparent !important;"
+                                                               data-bs-toggle="tooltip" data-bs-title="星期五所有時段">
+                                                    </th>
+                                                    </thead>
+                                                    <tbody id="time-table">
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </form>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    function SaveData() {
+
+        var data = new FormData()
+        var Name = $('#@Html.IdFor(m => m.CreateModel.Name)').val();
+        var SNO = $('#@Html.IdFor(m => m.CreateModel.SNO)').val();
+
+        if (Name == "") { $.alert("姓名不可為空白"); return; }
+        if (SNO == "") { $.alert("學號不可為空白"); return; }
+
+        if (!moment(TalkDate, "YYYY-MM-DD", true).isValid()) { $.alert("請輸入正確的日期格式"); return; }
+
+        if (TalkSTime > TalkETime) {
+            $.alert("諮商開始時間需小於諮商結束時間"); return;
+        }
+
+        data.append('@Html.NameFor(m => m.CreateModel.Name)', Name);
+        data.append('@Html.NameFor(m => m.CreateModel.SNO)', SNO);
+
+        SendAjax({
+            url: '@Url.Action("SaveNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+    }
+
+    function InitBoomTime() {
+
+        var RoomID = $("[id $= 'RoomID']").val();
+        var TalkDate = $("[id $= 'TalkDate']").val();
+
+        if (RoomID == "") { return; }
+        if (!moment(TalkDate, "YYYY-MM-DD", true).isValid()) { return; }
+
+        SendAjax({
+            url: '@Url.Action("InitBoomTime")',
+            data: { 'RoomID': RoomID, "TalkDate": TalkDate },
+            success: function (result) {
+                $('#RoomTimePartial').html(result);
+            }
+        });
+    }
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var Name = $('#@Html.IdFor(m => m.CreateModel.Name)').val();
+        var Department = $('#@Html.IdFor(m => m.CreateModel.Department)').val();
+        var SNO = $('#@Html.IdFor(m => m.CreateModel.SNO)').val();
+        var Tel = $('#@Html.IdFor(m => m.CreateModel.Tel)').val();
+        var Citizenship = $("[id ^= 'Citizenship_']:checked").val()
+        var CitizenshipName = $('#@Html.IdFor(m => m.CreateModel.CitizenshipName)').val();
+        var Sex = $("[id ^= 'Sex_']:checked").val()
+        var strAppointmentTime = getStrTime();
+
+        var selectedValues = [];
+        $(".mindset_trigger").each(function () {
+            if ($(this).is(":checked")) {
+                selectedValues.push($(this).val());
+            }
+        });
+
+        if (Name == "") { $.alert("姓名不可為空白"); return false; }
+        if (Department == "") { $.alert("系級不可為空白"); return false; }
+        if (SNO == "") { $.alert("學號不可為空白"); return false; }
+        if (Tel == "") { $.alert("電話不可為空白"); return false; }
+        if (Citizenship == undefined) { $.alert("國籍不可為空白"); return false; }
+        if (Sex == undefined) { $.alert("性別不可為空白"); return false; }
+
+        if (Citizenship == "02") {
+            if (CitizenshipName == "") { $.alert("國家名稱不可為空白"); return false; }
+        }
+        else {
+            data.append('@Html.NameFor(m => m.CreateModel.CitizenshipName)', "");
+        }
+
+        if (selectedValues.length == 0) { $.alert("請選擇過去2週曾出現以下想法或計劃"); return false; }
+        if (strAppointmentTime.length == 0) { $.alert("請選擇可初談時段"); return false; }
+
+        data.append('@Html.NameFor(m => m.CreateModel.Name)', Name);
+        data.append('@Html.NameFor(m => m.CreateModel.Department)', Department);
+        data.append('@Html.NameFor(m => m.CreateModel.SNO)', SNO);
+        data.append('@Html.NameFor(m => m.CreateModel.Tel)', Tel);
+        data.append('@Html.NameFor(m => m.CreateModel.Sex)', Sex);
+        data.append('@Html.NameFor(m => m.CreateModel.Citizenship)', Citizenship);
+        data.append('@Html.NameFor(m => m.CreateModel.CitizenshipName)', CitizenshipName);
+        data.append('@Html.NameFor(m => m.CreateModel.strCounsellingStatus)', selectedValues);
+        data.append('@Html.NameFor(m => m.CreateModel.strAppointmentTime)', strAppointmentTime);
+
+        SendAjax({
+            url: '@Url.Action("SaveNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+    }
+
+
+    function getStrTime() {
+        const checkboxes = document.querySelectorAll('input[name="chktime"]');
+        const dayTimes = {};
+        const daysMap = { mon: '1', tue: '2', wed: '3', thu: '4', fri: '5' };
+
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                const [day, hour] = checkbox.value.split('-');
+                if (!dayTimes[day]) {
+                    dayTimes[day] = [];
+                }
+                dayTimes[day].push(hour);
+            }
+        });
+
+        const result = Object.keys(dayTimes).map(day => {
+            const hours = dayTimes[day].join(',');
+            return `${daysMap[day]}:${hours}`;
+        }).join('|');
+
+        return result;
+    }
+</script>

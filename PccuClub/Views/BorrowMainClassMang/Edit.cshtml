@@ -1,0 +1,188 @@
+﻿@model WebPccuClub.Models.BorrowMainClassMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<head>
+    <script src="~/js/backend_case.js"></script>
+</head>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">分類名稱<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Text, new {@class = "form-control", placeholder = "請輸入分類名稱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">審核單位<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ActVerifyUnit, new {@class = "form-control", placeholder = "請輸入審核單位"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">可借用日期<span class="required">*</span></th>
+                                        <td>
+                                            <div class="input-group">
+                                                @Html.TextBoxFor(m => m.EditModel.BorrowSDate, new {@class = "form-control", @placeholder="請輸入可借用日期(起)", @for="finish_date"})
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text" id="basic-addon1">至</span>
+                                                </div>
+                                                @Html.TextBoxFor(m => m.EditModel.BorrowEDate, new {@class = "form-control", @placeholder="請輸入可借用日期(訖)", @for="finish_date"})
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">借用規定<span class="required"></span></th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.BorrowRule, new {@class = "form-control", placeholder = "請輸入借用規定", rows = "5"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">費用<span class="required"></span></th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.BorrowFee, new {@class = "form-control", placeholder = "請輸入費用", rows = "5"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">庫存機制<span class="required"></span></th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.ReserveRule, new {@class = "form-control", placeholder = "請輸入庫存機制", rows = "5"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">
+                                            封面圖片<span class="required">*</span><br /><span class="text-xs text-danger font-weight-normal">可上傳.jpeg,.jpg,.png</span></span>
+                                        </th>
+                                        <td style="display:flex;">
+                                            <div class="d-block mb-1 item">
+                                                <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
+                                                    @Html.TextBoxFor(m => m.EditModel.CoverPath, new { @style="display:none;", @class="filesupload", type="file", accept = ".jpeg,.jpg,.png" })
+                                                </label>
+                                                <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                            </div>
+                                            @if (Model.EditModel.CoverPath != null)
+                                            {
+                                                <label class="upload_cover img-thumbnail" name="file1_prev" style="align-items:normal;">
+                                                    <img src="@Model.EditModel.CoverPath" style="width:100%;" />
+                                                </label>
+                                            }
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="10%">備註<span class="required"></span></th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class = "form-control", placeholder = "請輸入備註", rows = "5"})</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                    @Html.HiddenFor(m => m.EditModel.ID)
+                </form> 
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+    $(document).on('change', ".filesupload", function (e) {
+        var file = e.target.files[0];
+
+        $(this).closest('.item').find('.text-muted#filename').text(file.name);
+
+        var reader = new FileReader();
+        var $closestLabel = $(this).closest('label.upload_cover');
+
+        reader.onload = function (e) {
+            $closestLabel.css('background-image', 'url(' + e.target.result + ')');
+        };
+
+        reader.readAsDataURL(file);
+    });
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var ID = $('#@Html.IdFor(m => m.EditModel.ID)').val();
+        var Text = $('#@Html.IdFor(m => m.EditModel.Text)').val();
+        var ActVerifyUnit = $('#@Html.IdFor(m => m.EditModel.ActVerifyUnit)').val();
+        var BorrowSDate = $('#@Html.IdFor(m => m.EditModel.BorrowSDate)').val();
+        var BorrowEDate = $('#@Html.IdFor(m => m.EditModel.BorrowEDate)').val();
+        var BorrowRule = $('#@Html.IdFor(m => m.EditModel.BorrowRule)').val();
+        var BorrowFee = $('#@Html.IdFor(m => m.EditModel.BorrowFee)').val();
+        var ReserveRule = $('#@Html.IdFor(m => m.EditModel.ReserveRule)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+        if (Text == "") { $.alert("分類名稱不可為空白"); return; }
+        if (ActVerifyUnit == "") { $.alert("審核單位不可為空白"); return; }
+        if (BorrowSDate == "") { $.alert("可借用日期(起)不可為空白"); return; }
+        if (BorrowEDate == "") { $.alert("可借用日期(迄)不可為空白"); return; }
+
+        var CoverPath = $('#@Html.IdFor(m => m.EditModel.CoverPath)')[0].files[0];
+        if (typeof CoverPath !== 'undefined') {
+            var fileExtension = CoverPath.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("封面圖片檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.EditModel.CoverPath)', CoverPath);
+        }
+
+        data.append('@Html.NameFor(m => m.EditModel.ID)', ID);
+        data.append('@Html.NameFor(m => m.EditModel.Text)', Text);
+        data.append('@Html.NameFor(m => m.EditModel.ActVerifyUnit)', ActVerifyUnit);
+        data.append('@Html.NameFor(m => m.EditModel.BorrowSDate)', BorrowSDate);
+        data.append('@Html.NameFor(m => m.EditModel.BorrowEDate)', BorrowEDate);
+        data.append('@Html.NameFor(m => m.EditModel.BorrowRule)', BorrowRule);
+        data.append('@Html.NameFor(m => m.EditModel.BorrowFee)', BorrowFee);
+        data.append('@Html.NameFor(m => m.EditModel.ReserveRule)', ReserveRule);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+    }
+
+    function Reset() {
+        $('#@Html.IdFor(m => m.EditModel.Text)').val("");
+        $('#@Html.IdFor(m => m.EditModel.Memo)').val("");
+    }
+</script>

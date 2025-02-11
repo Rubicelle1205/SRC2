@@ -19,7 +19,9 @@ namespace WebPccuClub.Controllers
 
         #region 共用屬性
         private const string strConst_LoginPageUrl = @"/FrontLogin";
-        private const string strConst_DefaultPageUrl = @"/FrontLogin/Index";
+        private const string strConst_FrontDefaultPageUrl = @"/FrontLogin/Index";
+        private const string strConst_FrontMenu = @"/MenuFront/Index";
+        private const string strConst_BackDefaultPageUrl = @"/BakeendLogin/Index";
         private const string strConst_Timeout = "操作逾時，請重新登入！";
 		private const string strConst_NoLogin = "請先登入以操作此功能!!";
 		private const string strConst_NoAccess = "很抱歉 您無此頁面的存取權限！！";
@@ -27,6 +29,10 @@ namespace WebPccuClub.Controllers
         public Dictionary<string, string> localDictionary = new Dictionary<string, string>()
         {
 
+        };
+        public List<string> LstFreeAccessController = new List<string>()
+        {
+            "ClubList", "WeekActivity", "ClubHandover", "MenuFront", "ConsultationApply", "FBorrowIndex", "FResourceBorrow", "FBorrowRecord"
         };
 
 
@@ -178,15 +184,27 @@ namespace WebPccuClub.Controllers
 			var actionName = controller.ControllerContext.ActionDescriptor.ActionName;
 			var controllerAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetCustomAttributes(typeof(LogAttribute), false);
 			var actionAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetMethod(actionName)?.GetCustomAttributes(typeof(LogAttribute), false);
+            string functionSource = dbAccess.GetFunctionSource(controllerName);
+            string SystemCode = dbAccess.GetSystemCode(controllerName);
 
+            if (LoginUser != null)
+            {
+                UserInfo thisUser = HttpContext.Session.GetObject<UserInfo>("FLoginUser");
+                thisUser.LoginSystemCode = SystemCode;
+                thisUser.LoginSource = "F";
 
-			if (LoginUser != null && (LoginUser.LoginSource == "F"))
+                if (thisUser.LoginSystemCode != "02") { thisUser.LoginId = thisUser.SSOAccount; } else { thisUser.LoginId = thisUser.ClubId; }
+                HttpContext.Session.SetObject("FLoginUser", thisUser);
+
+            }
+
+            if (LoginUser != null && (LoginUser.LoginSource == "F") && (LoginUser.UserRoleFun.Count > 0))
 			{
-				LogViewModel logModel = new LogViewModel()
+                LogViewModel logModel = new LogViewModel()
 				{
 					LoginID = LoginUser.LoginId,
 					UserName = LoginUser.UserName,
-					RoleName = string.Join(",", LoginUser.UserRole[0].RoleName),
+					RoleName = string.Join(",", LoginUser.UserRole.Count > 0 ? LoginUser.UserRole[0].RoleName : ""),
 					IP = filterContext.HttpContext.Connection?.RemoteIpAddress?.ToString(),
 					FunName = controllerAttributes != null ? (controllerAttributes.FirstOrDefault() as LogAttribute)?.LogDisplayName : controller.ControllerContext.ActionDescriptor.ControllerName,
 					ActionName = actionAttributes != null ? (actionAttributes.FirstOrDefault() as LogAttribute)?.LogDisplayName : controller.ControllerContext.ActionDescriptor.ActionName
@@ -195,21 +213,24 @@ namespace WebPccuClub.Controllers
 			}
 			else
 			{
-                if (controllerName != "ClubList" && controllerName != "WeekActivity" && controllerName != "ClubHandover")
+                if (!LstFreeAccessController.Contains(controllerName))
                 {
-                    filterContext.Result = AlertMsgRedirect(strConst_NoLogin, SystemMenu.GetSubUrl() + strConst_DefaultPageUrl);
+                    if(functionSource != "B")
+                        filterContext.Result = AlertMsgRedirect(strConst_NoAccess, SystemMenu.GetSubUrl() + strConst_FrontMenu);
+                    else
+                        filterContext.Result = AlertMsgRedirect(strConst_NoAccess, SystemMenu.GetSubUrl() + strConst_FrontMenu);
                 }
                 else {
                     if (!isAjaxRequest)
                     {
-                        if (controllerName != "ClubList" && controllerName != "WeekActivity" && controllerName != "ClubHandover")
+                        if (!LstFreeAccessController.Contains(controllerName))
                         {
                             filterContext.Result = AlertMsgRedirect(strConst_Timeout, SystemMenu.GetSubUrl() + strConst_LoginPageUrl);
                         }
                     }
                     else
                     {
-                        if (controllerName != "ClubList" && controllerName != "WeekActivity" && controllerName != "ClubHandover")
+                        if (!LstFreeAccessController.Contains(controllerName))
                         {
                             ReturnViewModel vmRtn = new ReturnViewModel();
                             vmRtn.ErrorCode = 1;
@@ -238,6 +259,7 @@ namespace WebPccuClub.Controllers
                 TempData["WEBSOL_ALERT_MESSAGE"] = AlertMsg;
             }
         }
+
 
         /// <summary>
         /// 建立 SiteMap
@@ -268,7 +290,7 @@ namespace WebPccuClub.Controllers
             StringBuilder siteMap = new StringBuilder();
             siteMap.Append("目前瀏覽頁面: ");
             // url 修改
-            string linkUrl = strConst_DefaultPageUrl;
+            string linkUrl = strConst_FrontDefaultPageUrl;
             string cssClass = stack.Count < 1 ? "selected" : "";
             siteMap.Append(@$"<a href='{linkUrl}' class='{cssClass}'>系統首頁</a>");
 

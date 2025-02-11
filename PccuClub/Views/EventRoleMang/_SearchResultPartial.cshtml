@@ -1,0 +1,122 @@
+﻿@model WebPccuClub.Models.EventRoleMangViewModel
+
+
+<!-- /.card-header -->
+<div class="card-body table-responsive p-0">
+    <table class="table table-bordered table-hover text-nowrap">
+        <thead>
+            <tr class="text-center">
+                <th width="10%">角色ID</th>
+                <th width="10%">角色名稱</th>
+                <th width="50%">權限</th>
+                <th width="10%">最後修改時間</th>
+                <th width="10%">功能</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.ResultModel.Count > 0)
+            {
+                foreach (var item in Model.ResultModel)
+                {
+                    <tr>
+                        <td class="text-center text-sm">@item.RoleId</td>
+                        <td class="text-center text-sm">@item.RoleName</td>
+                        <td class="text-center text-sm">
+                            <span class="text-sm text-secondary" style="white-space: normal !important;">
+                            @for (int i = 0; i <= item.LstFunInfo.Count - 1; i++){
+                                if (i != item.LstFunInfo.Count - 1)
+                                {
+                                        @string.Format("{0}、", item.LstFunInfo[i].FunName)
+                                }
+                                else {
+                                        @string.Format("{0}", item.LstFunInfo[i].FunName)
+                                }
+                            }
+                            </span>
+                        </td>
+                        <td class="text-center text-sm">@item.LastModified.Value.ToString("yyyy/MM/dd HH:mm:ss")</td>
+                        <td class="text-center text-sm">
+                            @using (Html.BeginForm("Edit", "EventRoleMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
+                            {
+                                <button type="submit" value="@item.RoleId" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
+                            }
+
+                            @if (item.RoleId != "hyperuser")
+                            {
+                                <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel('@item.RoleId');">刪除</a>
+                            }
+
+                            <br><span class="text-sm text-secondary"> </span>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+            <td colspan="10">查無資料</td>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="card-footer clearfix">
+    <div class="pagination justify-content-end" id="SearchResultListPagination"></div>
+</div>
+<!-- /.card-body -->
+
+<script>
+    $("#SearchResultListPagination").solventoPageBar(
+        {
+            containerHtml: "<ul class='pagination justify-content-end'>{{:firstPageRender}}{{:prePageRender}}{{:pageRender}}{{:nextPageRender}}{{:lastPageRender}}</ul>{{:totalPageRender}}", // render: pagesbarHtml
+            firstPageHtml: "<li class='page-item {{:disable}}'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-double-left'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            lastPageHtml: "<li class='page-item {{:disable}}'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-double-right'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            pageHtml: " <li class='page-item {{:selectedHtml}}'><a {{:idx}} class='page-link {{:pageClass}}'>{{:pageNumber}}</a></li>",//pageClass: clickEventClass, pageNumber: pageNumber, selectedHtml : selectedHtml,idx : idx
+            prePageHtml: "<li class='page-item'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-left'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            nextPageHtml: "<li class='page-item'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-right'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            //totalPageHtml: "<div class='page-intro'>共<span>{{:totalCount}}</span>筆資料</div>",
+            totalPageHtml: "",
+            pNow: "目前為第 {{:pnow}} 頁 / 共 {{:ptotle}} 頁",
+            pEver: "每頁顯示 {{:pever}} 筆 / 共 {{:ptotleever}} 筆",
+            pageSelectedHtml: "active",
+        },
+        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.ConditionModel.Page)']").val()) + 1,
+        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.ConditionModel.PageSize)']").val()),
+
+    @Model.ConditionModel.TotalCount,
+        changePage
+    );
+
+    function changePage(idx) {
+        //動畫
+        $('#SearchForm').find("input[name='@Html.NameFor(m => m.ConditionModel.Page)']").val(idx - 1);
+        //取頁面數
+        $("#@Html.IdFor(m => m.ConditionModel.Page)").val(idx - 1);
+
+        GoSearch();
+    }
+
+    function ChkDel(Ser) {
+        $.confirm({
+            title: '確定刪除?',
+            content: '刪除後資料無法復原!',
+            buttons: {
+                確定: function () {
+                    SendAjax({
+                        url: '@Url.Action("Delete")',
+                        data: { 'Ser': Ser },
+                        success: function (result) {
+                            if (result.errorCode == 0) { $.alert("刪除成功"); }
+                            else { $.alert(result.errorMsg); }
+
+                            GoSearch();
+                        }
+                    });
+                },
+                取消: function () {
+                },
+            }
+        });
+    }
+
+
+</script>

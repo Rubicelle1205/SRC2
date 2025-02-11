@@ -27,10 +27,10 @@
                             @for (int i = 0; i <= item.LstFunInfo.Count - 1; i++){
                                 if (i != item.LstFunInfo.Count - 1)
                                 {
-                                    @string.Format("{0}、", item.LstFunInfo[i].MenuName)
+                                    @string.Format("{0}、", item.LstFunInfo[i].FunName)
                                 }
                                 else {
-                                    @string.Format("{0}", item.LstFunInfo[i].MenuName)
+                                        @string.Format("{0}", item.LstFunInfo[i].FunName)
                                 }
                             }
                             </span>

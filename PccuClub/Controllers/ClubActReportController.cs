@@ -273,6 +273,20 @@ namespace WebPccuClub.Controllers
                 return View(vm);
         }
 
+
+        [LogAttribute(LogActionChineseName.下載template檔案)]
+        public IActionResult DownloadTemplate()
+        {
+            string FileName = "學號匯入_template.xlsx";
+
+            string filePath = Path.Combine(hostingEnvironment.ContentRootPath, "Template", FileName);
+
+            byte[] fileContents = System.IO.File.ReadAllBytes(filePath);
+
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName);
+
+        }
+
         #region Jquery
 
         [ValidateInput(false)]
@@ -838,6 +852,225 @@ namespace WebPccuClub.Controllers
 
             return Json(vmRtn);
         }
+
+        #region 活動結案
+
+        [Log(LogActionChineseName.新增活動結案)]
+        public IActionResult CreateClubActFinish(string id, ClubActReportViewModel vm)
+        {
+            if (string.IsNullOrEmpty(id))
+                return RedirectToAction("Index");
+
+            vm.ClubActFinish = dbAccess.GetClubActFinishData(id);
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(1);
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.新增活動結案儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> SaveActFinishNewData(ClubActReportViewModel vm)
+        {
+            try
+            {
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("ElseFile"))
+                        {
+                            var file = Request.Form.Files.GetFile("ClubActFinish.ElseFile");
+
+                            string strFilePath = await upload.UploadFileAsync("ActFinish", file);
+
+                            vm.ClubActFinish.ElseFile = strFilePath;
+                        }
+                    }
+                }
+
+
+                dbAccess.DbaInitialTransaction();
+                DataTable dt = new DataTable();
+
+                var dbResult = dbAccess.InsertActFinishData(vm, LoginUser, out dt);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                if (vm.File != null)
+                {
+                    string ActFinishId = dt.QueryFieldByDT("ActFinishId");
+                    List<ActFinishPersonModel> LstActFinishPersonDetail = new List<ActFinishPersonModel>();
+
+                    using (Stream stream = vm.File.OpenReadStream())
+                    {
+                        XSSFWorkbook workbook = new XSSFWorkbook(stream);
+                        ISheet sheet = workbook.GetSheetAt(0);
+
+                        for (int i = 1; i <= sheet.LastRowNum; i++)
+                        {
+                            IRow row = sheet.GetRow(i);
+
+                            row.GetCell(0).SetCellType(CellType.String);
+
+                            if (row != null)
+                            {
+                                ActFinishPersonModel excel = new ActFinishPersonModel
+                                {
+                                    SNO = row.GetCell(0)?.StringCellValue.TrimStartAndEnd()
+                                };
+
+                                LstActFinishPersonDetail.Add(excel);
+                            }
+                        }
+                    }
+
+                    if (LstActFinishPersonDetail.Count == 0)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "新增失敗，學號匯入清單資料數為0";
+                        return Json(vmRtn);
+                    }
+
+                    dbResult = dbAccess.InsertPersonData(ActFinishId, LstActFinishPersonDetail, LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "新增失敗";
+                        return Json(vmRtn);
+                    }
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "新增失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+        #endregion
+
+        #region 全人
+
+        [Log(LogActionChineseName.全人學習護照填報紀錄_前台)]
+        public IActionResult CreateHolisticPassport(string id, ClubActReportViewModel vm)
+        {
+            if (string.IsNullOrEmpty(id))
+                return RedirectToAction("Index");
+
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(1);
+            ViewBag.ddlAllActName = dbAccess.GetAllActName();
+            ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify("1");
+            ViewBag.ddlHolisticMainClass = dbAccess.GetddlHolisticMainClass();
+            ViewBag.ddlHolisticSecondClass = dbAccess.GetddlHolisticSecondClass();
+            ViewBag.ddlHolisticThridClass = dbAccess.GetddlHolisticThirdClass();
+            ViewBag.ddlActInOrOut = dbAccess.GetddlActInOrOut();
+            
+
+            vm.ClubHolisticPassport = new ClubActReportClubHolisticPassport();
+            vm.ClubHolisticPassport.SchoolYear = PublicFun.GetNowSchoolYear();
+            vm.ClubHolisticPassport.ClubID = LoginUser.LoginId;
+            vm.ClubHolisticPassport.ActID = id;
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.新增活動結案儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> SavebHolisticPassportNewData(ClubActReportViewModel vm)
+        {
+            try
+            {
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("PosterIconPath"))
+                        {
+                            var file = Request.Form.Files.GetFile("ClubHolisticPassport.PosterIconPath");
+
+                            string strFilePath = await upload.UploadFileAsync("ClubHolisticPassport", file);
+
+                            vm.ClubHolisticPassport.PosterIconPath = strFilePath;
+                        }
+                    }
+                }
+
+
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.InsertHolisticPassportNewData(vm, LoginUser);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "新增失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
+        [Log(LogActionChineseName.取得樓館選單)]
+        [ValidateInput(false)]
+        public IActionResult HolisticInitBuildSelect(string PlaceSource)
+        {
+            if (PlaceSource == "01")
+            {
+                ViewBag.ddlBuild = dbAccess.GetBuild();
+            }
+
+            ClubActReportViewModel vm = new ClubActReportViewModel();
+            vm.ClubHolisticPassport = new ClubActReportClubHolisticPassport();
+            vm.ClubHolisticPassport.PlaceSource = PlaceSource;
+
+            return PartialView("_HolisticPlaceDataPartial", vm);
+        }
+
+        [Log(LogActionChineseName.取得場地選單)]
+        [ValidateInput(false)]
+        public IActionResult HolisticInitPlaceSelect(string PlaceSource, string Buildid)
+        {
+            ViewBag.ddlBuild = dbAccess.GetBuild();
+            ViewBag.ddlPlace = dbAccess.GetPlace(PlaceSource, Buildid);
+
+
+            ClubActReportViewModel vm = new ClubActReportViewModel();
+            vm.ClubHolisticPassport = new ClubActReportClubHolisticPassport();
+            vm.ClubHolisticPassport.PlaceSource = PlaceSource;
+            vm.ClubHolisticPassport.BuildID = Buildid;
+
+
+            return PartialView("_HolisticPlaceDataPartial", vm);
+        }
+
+
+        #endregion
 
 
         #region Private

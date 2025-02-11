@@ -51,7 +51,7 @@
 
     <!-- Theme Custom CSS -->
     <link rel="stylesheet" href="~/assets/css/tools.css">
-    <link rel="stylesheet" href="~/assets/css/custom.css?v=1">
+    <link rel="stylesheet" href="@string.Format("/assets/css/custom.css?v={0}", DateTime.Now.ToString("HHmmss"))">
 
     <script src="~/js/jquery.min.js"></script>
 

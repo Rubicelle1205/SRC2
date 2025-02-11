@@ -1,0 +1,104 @@
+﻿@model WebPccuClub.Models.BorrowMainClassMangViewModel
+
+
+    <!-- /.card-header -->
+    <div class="card-body table-responsive p-0">
+        <table class="table table-bordered table-hover text-nowrap">
+            <thead>
+                <tr class="text-center">
+                <th width="20%">分類名稱</th>
+                <th width="30%">可借用日期</th>
+                <th width="30%">備註</th>
+                    <th width="20%">功能</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.ResultModel.Count > 0)
+                { 
+                    foreach (var item in Model.ResultModel)
+                    {
+                        <tr>
+                            <td class="text-center text-sm">@item.Text</td>
+                        <td class="text-left text-sm">@item.BorrowSDate.Value.ToString("yyyy/MM/dd") ~ @item.BorrowEDate.Value.ToString("yyyy/MM/dd")</td>
+                            <td class="text-left text-sm">@item.Memo</td>
+                            <td class="text-center text-sm" style="display: flex; justify-content: center; align-items: center;">
+                            @using (Html.BeginForm("Edit", "BorrowMainClassMang", FormMethod.Post, new { style = "float:left" }))
+                            {
+                                <button type="submit" value="@item.ID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">編輯</button>
+                            }
+
+                            <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel(@item.ID);">刪除</a>
+
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <td colspan="10">查無資料</td>
+                }
+            </tbody>
+        </table>
+    </div>
+
+<div class="card-footer clearfix">
+    <div class="pagination justify-content-end" id="SearchResultListPagination"></div>
+</div>
+    <!-- /.card-body -->
+
+<script>
+    $("#SearchResultListPagination").solventoPageBar(
+        {
+            containerHtml: "<ul class='pagination justify-content-end'>{{:firstPageRender}}{{:prePageRender}}{{:pageRender}}{{:nextPageRender}}{{:lastPageRender}}</ul>{{:totalPageRender}}", // render: pagesbarHtml
+            firstPageHtml: "<li class='page-item {{:disable}}'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-double-left'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            lastPageHtml: "<li class='page-item {{:disable}}'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-double-right'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            pageHtml: " <li class='page-item {{:selectedHtml}}'><a {{:idx}} class='page-link {{:pageClass}}'>{{:pageNumber}}</a></li>",//pageClass: clickEventClass, pageNumber: pageNumber, selectedHtml : selectedHtml,idx : idx
+            prePageHtml: "<li class='page-item'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-left'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            nextPageHtml: "<li class='page-item'><a {{:idx}} class='page-link {{:pageClass}}'><span class='fas fa-angle-right'></span></a></li>",// pageClass: clickEventClass,idx : idx
+            //totalPageHtml: "<div class='page-intro'>共<span>{{:totalCount}}</span>筆資料</div>",
+            totalPageHtml: "",
+            pNow: "目前為第 {{:pnow}} 頁 / 共 {{:ptotle}} 頁",
+            pEver: "每頁顯示 {{:pever}} 筆 / 共 {{:ptotleever}} 筆",
+            pageSelectedHtml: "active",
+        },
+        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.ConditionModel.Page)']").val()) + 1,
+        parseInt($('#SearchForm').find("input[name='@Html.NameFor(m => m.ConditionModel.PageSize)']").val()),
+
+    @Model.ConditionModel.TotalCount,
+        changePage
+    );
+
+    function changePage(idx) {
+        //動畫
+        $('#SearchForm').find("input[name='@Html.NameFor(m => m.ConditionModel.Page)']").val(idx - 1);
+        //取頁面數
+        $("#@Html.IdFor(m => m.ConditionModel.Page)").val(idx - 1);
+
+        GoSearch();
+    }
+
+    function ChkDel(Ser) {
+        $.confirm({
+            title: '確定刪除?',
+            content: '刪除後資料無法復原!',
+            buttons: {
+                確定: function () {
+                    SendAjax({
+                        url: '@Url.Action("Delete")',
+                        data: { 'Ser': Ser },
+                        success: function (result) {
+                            if (result.errorCode == 0) { $.alert("刪除成功"); }
+                            else { $.alert(result.errorMsg); }
+
+                            GoSearch();
+                        }
+                    });
+                },
+                取消: function () {
+                },
+            }
+        });
+    }
+    
+
+</script>

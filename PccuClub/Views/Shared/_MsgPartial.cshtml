@@ -5,9 +5,25 @@
     {
         StringBuilder sb = new StringBuilder();
         List<String> AlertMsg = TempData["WEBSOL_ALERT_MESSAGE"] as List<String>;
-        foreach (string msg in AlertMsg)
+        Array ArrMsg = TempData["WEBSOL_ALERT_MESSAGE"] as Array;
+
+        if (null != AlertMsg)
         {
-            sb.Append(@$"<div class='AlertMsgDialog' data-alerttype='' title='' style='display:none;'><p>{msg}</p></div>");
+            foreach (string msg in AlertMsg)
+            {
+                sb.Append(@$"<div class='AlertMsgDialog' data-alerttype='' title='' style='display:none;'><p>{msg}</p></div>");
+            }
+        }
+        else
+        {
+            if (null != ArrMsg)
+            {
+
+                foreach (string msg in ArrMsg)
+                {
+                    sb.Append(@$"<div class='AlertMsgDialog' data-alerttype='' title='' style='display:none;'><p>{msg}</p></div>");
+                }
+            }
         }
 
         TempData.Remove("WEBSOL_ALERT_MESSAGE");

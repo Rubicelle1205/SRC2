@@ -1,0 +1,162 @@
+﻿@model WebPccuClub.Models.BorrowSecondResourceMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<head>
+    <script src="~/js/backend_case.js"></script>
+</head>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form action="" enctype="multipart/form-data" id="form" method="post">
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <!--修改時才顯示 (start)-->
+                                    <tr>
+                                        <th width="10%">建立時間</th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.Created)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">更新時間</th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.LastModified)</td>
+                                    </tr>
+                                    <!--修改時才顯示 (end)-->
+                                    <tr>
+                                        <th width="10%">上下架狀態<span class="required">*</span></th>
+                                        <td>@Html.DropDownListFor(m => m.EditModel.ShelvesStatus ,(List<SelectListItem>)ViewBag.ddlShelvesStatus,"請選擇上下架狀態", new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">借用狀態<span class="required">*</span></th>
+                                        <td>@Html.DropDownListFor(m => m.EditModel.BorrowStatus ,(List<SelectListItem>)ViewBag.ddlBorrowStatus,"請選擇借用狀態", new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">主資源名稱<span class="required">*</span></th>
+                                        <td>@Html.DropDownListFor(m => m.EditModel.MainResourceID, (List<SelectListItem>)ViewBag.ddlMainResource, "請選擇主資源名稱", new { @class = "form-control" })</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">資產號碼<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.SecondResourceNo, new {@class = "form-control", @placeholder="請輸入資產號碼（單位內部管理使用）"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">子資源名稱<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.SecondResourceName, new {@class = "form-control", @placeholder="請輸入子資源名稱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">資產編號<span class="required"></span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.SecondResourceSerNo, new {@class = "form-control", @placeholder="請輸入資產編號（採行政院主計總處財物標準分類英數格式，單位自行購置或已除帳不會有這個號碼）"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">設備機號<span class="required"></span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.DeviceNo, new {@class = "form-control", @placeholder="請輸入設備機號（即廠商出貨時商品序號）"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">品牌型號<span class="required"></span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Brand, new {@class = "form-control", @placeholder="請輸入品牌型號"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">規格<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Specification, new {@class = "form-control", @placeholder="請輸入規格（顯示於前台）"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">存放位置<span class="required"></span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Location, new {@class = "form-control", @placeholder="請輸入存放位置"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">備註<span class="required"></span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Memo, new {@class = "form-control", @placeholder="請輸入備註", rows="5"})</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- /.card-body -->
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                    @Html.HiddenFor(m => m.EditModel.ID)
+                </form>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+
+<script>
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var ID = $('#@Html.IdFor(m => m.EditModel.ID)').val();
+        var ShelvesStatus = $('#@Html.IdFor(m => m.EditModel.ShelvesStatus)').val();
+        var BorrowStatus = $('#@Html.IdFor(m => m.EditModel.BorrowStatus)').val();
+        var MainResourceID = $('#@Html.IdFor(m => m.EditModel.MainResourceID)').val();
+        var SecondResourceNo = $('#@Html.IdFor(m => m.EditModel.SecondResourceNo)').val();
+        var SecondResourceName = $('#@Html.IdFor(m => m.EditModel.SecondResourceName)').val();
+        var SecondResourceSerNo = $('#@Html.IdFor(m => m.EditModel.SecondResourceSerNo)').val();
+        var DeviceNo = $('#@Html.IdFor(m => m.EditModel.DeviceNo)').val();
+        var Brand = $('#@Html.IdFor(m => m.EditModel.Brand)').val();
+        var Specification = $('#@Html.IdFor(m => m.EditModel.Specification)').val();
+        var Location = $('#@Html.IdFor(m => m.EditModel.Location)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+        if (MainResourceID == "") { $.alert("需選擇主資源名稱"); return; }
+        if (ShelvesStatus == "") { $.alert("需選擇上下架狀態"); return; }
+        if (BorrowStatus == "") { $.alert("需選擇借用狀態"); return; }
+        if (SecondResourceNo == "") { $.alert("資產號碼不可空白"); return; }
+        if (SecondResourceName == "") { $.alert("子資源名稱不可空白"); return; }
+        if (Specification == "") { $.alert("規格不可空白"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.ID)', ID);
+        data.append('@Html.NameFor(m => m.EditModel.MainResourceID)', MainResourceID);
+        data.append('@Html.NameFor(m => m.EditModel.ShelvesStatus)', ShelvesStatus);
+        data.append('@Html.NameFor(m => m.EditModel.BorrowStatus)', BorrowStatus);
+        data.append('@Html.NameFor(m => m.EditModel.SecondResourceNo)', SecondResourceNo);
+        data.append('@Html.NameFor(m => m.EditModel.SecondResourceName)', SecondResourceName);
+        data.append('@Html.NameFor(m => m.EditModel.SecondResourceSerNo)', SecondResourceSerNo);
+        data.append('@Html.NameFor(m => m.EditModel.DeviceNo)', DeviceNo);
+        data.append('@Html.NameFor(m => m.EditModel.Brand)', Brand);
+        data.append('@Html.NameFor(m => m.EditModel.Specification)', Specification);
+        data.append('@Html.NameFor(m => m.EditModel.Location)', Location);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+    }
+
+</script>

@@ -1,0 +1,116 @@
+﻿@model WebPccuClub.Models.EventGenderMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                            <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="2">
+                                            <span class="text-sm text-danger font-weight-bold">※匯入前請先進行匯出，並按照Excel格式進行修改</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            Excel<span class="required">*</span>
+                                            <span id="spantip" class="mx-1">
+                                                <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                            </span>
+                                        <br />
+                                        <a href="@Url.Action("DownloadTemplate", "EventGenderMang")" class="link-primary">範本檔下載</a>
+                                        </th>
+                                        <td>
+                                            <label class="btn btn-outline-primary mb-0">
+                                                <input id="excelFile" name="excelFile" type="file" class="filesupload" style="display:none;" accept=".xlsx" />
+                                                <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                            </label>
+                                            <span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer d-flex justify-content-end">
+                            <button id="Reset" type="reset" class="mx-1 btn btn-outline-dark">重設</button>
+                            <button id="btnOK" type="button" class="btn btn-success">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    $('#spantip').tooltip({ title: "僅接受.xlsx檔" });
+
+    $('#excelFile').change(function (e) {
+        var geekss = e.target.files[0].name;
+        $('#filename').text(geekss);
+    });
+
+    $("#Reset").click(function () {
+        $('#filename').html("尚未選擇檔案...");
+    });
+
+    $('#btnOK').click(function () {
+        var formdata = new FormData();
+        var fileInput = document.getElementById('excelFile');
+        if (fileInput) {
+            for (i = 0; i < fileInput.files.length; i++) {
+                formdata.append('@Html.NameFor(m => m.File)', fileInput.files[i]);
+            }
+        }
+        else {
+            $.alert("尚未選擇檔案");
+            return;
+        }
+
+        $.ajax({
+            method: "POST",
+            url: "@(Url.Action("ImportExcel", "EventGenderMang"))",
+            async: true,
+            data: formdata,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "上傳成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+            error: function () {
+                $.alert(result.errorMsg);
+            }
+        });
+    });
+
+</script>

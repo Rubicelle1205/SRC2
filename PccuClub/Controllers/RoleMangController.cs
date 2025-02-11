@@ -90,9 +90,9 @@ namespace WebPccuClub.Controllers
                 foreach (RoleFunInfo item2 in oRoleFunInfo)
                 {
                     FunInfo fun = new FunInfo();
-                    fun = LstAllFunInfo.Where(x => x.MenuNode == item2.MenuNode && x.MenuUpNode != "-1" && item2.RoleID == item.RoleId).FirstOrDefault();
-                    
-                    if(fun != null)
+                    fun = LstAllFunInfo.Where(x => x.MenuNode == item2.MenuNode && x.FunName != "初始頁" && item2.RoleID == item.RoleId).FirstOrDefault();
+
+                    if (fun != null)
                         oFunInfo.Add(fun);
                 }
 
@@ -218,12 +218,24 @@ namespace WebPccuClub.Controllers
                     {
                         DataTable dt = dbAccess.GetUpMenuNode(arr);
 
-                        foreach(DataRow dr in dt.Rows)
+                        HashSet<string> existingItems = new HashSet<string>(arr);
+
+
+                        foreach (DataRow dr in dt.Rows)
                         {
-                            arr = arr.Concat(new string[] { dr["MenuUpNode"].ToString() }).ToArray();
+                            string menuUpNode = dr["MenuUpNode"].ToString();
+                            // 檢查是否已存在
+                            if (!existingItems.Contains(menuUpNode))
+                            {
+                                // 加入到HashSet和arr中
+                                existingItems.Add(menuUpNode);
+                                arr = arr.Concat(new string[] { menuUpNode }).ToArray();
+                            }
                         }
 
-                        arr = arr.Concat(new string[] { "202303180000001" }).ToArray();
+                        //加入各系統初始頁
+                        string[] arr2 = dbAccess.GetDefaultPage(arr);
+                        arr = arr.Concat(arr2).ToArray();
 
                         dbResult = dbAccess.UpdateFunData(vm, arr);
 

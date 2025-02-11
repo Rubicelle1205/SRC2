@@ -1,0 +1,30 @@
+﻿@model WebPccuClub.Models.ConsultationCaseMangViewModel
+
+@{
+
+}
+
+@if (!string.IsNullOrEmpty(Model.CreateModel.RoomID))
+{
+    @if (ViewBag.ddlTalkSTime != null && ViewBag.ddlTalkETime != null)
+    {
+        <div class="input-group col-md-6">
+            <div class="input-group-prepend">
+                <span class="input-group-text">開始時間</span>
+            </div>
+            @Html.DropDownListFor(m => m.CreateModel.TalkSTime, (List<SelectListItem>)ViewBag.ddlTalkSTime, "諮商開始時間", new { @class = "form-control" })
+            <div class="input-group-prepend">
+                <span class="input-group-text">結束時間</span>
+            </div>
+            @Html.DropDownListFor(m => m.CreateModel.TalkETime, (List<SelectListItem>)ViewBag.ddlTalkETime, "諮商結束時間", new { @class = "form-control" })
+        </div>
+    }
+}
+
+<script>
+
+</script>
+
+<style>
+
+</style>

@@ -31,6 +31,7 @@ namespace WebPccuClub.Controllers
 
         public List<string> AlertMsg = new List<string>();
 
+
         /// <summary> 目前所在功能 </summary>
         public string MenuNode
         {
@@ -44,12 +45,12 @@ namespace WebPccuClub.Controllers
         }
 
         /// <summary> 登入使用者 </summary>
-        protected UserInfo LoginUser
+        public UserInfo LoginUser
         {
             get
-            { return HttpContext.Session.GetObject<UserInfo>("LoginUser"); }
+            { return HttpContext.Session.GetObject<UserInfo>("FLoginUser"); }
             set
-            { HttpContext.Session.SetObject("LoginUser", value); }
+            { HttpContext.Session.SetObject("FLoginUser", value); }
         }
 
         #endregion
@@ -180,16 +181,30 @@ namespace WebPccuClub.Controllers
             ModelState.Clear();
 
             var controller = (ControllerBase)filterContext.Controller;
+            var controllerName = controller.ControllerContext.ActionDescriptor.ControllerName;
             var actionName = controller.ControllerContext.ActionDescriptor.ActionName;
             var controllerAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetCustomAttributes(typeof(LogAttribute), false);
             var actionAttributes = controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.GetMethod(actionName)?.GetCustomAttributes(typeof(LogAttribute), false);
+            string SystemCode = dbAccess.GetSystemCode(controllerName);
+            
+
+            if (LoginUser != null)
+            {
+                UserInfo thisUser = HttpContext.Session.GetObject<UserInfo>("FLoginUser");
+                string UnitName = dbAccess.GetUnitName(thisUser, SystemCode);
+                thisUser.UnitName = UnitName;
+                thisUser.LoginSystemCode = SystemCode;
+                thisUser.LoginSource = "B";
+                HttpContext.Session.SetObject("FLoginUser", thisUser);
+            }
+
             if (LoginUser != null && (controllerAttributes?.Any() ?? false) && (actionAttributes?.Any() ?? false))
             {
                 LogViewModel logModel = new LogViewModel()
                 {
                     LoginID = LoginUser.LoginId,
                     UserName = LoginUser.UserName,
-                    RoleName = string.Join(",", LoginUser.UserRole[0].RoleName),
+                    RoleName = string.Join(",", LoginUser.UserRole.Count > 0 ? LoginUser.UserRole[0].RoleName: ""),
                     IP = filterContext.HttpContext.Connection?.RemoteIpAddress?.ToString(),
                     FunName = controllerAttributes != null ? (controllerAttributes.FirstOrDefault() as LogAttribute)?.LogDisplayName : controller.ControllerContext.ActionDescriptor.ControllerName,
                     ActionName = actionAttributes != null ? (actionAttributes.FirstOrDefault() as LogAttribute)?.LogDisplayName : controller.ControllerContext.ActionDescriptor.ActionName
@@ -300,7 +315,7 @@ namespace WebPccuClub.Controllers
         /// <param name="funtionname">功能名稱</param>
         public virtual bool FuntionVisiable(string funtionname)
         {
-            UserInfo LoginUser = HttpContext.Session.GetObject<UserInfo>("LoginUser");
+            UserInfo LoginUser = HttpContext.Session.GetObject<UserInfo>("FLoginUser");
             List<FunInfo> rootMenu = LoginUser.UserRoleFun.FindAll(f => f.MenuName == funtionname);
             return (LoginUser.isSupervisor() || rootMenu.Count() > 0) ? true : false;
         }

@@ -1,0 +1,357 @@
+﻿@model WebPccuClub.Models.HolisticPassportMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+    List<SelectListItem> LstPlaceSource = ViewBag.ddlActInOrOut;
+}
+
+<head>
+    <script src="~/js/backend_case.js"></script>
+</head>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">學年度<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.SchoolYear, new {@class = "form-control", @placeholder = "請輸入學年度"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">社團代號<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.ClubID ,(List<SelectListItem>)ViewBag.ddlAllClub,"請選擇社團", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">活動報備編號<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.ActID ,(List<SelectListItem>)ViewBag.ddlAllActName,"請選擇活動報備編號", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">全人端名稱<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.HolisticActName, new {@class = "form-control", @placeholder = "請輸入全人端名稱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">活動名稱<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.ActName, new {@class = "form-control", @placeholder = "請輸入活動名稱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">活動說明<span class="required">*</span></th>
+                                        <td>@Html.TextAreaFor(m => m.CreateModel.ActDesc, new {@class = "form-control", @placeholder = "請輸入活動說明", rows="4"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">全人學習認證群組<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.MainID ,(List<SelectListItem>)ViewBag.ddlHolisticMainClass,"請選擇全人學習認證群組", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">全人學習認證類別<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.SecondID ,(List<SelectListItem>)ViewBag.ddlHolisticSecondClass,"請選擇全人學習認證類別", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">全人學習認證項目<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.ThridID ,(List<SelectListItem>)ViewBag.ddlHolisticThridClass,"請選擇全人學習認證項目", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">活動開始時間<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.ActSTime, new {@class = "form-control", @type="date", @placeholder = "請點選輸入框填入活動開始時間"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">活動結束時間<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.ActETime, new {@class = "form-control", @type="date", @placeholder = "請點選輸入框填入活動結束時間"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">報名方式<span class="required">*</span></th>
+                                        <td>@Html.TextAreaFor(m => m.CreateModel.RegistrationWay, new {@class = "form-control", @placeholder = "請輸入報名方式"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">活動地點<span class="required">*</span></th>
+                                        <td>
+                                            @foreach (SelectListItem item in LstPlaceSource)
+                                            {
+                                                <div class="icheck-primary d-inline">
+                                                    @Html.RadioButtonFor(m => m.CreateModel.PlaceSource, item.Value, new { @id = string.Format("PlaceSource_{0}", item.Value) })
+                                                    <label for=@string.Format("PlaceSource_{0}", item.Value)>@item.Text</label>
+                                                </div>
+                                            }
+
+                                            <div id="class_input_box"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">主講人<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.Presenter, new {@class = "form-control", @placeholder = "請輸入主講人"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">主講人介紹<span class="required">*</span></th>
+                                        <td>@Html.TextAreaFor(m => m.CreateModel.PresenterIntro, new {@class = "form-control", @placeholder = "請輸入主講人介紹", rows = "4"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">主持人<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.Host, new {@class = "form-control", @placeholder = "請輸入主持人"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">主持人介紹<span class="required">*</span></th>
+                                        <td>@Html.TextAreaFor(m => m.CreateModel.HostIntro, new {@class = "form-control", @placeholder = "請輸入主持人介紹", rows = "4"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">主辦單位<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.ClubCName, new {@class = "form-control", @placeholder = "請輸入主辦單位"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">聯絡人<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.ContactMan, new {@class = "form-control", @placeholder = "請輸入聯絡人"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">負責補登者<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.RegistrationMan, new {@class = "form-control", @placeholder = "請輸入負責補登者"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">開放對象<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.OpenObject, new {@class = "form-control", @placeholder = "請輸入開放對象"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">關鍵字標籤<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.CreateModel.Tag, new {@class = "form-control", @placeholder = "請輸入關鍵字標籤"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">
+                                            海報縮圖<span class="required">*</span>
+                                        </th>
+                                        <td>
+                                            <label class="btn btn-outline-primary mb-0">
+                                                @Html.TextBoxFor(m => m.CreateModel.PosterIconPath, new{ @class="filesupload", type="file", style="display:none;", accept=".jpeg,.jpg,.png"})
+                                                <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                            </label>
+                                            <span id="filename" class="text-sm mx-2 text-muted">尚未選擇檔案...</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">備註<span class="required"></span></th>
+                                        <td>@Html.TextAreaFor(m => m.CreateModel.Memo, new {@class = "form-control", @placeholder = "請輸入備註", rows = "6"})</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="card-body table-responsive-sm">
+                                    <h6 class="card-subtitle mb-2 text-muted"><span
+                                            class="required font-weight-bold">*</span> <small>為必填欄位</small></h6>
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                        <tr>
+                                            <th width="10%">審核狀態<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.ActVerify ,(List<SelectListItem>)ViewBag.ddlAllActVerify,"請選擇審核狀態", new {@class = "form-control"})
+                                        </td>
+                                        </tr>
+                                        <tr>
+                                        <th width="10%">審核備註<span class="required"></span></th>
+                                        <td>@Html.TextAreaFor(m => m.CreateModel.ActVerifyMemo, new {@class = "form-control", @placeholder = "請輸入審核備註", rows = "6"})</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </form> 
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    $(document).ready(function () {
+
+        $("[id ^= 'PlaceSource_']").on('change', function () {
+
+            InitBuildSelect($("[id ^= 'PlaceSource_']:checked").val());
+        });
+
+    });
+
+    function InitBuildSelect(PlaceSource) {
+
+        SendAjax({
+            url: '@Url.Action("InitBuildSelect")',
+            data: { 'PlaceSource': PlaceSource },
+            success: function (result) {
+                $('#class_input_box').html(result);
+            }
+        });
+    }
+
+
+    $('#@Html.IdFor(m => m.CreateModel.PosterIconPath)').change(function (e) {
+        var geekss = e.target.files[0].name;
+        $('#filename').text(geekss);
+    });
+
+
+    function SaveData() {
+
+        var data = new FormData()
+
+
+        var SchoolYear = $('#@Html.IdFor(m => m.CreateModel.SchoolYear)').val();
+        var ClubID = $('#@Html.IdFor(m => m.CreateModel.ClubID)').val();
+        var ActID = $('#@Html.IdFor(m => m.CreateModel.ActID)').val();
+        var HolisticActName = $('#@Html.IdFor(m => m.CreateModel.HolisticActName)').val();
+        var ActName = $('#@Html.IdFor(m => m.CreateModel.ActName)').val();
+        var ActDesc = $('#@Html.IdFor(m => m.CreateModel.ActDesc)').val();
+        var MainID = $('#@Html.IdFor(m => m.CreateModel.MainID)').val();
+        var SecondID = $('#@Html.IdFor(m => m.CreateModel.SecondID)').val();
+        var ThridID = $('#@Html.IdFor(m => m.CreateModel.ThridID)').val();
+        var ActSTime = $('#@Html.IdFor(m => m.CreateModel.ActSTime)').val();
+        var ActETime = $('#@Html.IdFor(m => m.CreateModel.ActETime)').val();
+        var RegistrationWay = $('#@Html.IdFor(m => m.CreateModel.RegistrationWay)').val();
+        var PlaceSource = $('#@Html.IdFor(m => m.CreateModel.PlaceSource)').val();
+        var BuildID = $('#@Html.IdFor(m => m.CreateModel.BuildID)').val();
+        var PlaceID = $('#@Html.IdFor(m => m.CreateModel.PlaceID)').val();
+        var PlaceName = $('#@Html.IdFor(m => m.CreateModel.PlaceName)').val();
+        
+        var Presenter = $('#@Html.IdFor(m => m.CreateModel.Presenter)').val();
+        var PresenterIntro = $('#@Html.IdFor(m => m.CreateModel.PresenterIntro)').val();
+        var Host = $('#@Html.IdFor(m => m.CreateModel.Host)').val();
+        var HostIntro = $('#@Html.IdFor(m => m.CreateModel.HostIntro)').val();
+
+        var ClubCName = $('#@Html.IdFor(m => m.CreateModel.ClubCName)').val();
+        var ContactMan = $('#@Html.IdFor(m => m.CreateModel.ContactMan)').val();
+        var RegistrationMan = $('#@Html.IdFor(m => m.CreateModel.RegistrationMan)').val();
+        var OpenObject = $('#@Html.IdFor(m => m.CreateModel.OpenObject)').val();
+        var Tag = $('#@Html.IdFor(m => m.CreateModel.Tag)').val();
+        var Memo = $('#@Html.IdFor(m => m.CreateModel.Memo)').val();
+
+        var ActVerify = $('#@Html.IdFor(m => m.CreateModel.ActVerify)').val();
+        var ActVerifyMemo = $('#@Html.IdFor(m => m.CreateModel.ActVerifyMemo)').val();
+
+        var PosterIconPath = $('#@Html.IdFor(m => m.CreateModel.PosterIconPath)')[0].files[0];
+        if (typeof PosterIconPath !== 'undefined') {
+            var fileExtension = PosterIconPath.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.CreateModel.PosterIconPath)', PosterIconPath);
+        }
+
+
+        if (typeof BuildID === 'undefined') { BuildID = ""; }
+        if (typeof PlaceID === 'undefined') { PlaceID = ""; }
+        if (typeof PlaceName === 'undefined') { PlaceName = ""; }
+
+        if (SchoolYear == "") { $.alert("學年度不可為空白"); return; }
+        if (ClubID == "") { $.alert("社團代號不可為空白"); return; }
+        if (ActID == "") { $.alert("活動報備編號不可為空白"); return; }
+        if (HolisticActName == "") { $.alert("全人端名稱不可為空白"); return; }
+        if (ActName == "") { $.alert("活動名稱不可為空白"); return; }
+        if (ActDesc == "") { $.alert("活動說明不可為空白"); return; }
+        if (MainID == "") { $.alert("全人學習認證群組不可為空白"); return; }
+        if (SecondID == "") { $.alert("全人學習認證類別不可為空白"); return; }
+        if (ThridID == "") { $.alert("全人學習認證項目不可為空白"); return; }
+        if (ActSTime == "") { $.alert("活動開始時間不可為空白"); return; }
+        if (ActETime == "") { $.alert("活動結束時間不可為空白"); return; }
+        if (RegistrationWay == "") { $.alert("報名方式不可為空白"); return; }
+        if (PlaceSource == "") { $.alert("活動地點不可為空白"); return; }
+        
+        if (Presenter == "") { $.alert("主講人不可為空白"); return; }
+        if (PresenterIntro == "") { $.alert("主講人介紹不可為空白"); return; }
+        if (Host == "") { $.alert("主持人不可為空白"); return; }
+        if (HostIntro == "") { $.alert("主持人介紹不可為空白"); return; }
+        if (ClubCName == "") { $.alert("主辦單位不可為空白"); return; }
+        if (ContactMan == "") { $.alert("聯絡人不可為空白"); return; }
+        if (RegistrationMan == "") { $.alert("負責補登者不可為空白"); return; }
+        if (OpenObject == "") { $.alert("開放對象不可為空白"); return; }
+        if (Tag == "") { $.alert("關鍵字標籤不可為空白"); return; }
+        if (ActVerify == "") { $.alert("審核狀態不可為空白"); return; }
+
+
+
+        data.append('@Html.NameFor(m => m.CreateModel.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.CreateModel.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.CreateModel.ActID)', ActID);
+        data.append('@Html.NameFor(m => m.CreateModel.HolisticActName)', HolisticActName);
+        data.append('@Html.NameFor(m => m.CreateModel.ActName)', ActName);
+        data.append('@Html.NameFor(m => m.CreateModel.ActDesc)', ActDesc);
+        data.append('@Html.NameFor(m => m.CreateModel.MainID)', MainID);
+        data.append('@Html.NameFor(m => m.CreateModel.SecondID)', SecondID);
+        data.append('@Html.NameFor(m => m.CreateModel.ThridID)', ThridID);
+        data.append('@Html.NameFor(m => m.CreateModel.ActSTime)', ActSTime);
+        data.append('@Html.NameFor(m => m.CreateModel.ActETime)', ActETime);
+        data.append('@Html.NameFor(m => m.CreateModel.RegistrationWay)', RegistrationWay);
+        data.append('@Html.NameFor(m => m.CreateModel.PlaceSource)', PlaceSource);
+        data.append('@Html.NameFor(m => m.CreateModel.BuildID)', BuildID);
+        data.append('@Html.NameFor(m => m.CreateModel.PlaceID)', PlaceID);
+        data.append('@Html.NameFor(m => m.CreateModel.PlaceName)', PlaceName);
+        data.append('@Html.NameFor(m => m.CreateModel.Presenter)', Presenter);
+        data.append('@Html.NameFor(m => m.CreateModel.PresenterIntro)', PresenterIntro);
+        data.append('@Html.NameFor(m => m.CreateModel.Host)', Host);
+        data.append('@Html.NameFor(m => m.CreateModel.HostIntro)', HostIntro);
+        data.append('@Html.NameFor(m => m.CreateModel.ClubCName)', ClubCName);
+        data.append('@Html.NameFor(m => m.CreateModel.ContactMan)', ContactMan);
+        data.append('@Html.NameFor(m => m.CreateModel.RegistrationMan)', RegistrationMan);
+        data.append('@Html.NameFor(m => m.CreateModel.OpenObject)', OpenObject);
+        data.append('@Html.NameFor(m => m.CreateModel.Tag)', Tag);
+        data.append('@Html.NameFor(m => m.CreateModel.Memo)', Memo);
+        data.append('@Html.NameFor(m => m.CreateModel.ActVerify)', ActVerify);
+        data.append('@Html.NameFor(m => m.CreateModel.ActVerifyMemo)', ActVerifyMemo);
+
+        SendAjax({
+            url: '@Url.Action("SaveNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                Reset();
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+    }
+
+    function Reset() {
+        $('#@Html.IdFor(m => m.CreateModel.Memo)').val("");
+    }
+</script>

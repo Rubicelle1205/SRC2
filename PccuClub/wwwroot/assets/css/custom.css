@@ -617,6 +617,7 @@ select.form-control {
 }
 .pagelist .listItem .icon {
     width: 10%;
+    margin-left: auto;
     text-align: center;
     font-weight: 600;
     font-size: 17px;
@@ -629,12 +630,31 @@ select.form-control {
     justify-content: center;
     text-decoration: none;
 }
-.pagelist.pagelist-icon2 .listItem .icon:nth-of-type(1) {
+
+.pagelist.pagelist-icon2 .listItem .icon.full-icon {
+    background-color: #ff9666;
+}
+
+.pagelist.pagelist-icon2 .listItem .icon.full-icon:hover {
+    background-color: #ff7433;
+}
+
+.pagelist.pagelist-icon2 .listItem .icon.end-icon {
     background-color: #f9be91;
 }
-.pagelist.pagelist-icon2 .listItem .icon:nth-of-type(1):hover {
+
+.pagelist.pagelist-icon2 .listItem .icon.end-icon:hover {
     background-color: #ffab6b;
 }
+
+.pagelist.pagelist-icon2 .listItem .icon.end-exist-icon {
+    background-color: #8181D7;
+}
+
+    .pagelist.pagelist-icon2 .listItem .icon.end-exist-icon:hover {
+        background-color: #5959C3;
+    }
+
 .pagelist.pagelist-icon2 .listItem .icon:hover {
     background-color: #ffcd38;
 }
@@ -689,7 +709,10 @@ select.form-control {
         width: 50%;
         padding: 16px 0;
     }
-    
+    .pagelist.pagelist-icon2 .listItem .icon:only-of-type {
+        width: 100%;
+        padding: 16px 0;
+    }
     .listItem .title {
         font-size: 18px;
     }

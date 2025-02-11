@@ -1,0 +1,14 @@
+﻿@model WebPccuClub.Models.EventCaseMangViewModel
+
+
+@if (Model != null)
+{
+    if (Model.CreateModel != null)
+    { 
+        @Html.DropDownListFor(m => m.CreateModel.SecondClass, (List<SelectListItem>)ViewBag.ddlSecondClass, "請選擇校安事件次類別", new { @class = "form-control" })
+    }
+    else if(Model.EditModel != null)
+    {
+        @Html.DropDownListFor(m => m.EditModel.SecondClass, (List<SelectListItem>)ViewBag.ddlSecondClass, "請選擇校安事件次類別", new { @class = "form-control" })
+    }
+}

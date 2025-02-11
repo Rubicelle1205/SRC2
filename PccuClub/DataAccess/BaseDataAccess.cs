@@ -1,4 +1,5 @@
 ﻿using DataAccess;
+using PccuClub.WebAuth;
 using System.Data;
 using WebPccuClub.Global;
 using WebPccuClub.Models;
@@ -33,8 +34,56 @@ namespace WebPccuClub.DataAccess
             return ExecuteResult;
         }
 
+        public string GetSystemCode(string Url)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+            DataSet ds = new DataSet();
 
-		public string GetRemind(string ControllerName)
+            string str = "";
+            string CommendText = "";
+
+            CommendText = $@"SELECT A.SystemCode
+                                   FROM SystemFun A
+                                  WHERE A.Url = '/' + '{Url}'";
+
+            DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                str = ds.Tables[0].QueryFieldByDT("SystemCode");
+            }
+
+            return str;
+        }
+
+        public string GetUnitName(UserInfo userinfo, string SystemCode)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+            DataSet ds = new DataSet();
+
+            string str = "";
+            string CommendText = "";
+
+            CommendText = $@"SELECT C.SystemCode, C.RoleName AS UnitName
+                               FROM UserMain A
+                          LEFT JOIN UserRole B ON B.LoginId = A.LoginId
+                          LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
+                              WHERE 1 = 1
+                                AND A.LoginId = '{userinfo.LoginId}' AND C.SystemCode = '{SystemCode}'";
+
+            DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                str = ds.Tables[0].QueryFieldByDT("UnitName");
+            }
+
+            return str;
+        }
+
+        public string GetRemind(string ControllerName)
 		{
 			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
 			DBAParameter parameters = new DBAParameter();
@@ -51,8 +100,12 @@ namespace WebPccuClub.DataAccess
 			{
 				CommendText = "SELECT ActivityConform AS Content FROM ConformMang ";
 			}
+            else if (ControllerName == "ClubActFinish")
+            {
+                CommendText = "SELECT ActFinishConform AS Content FROM ConformMang ";
+            }
 
-			DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+            DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
 
             if (ds != null && ds.Tables[0].Rows.Count > 0) {
                 str = ds.Tables[0].QueryFieldByDT("Content");
@@ -60,5 +113,31 @@ namespace WebPccuClub.DataAccess
 
 			return str;
 		}
-	}
+
+        public string GetFunctionSource(string controllerName)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+            DataSet ds = new DataSet();
+
+            string str = "";
+            string CommendText = "";
+
+                CommendText = $@"SELECT B.BackOrFront
+                                   FROM SystemFun A
+                              LEFT JOIN SystemMenu B ON B.FunId = A.FunId
+                                  WHERE A.Url = '/' + '{controllerName}'";
+
+            DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                str = ds.Tables[0].QueryFieldByDT("BackOrFront");
+            }
+
+            return str;
+        }
+
+
+    }
 }

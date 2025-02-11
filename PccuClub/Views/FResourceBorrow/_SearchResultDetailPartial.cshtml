@@ -1,0 +1,57 @@
+﻿@model WebPccuClub.Models.FResourceBorrowViewModel
+
+@if (Model.ResultDetailModel != null)
+{
+    <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span class="fs-16">提出申請日</span>
+            <span class="fs-16">@Model.ResultDetailModel.Created.Value.ToString("yyyy-MM-dd")</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span class="fs-16">領取日期</span>
+            <span class="fs-16">@Model.ResultDetailModel.TakeSDate.Value.ToString("yyyy-MM-dd")</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span class="fs-16">歸還日期</span>
+            <span class="fs-16">@Model.ResultDetailModel.TakeEDate.Value.ToString("yyyy-MM-dd")</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span class="fs-16">申請單位類型</span>
+            <span class="fs-16">@Model.ResultDetailModel.ApplyUnitTypeText</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span class="fs-16">申請單位</span>
+            <span class="fs-16">@Model.ResultDetailModel.ApplyUnitName</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span class="fs-16">申請人員</span>
+            <span class="fs-16">@Model.ResultDetailModel.ApplyMan</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span class="fs-16">申請目的</span>
+            <span class="fs-16">@Model.ResultDetailModel.ApplyPurpose</span>
+        </li>
+    </ul>
+
+    @if (Model.ResultDetailModel.LstResource != null)
+    {
+        <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 借用資源清單</div>
+        <ul class="list-group">
+        
+            @foreach (FResourceBorrowResultDetailResourceModel item in Model.ResultDetailModel.LstResource)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span class="fs-16">@item.ResourceName</span>
+                <span class="fs-16"><i class="fas fa-x"></i> @item.Amt</span>
+            </li>
+        }
+        </ul>
+    }
+    
+}
+
+<!-- /.card-body -->
+
+<script>
+
+</script>

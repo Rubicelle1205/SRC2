@@ -1,0 +1,150 @@
+﻿@model WebPccuClub.Models.FBorrowRecordViewModel
+
+@{
+    Layout = "_FrontBorrowLayout";
+    ViewBag.Title = "資源借用系統";
+}
+<div class="col-xxl-8">
+    @if (Model.DetailModel != null)
+    {
+        <div class="contentWrapper">
+            <h4 class="pageTitle"></h4>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index")">我的借用紀錄</a></li>
+                    <li class="breadcrumb-item active">@Model.DetailModel.ActName</li>
+                </ol>
+            </nav>
+            <hr>
+            <div class="mb-4">
+                <a href="@Url.Action("Index")"><i class="fas fa-chevron-left"></i> 返回</a>
+            </div>
+
+            <div class="infoWrapper mb-4">
+                <div class="infoItem">
+                    <div class="tag">審核狀態</div>
+                    <div class="content">
+                        @if (Model.DetailModel.ActVerify == "01")
+                        {
+                            <div class="badge badge-primary">@Model.DetailModel.ActVerifyText</div>
+                        }
+                        else if (Model.DetailModel.ActVerify == "02")
+                        {
+                            <div class="badge badge-success">@Model.DetailModel.ActVerifyText</div>
+                        }
+                        else if (Model.DetailModel.ActVerify == "03")
+                        {
+                            <div class="badge badge-secondary">@Model.DetailModel.ActVerifyText</div>
+                        }
+                        else if (Model.DetailModel.ActVerify == "04")
+                        {
+                            <div class="badge badge-info">@Model.DetailModel.ActVerifyText</div>
+                        }
+                        else if (Model.DetailModel.ActVerify == "05")
+                        {
+                            <div class="badge badge-info">@Model.DetailModel.ActVerifyText</div>
+                        }
+                        else if (Model.DetailModel.ActVerify == "06")
+                        {
+                            <div class="badge badge-secondary">@Model.DetailModel.ActVerifyText</div>
+                        }
+                        else if (Model.DetailModel.ActVerify == "07")
+                        {
+                            <div class="badge badge-dark">@Model.DetailModel.ActVerifyText</div>
+                        }
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">審核備註</div>
+                    <div class="content">@Model.DetailModel.Memo</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">提出申請日期</div>
+                    <div class="content">@Model.DetailModel.Created.Value.ToString("yyyy/MM/dd")</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">申請單位(社團)</div>
+                    <div class="content">@Model.DetailModel.ApplyUnitName</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">申請人</div>
+                    <div class="content">@Model.DetailModel.ApplyMan</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">申請人職稱</div>
+                    <div class="content">@Model.DetailModel.ApplyTitle</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">申請人Email</div>
+                    <div class="content">@Model.DetailModel.ApplyEmail</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">申請人電話</div>
+                    <div class="content">@Model.DetailModel.ApplyTel</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">申請目的</div>
+                    <div class="content">@Model.DetailModel.ApplyPurpose</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">使用地點</div>
+                    <div class="content">@Model.DetailModel.UseLocation</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">實際使用日期</div>
+                    <div class="content">@Model.DetailModel.UseSDate.Value.ToString("yyyy/MM/dd") 至 @Model.DetailModel.UseEDate.Value.ToString("yyyy/MM/dd")</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">計畫領取日期</div>
+                    <div class="content">@Model.DetailModel.TakeSDate.Value.ToString("yyyy/MM/dd")</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">計畫歸還日期</div>
+                    <div class="content">@Model.DetailModel.TakeEDate.Value.ToString("yyyy/MM/dd")</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">佐證資料</div>
+                    <div class="content">
+                            @foreach (var item in Model.DetailModel.LstFile)
+                            {
+                                <div class="mb-1">
+                                <a class="text-decoration-underline" href="../@item.FilePath" target="_blank">@item.FileName</a>
+                                </div>
+                            }
+                    </div>
+                </div>
+            </div>
+
+            <div class="infoWrapper mb-5">
+                <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 借用資源清單</div>
+                <div class="scroll-hint hint"><i class="fas fa-info-circle"></i> 左右滑動查看完整表格</div>
+                <div class="scroll-box">
+                    <div class="memberlist item-9 mb-5">
+                        <div class="listHeader">
+                            <div class="listItem">
+                                <div class="item item-sm">資源類別</div>
+                                <div class="item">資源名稱</div>
+                                <div class="item">借用數量</div>
+                            </div>
+                        </div>
+                        <div class="listBody">
+                            @foreach(var item in Model.DetailModel.LstDevice)
+                            {
+                                <div class="listItem">
+                                    <div class="item item-sm">@item.MainClassIDText</div>
+                                    <div class="item">@item.MainResourceIDText</div>
+                                    <div class="item">@item.BorrowAmt</div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    }
+</div>
+
+<script>
+
+</script>

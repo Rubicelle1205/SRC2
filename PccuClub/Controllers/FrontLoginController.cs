@@ -45,7 +45,14 @@ namespace WebPccuClub.Controllers
         {
             FrontLoginViewModel vm = new FrontLoginViewModel();
             LoginLogEntity loginEntity = GetLoginLogEntity(vm);
+            DbExecuteInfo dbResult = new DbExecuteInfo();
+            bool hasSSOData = false;
+            bool Enable = false;
+            UserInfo user = new UserInfo();
+            UserInfo LoginUser = new UserInfo();
+
             string strResult = "";
+            
 
             if (string.IsNullOrEmpty(guid))
                 return View(vm);
@@ -57,32 +64,89 @@ namespace WebPccuClub.Controllers
             {
                 var result = await SSOAuth.GetSSOAuthData(guid);
 
+                dbAccess.WriteLog($"[SSO登入][Result]" + result.JSONData, null, enumLogConst.Information);
+
                 if (result.bError)
                 {
                     strResult = result.sMsg;
                     throw new Exception("登入轉換失敗，請使用帳號登入");
                 }
-                
 
                 SSOUserInfo sSOUserInfo = JsonConvert.DeserializeObject<SSOUserInfo>(result.JSONData);
 
-				var dbResult = dbAccess.InsertNewUser(sSOUserInfo);
-
-				if (!dbResult.isSuccess)
-				{
-					dbAccess.DbaRollBack();
-					throw new Exception("新增帳號失敗!");
-				}
-
-				if (!auth.GetUserByFUserID(sSOUserInfo.Account, out UserInfo user))
+                //寫入使用者與確認帳號登入
+                switch (sSOUserInfo.Role)
                 {
-                    loginEntity.Memo = "帳號不存在";
-                    throw new Exception("登入失敗，帳號不存在!");
+                    case "student":
+                        dbResult = dbAccess.InsertFrontNewUser(sSOUserInfo);
+
+                        if (!dbResult.isSuccess)
+                        {
+                            dbAccess.DbaRollBack();
+                            throw new Exception("新增帳號失敗!");
+                        }
+
+                        Enable = auth.ChkUserEnable(sSOUserInfo, "F");
+
+                        if (!Enable)
+                        {
+                            AlertMsg.Add("登入失敗，請確定人員啟用狀態!");
+                            throw new Exception("登入失敗，請確定人員啟用狀態!");
+                        }
+
+                        break;
+
+                    case "staff":
+                        hasSSOData = auth.CheckBackendNewUser(sSOUserInfo);
+
+                        if (!hasSSOData)
+                        {
+                            AlertMsg.Add("登入失敗，請確定是否已完成人員設定!");
+                            throw new Exception("登入失敗，請確定是否已完成人員設定!");
+                        }
+
+                        Enable = auth.ChkUserEnable(sSOUserInfo, "B");
+
+                        if (!Enable)
+                        {
+                            AlertMsg.Add("登入失敗，請確定人員啟用狀態!");
+                            throw new Exception("登入失敗，請確定人員啟用狀態!");
+                        }
+
+                        break;
+                    
+                    case "teacher":
+                        hasSSOData = auth.CheckBackendNewUser(sSOUserInfo);
+
+                        if (!hasSSOData)
+                        {
+                            AlertMsg.Add("登入失敗，請確定是否已完成人員設定!");
+                            throw new Exception("登入失敗，請確定是否已完成人員設定!");
+                        }
+
+                        Enable = auth.ChkUserEnable(sSOUserInfo, "B");
+
+                        if (!Enable)
+                        {
+                            AlertMsg.Add("登入失敗，請確定人員啟用狀態!");
+                            throw new Exception("登入失敗，請確定人員啟用狀態!");
+                        }
+
+                        break;
+
+                    default:
+                        throw new Exception("Json角色錯誤!" + result.JSONData);
                 }
 
-				bool isAuth = false;
+                
 
-                isAuth = auth.FLogin(sSOUserInfo.Account, out UserInfo LoginUser);
+
+                bool isAuth = false;
+
+                if (sSOUserInfo.Role == "student")
+                    isAuth = auth.SSOLogin(sSOUserInfo.Account, out LoginUser, "F");
+                else
+                    isAuth = auth.SSOLogin(sSOUserInfo.Account, out LoginUser, "B");
 
                 if (!isAuth)
                 {
@@ -106,7 +170,7 @@ namespace WebPccuClub.Controllers
                 LoginUser.SSODepartment = sSOUserInfo.Department;
 
                 loginEntity.Issuccess = true;
-                loginEntity.Loginid = user.LoginId;
+                loginEntity.Loginid = LoginUser.SSOAccount;
                 LoginUser.IP = loginEntity.Ip;
 
                 HttpContext.Session.SetObject("FLoginUser", LoginUser);
@@ -117,26 +181,26 @@ namespace WebPccuClub.Controllers
 
                 dbAccess.WriteLog($"[SSO登入] guid:{guid}", LoginUser, enumLogConst.Information);
 
-                return RedirectToAction("Index", "ClubList");
+                return RedirectToAction("Index", "MenuFront");
             }
             catch (FaultException)
             {
                 loginEntity.Issuccess = false;
                 loginEntity.Memo = "[API錯誤]登入轉換失敗";
-                AlertMsg.Add(string.Format(@"{0}", "登入轉換失敗，請使用帳號登入"));
+                AlertMsg.Add(string.Format(@"{0}", "登入轉換失敗，請稍後再試"));
                 InsertLoginLog(loginEntity);
 
-                return View("Index", vm);
+                return RedirectToAction("Index", "MenuFront");
             }
             catch (Exception ex)
             {
                 loginEntity.Issuccess = false;
-                loginEntity.Memo = "[API回傳錯誤]" + strResult;
+                loginEntity.Memo = "[API回傳錯誤]" + ex.Message;
 
-                AlertMsg.Add(string.Format(@"{0}", "登入轉換失敗，請使用帳號登入"));
+                AlertMsg.Add(string.Format(@"{0}", "登入轉換失敗，請稍後再試"));
                 InsertLoginLog(loginEntity);
 
-                return View("Index", vm);
+                return RedirectToAction("Index", "MenuFront");
             }
         }
 
@@ -219,7 +283,7 @@ namespace WebPccuClub.Controllers
 
             FrontLoginViewModel vm = new FrontLoginViewModel();
 
-            return View("Index", vm);
+            return RedirectToAction("Index", "MenuFront");
         }
 
         /// <summary> 取得驗證碼 </summary>

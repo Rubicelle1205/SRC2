@@ -61,6 +61,10 @@ namespace WebPccuClub.Models
         [DisplayName("社團組別")]
         public string? LifeClass { get; set; }
 
+        /// <summary>全人學習護照申請</summary>
+        [DisplayName("全人學習護照申請")]
+        public string? PassPort { get; set; }
+
         /// <summary>活動編號</summary>
         [DisplayName("活動編號")]
         public string? ActId { get; set; }
@@ -105,6 +109,14 @@ namespace WebPccuClub.Models
         /// <summary>活動名稱</summary>
         [DisplayName("活動名稱")]
         public string? ActName { get; set; }
+
+        /// <summary>全人申請</summary>
+        [DisplayName("全人申請")]
+        public string? PassPort { get; set; }
+
+        /// <summary>全人申請</summary>
+        [DisplayName("全人申請")]
+        public string? PassPortText { get; set; }
 
         /// <summary>活動開始日</summary>
         [DisplayName("活動開始日")]
@@ -603,6 +615,10 @@ namespace WebPccuClub.Models
         /// <summary>審核狀態</summary>
         [DisplayName("審核狀態")]
         public string? ActVerifyText { get; set; }
+
+        /// <summary>全人申請</summary>
+        [DisplayName("全人申請")]
+        public string? PassPortText { get; set; }
 
         [DisplayName("建立時間")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm:ss}")]

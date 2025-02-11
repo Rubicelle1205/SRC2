@@ -34,6 +34,9 @@ namespace PccuClub.WebAuth
         /// <summary> 帳號來源 </summary>
         public string LoginSource { get; set; }
 
+        /// <summary> 登入系統代碼 </summary>
+        public string LoginSystemCode { get; set; }
+
         /// <summary> IP </summary>
         public string IP { get; set; }
 
@@ -63,6 +66,9 @@ namespace PccuClub.WebAuth
 
         /// <summary> SSO系級/單位 </summary>
         public string SSODepartment { get; set; }
+
+        /// <summary>使用者類型</summary>
+        public string UserType { get; set; }
 
         /// <summary> 最後登入時間 </summary>
         public DateTime? LastLoginDate { get; set; }

@@ -1,0 +1,391 @@
+﻿@model WebPccuClub.Models.EventBullyingMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+    int LstVictimIndex = 0;
+}
+
+<head>
+    <script src="~/js/backend_case.js"></script>
+</head>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form action="" enctype="multipart/form-data" id="form" method="post">
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <!--修改時才顯示 (start)-->
+                                    <tr>
+                                        <th width="10%">建立時間</th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.Created)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">更新時間</th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.LastModified)</td>
+                                    </tr>
+                                    <!--修改時才顯示 (end)-->
+                                    <tr>
+                                        <th width="10%">校安事件編號<span class="required"></span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.CaseID)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">校安事件主類別<span class="required"></span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.MainClassText)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">校安事件次類別<span class="required"></span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.SecondClassText)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">事件發生時間<span class="required"></span></th>
+                                        <td>
+                                            @if (Model.EditModel.OccurTime != null)
+                                            {
+                                                @Model.EditModel.OccurTime.Value.ToString("yyyy/MM/dd HH:mm")
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">知悉時間<span class="required"></span></th>
+                                        <td>
+                                            @if (Model.EditModel.KnowTime != null)
+                                            {
+                                                @Model.EditModel.KnowTime.Value.ToString("yyyy/MM/dd HH:mm")
+                                            }
+                                            </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">相關人員<span class="required"></span></th>
+                                        <td>
+                                            <table class="table table-sm mt-2" id="peo_table">
+                                                <thead>
+                                                    <tr class="text-center">
+                                                        <th scope="col">#</th>
+                                                        <th scope="col">姓別</th>
+                                                        <th scope="col">姓名</th>
+                                                        <th scope="col">狀態</th>
+                                                        <th scope="col">職稱</th>
+                                                        <th scope="col">所屬單位</th>
+                                                        <th scope="col">學號</th>
+                                                        <th scope="col">出生年</th>
+                                                        <th scope="col">目前位置</th>
+                                                        <th scope="col">角色</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                     @if (Model.EditModel.LstVictim.Count > 0)
+                                                        {
+                                                            foreach (Victim item in Model.EditModel.LstVictim)
+                                                            {
+                                                                LstVictimIndex = LstVictimIndex + 1;
+
+                                                            <tr>
+                                                                <th scope="col">@LstVictimIndex</th>
+                                                                <td>@item.SexText</td>
+                                                                <td>@item.Name</td>
+                                                                <td>@item.StatusText</td>
+                                                                <td>@item.TitleText</td>
+                                                                <td>@item.UnitText</td>
+                                                                <td>@item.SNO</td>
+                                                                <td>@string.Format("民國{0}年", item.BirthYear)</td>
+                                                                <td>@item.LocationText</td>
+                                                                <td>@item.RoleText</td>
+                                                            </tr>
+                                                            }
+                                                        }
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-body table-responsive-sm">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">霸凌號<span class="required"></span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.EditModel.SubCaseID, new {@class = "form-control", @placeholder="請輸入霸凌號"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">霸凌事件主類別<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.BullyingMainClass ,(List<SelectListItem>)ViewBag.ddlBullyingMainClass,"請選擇霸凌事件主類別", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">霸凌事件次類別<span class="required">*</span></th>
+                                        <td>
+                                            <div id="divSecondClass">
+                                                @Html.DropDownListFor(m => m.EditModel.BullyingSecondClass ,(List<SelectListItem>)ViewBag.ddlBullyingSecondClass,"請選擇霸凌事件次類別", new {@class = "form-control"})
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">是否受理<span class="required">*</span></th>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    @Html.DropDownListFor(m => m.EditModel.AcceptStatus ,(List<SelectListItem>)ViewBag.ddlAcceptStatus,"請選擇是否受理", new {@class = "form-control"})
+                                                    <div class="input-group p-0">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">受理時間</span>
+                                                        </div>
+                                                        @Html.TextBoxFor(m => m.EditModel.AcceptTime, new {@class = "form-control", @placeholder="請點擊輸入框並選擇受理時間", @for="finish_time"})
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">事件原因及經過<span class="required"></span></th>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <!-- [編輯]的時候才會有紀錄歷程 -->
+                                                    <h6><u>事件紀錄歷程</u></h6>
+                                                    <ul class="list-group list-group-flush text-sm">
+                                                        @foreach (EventData item in Model.EditModel.LstEventData)
+                                                        {
+                                                            <li class="list-group-item p-1">
+                                                                @item.EventDateTime.Value.ToString("yyyy/MM/dd HH:mm")<span class="badge badge-primary mx-1">@item.EventIDText</span> @item.Text
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="input-group">
+                                                        @Html.TextBoxFor(m => m.EditModel.BullyingEventDateTime, new { @class = "form-control", @readonly = "readonly"})
+                                                        @Html.DropDownListFor(m => m.EditModel.BullyingEventID, (List<SelectListItem>)ViewBag.ddlBullyingEventStatus,"請選擇事件狀態", new {@class = "form-control"})
+                                                    </div>
+                                                    @Html.TextAreaFor(m => m.EditModel.BullyingEventText, new {@class = "form-control mt-1", @rows="4", @placeholder = "請輸入事件原因及經過"})
+
+
+                                                    <!-- [編輯]事件時，才出現按鈕 -->
+                                                    <div class="d-flex justify-content-end mt-1">
+                                                        <button type="button" class="btn btn-sm btn-outline-primary mx-1" id="add_history" onclick="SaveEventData()">
+                                                            <i class="fa-solid fa-plus"></i>
+                                                            新增本次紀錄
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="clean_history">
+                                                            <i class="fa-solid fa-x"></i>
+                                                            清空目前輸入內容
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">是否結案<span class="required">*</span></th>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    @Html.DropDownListFor(m => m.EditModel.CaseStatus ,(List<SelectListItem>)ViewBag.ddlCaseFinish,"請選擇是否結案", new {@class = "form-control"})
+                                                    <div class="input-group p-0 hide">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">受理時間</span>
+                                                        </div>
+                                                        @Html.TextBoxFor(m => m.EditModel.CaseFinishDateTime, new {@class = "form-control", @placeholder="請點擊輸入框並選擇結案時間", @for="finish_time2"})
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Memo)</th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class = "form-control", row = "6"})</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- /.card-body -->
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                    @Html.HiddenFor(m => m.EditModel.EventID)
+                    @Html.HiddenFor(m => m.EditModel.CaseID)
+                </form>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+
+<script>
+    $(document).ready(function () {
+
+        var selecterAccept = $('#@Html.IdFor(m => m.EditModel.AcceptStatus)');
+
+        selecterAccept.change(function () {
+            if (selecterAccept.val() == "01") {
+                $("[for=finish_time]").parents('div:first').removeClass("hide");
+            }
+            else {
+                $("[for=finish_time]").parents('div:first').addClass("hide");
+            }
+        });
+
+        if (selecterAccept.val() == "01") {
+            $("[for=finish_time]").parents('div:first').removeClass("hide");
+        }
+        else {
+            $("[for=finish_time]").parents('div:first').addClass("hide");
+        }
+
+        ///////////////////////////////////////////////////////////////////
+
+        var selecter = $('#@Html.IdFor(m => m.EditModel.CaseStatus)');
+
+        selecter.change(function () {
+            if (selecter.val() == "01") {
+                $("[for=finish_time2]").parents('div:first').removeClass("hide");
+            }
+            else {
+                $("[for=finish_time2]").parents('div:first').addClass("hide");
+            }
+        });
+
+        if (selecter.val() == "01") {
+            $("[for=finish_time2]").parents('div:first').removeClass("hide");
+        }
+        else {
+            $("[for=finish_time2]").parents('div:first').addClass("hide");
+        }
+
+        ///////////////////////////////////////////////////////////////////
+
+        $('#clean_history').click(function () {
+            $('#@Html.IdFor(m => m.EditModel.BullyingEventText)').val("");
+
+        });
+    });
+
+    $('#@Html.IdFor(m => m.EditModel.BullyingMainClass)').change(function (e) {
+        GetSecond();
+    });
+
+    function GetSecond() {
+        var CaseID = $('#@Html.IdFor(m => m.EditModel.CaseID)').val();
+        var BullyingMainClass = $('#@Html.IdFor(m => m.EditModel.BullyingMainClass)').val();
+
+        SendAjax({
+            url: '@Url.Action("GetSecond")',
+            data: { 'MainClass': BullyingMainClass, 'Source': 'Edit', 'CaseID': CaseID },
+            success: function (result) {
+                $('#divSecondClass').html(result);
+            }
+        });
+    }
+
+    function SaveEventData() {
+        var data = new FormData()
+
+        var CaseID = $('#@Html.IdFor(m => m.EditModel.CaseID)').val();
+        var BullyingEventID = $('#@Html.IdFor(m => m.EditModel.BullyingEventID)').val();
+        var BullyingEventDateTime = $('#@Html.IdFor(m => m.EditModel.BullyingEventDateTime)').val();
+        var BullyingEventText = $('#@Html.IdFor(m => m.EditModel.BullyingEventText)').val();
+
+        if (CaseID == "") { window.location.reload(); }
+        if (BullyingEventDateTime == "") { window.location.reload(); }
+        if (BullyingEventID == "") { $.alert("請選擇事件狀態"); return; }
+        if (BullyingEventText == "") { $.alert("請輸入本次紀錄內容"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.CaseID)', CaseID);
+        data.append('@Html.NameFor(m => m.EditModel.BullyingEventDateTime)', BullyingEventDateTime);
+        data.append('@Html.NameFor(m => m.EditModel.BullyingEventID)', BullyingEventID);
+        data.append('@Html.NameFor(m => m.EditModel.BullyingEventText)', BullyingEventText);
+
+        SendAjax({
+            url: '@Url.Action("EditOldEventData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    window.location.reload();
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+
+    }
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var EventID = $('#@Html.IdFor(m => m.EditModel.EventID)').val();
+        var CaseID = $('#@Html.IdFor(m => m.EditModel.CaseID)').val();
+        var SubCaseID = $('#@Html.IdFor(m => m.EditModel.SubCaseID)').val();
+        var BullyingMainClass = $('#@Html.IdFor(m => m.EditModel.BullyingMainClass)').val();
+        var BullyingSecondClass = $('#@Html.IdFor(m => m.EditModel.BullyingSecondClass)').val();
+        var AcceptStatus = $('#@Html.IdFor(m => m.EditModel.AcceptStatus)').val();
+        var AcceptTime = $('#@Html.IdFor(m => m.EditModel.AcceptTime)').val();
+        var CaseStatus = $('#@Html.IdFor(m => m.EditModel.CaseStatus)').val();
+        var CaseFinishDateTime = $('#@Html.IdFor(m => m.EditModel.CaseFinishDateTime)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+        if (SubCaseID == "") { $.alert("霸凌號不可為空白"); return; }
+        if (BullyingMainClass == "") { $.alert("需選擇霸凌事件主類別"); return; }
+        if (BullyingSecondClass == "") { $.alert("需選擇霸凌事件次類別"); return; }
+        if (AcceptStatus == "") { $.alert("需選擇是否受理"); return; }
+        if (CaseStatus == "") { $.alert("需選擇是否結案"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.EventID)', EventID);
+        data.append('@Html.NameFor(m => m.EditModel.CaseID)', CaseID);
+        data.append('@Html.NameFor(m => m.EditModel.SubCaseID)', SubCaseID);
+        data.append('@Html.NameFor(m => m.EditModel.BullyingMainClass)', BullyingMainClass);
+        data.append('@Html.NameFor(m => m.EditModel.BullyingSecondClass)', BullyingSecondClass);
+        data.append('@Html.NameFor(m => m.EditModel.AcceptStatus)', AcceptStatus);
+        data.append('@Html.NameFor(m => m.EditModel.AcceptTime)', AcceptTime);
+        data.append('@Html.NameFor(m => m.EditModel.CaseStatus)', CaseStatus);
+        data.append('@Html.NameFor(m => m.EditModel.CaseFinishDateTime)', CaseFinishDateTime);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+    }
+
+    function Reset() {
+        $('#@Html.IdFor(m => m.EditModel.Memo)').val("");
+    }
+</script>

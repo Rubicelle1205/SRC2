@@ -1,0 +1,153 @@
+﻿@model WebPccuClub.Models.ConsultationSpaceMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<head>
+    <link rel="stylesheet" href="~/dist/css/appointment-week-view-scheduler/src/css/scheduler.css">
+    
+    <script src="~/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <script src="~/js/plugins/popper/umd/popper.min.js"></script>
+    <script src="~/js/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/js/plugins/moment/moment.min.js"></script>
+    <script src="~/js/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/js/plugins/jquery-timepicker/jquery.timepicker1.min.js"></script>
+    <script src="~/js/plugins/jquery-confirm/jquery-confirm.min.js"></script>
+    <script src="~/js/plugins//appointment-week-view-scheduler/src/js/scheduler.js"></script>
+    <script src="~/js/adminlte.js"></script>
+    <script src="~/js/backend_counselling.js"></script>
+</head>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.RoomName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.RoomName, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">可預約時間<span class="required">*</span></th>
+                                        <td>
+                                            <table id="psychologist-schedule-table" class="table table-sm"></table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Memo)<span class="required">*</span></th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class = "form-control"})</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                    @Html.HiddenFor(m => m.EditModel.ID)
+                    @Html.HiddenFor(m => m.EditModel.strAppointmentTime)
+                </form> 
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    $(document).ready(function () {
+        $.fn.scheduler.locales['zh-tw'] = {
+            AM: '上午',
+            PM: '下午',
+            TIME_TITLE: '時間',
+            WEEK_TITLE: '星期',
+            WEEK_DAYS: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'],
+            DRAG_TIP: '可移動滑鼠游標選擇時段',
+            RESET: '清空選擇'
+        };
+        //$('#psychologist-schedule-table').scheduler({ locale: 'zh-tw' });
+
+        var rawData = $('#@Html.IdFor(m => m.EditModel.strAppointmentTime)').val();
+        let obj = JSON.parse(rawData);
+
+        $('#psychologist-schedule-table').scheduler({
+            data: obj, // 初始資料
+            locale: 'zh-tw', // 本地化文字
+            footer: true, // 是否顯示footer
+            onSelect: function (newData) {
+                console.log(newData); // 列出當前選擇的所有時段(格式同initData)
+            }
+        });
+
+        
+    });
+
+    function SaveData() {
+
+        var data = new FormData()
+        var ID = $('#@Html.IdFor(m => m.EditModel.ID)').val();
+        var RoomName = $('#@Html.IdFor(m => m.EditModel.RoomName)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+        var arr = $('#psychologist-schedule-table').scheduler('val');
+        var result = [];
+
+        $.each(arr, function (index, subArray) {
+            var subArrayString = $.map(subArray, function (number) {
+                return number.toString();
+            }).join(',');
+
+            result.push(index + ' : ' + subArrayString);
+        });
+
+        var strAppointmentTime = result.join('|');
+
+        if (RoomName == "") { $.alert("空間名稱不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.ID)', ID);
+        data.append('@Html.NameFor(m => m.EditModel.RoomName)', RoomName);
+        data.append('@Html.NameFor(m => m.EditModel.strAppointmentTime)', strAppointmentTime);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+    }
+
+</script>

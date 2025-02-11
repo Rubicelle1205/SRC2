@@ -1,0 +1,234 @@
+﻿@model WebPccuClub.Models.BorrowMainResourceMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<head>
+    <script src="~/js/backend_case.js"></script>
+</head>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive-sm">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">業務分類</th>
+                                        <td>@Model.InventoryRecordConditionModel.MainClassText</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">主資源代號</th>
+                                        <td>@Model.InventoryRecordConditionModel.MainResourceID</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">主資源名稱</th>
+                                        <td>@Model.InventoryRecordConditionModel.MainResourceName</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">當前實際庫存數</th>
+                                        <td>@Model.InventoryRecordConditionModel.AmtReal</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">物品類型</th>
+                                        <td>@Model.InventoryRecordConditionModel.BorrowTypeText</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+                <form action="" enctype="multipart/form-data" id="SearchForm" method="post">
+                    <div class="card">
+                        <div class="card-header">
+                            <div id="divSingleReturn" class="d-flex justify-content-center mb-1" style="display:none !important;">
+                                @Html.TextBoxFor(m => m.InventoryRecordConditionModel.ReturnID, new {@class = "form-control", placeholder = "請輸入歸還物品資產編號", @style="width:70%;" })
+                                <button id="btnSingleReturn" type="button" class="btn btn-success">確認</button>
+                            </div>
+                            <div id="divMultReturn" class="d-flex justify-content-center mb-1" style="display:none !important;">
+                                @Html.TextBoxFor(m => m.InventoryRecordConditionModel.ReturnAmt, new {@class = "form-control", placeholder = "請輸入歸還物品數量", @style="width:70%;", type = "number" })
+                                <button id="btnMultReturn" type="button" class="btn btn-success">確認</button>
+                            </div>
+                            <div class="card-tools">
+                                @Html.HiddenFor(m => m.InventoryRecordConditionModel.Page)
+                                @Html.HiddenFor(m => m.InventoryRecordConditionModel.PageSize)
+                                @Html.HiddenFor(m => m.InventoryRecordConditionModel.TotalCount)
+
+                                @Html.HiddenFor(m => m.InventoryRecordConditionModel.RunType)
+                                @Html.HiddenFor(m => m.InventoryRecordConditionModel.AmtReal)
+                                @Html.HiddenFor(m => m.InventoryRecordConditionModel.BorrowType)
+                                @Html.HiddenFor(m => m.InventoryRecordConditionModel.MainResourceID)
+                                <input id="btnStart" type="button" class="btn btn-sm btn-success" value="開始盤點" onclick="GoSearch(1)">
+                                
+                                <div id="divEnd" class="hide">
+                                    <a id="btnEnd" class="btn btn-sm btn-danger" onclick="GoSearch(2)">盤點結束</a>
+                                </div>
+
+                                <div id="divMultStart" class="hide">
+                                    <a id="btnMultStart" class="btn btn-sm btn-outline-success hide">批次盤點</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="InventorySearchResultList" class="card-body"></div>
+                        
+                    </div>
+                    <!-- /.card -->
+                </form>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    $('#Jumppage').change(function (e) {
+        $("#@Html.IdFor(m => m.InventoryRecordConditionModel.Page)").val(e.target.value);
+        GoSearch();
+    });
+
+    $("#btnSingleReturn").click(function () {
+            var InventoryRecordID = $('#@Html.IdFor(m => m.InventoryRecordConditionModel.InventoryRecordID)').val();
+            var DeviceID = $('#@Html.IdFor(m => m.InventoryRecordConditionModel.ReturnID)').val();
+
+            UpdSingleInventory(InventoryRecordID, DeviceID);
+
+            $('#@Html.IdFor(m => m.InventoryRecordConditionModel.ReturnID)').val("");
+        });
+
+        $("#btnMultReturn").click(function () {
+            var InventoryRecordID = $('#@Html.IdFor(m => m.InventoryRecordConditionModel.InventoryRecordID)').val();
+            var ReturnAmt = $('#@Html.IdFor(m => m.InventoryRecordConditionModel.ReturnAmt)').val();
+
+            UpdMultInventory(InventoryRecordID, ReturnAmt);
+        });
+
+    $(document).ready(function () {
+        GoSearch();
+    });
+
+    function UpdSingleInventory(InventoryRecordID, DeviceID) {
+
+        SendAjax({
+            url: '@Url.Action("UpdSingleInventory")',
+            data: { 'InventoryRecordID': InventoryRecordID, 'DeviceID': DeviceID },
+            success: function (result) {
+                GoSearch();
+            }
+        });
+    }
+
+    function UpdMultInventory(InventoryRecordID, ReturnAmt) {
+
+        SendAjax({
+            url: '@Url.Action("UpdMultInventory")',
+            data: { 'InventoryRecordID': InventoryRecordID, 'ReturnAmt': ReturnAmt },
+            success: function (result) {
+                GoSearch();
+            }
+        });
+    }
+
+    function GoSearch(source) {
+        
+        if (typeof source === 'undefined') {
+            source = $("#@Html.IdFor(m => m.InventoryRecordConditionModel.RunType)").val();
+        }
+
+        $("#@Html.IdFor(m => m.InventoryRecordConditionModel.RunType)").val(source);
+        var BorrowType = $("#@Html.IdFor(m => m.InventoryRecordConditionModel.BorrowType)").val();
+
+        if (source == "1") {
+
+            var tbody = document.getElementById("inventoryTable_tBody");
+            if (tbody && tbody.children.length == "") { $.alert("查無子資源，無法進行盤點"); return; }
+
+            if (BorrowType == "02") {
+                $("#btnStart").addClass("hide");
+                $("#divEnd").removeClass("hide");
+                $("#divSingleReturn").each(function () { this.style.setProperty("display", "none"); });
+            }
+            else if (BorrowType == "01") {
+                $("#btnStart").addClass("hide");
+                $("#divEnd").removeClass("hide");
+                $("#divMultReturn").each(function () { this.style.setProperty("display", "none"); });
+            }
+
+        }
+        else if (source == "2") {
+            if (BorrowType == "02") {
+                $("#btnStart").removeClass("hide");
+                $("#divEnd").addClass("hide");
+                $("#divSingleReturn").each(function () { this.style.setProperty("display", "none", "important"); });
+            }
+            else if (BorrowType == "01") {
+                $("#btnStart").removeClass("hide");
+                $("#divEnd").addClass("hide");
+                $("#divMultReturn").each(function () { this.style.setProperty("display", "none", "important"); });
+            }
+        }
+
+        SendAjax({
+            url: '@Url.Action("GetInventorySearchResult")',
+            data: $("#SearchForm").serialize(),
+            success: function (result) {
+                if (result.errorCode == 0) {
+
+                }
+                else if (result.errorCode == 1) {
+                    $("#btnStart").removeClass("hide");
+                    $("#divEnd").addClass("hide");
+                    $("#divSingleReturn").each(function () { this.style.setProperty("display", "none", "important"); });
+                    $("#divMultReturn").each(function () { this.style.setProperty("display", "none", "important"); });
+
+                    $.alert(result.errorMsg);
+                }
+                else {
+                    $('#InventorySearchResultList').html(result);
+                }
+                
+            }
+        });
+
+    }
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+    }
+
+</script>

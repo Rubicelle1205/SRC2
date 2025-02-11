@@ -1,0 +1,127 @@
+﻿@model WebPccuClub.Models.EventGenderMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+
+    var perpage = Model.ConditionModel.PageSize;
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="SearchForm" enctype="multipart/form-data" action="">
+                    <div class="card">
+                        <div class="card-header">
+                            <button type="button" class="btn btn-sm btn-outline-dark" onclick="ExportSearchResult()">匯出性平事件清單</button>
+                            <a href=@Url.Action("Upload") class="ml-1 btn btn-sm btn-outline-danger">匯入性平事件清單</a>
+                            <div class="card-tools">
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                @Html.AntiForgeryToken()
+                                <div class="col-md-6 input-group mt-2">
+                                    <input type="date" class="form-control" id="@Html.IdFor(m => m.ConditionModel.From_ReleaseDate)" name="@Html.NameFor(m => m.ConditionModel.From_ReleaseDate)">
+                                    <span class="input-group-text">至</span>
+                                    <input type="date" class="form-control" id="@Html.IdFor(m => m.ConditionModel.To_ReleaseDate)" name="@Html.NameFor(m => m.ConditionModel.To_ReleaseDate)">
+                                </div>
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.DropDownListFor(m => m.ConditionModel.GenderMainClass ,(List<SelectListItem>)ViewBag.ddlGenderMainClass,"全部事件主類別", new {@class = "form-control"})
+                                </div>
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.DropDownListFor(m => m.ConditionModel.GenderSecondClass ,(List<SelectListItem>)ViewBag.ddlGenderSecondClass,"全部事件次類別", new {@class = "form-control"})
+                                </div>
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.DropDownListFor(m => m.ConditionModel.AcceptStatus ,(List<SelectListItem>)ViewBag.ddlAcceptStatus,"全部受理狀態", new {@class = "form-control"})
+                                </div>
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.DropDownListFor(m => m.ConditionModel.CaseStatus ,(List<SelectListItem>)ViewBag.ddlCaseFinish,"全部結案狀態", new {@class = "form-control"})
+                                </div>
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.TextBoxFor(m => m.ConditionModel.CaseID, new {@class="form-control", placeholder="請輸入校安編號"})
+                                </div>
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.TextBoxFor(m => m.ConditionModel.SubCaseID, new {@class="form-control", placeholder="請輸入性平號"})
+                                </div>
+
+                                <div class="col-md-12 mt-2 row">
+                                    <div class="col-md-6 col-sm-12 float-left">
+                                        <span id="PageNow" class="text-sm text-muted" style="display:none;">
+                                            目前為第 {{:pnow}} 頁 / 共 {{:ptotle}} 頁
+                                        </span>
+                                        <br />
+                                        <span id="PageEver" class="text-muted text-sm" style="display:none;">
+                                            每頁顯示 {{:pever}} 筆 / 共 {{:ptotleever}} 筆
+                                        </span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12 float-right d-flex flex-wrap align-items-end justify-content-end p-0">
+                                        @Html.Partial("_JumpPagePartial", @perpage)
+                                        <input type="reset" class="btn btn-sm btn-outline-info mx-1 mt-2" value="清除條件">
+                                        <input type="button" class="btn btn-sm btn-outline-danger mx-1 mt-2" value="搜尋" onclick="GoSearch(0)">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    @Html.HiddenFor(m => m.ConditionModel.Page)
+                    @Html.HiddenFor(m => m.ConditionModel.PageSize)
+                    @Html.HiddenFor(m => m.ConditionModel.TotalCount)
+                </form>
+                <div id="SearchResultList" class="card"></div>
+
+            </div>
+            <!-- /.card -->
+        </div>
+    </div>
+    <!-- /.row -->
+</section>
+
+<script>
+
+    function GoSearch(source) {
+
+        if (source == 0)
+            $('#@(Html.IdFor(m => m.ConditionModel.Page))').val(0);
+
+        SendAjax({
+            url: '@Url.Action("GetSearchResult")',
+            data: $("#SearchForm").serialize(),
+            success: function (result) {
+                $('#SearchResultList').html(result);
+            }
+        });
+    }
+
+    function ExportSearchResult() {
+        window.open('@Url.Action("ExportSearchResult")' + '?' + $("#SearchForm").serialize());
+    }
+
+    $('#JumpPergroup').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val(e.target.value);
+        GoSearch();
+    });
+    
+    $('#Jumppage').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.Page)").val(e.target.value);
+        GoSearch();
+    });
+
+    $('input:reset').click(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val("10");
+    });
+
+
+    $('#@Html.IdFor(m => m.ConditionModel.From_ReleaseDate)').tooltip({ title: "建立時間[起]" });
+    $('#@Html.IdFor(m => m.ConditionModel.To_ReleaseDate)').tooltip({ title: "建立時間[迄]" });
+    $('#@Html.IdFor(m => m.ConditionModel.GenderMainClass)').tooltip({ title: "事件主類別" });
+    $('#@Html.IdFor(m => m.ConditionModel.GenderSecondClass)').tooltip({ title: "事件次類別" });
+    $('#@Html.IdFor(m => m.ConditionModel.AcceptStatus)').tooltip({ title: "受理狀態" });
+    $('#@Html.IdFor(m => m.ConditionModel.CaseStatus)').tooltip({ title: "結案狀態" });
+    $('#@Html.IdFor(m => m.ConditionModel.CaseID)').tooltip({ title: "校安事件編號" });
+    $('#@Html.IdFor(m => m.ConditionModel.SubCaseID)').tooltip({ title: "性平號" });
+
+</script>

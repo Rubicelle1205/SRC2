@@ -1,0 +1,310 @@
+﻿@model WebPccuClub.Models.ActFinishMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<head>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubId)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.ClubId ,(List<SelectListItem>)ViewBag.ddlAllClub,"請選擇社團", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ActID)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.ActID ,(List<SelectListItem>)ViewBag.ddlAllActData,"請選擇活動報備編號", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClubCName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ClubCName, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Caseman)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Caseman, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Email)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Email, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Tel)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Tel, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ActDate)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ActDate, new {@class = "form-control", type="date"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ActName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ActName, new {@class = "form-control"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Course)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.Course ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇活動辦理時程", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ShortInfo)</th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.ShortInfo, new {@class="form-control", rows="5", placeholder="請輸入活動資訊簡述"})</td>
+                                    </tr>
+                                    <tr class="table-warning">
+                                        <td colspan="2">
+                                            <span class="text-sm text-danger font-weight-bold">※請按照<a href=@Url.Action("DownloadTemplate") class="text-primary">Excel格式</a>進行修改</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            參與學號名冊<span class="required">*</span>
+                                            <span class="mx-1">
+                                                <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                                            </span>
+                                        </th>
+                                        <td>
+                                            <label class="btn btn-outline-primary mb-0">
+                                                <input id="updFile" name="updFile" style="display:none;" class="filesupload" type="file" accept=".xlsx">
+                                                <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                            </label><span id="filename" class="text-sm mx-2 text-muted">尚未選擇檔案...</span>
+                                            
+                                            @if (null != Model.EditModel.PersonModel && Model.EditModel.PersonModel.Count > 0)
+                                            {
+                                                <div>
+                                                    <a class="text-sm text-muted" href="@Url.Action("ExportPersonData")?id=@string.Format(Model.EditModel.ActFinishId)" target="_blank"><i class="fa-regular fa-file mr-2"></i>參與學號名冊.xlsx</a>
+                                                </div>
+                                            }
+                                            
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            上傳預覽<span class="required"></span><br /><span class="text-xs text-danger font-weight-normal"></span>
+                                        </th>
+                                        <td>
+                                            <div id="excelPreview"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="10%">
+                                            其他附件<span class="required"></span>
+                                            <div class="text-xs text-danger font-weight-normal">
+                                                如:可上傳活動照片、結案報告或相關可公開活動資訊文件。
+                                            </div>
+                                            <div class="text-xs text-danger font-weight-normal">
+                                                <i class="fa-solid fa-circle-exclamation"></i>僅接受以下格式：.pdf、.jpg、.jpeg、.png、.zip、.rar、.7z
+                                            </div>
+                                        </th>
+                                        <td>
+                                            <label class="btn btn-outline-primary mb-0">
+                                                @Html.TextBoxFor(m => m.EditModel.ElseFile, new{ @class="filesupload", type="file", style="display:none;", accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z"})
+                                                <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                                            </label>
+                                            <span id="filename2" class="text-sm mx-2 text-muted">
+                                                尚未選擇檔案...
+                                            </span>
+                                            @if (!string.IsNullOrEmpty(Model.EditModel.ElseFile))
+                                            {
+                                                <div>
+                                                    <a class="text-sm text-muted" href="@Html.DisplayFor(m => m.EditModel.ElseFile)" target="_blank"><i class="fa-regular fa-file mr-2"></i>附件下載</a>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">審核狀態<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.ActFinishVerify ,(List<SelectListItem>)ViewBag.ddlAllActVerify,"請選擇審核狀態", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">備註<span class="required"></span></th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class="form-control", rows="5", placeholder="請輸入備註"})</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        @Html.HiddenFor(m => m.EditModel.ActFinishId)
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </form>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    $(document).ready(function () {
+        $('#updFile').change(function (e) {
+
+            var file = e.target.files[0];
+            var geekss = file.name;
+            $('#filename').text(geekss);
+
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var data = new Uint8Array(e.target.result);
+                var workbook = XLSX.read(data, { type: 'array' });
+
+                var sheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[sheetName];
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                var html = '<table class="table">';
+                for (var i = 0; i < jsonData.length; i++) {
+                    html += '<tr>';
+                    for (var j = 0; j < jsonData[i].length; j++) {
+                        html += '<td>' + jsonData[i][j] + '</td>';
+                    }
+                    html += '</tr>';
+                }
+                html += '</table>';
+
+                $('#excelPreview').html(html);
+            };
+
+            reader.readAsArrayBuffer(file);
+        });
+    });
+
+    $('#@Html.IdFor(m => m.EditModel.ElseFile)').change(function (e) {
+        var geekss = e.target.files[0].name;
+        $('#filename2').text(geekss);
+    });
+
+    function SaveData() {
+
+        var data = new FormData()
+        var ActFinishId = $('#@Html.IdFor(m => m.EditModel.ActFinishId)').val();
+        var ClubId = $('#@Html.IdFor(m => m.EditModel.ClubId)').val();
+        var ActID = $('#@Html.IdFor(m => m.EditModel.ActID)').val();
+        var ClubCName = $('#@Html.IdFor(m => m.EditModel.ClubCName)').val();
+        var Caseman = $('#@Html.IdFor(m => m.EditModel.Caseman)').val();
+        var Email = $('#@Html.IdFor(m => m.EditModel.Email)').val();
+        var Tel = $('#@Html.IdFor(m => m.EditModel.Tel)').val();
+        var ActDate = $('#@Html.IdFor(m => m.EditModel.ActDate)').val();
+        var ActName = $('#@Html.IdFor(m => m.EditModel.ActName)').val();
+        var Course = $('#@Html.IdFor(m => m.EditModel.Course)').val();
+        var ShortInfo = $('#@Html.IdFor(m => m.EditModel.ShortInfo)').val();
+        var ActFinishVerify = $('#@Html.IdFor(m => m.EditModel.ActFinishVerify)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+        var ElseFile = $('#@Html.IdFor(m => m.EditModel.ElseFile)')[0].files[0];
+        if (typeof ElseFile !== 'undefined') {
+            var fileExtension = ElseFile.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'pdf' && fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png' && fileExtension !== 'zip' && fileExtension !== 'rar' && fileExtension !== '7z') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.EditModel.ElseFile)', ElseFile);
+        }
+
+        var File = $('#updFile')[0].files[0];
+        if (typeof File !== 'undefined') {
+            var fileExtension = File.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'xlsx') {
+                $.alert("檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.File)', File);
+        }
+
+
+        if (ClubId == "") { $.alert("社團代號不可為空白"); return; }
+        if (ActID == "") { $.alert("活動報備編號不可為空白"); return; }
+        if (ClubCName == "") { $.alert("主辦單位不可為空白"); return; }
+        if (Caseman == "") { $.alert("承辦人不可為空白"); return; }
+        if (Email == "") { $.alert("Email不可為空白"); return; }
+        if (Tel == "") { $.alert("聯絡電話/分機不可為空白"); return; }
+        if (ActDate == "") { $.alert("活動日期不可為空白"); return; }
+        if (ActName == "") { $.alert("活動名稱不可為空白"); return; }
+        if (Course == "") { $.alert("活動辦理時程不可為空白"); return; }
+        if (ActFinishVerify == "") { $.alert("審核狀態不可為空白"); return; }
+
+        if (!moment(ActDate, "YYYY-MM-DD", true).isValid()) { $.alert("活動日期格式不正確"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.ClubId)', ClubId);
+
+        data.append('@Html.NameFor(m => m.EditModel.ActFinishId)', ActFinishId);
+        data.append('@Html.NameFor(m => m.EditModel.ActID)', ActID);
+        data.append('@Html.NameFor(m => m.EditModel.ClubCName)', ClubCName);
+        data.append('@Html.NameFor(m => m.EditModel.Caseman)', Caseman);
+        data.append('@Html.NameFor(m => m.EditModel.Email)', Email);
+        data.append('@Html.NameFor(m => m.EditModel.Tel)', Tel);
+        data.append('@Html.NameFor(m => m.EditModel.ActDate)', ActDate);
+        data.append('@Html.NameFor(m => m.EditModel.ActName)', ActName);
+        data.append('@Html.NameFor(m => m.EditModel.Course)', Course);
+        data.append('@Html.NameFor(m => m.EditModel.ShortInfo)', ShortInfo);
+        data.append('@Html.NameFor(m => m.EditModel.ActFinishVerify)', ActFinishVerify);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+    }
+
+</script>

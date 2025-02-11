@@ -1,0 +1,452 @@
+﻿@model WebPccuClub.Models.FBorrowRecordViewModel
+
+@{
+    Layout = "_FrontBorrowLayout";
+    ViewBag.Title = "我的借用紀錄";
+}
+
+<head>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+
+<div class="col-xxl-8 col-xl-8">
+    
+<div class="contentWrapper">
+    <h4 class="pageTitle">新增借用單</h4>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "FBorrowIndex")">借用類別</a></li>
+            <li class="breadcrumb-item active">新增借用單</li>
+        </ol>
+    </nav>
+    <hr>
+        <div class="mb-4">
+            <a id="Back" href="@Url.Action("Index")"><i class="fas fa-chevron-left"></i> 返回</a>
+        </div>
+    <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
+    <form action="" class="form-box checkthisform" enctype="multipart/form-data" method="post">
+        <div class="infoWrapper mb-4">
+            <div class="infoItem">
+                <div class="tag">申請單位類型<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.DropDownListFor(m => m.CreateModel.ApplyUnitType ,(List<SelectListItem>)ViewBag.ddlApplyUnitType,"請選擇申請單位類型", new {@class = "form-control"})
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">申請單位<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextBoxFor(m => m.CreateModel.ApplyUnitName, new {@class = "form-control", placeholder = "請輸入申請單位"})
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">申請人<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextBoxFor(m => m.CreateModel.ApplyMan, new {@class = "form-control", placeholder = "請輸入申請人"})
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">申請人職稱<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextBoxFor(m => m.CreateModel.ApplyTitle, new {@class = "form-control", placeholder = "請輸入申請人職稱"})
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">申請人Email<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextBoxFor(m => m.CreateModel.ApplyEmail, new {@class = "form-control", placeholder = "請輸入申請人Email"})
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">申請人電話/分機<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextBoxFor(m => m.CreateModel.ApplyTel, new {@class = "form-control", placeholder = "申請人電話/分機"})
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">申請目的<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextBoxFor(m => m.CreateModel.ApplyPurpose, new {@class = "form-control", placeholder = "請輸入申請目的"})
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">活動名稱<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextBoxFor(m => m.CreateModel.ActName, new {@class = "form-control", placeholder = "請輸入活動名稱"})
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">使用地點<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextBoxFor(m => m.CreateModel.UseLocation, new {@class = "form-control", placeholder = "請輸入使用地點"})
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">用途及特殊需求說明<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextBoxFor(m => m.CreateModel.UseDesc, new {@class = "form-control", placeholder = "請輸入用途及特殊需求說明"})
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">實際使用日期<span class="req-star">*</span></div>
+                <div class="content">
+                    <div class="input-group">
+                        @Html.TextBoxFor(m => m.CreateModel.UseSDate, new {@class = "form-control", @placeholder="請輸入實際使用日期(起)", type = "date"})
+                        <span class="input-group-text">至</span>
+                        @Html.TextBoxFor(m => m.CreateModel.UseEDate, new {@class = "form-control", @placeholder="請輸入實際使用日期(訖)", type = "date"})
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="infoWrapper mb-4">
+            <div class="infoItem">
+                <div class="tag">計畫領取日期<span class="req-star">*</span></div>
+                <div class="content">
+                    @Html.TextBoxFor(m => m.CreateModel.TakeSDate, new {@class = "form-control", @placeholder="計畫領取日期", type = "date"})
+                </div>
+                <div class="tag">計畫歸還日期<span class="req-star">*</span></div>
+                <div class="content">
+                        @Html.TextBoxFor(m => m.CreateModel.TakeEDate, new {@class = "form-control", @placeholder="計畫歸還日期", type = "date"})
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">選擇借用資源<span class="req-star">*</span></div>
+                <div class="content">
+                    <div class="row pt-2">
+                        <div class="col-sm-6">
+                            <label class="flex-shrink-0 mx-2"
+                                   for="resource_id">資源名稱：</label>
+                            @Html.DropDownListFor(m => m.CreateModel.MainResourceID ,(List<SelectListItem>)ViewBag.ddlSecondResurce,"請選擇資源名稱", new {@class = "form-control"})
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="flex-shrink-0 mx-2"
+                                   for="resource_num">借用數量：</label>
+                                   <div id="borrowAmtPartial"></div>
+                        </div>
+                    </div>
+                    <button id="btnAddevent" class="addevent-btn btn btn-sm btn-secondary btn-modern border-0 mt-1 float-end" type="button">新增器材 <i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+
+            <div class="infoItem">
+                <!--如果單筆借用單內有不同［業務分類］的資源，送出時請協助拆單，方便後台依照不同業務進行審核。-->
+                <!--例如: 如預約課外組[社團器材]室、同時預約衛保組[醫療用品]，-->
+                <div class="tag">已加入資源</div>
+                <div class="content">
+                    <div id="event_des1" class="dateItem">
+                        <ul id="borrow-list" class="list-group list-group-flush text-sm mb-2">
+                        
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="infoWrapper mb-5">
+            <div class="infoItem">
+                <div class="tag">佐證資料<span class="req-star"></span></div>
+                <div class="content">
+                    <div class="target_list_information">
+                        <div class="d-block mb-1 item">
+                            <label class="btn btn-outline-primary mb-0">
+                                <input id="ProposalFile0" name="ProposalFile0" type="file" class="filesupload" style="display:none;" accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z" />
+                                <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
+                            </label>
+                            <span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                            <button class="del-btn btn btn-sm btn-outline-secondary hidden" type="button"><i class="fas fa-times"></i> 移除</button>
+                        </div>
+                    </div>
+                    <button id="add_input_btn" class="btn btn-secondary btn-sm mt-3 d-block" type="button">新增 <i class="icon-plus"></i></button>
+                    <div class="fs-90percent red-hint pt-2">
+                        僅接受以下格式：.pdf、.jpg、.jpeg、.png、.zip、.rar、.7z
+                    </div>
+                    <p class="hint mb-0 py-1"><i class="fas fa-info-circle"></i> 最大10MB</p>
+                    <p class="hint mb-0 py-1">
+                        <i class="fas fa-info-circle"></i>
+                        如：借用「社團器材」請上傳器材證；借用「海報欄位」請上傳海報樣章、單位樣章...等
+                    </p>
+                </div>
+            </div>
+            <div class="infoItem">
+                <div class="tag">備註<span class="req-star"></span></div>
+                <div class="content">
+                    @Html.TextAreaFor(m => m.CreateModel.BorrowMemo, new {@class = "form-control", placeholder = "請填寫備註", rows="5"})
+                </div>
+            </div>
+        </div>
+        @Html.HiddenFor(m => m.CreateModel.strDeviceData)
+
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-4">
+                <button class="submit-btn btn btn-primary btn-modern border-0 w-100" type="submit" onclick="return SaveData()">送出審核 <i class="icon-check"></i></button>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        // 多檔上傳
+        if ($(".target_list_information").length > 0) {
+
+            $(document).on('click', '#add_input_btn', function () {
+
+                var num = checkNum();
+                var addItem = '<div class="d-block mb-1 item">';
+                addItem += '<label class="btn btn-outline-primary mb-0">';
+                addItem += '<input id="ProposalFile' + num + '" style="display:none;" req class="filesupload" data-title="附件" type="file" name="ProposalFile' + num + '" value="" accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z" data-file="">';
+                addItem += '<i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案';
+                addItem += '</label>';
+                addItem += '<span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>';
+                addItem += '<button class="del-btn btn btn-sm btn-outline-secondary" type="button"><i class="fas fa-times"></i> 移除</button>';
+                addItem += '</div>';
+                if ($(".target_list_information").find("[type='file']").length <= 7) {
+                    $(".target_list_information").append(addItem);
+                    $(".target_list_information .del-btn").removeClass("hidden")
+                }
+            })
+
+            $(document).on('click', '.target_list_information .del-btn', function () {
+                var num = $(".target_list_information").find("[type='file']").length
+
+                if (confirm("確認清除？") == false) {
+                    return false
+                } else {
+                    if (num >= 2) {
+                        $(this).closest(".item").remove()
+                        $("#add_input_btn").prop("disabled", false)
+                    }
+
+                    if (num <= 2) {
+                        $(".target_list_information .del-btn").addClass("hidden")
+                    } else {
+                        $(".target_list_information .del-btn").removeClass("hidden")
+                    }
+                }
+            })
+
+            function checkNum() {
+                var num = $(".target_list_information").find(".d-block.mb-1.item").length
+                if (num >= 7) {
+                    $("#add_input_btn").prop("disabled", true)
+                } else {
+                    $("#add_input_btn").prop("disabled", false)
+                }
+                return num;
+            }
+        }
+
+        $(document).on('change', ".filesupload", function (e) {
+            var filename = e.target.files[0].name;
+            $(this).closest('.item').find('.text-muted#filename').text(filename);
+        });
+    });
+
+    $(document).ready(function () {
+        var addedItems = {};
+
+        $("[id $= 'MainResourceID']").on('change', function () {
+
+            InitBorrowAmt($("[id $= 'MainResourceID']").val());
+        });
+
+        function updateRecordText() {
+            var itemList = Object.keys(addedItems).map(function (key) {
+                return addedItems[key].text + ',' + addedItems[key].quantity;
+            }).join('|');
+
+            $('#@Html.IdFor(m => m.CreateModel.strDeviceData)').val(itemList);
+        }
+
+        $('#btnAddevent').click(function () {
+            
+            var MainResourceID = $('#@Html.IdFor(m => m.CreateModel.MainResourceID) option:selected' );
+            var BorrowAmt = $('#@Html.IdFor(m => m.CreateModel.BorrowAmt) option:selected');
+
+            if (MainResourceID.val() == "") { $.alert("請選擇資源名稱"); return; }
+            if (BorrowAmt.val() == "") { $.alert("請選擇借用數量"); return; }
+
+            
+            if (addedItems[MainResourceID.val()]) {
+                if (confirm('此項目已存在。是否要更新數量？')) {
+                    var existingItem = $('#borrow-list').find(`[data-id="${MainResourceID.val()}"]`);
+                    existingItem.find('.quantity').text(BorrowAmt.text());
+                    addedItems[MainResourceID.val()].quantity = BorrowAmt.val();
+                    updateRecordText();
+                }
+            } else {
+                var listItem = $('<li>', {
+                    class: 'list-group-item d-flex justify-content-between p-1',
+                    'data-id': MainResourceID.val()
+                }).html(
+                    '<span class="location">' + MainResourceID.text() + ' <i class="fas fa-x"></i> ' +
+                    '<span class="quantity">' + BorrowAmt.text() + '</span>' +
+                    '</span><button class="del-btn btn btn-sm btn-outline-dark mx-1" type="button">移除 <i class="fas fa-times"></i></button>'
+                );
+
+                $('#borrow-list').append(listItem);
+
+                addedItems[MainResourceID.val()] = {
+                    text: MainResourceID.val(),
+                    quantity: BorrowAmt.val()
+                };
+
+                listItem.find('.del-btn').click(function () {
+                    delete addedItems[MainResourceID.val()];
+                    listItem.remove();
+                    updateRecordText();
+                });
+
+                updateRecordText();
+            }
+        });
+    });
+
+    function InitBorrowAmt(MainResourceID) {
+
+        SendAjax({
+            url: '@Url.Action("InitBorrowAmt")',
+            data: { 'MainResourceID': MainResourceID },
+            success: function (result) {
+                $('#borrowAmtPartial').html(result);
+            }
+        });
+    }
+
+    function SaveData() {
+
+        var data = new FormData()
+
+        var ApplyUnitType = $('#@Html.IdFor(m => m.CreateModel.ApplyUnitType)').val();
+        var ApplyUnitName = $('#@Html.IdFor(m => m.CreateModel.ApplyUnitName)').val();
+        var ApplyMan = $('#@Html.IdFor(m => m.CreateModel.ApplyMan)').val();
+        var ApplyTitle = $('#@Html.IdFor(m => m.CreateModel.ApplyTitle)').val();
+        var ApplyEmail = $('#@Html.IdFor(m => m.CreateModel.ApplyEmail)').val();
+        var ApplyTel = $('#@Html.IdFor(m => m.CreateModel.ApplyTel)').val();
+        var ApplyPurpose = $('#@Html.IdFor(m => m.CreateModel.ApplyPurpose)').val();
+        var ActName = $('#@Html.IdFor(m => m.CreateModel.ActName)').val();
+        var UseLocation = $('#@Html.IdFor(m => m.CreateModel.UseLocation)').val();
+        var UseDesc = $('#@Html.IdFor(m => m.CreateModel.UseDesc)').val();
+        var UseSDate = $('#@Html.IdFor(m => m.CreateModel.UseSDate)').val();
+        var UseEDate = $('#@Html.IdFor(m => m.CreateModel.UseEDate)').val();
+        var TakeSDate = $('#@Html.IdFor(m => m.CreateModel.TakeSDate)').val();
+        var TakeEDate = $('#@Html.IdFor(m => m.CreateModel.TakeEDate)').val();
+        var BorrowMemo = $('#@Html.IdFor(m => m.CreateModel.BorrowMemo)').val();
+        var strDeviceData = $('#@Html.IdFor(m => m.CreateModel.strDeviceData)').val();
+
+
+        if (ApplyUnitType == "") { $.alert("申請單位類型不可為空"); return; }
+        if (ApplyUnitName == "") { $.alert("申請單位不可為空"); return; }
+        if (ApplyMan == "") { $.alert("角色名稱不可為空"); return; }
+        if (ApplyPurpose == "") { $.alert("申請目的不可為空"); return; }
+        if (ActName == "") { $.alert("活動名稱不可為空"); return; }
+        if (UseLocation == "") { $.alert("使用地點不可為空"); return; }
+        if (UseDesc == "") { $.alert("用途及特殊需求說明不可為空"); return; }
+        if (UseSDate == "") { $.alert("實際使用起日不可為空"); return; }
+        if (UseEDate == "") { $.alert("實際使用訖日不可為空"); return; }
+        if (TakeSDate == "") { $.alert("計畫領取日期不可為空"); return; }
+        if (TakeEDate == "") { $.alert("計畫歸還日期不可為空"); return; }
+        if (strDeviceData == "") { $.alert("需選擇借用設備"); return; }
+
+        if (!moment(UseSDate, "YYYY-MM-DD", true).isValid()) { $.alert("實際使用起日格式不正確"); return; }
+        if (!moment(UseEDate, "YYYY-MM-DD", true).isValid()) { $.alert("實際使用訖日格式不正確"); return; }
+        if (!moment(TakeSDate, "YYYY-MM-DD", true).isValid()) { $.alert("計畫領取日期格式不正確"); return; }
+        if (!moment(TakeEDate, "YYYY-MM-DD", true).isValid()) { $.alert("計畫歸還日期格式不正確"); return; }
+
+        if (UseSDate > UseEDate) {
+            $.alert("實際使用起日不可大於實際使用訖日");
+            return false;
+        }
+
+        if (TakeSDate > TakeEDate) {
+            $.alert("計畫領取日期不可大於計畫歸還日期");
+            return false;
+        }
+
+        if (TakeSDate > UseSDate) {
+            $.alert("計畫領取日期不可大於實際使用起日");
+            return false;
+        }
+
+        if (UseEDate > TakeEDate) {
+            $.alert("實際使用訖日不可大於計畫歸還日期");
+            return false;
+        }
+
+        data.append('@Html.NameFor(m => m.CreateModel.ApplyUnitType)', ApplyUnitType);
+        data.append('@Html.NameFor(m => m.CreateModel.ApplyUnitName)', ApplyUnitName);
+        data.append('@Html.NameFor(m => m.CreateModel.ApplyMan)', ApplyMan);
+        data.append('@Html.NameFor(m => m.CreateModel.ApplyTitle)', ApplyTitle);
+        data.append('@Html.NameFor(m => m.CreateModel.ApplyEmail)', ApplyEmail);
+        data.append('@Html.NameFor(m => m.CreateModel.ApplyTel)', ApplyTel);
+        data.append('@Html.NameFor(m => m.CreateModel.ApplyPurpose)', ApplyPurpose);
+        data.append('@Html.NameFor(m => m.CreateModel.ActName)', ActName);
+        data.append('@Html.NameFor(m => m.CreateModel.UseLocation)', UseLocation);
+        data.append('@Html.NameFor(m => m.CreateModel.UseDesc)', UseDesc);
+        data.append('@Html.NameFor(m => m.CreateModel.UseSDate)', UseSDate);
+        data.append('@Html.NameFor(m => m.CreateModel.UseEDate)', UseEDate);
+        data.append('@Html.NameFor(m => m.CreateModel.TakeSDate)', TakeSDate);
+        data.append('@Html.NameFor(m => m.CreateModel.TakeEDate)', TakeEDate);
+        data.append('@Html.NameFor(m => m.CreateModel.BorrowMemo)', BorrowMemo);
+        data.append('@Html.NameFor(m => m.CreateModel.strDeviceData)', strDeviceData);
+
+
+
+        var allEmpty = true;
+        for (var i = 0; i <= 8; i++) {
+            var file = $('#ProposalFile' + i);
+
+            if (file.length > 0 && file.val() !== '') {
+                allEmpty = false;
+                var File = $('#ProposalFile' + i)[0].files[0];
+                if (typeof File !== 'undefined') {
+                    var fileExtension = File.name.split('.').pop().toLowerCase();
+
+                    if (fileExtension !== 'pdf' && fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png'
+                        && fileExtension !== 'zip' && fileExtension !== 'rar' && fileExtension !== '7z') {
+                        $.alert("檔案類型不符合");
+                        return;
+                    }
+
+                    data.append('@Html.NameFor(m => m.File)', File);
+                }
+            }
+        }
+
+        SendAjax({
+            url: '@Url.Action("SaveNewData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "新增成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else{
+                    $.confirm({
+                        title: "",
+                        content: "新增失敗",
+                        buttons: {
+                            確定: function () {
+                            },
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
+</script>

@@ -1,0 +1,135 @@
+﻿@model WebPccuClub.Models.ConsultationFirstTalkMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+
+    var perpage = Model.ConditionModel.PageSize;
+}
+
+<style>
+    label {
+        display: flex;
+        flex-flow: column-reverse;
+    }
+</style>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="SearchForm" enctype="multipart/form-data" action="">
+                    <div class="card">
+                        <div class="card-header">
+                            <button type="button" class="btn btn-sm btn-outline-dark" onclick="ExportSearchResult()">匯出初談預約紀錄</button>
+                            <div class="card-tools">
+                                <a href="@Url.Action("Create")" class="btn btn-sm btn-success">新增</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                @Html.AntiForgeryToken()
+
+                                <div class="col-md-6 input-group mt-2">
+                                    <input type="date" class="form-control" id="@Html.IdFor(m => m.ConditionModel.From_ReleaseDate)" name="@Html.NameFor(m => m.ConditionModel.From_ReleaseDate)">
+                                    <span class="input-group-text">至</span>
+                                    <input type="date" class="form-control" id="@Html.IdFor(m => m.ConditionModel.To_ReleaseDate)" name="@Html.NameFor(m => m.ConditionModel.To_ReleaseDate)">
+                                </div>
+
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.DropDownListFor(m => m.ConditionModel.Psychologist,(List<SelectListItem>)ViewBag.ddlPsy,"全部負責心理師", new {@class = "form-control"})
+                                </div>
+
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.DropDownListFor(m => m.ConditionModel.FirstTalkStatus,(List<SelectListItem>)ViewBag.ddlFirstTalkStatus,"全部完成狀態", new {@class = "form-control"})
+                                </div>
+                                
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    @Html.TextBoxFor(m => m.ConditionModel.Name, new {@class="form-control", placeholder="請輸入姓名"})
+                                </div>
+                               
+                                <div class="col-md-12 mt-2 row">
+                                    <div class="col-md-6 col-sm-12 float-left">
+                                        <span id="PageNow" class="text-sm text-muted" style="display:none;">
+                                            目前為第 {{:pnow}} 頁 / 共 {{:ptotle}} 頁
+                                        </span>
+                                        <br />
+                                        <span id="PageEver" class="text-muted text-sm" style="display:none;">
+                                            每頁顯示 {{:pever}} 筆 / 共 {{:ptotleever}} 筆
+                                        </span>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12 float-right d-flex flex-wrap align-items-end justify-content-end p-0">
+                                        @Html.Partial("_JumpPagePartial", @perpage)
+                                        <input type="reset" class="btn btn-sm btn-outline-info mx-1 mt-2" value="清除條件">
+                                        <input type="button" class="btn btn-sm btn-outline-danger mx-1 mt-2" value="搜尋" onclick="GoSearch(0)">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    @Html.HiddenFor(m => m.ConditionModel.Page)
+                    @Html.HiddenFor(m => m.ConditionModel.PageSize)
+                    @Html.HiddenFor(m => m.ConditionModel.TotalCount)
+                </form>
+                <div id="SearchResultList" class="card"></div>
+
+            </div>
+            <!-- /.card -->
+        </div>
+    </div>
+    <!-- /.row -->
+</section>
+
+<script>
+    function GoSearch(source) {
+
+        if (source == 0)
+            $('#@(Html.IdFor(m => m.ConditionModel.Page))').val(0);
+
+        var fromDate = Date.parse($('#@(Html.IdFor(m => m.ConditionModel.From_ReleaseDate))').val());
+        var toDate = Date.parse($('#@(Html.IdFor(m => m.ConditionModel.To_ReleaseDate))').val());
+        if ((isNaN(fromDate) && !isNaN(toDate)) || (!isNaN(fromDate) && isNaN(toDate))) {
+            $.alert("時間區間未填");
+            return false;
+        }
+        if (fromDate > toDate) {
+            $.alert("開始日期不可大於結束日期");
+            return false;
+        }
+
+        SendAjax({
+            url: '@Url.Action("GetSearchResult")',
+            data: $("#SearchForm").serialize(),
+            success: function (result) {
+                $('#SearchResultList').html(result);
+            }
+        });
+    }
+
+    function ExportSearchResult() {
+        window.open('@Url.Action("ExportSearchResult")' + '?' + $("#SearchForm").serialize());
+    }
+
+    $('#JumpPergroup').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val(e.target.value);
+        GoSearch();
+    });
+    
+    $('#Jumppage').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.Page)").val(e.target.value);
+        GoSearch();
+    });
+
+    $('input:reset').click(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val("10");
+    });
+
+    $('#@Html.IdFor(m => m.ConditionModel.From_ReleaseDate)').tooltip({ title: "填表時間[起]" });
+    $('#@Html.IdFor(m => m.ConditionModel.To_ReleaseDate)').tooltip({ title: "填表時間[迄]" });
+    $('#@Html.IdFor(m => m.ConditionModel.Psychologist)').tooltip({ title: "負責心理師" });
+    $('#@Html.IdFor(m => m.ConditionModel.FirstTalkStatus)').tooltip({ title: "是否完成初談" });
+    $('#@Html.IdFor(m => m.ConditionModel.Name)').tooltip({ title: "姓名" });
+
+</script>

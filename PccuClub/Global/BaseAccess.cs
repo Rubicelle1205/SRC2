@@ -7,6 +7,7 @@ using NPOI.SS.Formula.Eval;
 using PccuClub.WebAuth;
 using System.Data;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using WebPccuClub.Entity;
 using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
@@ -16,6 +17,8 @@ namespace WebPccuClub.Global
 {
     public class BaseAccess : MsSqlDBAccess
     {
+        PublicFun PublicFun = new PublicFun();
+
         public BaseAccess() : base()
         { }
 
@@ -71,7 +74,7 @@ namespace WebPccuClub.Global
             throw new Exception("[DAException]", DAException.SystemResult);
         }
 
-		public virtual void WriteLog(string strMsg, UserInfo LoginUser, enumLogConst enumLog = enumLogConst.None)
+		public virtual void WriteLog(string strMsg, UserInfo LoginUser = null, enumLogConst enumLog = enumLogConst.None)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             string CommandText = string.Empty;
@@ -80,22 +83,29 @@ namespace WebPccuClub.Global
 
             #region 參數設定
             parameters.Add("Type", Enum.GetName(enumLog));
-            // 使用者帳號
-            parameters.Add("Loginid", LoginUser.LoginId);
-            // 使用者姓名
-            parameters.Add("LoginName", LoginUser.UserName);
-            // 角色姓名
+
+			if (null != LoginUser)
+			{
+                // 使用者帳號
+                parameters.Add("Loginid", LoginUser.LoginId);
+                // 使用者姓名
+                parameters.Add("LoginName", LoginUser.UserName);
+                // 角色姓名
+                parameters.Add("RoleName", LoginUser.UserRole.Count > 0 ? LoginUser.UserRole[0].RoleName: "");
+                // 登入IP
+                parameters.Add("IP", LoginUser.IP);
+            }
+            
+			// 建立時間
             parameters.Add("Time", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.sss"));
-            // 角色姓名
-            parameters.Add("RoleName", LoginUser.UserRole[0].RoleName);
-            // 登入IP
-            parameters.Add("IP", LoginUser.IP);
-            // 建立時間
             parameters.Add("text", strMsg);
             #endregion 參數設定
 
             #region CommandText
-            CommandText = @"insert into Log_Record
+            
+			if (null != LoginUser)
+			{
+                CommandText = @"insert into Log_Record
 					        (
 								Type,
 								LoginId,
@@ -113,6 +123,22 @@ namespace WebPccuClub.Global
 								@IP,
 								@text
 					        )";
+            }
+			else
+			{
+                CommandText = @"insert into Log_Record
+					        (
+								Type,
+								Time,
+								text
+					        )
+					        values
+					        (
+                                @Type,
+								@Time,
+								@text
+					        )";
+            }
 
             #endregion CommandText
 
@@ -418,7 +444,32 @@ namespace WebPccuClub.Global
 			return new List<SelectListItem>();
 		}
 
-		public List<SelectListItem> GetAllClub()
+        public List<SelectListItem> GetAllActVerify(string type)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+			if(type == "1")
+                CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'ActVerify' AND Code <> '05'";
+			else
+				CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'ActVerify'";
+
+
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetAllClub()
 		{
 			string CommandText = string.Empty;
 			DataSet ds = new DataSet();
@@ -437,6 +488,29 @@ namespace WebPccuClub.Global
 
 			return new List<SelectListItem>();
 		}
+
+        public List<SelectListItem> GetAllActName()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT A.ActID AS VALUE, A.ActName + '(' + B.ClubCName + ')' AS Text 
+							  FROM ActDetail A 
+					     LEFT JOIN ClubMang B ON B.ClubId = A.BrrowUnit
+";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
 
         public List<SelectListItem> GetOrderBy()
         {
@@ -458,6 +532,38 @@ namespace WebPccuClub.Global
                 return dbResult.entitys.ToList();
 
             return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetSchoolYear(int type = 0)
+        {
+            List<SelectListItem> LstItem = new List<SelectListItem>();
+
+            int NowSchoolYear = int.Parse(PublicFun.GetNowSchoolYear());
+
+			if (type == 0)  //取得本學年度資料 (-2 ~ +2)
+			{
+				for (int i = NowSchoolYear - 2; i <= NowSchoolYear + 2; i++)
+				{
+					LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
+				}
+			}
+			else if (type == 1)  //取得本學年度資料 (-2)
+			{
+				for (int i = NowSchoolYear - 2; i <= NowSchoolYear; i++)
+				{
+					LstItem.Add(new SelectListItem() { Value = string.Format("{0}1", i), Text = string.Format("{0}1", i) });
+					LstItem.Add(new SelectListItem() { Value = string.Format("{0}2", i), Text = string.Format("{0}2", i) });
+				}
+			}
+			else if (type == 2)
+			{
+                for (int i = NowSchoolYear - 10; i <= NowSchoolYear; i++)
+                {
+                    LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
+                }
+            }
+
+            return LstItem;
         }
 
         #region Rundown 資料
@@ -871,6 +977,31 @@ namespace WebPccuClub.Global
             DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
             return ds.Tables[0];
         }
+
+
+		public virtual string GetActDetailID(string ActID)
+		{
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@ActID", ActID);
+
+            #endregion
+
+            CommandText = $@"SELECT ActDetailId FROM ActDetail WHERE ActID = @ActID";
+
+            (DbExecuteInfo info, IEnumerable<RoleMangEditModel> entitys) dbResult = DbaExecuteQuery<RoleMangEditModel>(CommandText, parameters, true, DBAccessException);
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+         
+			return ds.Tables[0].QueryFieldByDT("ActDetailId");
+		}
+
+
     }
 
 	public enum enumLogConst 

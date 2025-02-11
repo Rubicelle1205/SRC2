@@ -1,0 +1,7 @@
+﻿@model WebPccuClub.Models.EventBullyingMangViewModel
+
+
+@if (Model != null)
+{
+    @Html.DropDownListFor(m => m.EditModel.BullyingSecondClass, (List<SelectListItem>)ViewBag.ddlBullyingSecondClass, "請選擇霸凌事件次類別", new { @class = "form-control" })
+}

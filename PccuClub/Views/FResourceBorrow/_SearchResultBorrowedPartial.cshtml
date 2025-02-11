@@ -1,0 +1,34 @@
+﻿@model WebPccuClub.Models.FResourceBorrowViewModel
+
+@if (Model.ResourceResultModel.Count > 0)
+{
+    foreach (FResourceBorrowResourceResultModel item in Model.ResourceResultModel)
+    {
+        <div class="listItem">
+            <div class="item item-sm">@item.MainClassText</div>
+            <div class="item">@item.MainResourceName</div>
+            <div class="item ">@item.RemainAmt
+                @if (!string.IsNullOrEmpty(item.ShortDesc))
+                {
+                    <i class="fa-solid fa-circle-exclamation" onclick="ShowDesc('@item.ShortDesc')"></i>     
+                }
+            </div>
+            <div class="item">@item.AmtShelves</div>
+            <div class="item">
+                @using (Html.BeginForm("Edit", "FResourceBorrow", FormMethod.Post, new { style = "float:left" }))
+                {
+                    <button type="submit" value="@item.MainResourceID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">說明</button>
+                }
+            </div>
+        </div>
+    }
+}
+
+<!-- /.card-body -->
+
+<script>
+    function ShowDesc(msg)
+    {
+        alert(msg);
+    }
+</script>

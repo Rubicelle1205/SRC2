@@ -1,0 +1,47 @@
+﻿@model WebPccuClub.Models.FResourceBorrowViewModel
+
+@if (Model.ResultModel.Count > 0)
+{
+        <ul class="list-group">
+        @foreach (FResourceBorrowResultModel item in Model.ResultModel)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span class="fs-16 title-2">@item.ApplyUnitName</span>
+                <a class="btn btn-sm btn-primary" href="javascript:void(0)" onclick="showDialog(@item.BorrowMainID)">檢視資訊</a>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <ul class="list-group"><span class="text-muted">本日無借用者</span></ul>
+}
+
+<!-- /.card-body -->
+
+<script>
+    function showDialog(BorrowMainID) {
+
+        SendAjax({
+            url: '@Url.Action("InitResourceDetail")',
+            data: { 'BorrowMainID': BorrowMainID },
+            success: function (result) {
+                Showen(result);
+            }
+        });
+
+
+    }
+
+    function Showen(content) {
+
+        $.dialog({
+            title: '檢視借用資源',
+            backgroundDismiss: true,
+            content: content
+        });
+     }
+
+
+
+</script>

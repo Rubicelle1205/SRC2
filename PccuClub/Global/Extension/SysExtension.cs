@@ -19,7 +19,7 @@ namespace WebPccuClub.Global.Extension
 
         /// <summary> 使用者是否為管理者角色 </summary>
         public static bool isSupervisor(this UserInfo user)
-            => user.UserRole.Find(r => r.RoleId == "supervisor") != null;
+            => user.UserType == "03";
 
         /// <summary> DataSet 是否有資料 (無資料:true，有:False) </summary>
         public static bool IsNullOrEmpty(this DataSet ds)
@@ -394,6 +394,24 @@ namespace WebPccuClub.Global.Extension
             var expressionProvider = htmlHelper.ViewContext.HttpContext.RequestServices.GetService(typeof(ModelExpressionProvider)) as ModelExpressionProvider;
 
             return expressionProvider.GetExpressionText(expression);
+        }
+
+        public static string[] DataSetToStringArray(this DataSet ds, string ColumnName)
+        {
+            List<string> results = new List<string>();
+
+            foreach (DataTable table in ds.Tables)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    if (table.Columns.Contains(ColumnName) && row[ColumnName] != DBNull.Value)
+                    {
+                        results.Add(row[ColumnName].ToString());
+                    }
+                }
+            }
+
+            return results.ToArray();
         }
     }
 }

@@ -1,0 +1,176 @@
+﻿@model WebPccuClub.Models.ConsultationRoleMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+    List<FunSelectedItem> LstAllFunInfo = ViewBag.ddlFunInfo;
+    List<FunSelectedItem> FList = LstAllFunInfo.Where(x => x.Group == "F").OrderBy(x => x.SystemCode).ToList();
+    List<FunSelectedItem> BList = LstAllFunInfo.Where(x => x.Group == "B").OrderBy(x => x.SystemCode).ToList();
+    List<string> FListShowed = new List<string>();
+    List<string> BListShowed = new List<string>();
+    List<string> ListSystemCode = new List<string>() { "01", "02", "03", "04", "05" };
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body table-responsive-sm">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                            <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                        </h6>
+                        @if (null != Model.EditModel)
+                        {
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Created)</th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.Created)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.LastModified)</th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.LastModified)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.RoleId)<span class="required">*</span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.RoleId)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.RoleName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.RoleName, new {@class="form-control", placeholder="請輸入名稱"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.SystemRoleCode)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.SystemRoleCode ,(List<SelectListItem>)ViewBag.ddlYesOrNo,"請選擇是否為心理師", new {@class = "form-control"})
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Comment)</th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Comment, new {@class="form-control", rows="6"})</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">權限<span class="required">*</span></th>
+                                        <td>
+                                            <div class="row p-2">
+                                                <div style="width:100%; margin-top: 1em;">
+                                                    <div style="width:100%; font-size: larger;">後台功能</div>
+                                                    <div style="width:100%; display:flex; flex-flow: wrap;">
+
+                                                        @foreach (string str in ListSystemCode)
+                                                        {
+                                                            @if (BList.Where(x => x.SystemCode == str).ToList().Count > 0)
+                                                            {
+                                                                <div style="width:100%; display:flex; flex-flow: wrap; padding:0.5rem 0.5rem 0 0.5rem; margin-block:1rem;">
+
+                                                                    @foreach (FunSelectedItem item in BList.Where(x => x.SystemCode == str).ToList())
+                                                                    {
+                                                                        @if (Model.EditModel.LstFunItem.Any(x => x.Value == item.Value))
+                                                                        {
+                                                                            <div class="col-md-3 custom-control custom-checkbox">
+                                                                                <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                                                       type="checkbox" id="@item.Value" value="@item.Value" checked>
+                                                                                <label class="custom-control-label" for="@item.Value">@item.Text</label>
+                                                                            </div>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <div class="col-md-3 custom-control custom-checkbox">
+                                                                                <input class="custom-control-input custom-control-input-primary custom-control-input-outline"
+                                                                                       type="checkbox" id="@item.Value" value="@item.Value">
+                                                                                <label class="custom-control-label" for="@item.Value">@item.Text</label>
+                                                                            </div>
+                                                                        }
+                                                                    }
+                                                                </div>
+
+                                                            }
+                                                        }
+                                                    </div>
+
+                                                </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            @Html.HiddenFor(m => m.EditModel.RoleId)
+                        }
+
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer d-flex justify-content-end">
+                        <button type="button" name="submitBtn" class="btn btn-success" onclick="SaveEditData()">儲存</button>
+                    </div>
+                </div>
+                <!-- /.card -->
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+    function SaveEditData() {
+
+        var data = new FormData()
+
+        var RoleId = $('#@Html.IdFor(m => m.EditModel.RoleId)').val();
+        var RoleName = $('#@Html.IdFor(m => m.EditModel.RoleName)').val();
+        var SystemRoleCode = $('#@Html.IdFor(m => m.EditModel.SystemRoleCode)').val();
+        var Comment = $('#@Html.IdFor(m => m.EditModel.Comment)').val();
+
+        var selectedValues = [];
+        $(".custom-control-input-outline").each(function () {
+            if ($(this).is(":checked")) {
+                selectedValues.push($(this).val());
+            }
+        });
+
+        if (RoleName == "") {
+            $.alert("角色名稱不可為空");
+            return;
+        }
+
+        if (SystemRoleCode == "") {
+            $.alert("角色種類不可為空");
+            return;
+        }
+
+        data.append('@Html.NameFor(m => m.EditModel.RoleId)', RoleId);
+        data.append('@Html.NameFor(m => m.EditModel.RoleName)', RoleName);
+        data.append('@Html.NameFor(m => m.EditModel.SystemRoleCode)', SystemRoleCode);
+        data.append('@Html.NameFor(m => m.EditModel.Comment)', Comment);
+        data.append('@Html.NameFor(m => m.EditModel.strFunInfo)', selectedValues);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+
+    }
+</script>

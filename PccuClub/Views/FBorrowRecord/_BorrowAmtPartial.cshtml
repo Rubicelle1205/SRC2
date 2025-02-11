@@ -1,0 +1,29 @@
+﻿@model WebPccuClub.Models.FBorrowRecordViewModel
+
+@{
+
+}
+
+@if (!string.IsNullOrEmpty(Model.CreateModel.MainResourceID))
+{
+    @if (ViewBag.ddlSecondResurce != null)
+    {
+        @Html.DropDownListFor(m => m.CreateModel.BorrowAmt ,(List<SelectListItem>)ViewBag.ddlSecondAmt,"請選擇借用數量", new {@class = "form-control"})
+    }
+}
+else
+{
+    <select id="resource_num" name="" class="form-control"
+            title="請選擇借用數量">
+        <option value="">請選擇借用數量</option>
+    </select>
+}
+
+
+<script>
+
+</script>
+
+<style>
+
+</style>

@@ -2,6 +2,7 @@
 using WebPccuClub.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Filters;
+using WebAuth.Entity;
 
 namespace WebPccuClub.Controllers
 {
@@ -22,13 +23,16 @@ namespace WebPccuClub.Controllers
 
             string strFun = string.Empty;
 
-            for(int i = 0; i <= LoginUser.UserRoleFun.Count -1; i++)
+            List<FunInfo> LstFunInfo = LoginUser.UserRoleFun.Where(x => x.SystemCode == "02" && x.Url != "").ToList();
+
+            for (int i = 0; i <= LstFunInfo.Count - 1; i++)
             {
-                if(i != LoginUser.UserRoleFun.Count - 1)
-                    strFun += LoginUser.UserRoleFun[i].MenuName + "、";
+                if (i != LstFunInfo.Count - 1)
+                    strFun += LstFunInfo[i].MenuName + "、";
                 else
-                    strFun += LoginUser.UserRoleFun[i].MenuName;
+                    strFun += LstFunInfo[i].MenuName;
             }
+
             ViewBag.Fun = strFun;
 
             return View();

@@ -36,7 +36,13 @@ namespace WebAuth.Entity
         public bool IsVisIble { get; set; }
 
         /// <summary> 排序 </summary>
-        public int SortOrder { get; set; }
+        public string SortOrder { get; set; }
+
+        /// <summary> 系統代碼 </summary>
+        public string SystemCode { get; set; }
+
+        /// <summary> 前台or後台 </summary>
+        public string BackOrFront { get; set; }
     }
 
 

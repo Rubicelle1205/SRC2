@@ -6,11 +6,12 @@
     <table class="table table-bordered table-hover text-nowrap">
         <thead>
             <tr class="text-center">
-                <th width="10%">活動編號</th>
-                <th width="10%">學年度</th>
+                <th width="5%">活動編號</th>
+                <th width="5%">學年度</th>
                 <th width="20%">單位名稱</th>
                 <th width="20%">活動名稱</th>
                 <th width="10%">審核狀態</th>
+                <th width="10%">全人申請</th>
                 <th width="10%">建立時間</th>
                 <th width="20%">功能</th>
             </tr>
@@ -53,6 +54,7 @@
                                 <span class="text-warning">@item.ActVerifyText</span>
                             }
                         </td>
+                        <td class="text-center text-sm">@item.PassPortText</td>
                         <td class="text-center text-sm">@item.Created.Value.ToString("yyyy/MM/dd HH:mm:ss")</td>
                         <td class="text-center text-sm">
                             @using (Html.BeginForm("Edit", "ActListMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))

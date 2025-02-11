@@ -1,0 +1,59 @@
+﻿@using PccuClub.WebAuth;
+
+@{
+    Layout = "_BackendLoginLayout";
+
+    UserInfo LoginUser = (UserInfo)ViewBag.LoginUser;
+}
+
+<div class="position-relative w-100 min-vh-100 bg-gradient-liquid">
+    <div class="position-relative d-flex justify-content-center align-items-center min-vh-100">
+        <!-- vh-100-->
+        <div class="card col-md-8 col-xl-4 m-2">
+            <div class="card-body">
+                <h1 class="h4 mb-3 font-weight-normal text-center">中國文化大學學務資訊系統</h1>
+                <p class="font-weight-normal text-center">後台入口選單</p>
+                <div class="list-group text-center text-lg">
+                    <!--只顯示有使用權限的功能項目-->
+                    @if (null != LoginUser)
+                    {
+                        @if (LoginUser.UserType == "03")
+                        {
+                            <a href="@Url.Action("Index", "HyperHome")" class="list-group-item list-group-item-action">
+                                <i class="fa-solid fa-id-badge"></i> 身分權限
+                            </a>
+                        }
+                        @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "02"))
+                        {
+                            <a href="@Url.Action("Index", "Home")" class="list-group-item list-group-item-action">
+                                <i class="fa-solid fa-cubes"></i> 活動報備管理/結案管理
+                            </a>
+                        }
+                        @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "03"))
+                        {
+                            <a href="@Url.Action("Index", "EventHome")" class="list-group-item list-group-item-action">
+                                <i class="fa-solid fa-user-secret"></i> 案件管理/校安事件通報/性平事件/霸凌事件
+                            </a>
+                        }
+                        @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "04"))
+                        {
+                            <a href="@Url.Action("Index", "BorrowHome")" class="list-group-item list-group-item-action">
+                                <i class="fa-solid fa-boxes-packing"></i> 借用資源管理
+                            </a>
+                        }
+                        @if (LoginUser.UserRoleFun.Any(x => x.SystemCode == "05"))
+                        {
+                            <a href="@Url.Action("Index", "ConsultationHome")" class="list-group-item list-group-item-action">
+                                <i class="fa-solid fa-heart-pulse"></i> 輔導預約系統
+                            </a>
+                        }
+
+                        <a href="@Url.Action("Index", "MenuFront")" class="list-group-item list-group-item-warning">返回前台主選單</a>
+                    
+                    }
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

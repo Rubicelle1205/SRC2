@@ -1,0 +1,103 @@
+﻿@model WebPccuClub.Models.FResourceBorrowViewModel
+
+@{
+    Layout = "_FrontBorrowLayout";
+    
+    ViewBag.Title = "資源借用系統";
+}
+
+
+
+<div class="col-xxl-3">
+    <div class="contentWrapper">
+        <p class="hint"><i class="icon-bulb"></i> 點選日期檢視當日資源借用狀況。</p>
+        <div class="scroll-box d-flex justify-content-center">
+            <div id="calendar"></div>
+        </div>
+    </div>
+    <div class="contentWrapper mt-2 mb-2">
+        <h4>本日借用者</h4><!--只顯示審核通過的借用紀錄?-->
+        <hr>
+        <div id="SearchResultList" class="borrowlist">
+        </div>
+    </div>
+</div>
+
+<div class="col-xxl-6">
+    <div class="contentWrapper">
+        <div class="filterbox form-box mb-2">
+            <div class="row justify-content-between">
+                <div class="col-md-6">
+                    <h4 class="pageTitle">
+                        資源借用狀況 <span class="fs-16 dateTitle">2024-01-15</span>
+                    </h4>
+                </div>
+                <form method="post" id="SearchForm" enctype="multipart/form-data" action="" style="display: contents;">
+                <div class="col-md-5">
+                    <div class="d-flex align-items-center">
+                        <label class="flex-shrink-0" for="resource_type">資源類別：</label>
+                        @Html.DropDownListFor(m => m.ConditionModel.BorrowSecondClassID, (List<SelectListItem>)ViewBag.ddlAllBuild,"全部資源", new {@class = "form-control"})
+                            @Html.HiddenFor(m => m.ConditionModel.SDate)
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+        <div class="scroll-hint hint"><i class="fas fa-info-circle"></i> 左右滑動查看完整表格</div>
+        <div class="scroll-box">
+            <div class="memberlist item-9 mb-5">
+                <div class="listHeader">
+                    <div class="listItem">
+                        <div class="item item-sm">資源類別</div>
+                        <div class="item">資源名稱</div>
+                        <div class="item">當日剩餘數量</div>
+                        <div class="item">資源總數量</div>
+                        <div class="item"></div>
+                    </div>
+                </div>
+                <div id="SearchResultList2" class="listBody">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        GoSearch();
+    });
+
+    $('#@Html.IdFor(m => m.ConditionModel.BorrowSecondClassID)').change(function (e) {
+        GoSearch();
+    });
+
+    function GoSearch() {
+        SendAjax({
+            url: '@Url.Action("GetSearchResult")',
+            data: $("#SearchForm").serialize(),
+            success: function (result) {
+                $('#SearchResultList').html(result);
+            }
+        });
+
+        SendAjax({
+            url: '@Url.Action("GetSearchResourceResult")',
+            data: $("#SearchForm").serialize(),
+            success: function (result) {
+                $('#SearchResultList2').html(result);
+            }
+        });
+    }
+    
+    $('#JumpPergroup').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val(e.target.value);
+        GoSearch();
+    });
+
+    $('#Jumppage').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.Page)").val(e.target.value);
+        GoSearch();
+    });
+
+</script>
