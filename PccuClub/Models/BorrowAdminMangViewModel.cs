@@ -127,12 +127,12 @@ namespace WebPccuClub.Models
         [DisplayName("啟用")]
         public string? IsEnable { get; set; }
 
-        /// <summary>角色-諮商系統</summary>
-        [DisplayName("角色-諮商系統")]
+        /// <summary>角色-資源借用</summary>
+        [DisplayName("角色-資源借用")]
         public string? RoleConsultation { get; set; }
 
-        /// <summary>角色-諮商系統</summary>
-        [DisplayName("角色-諮商系統")]
+        /// <summary>學校/人員代號</summary>
+        [DisplayName("學校/人員代號")]
         public string? SSOAccount { get; set; }
         
         /// <summary>信箱</summary>
@@ -196,8 +196,8 @@ namespace WebPccuClub.Models
         [DisplayName("角色-借用系統")]
         public string? RoleBorrow { get; set; }
 
-        /// <summary>角色-諮商系統</summary>
-        [DisplayName("角色-諮商系統")]
+        /// <summary>角色-資源借用</summary>
+        [DisplayName("角色-資源借用")]
         public string? RoleConsultation { get; set; }
 
         /// <summary>學校/人員代號</summary>
