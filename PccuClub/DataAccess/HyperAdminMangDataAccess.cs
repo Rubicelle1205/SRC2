@@ -35,12 +35,13 @@ namespace WebPccuClub.DataAccess
 
             #endregion
 
-            CommandText = $@"SELECT A.LoginId, A.UserName, A.Memo, A.IsEnable, A.LastModified,
+            CommandText = $@"SELECT A.LoginId, A.UserName, A.Memo, A.IsEnable, A.LastModified, B.SystemCode, G.Text AS SystemCodeText,
                                     B.RoleId, C.RoleName, F.Text AS EnableText
                                FROM UserMain A
                           LEFT JOIN UserRole B ON B.LoginId = A.LoginId
                           LEFT JOIN SystemRole C ON C.RoleId = B.RoleId
-                          LEFT JOIN CODE F ON F.Code = A.IsEnable AND F.Type = 'Enable'
+                          LEFT JOIN Code F ON F.Code = A.IsEnable AND F.Type = 'Enable'
+                          LEFT JOIN Code G ON G.Code = B.SystemCode AND G.Type = 'SystemCode'
                               WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.LastModified BETWEEN @FromDate AND @ToDate" : " ")}
 {(model.LoginId != null ? " AND A.LoginId LIKE '%' + @LoginId + '%'" : " ")}
@@ -254,6 +255,7 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
 
             string CommendText = string.Empty;
 
+            //密碼有修改
             if (!string.IsNullOrEmpty(EncryptPw))
             {
                 #region 參數設定
@@ -282,7 +284,7 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
                                     LastModified = GETDATE()
                               WHERE LoginID = @LoginId ";
             }
-            else
+            else    //密碼未修改
             {
                 #region 參數設定
                 parameters.Add("@IsEnable", vm.EditModel.IsEnable);
@@ -373,9 +375,11 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
 
             #region 社團
 
-            if (!string.IsNullOrEmpty(vm.EditModel.RoleClub))
+            if (!string.IsNullOrEmpty(vm.EditModel.selectedValues) && vm.EditModel.selectedValues.Contains("02"))
             {
-                CommendText = $@"IF EXISTS (SELECT 1 FROM UserRole WHERE 1 = 1 AND LoginId = @LoginId AND SystemCode = '02')
+                if (!string.IsNullOrEmpty(vm.EditModel.RoleClub))
+                {
+                    CommendText = $@"IF EXISTS (SELECT 1 FROM UserRole WHERE 1 = 1 AND LoginId = @LoginId AND SystemCode = '02')
                                      BEGIN
                                             UPDATE UserRole
                                             SET RoleId = @RoleClub
@@ -386,18 +390,30 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
                                             INSERT INTO UserRole (LoginId, RoleId, SystemCode) VALUES (@LoginId, @RoleClub, '02');
                                         END";
 
+                    ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+                    if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
+                }
+            }
+            else
+            {
+                CommendText = $@"DELETE FROM UserRole WHERE LoginId = @LoginId AND SystemCode = '02'";
+
                 ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
-                if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
+                if (ExecuteResult.isSuccess == false && ExecuteResult.ErrorCode != dbErrorCode._EC_NotAffect) { return ExecuteResult; }
             }
+
 
             #endregion
 
             #region 案件系統
 
-            if (!string.IsNullOrEmpty(vm.EditModel.RoleCase))
+            if (!string.IsNullOrEmpty(vm.EditModel.selectedValues) && vm.EditModel.selectedValues.Contains("03"))
             {
-                CommendText = $@"IF EXISTS (SELECT 1 FROM UserRole WHERE 1 = 1 AND LoginId = @LoginId AND SystemCode = '03')
+                if (!string.IsNullOrEmpty(vm.EditModel.RoleCase))
+                {
+                    CommendText = $@"IF EXISTS (SELECT 1 FROM UserRole WHERE 1 = 1 AND LoginId = @LoginId AND SystemCode = '03')
                                      BEGIN
                                             UPDATE UserRole
                                             SET RoleId = @RoleCase
@@ -408,18 +424,29 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
                                             INSERT INTO UserRole (LoginId, RoleId, SystemCode) VALUES (@LoginId, @RoleCase, '03');
                                         END";
 
+                    ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+                    if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
+                }
+            }
+            else
+            {
+                CommendText = $@"DELETE FROM UserRole WHERE LoginId = @LoginId AND SystemCode = '03'";
+
                 ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
-                if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
+                if (ExecuteResult.isSuccess == false && ExecuteResult.ErrorCode != dbErrorCode._EC_NotAffect) { return ExecuteResult; }
             }
 
             #endregion
 
             #region 資源借用
 
-            if (!string.IsNullOrEmpty(vm.EditModel.RoleBorrow))
+            if (!string.IsNullOrEmpty(vm.EditModel.selectedValues) && vm.EditModel.selectedValues.Contains("04"))
             {
-                CommendText = $@"IF EXISTS (SELECT 1 FROM UserRole WHERE 1 = 1 AND LoginId = @LoginId AND SystemCode = '04')
+                if (!string.IsNullOrEmpty(vm.EditModel.RoleBorrow))
+                {
+                    CommendText = $@"IF EXISTS (SELECT 1 FROM UserRole WHERE 1 = 1 AND LoginId = @LoginId AND SystemCode = '04')
                                      BEGIN
                                             UPDATE UserRole
                                             SET RoleId = @RoleBorrow
@@ -430,18 +457,29 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
                                             INSERT INTO UserRole (LoginId, RoleId, SystemCode) VALUES (@LoginId, @RoleBorrow, '04');
                                         END";
 
+                    ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+                    if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
+                }
+            }
+            else
+            {
+                CommendText = $@"DELETE FROM UserRole WHERE LoginId = @LoginId AND SystemCode = '04'";
+
                 ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
-                if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
+                if (ExecuteResult.isSuccess == false && ExecuteResult.ErrorCode != dbErrorCode._EC_NotAffect) { return ExecuteResult; }
             }
 
             #endregion
 
             #region 輔導諮商
 
-            if (!string.IsNullOrEmpty(vm.EditModel.RoleConsultation))
+            if (!string.IsNullOrEmpty(vm.EditModel.selectedValues) && vm.EditModel.selectedValues.Contains("05"))
             {
-                CommendText = $@"IF EXISTS (SELECT 1 FROM UserRole WHERE 1 = 1 AND LoginId = @LoginId AND SystemCode = '05')
+                if (!string.IsNullOrEmpty(vm.EditModel.RoleConsultation))
+                {
+                    CommendText = $@"IF EXISTS (SELECT 1 FROM UserRole WHERE 1 = 1 AND LoginId = @LoginId AND SystemCode = '05')
                                      BEGIN
                                             UPDATE UserRole
                                             SET RoleId = @RoleConsultation
@@ -452,9 +490,18 @@ AND (@IsEnable IS NULL OR A.IsEnable = @IsEnable)
                                             INSERT INTO UserRole (LoginId, RoleId, SystemCode) VALUES (@LoginId, @RoleConsultation, '05');
                                         END";
 
+                    ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+                    if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
+                }
+            }
+            else
+            {
+                CommendText = $@"DELETE FROM UserRole WHERE LoginId = @LoginId AND SystemCode = '05'";
+
                 ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
-                if (ExecuteResult.isSuccess == false) { return ExecuteResult; }
+                if (ExecuteResult.isSuccess == false && ExecuteResult.ErrorCode != dbErrorCode._EC_NotAffect) { return ExecuteResult; }
             }
 
             #endregion

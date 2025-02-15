@@ -178,7 +178,7 @@ namespace WebPccuClub.Controllers
 
                 dbResult = dbAccess.UpdateRole(vm, LoginUser);
 
-                if (!dbResult.isSuccess)
+                if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
                 {
                     dbAccess.DbaRollBack();
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;

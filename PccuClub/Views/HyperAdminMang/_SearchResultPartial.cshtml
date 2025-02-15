@@ -13,11 +13,12 @@
         <thead>
             <tr class="text-center">
                 <th width="10%">名稱<br><span class="text-xs text-secondary">帳號</span></th>
+                <th width="10%">系統</th>
                 <th width="10%">角色</th>
-                <th width="20%">備註</th>
+                <th width="25%">備註</th>
                 <th width="10%">啟用狀態</th>
                 <th width="10%">最後登入時間</th>
-                <th width="20%">功能</th>
+                <th width="25%">功能</th>
             </tr>
         </thead>
         <tbody>
@@ -27,6 +28,7 @@
                 {
                     <tr>
                         <td class="text-center text-sm">@item.UserName<br><span class="text-sm text-secondary">@item.LoginId</span></td>
+                        <td class="text-center text-sm">@item.SystemCodeText</td>
                         <td class="text-center text-sm">@item.RoleName</td>
                         <td class="text-center text-sm">@item.Memo</td>
                         <td class="text-center text-sm">@item.EnableText</td>

@@ -69,6 +69,14 @@ namespace WebPccuClub.Models
         [DisplayName("管理員帳號")]
         public string? LoginId { get; set; }
 
+        /// <summary>系統別代號</summary>
+        [DisplayName("系統別代號")]
+        public string? SystemCode { get; set; }
+
+        /// <summary>系統別</summary>
+        [DisplayName("系統別")]
+        public string? SystemCodeText { get; set; }
+
         /// <summary>管理員名稱</summary>
         [DisplayName("管理員名稱")]
         public string? UserName { get; set; }
@@ -228,10 +236,6 @@ namespace WebPccuClub.Models
         [DisplayName("角色-諮商系統")]
         public string? RoleConsultation { get; set; }
 
-        ///// <summary>角色</summary>
-        //[DisplayName("角色")]
-        //public string? RoleId { get; set; }
-
         /// <summary>信箱</summary>
         [DisplayName("信箱")]
         public string? EMail { get; set; }
@@ -247,5 +251,9 @@ namespace WebPccuClub.Models
         /// <summary>備註</summary>
         [DisplayName("備註")]
         public string? Memo { get; set; }
+
+        /// <summary>selectedValues</summary>
+        [DisplayName("selectedValues")]
+        public string? selectedValues { get; set; }
     }
 }
