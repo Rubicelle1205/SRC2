@@ -219,7 +219,7 @@ namespace WebPccuClub.Controllers
 			ViewBag.ddlPassport = dbAccess.GetPassport();
 			ViewBag.ddlPlaceSource = dbAccess.GetPlaceSource();
 			ViewBag.ddlHour = dbAccess.GetAllHour();
-			ViewBag.ddlActVerify = dbAccess.GetAllActVerify();
+			ViewBag.ddlActVerify = dbAccess.GetAllActVerify("1");
 			ViewBag.ddlAllClub = dbAccess.GetAllClub();
 
 			return View(vm4);

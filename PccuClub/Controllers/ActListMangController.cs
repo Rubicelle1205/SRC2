@@ -38,7 +38,7 @@ namespace WebPccuClub.Controllers
         {
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlLifeClass = dbAccess.GetAllLifeClass();
-            ViewBag.ddlActVerify = dbAccess.GetAllActVerify();
+            ViewBag.ddlActVerify = dbAccess.GetAllActVerify("3");
             ViewBag.ddlPassPort = dbAccess.GetPassport();
 
             ActListMangViewModel vm = new ActListMangViewModel();
@@ -58,7 +58,7 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlPassport = dbAccess.GetPassport();
             ViewBag.ddlPlaceSource = dbAccess.GetPlaceSource();
             ViewBag.ddlHour = dbAccess.GetAllHour();
-            ViewBag.ddlActVerify = dbAccess.GetAllActVerify();
+            ViewBag.ddlActVerify = dbAccess.GetAllActVerify("2");
             ViewBag.ddlAllClub = dbAccess.GetAllClub();
 
             ActListMangViewModel vm = new ActListMangViewModel();
@@ -76,7 +76,7 @@ namespace WebPccuClub.Controllers
 
             ViewBag.ddlSDGs = dbAccess.GetSDGs();
             ViewBag.ddlRundownStatus = dbAccess.GetAllRundownStatus();
-            ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify();
+            ViewBag.ddlActVerify = dbAccess.GetAllActVerify("3");
 
             vm.EditModel = dbAccess.GetEditData(submitBtn);
 

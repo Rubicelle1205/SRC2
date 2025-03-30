@@ -424,27 +424,7 @@ namespace WebPccuClub.Global
 			return new List<SelectListItem>();
 		}
 
-		public List<SelectListItem> GetAllActVerify()
-		{
-			string CommandText = string.Empty;
-			DataSet ds = new DataSet();
-
-			DBAParameter parameters = new DBAParameter();
-
-			#region 參數設定
-			#endregion
-
-			CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'ActVerify'";
-
-			(DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
-
-			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
-				return dbResult.entitys.ToList();
-
-			return new List<SelectListItem>();
-		}
-
-        public List<SelectListItem> GetAllActVerify(string type)
+        public List<SelectListItem> GetAllActVerify(string type = "")
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -453,13 +433,30 @@ namespace WebPccuClub.Global
 
             #region 參數設定
             #endregion
-
-			if(type == "1")
-                CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'ActVerify' AND Code <> '05'";
-			else
-				CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'ActVerify'";
-
-
+            //type = 1 => 顯示01~04，其他頁面
+            //type = 2 => 顯示01~05，活動報備(新增)
+            //type = 3 => 顯示01~07，活動報備(首頁、編輯)
+            switch (type)
+            {
+                case "1":
+                    CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code 
+									 WHERE Type = 'ActVerify' 
+									   AND Code IN ('01', '02', '03', '04')";
+                    break;
+                case "2":
+                    CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code 
+									 WHERE Type = 'ActVerify' 
+									   AND Code IN ('01', '02', '03', '04', '05')";
+                    break;
+                case "3":
+                    CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code 
+									 WHERE Type = 'ActVerify' 
+									   AND Code IN ('01', '02', '03', '04', '05', '06', '07')";
+                    break;
+                default:
+                    CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'ActVerify'";
+                    break;
+            }
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
