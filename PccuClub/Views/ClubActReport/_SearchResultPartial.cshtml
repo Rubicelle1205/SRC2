@@ -11,23 +11,28 @@
                 <div class="spec">
                     <div class="tag">審核狀態：</div>
                     <div class="content">
+                        @switch (item.ActVerify)
+                        {
+                            case "01":
+                                <div class="badge badge-primary">@item.ActVerifyText</div>
+                                break;
+                            case "02":
+                                <div class="badge badge-success">@item.ActVerifyText</div>
+                                break;
+                            case "03":
+                                <div class="badge badge-secondary">@item.ActVerifyText</div>
+                                break;
+                            case "04":
+                                <div class="badge badge-info">@item.ActVerifyText</div>
+                                break;
+                            case "06":
+                                <div class="badge badge-warning">@item.ActVerifyText</div>
+                                break;
+                            case "07":
+                                <div class="badge badge-danger">@item.ActVerifyText</div>
+                                break;
+                        }
 
-                        @if (item.ActVerify == "01")
-                        {
-                            <div class="badge badge-primary">@item.ActVerifyText</div>
-                        }
-                        else if (item.ActVerify == "02")
-                        {
-                            <div class="badge badge-success">@item.ActVerifyText</div>
-                        }
-                        else if (item.ActVerify == "03")
-                        {
-                            <div class="badge badge-secondary">@item.ActVerifyText</div>
-                        }
-                        else if (item.ActVerify == "04")
-                        {
-                            <div class="badge badge-info">@item.ActVerifyText</div>
-                        }
                     </div>
                 </div>
                 <div class="spec">

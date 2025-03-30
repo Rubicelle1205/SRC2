@@ -31,7 +31,8 @@
 
         @if (null != Model.EditModel)
         {
-            @if (Model.EditModel.ActVerify == "02" || Model.EditModel.ActVerify == "04")
+            @if (Model.EditModel.ActVerify == "02" || Model.EditModel.ActVerify == "04" ||
+                 Model.EditModel.ActVerify == "06" || Model.EditModel.ActVerify == "07")
             {
                 <div class="contentWrapper">
                     <h4 class="pageTitle">@Model.EditModel.ActName</h4>
@@ -70,6 +71,14 @@
                                 else if (Model.EditModel.ActVerify == "04")
                                 {
                                     <div class="badge badge-info">@Model.EditModel.ActVerifyText</div>
+                                }
+                                else if (Model.EditModel.ActVerify == "06")
+                                {
+                                    <div class="badge badge-warning">@Model.EditModel.ActVerifyText</div>
+                                }
+                                else if (Model.EditModel.ActVerify == "07")
+                                {
+                                    <div class="badge badge-danger">@Model.EditModel.ActVerifyText</div>
                                 }
                             </div>
                         </div>

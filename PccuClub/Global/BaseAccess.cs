@@ -424,6 +424,11 @@ namespace WebPccuClub.Global
 			return new List<SelectListItem>();
 		}
 
+        /// <summary>
+        /// 撈取ActVerify Code
+        /// </summary>
+        /// <param name="type">1:顯示01~04；2 => 顯示01~05；3 => 顯示01~07; 4 => 顯示01~07，沒有05</param>
+        /// <returns></returns>
         public List<SelectListItem> GetAllActVerify(string type = "")
         {
             string CommandText = string.Empty;
@@ -436,6 +441,7 @@ namespace WebPccuClub.Global
             //type = 1 => 顯示01~04，其他頁面
             //type = 2 => 顯示01~05，活動報備(新增)
             //type = 3 => 顯示01~07，活動報備(首頁、編輯)
+            //type = 3 => 顯示01~07，沒有05，活動報備前台(首頁)
             switch (type)
             {
                 case "1":
@@ -452,6 +458,11 @@ namespace WebPccuClub.Global
                     CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code 
 									 WHERE Type = 'ActVerify' 
 									   AND Code IN ('01', '02', '03', '04', '05', '06', '07')";
+                    break;
+                case "4":
+                    CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code 
+									 WHERE Type = 'ActVerify' 
+									   AND Code IN ('01', '02', '03', '04', '06', '07')";
                     break;
                 default:
                     CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'ActVerify'";

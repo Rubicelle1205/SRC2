@@ -29,6 +29,7 @@ namespace WebPccuClub.DataAccess
             #region 參數設定
             
             parameters.Add("@SchoolYear", model?.SchoolYear);
+            parameters.Add("@ActVerify", model?.ActVerify);
             parameters.Add("@OrderBy", model?.OrderBy);
             parameters.Add("@LoginId", LoginUser.LoginId);
 
@@ -41,6 +42,7 @@ namespace WebPccuClub.DataAccess
 						  LEFT JOIN ActFinish D ON D.ActID = A.ActID AND D.ActDetailId = B.ActDetailId
                               WHERE 1 = 1
                                 AND (@SchoolYear IS NULL OR B.SchoolYear = @SchoolYear)
+                                AND (@ActVerify IS NULL OR A.ActVerify = @ActVerify)
                                 AND (@LoginId IS NULL OR B.BrrowUnit = @LoginId)
                                 { (!string.IsNullOrEmpty(model.OrderBy) ? " ORDER BY A.ActID " + model.OrderBy : " ORDER BY A.ActID DESC")}";
 

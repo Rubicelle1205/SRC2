@@ -53,6 +53,10 @@ namespace WebPccuClub.Models
         [DisplayName("學年度")]
         public string? SchoolYear { get; set; }
 
+        /// <summary>活動狀態</summary>
+        [DisplayName("活動狀態")]
+        public string? ActVerify { get; set; }
+
         /// <summary>排序</summary>
         [DisplayName("排序")]
         public string? OrderBy { get; set; }

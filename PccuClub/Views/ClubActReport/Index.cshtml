@@ -19,7 +19,9 @@
                         <i class="fas fa-filter text-primary"></i>
                         @Html.DropDownListFor(m => m.ConditionModel.SchoolYear,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇", new {@class = "form-control ms-3"})
 
-                        @Html.DropDownListFor(m => m.ConditionModel.OrderBy,(List<SelectListItem>)ViewBag.ddlOrderBy,"請選擇", new {@class = "form-control ms-3"})
+                        @Html.DropDownListFor(m => m.ConditionModel.ActVerify, (List<SelectListItem>)ViewBag.ddlActVerify, "請選擇", new { @class = "form-control ms-3" })
+
+                        @Html.DropDownListFor(m => m.ConditionModel.OrderBy, (List<SelectListItem>)ViewBag.ddlOrderBy, "請選擇", new { @class = "form-control ms-3" })
                     </div>
 
                     @Html.HiddenFor(m => m.ConditionModel.Page)
@@ -55,6 +57,10 @@
     }
 
     $('#@Html.IdFor(m => m.ConditionModel.SchoolYear)').change(function (e) {
+        GoSearch();
+    });
+
+    $('#@Html.IdFor(m => m.ConditionModel.ActVerify)').change(function (e) {
         GoSearch();
     });
 
