@@ -333,7 +333,7 @@
                                         <tr>
                                             <th width="15%">審核狀態<span class="required">*</span></th>
                                             <td>
-                                                @Html.DropDownListFor(m => m.EditModel.ActVerify ,(List<SelectListItem>)ViewBag.ddlAllActVerify,"請選擇審核狀態", new {@class = "form-control"})
+                                                @Html.DropDownListFor(m => m.EditModel.ActVerify, (List<SelectListItem>)ViewBag.ddlActVerify, "請選擇審核狀態", new { @class = "form-control" })
                                             </td>
                                         </tr>
                                         <tr>
