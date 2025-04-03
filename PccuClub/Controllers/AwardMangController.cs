@@ -38,6 +38,7 @@ namespace WebPccuClub.Controllers
         {
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify();
+            ViewBag.ddlAwardInOrOut = dbAccess.GetAwardInOrOut();
 
             AwardMangViewModel vm = new AwardMangViewModel();
             vm.ConditionModel = new AwardMangConditionModel();
@@ -50,6 +51,7 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlAllClub = dbAccess.GetAllClub();
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify();
+            ViewBag.ddlAwardInOrOut = dbAccess.GetAwardInOrOut();
 
             AwardMangViewModel vm = new AwardMangViewModel();
             vm.CreateModel = new AwardMangCreateModel();
@@ -64,6 +66,7 @@ namespace WebPccuClub.Controllers
 
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify();
+            ViewBag.ddlAwardInOrOut = dbAccess.GetAwardInOrOut();
 
             //AwardMangViewModel vm = new AwardMangViewModel();
             vm.EditModel = dbAccess.GetEditData(submitBtn);

@@ -37,6 +37,12 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.AwardInOrOut)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.AwardInOrOut, (List<SelectListItem>)ViewBag.ddlAwardInOrOut, "請選擇校內/校外", new { @class = "form-control" })
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.Organizer)<span class="required">*</span></th>
                                         <td>@Html.TextBoxFor(m => m.EditModel.Organizer, new {@class = "form-control"})</td>
                                     </tr>
@@ -233,6 +239,7 @@
         var AwdID = $('#@Html.IdFor(m => m.EditModel.AwdID)').val();
         var ClubID = $('#@Html.IdFor(m => m.EditModel.ClubID)').val();
         var SchoolYear = $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val();
+        var AwardInOrOut = $('#@Html.IdFor(m => m.EditModel.AwardInOrOut)').val();
         var Organizer = $('#@Html.IdFor(m => m.EditModel.Organizer)').val();
         var AwdActName = $('#@Html.IdFor(m => m.EditModel.AwdActName)').val();
         var AwdType = $('#@Html.IdFor(m => m.EditModel.AwdType)').val();
@@ -268,6 +275,7 @@
 
         if (ClubID == "") { $.alert("社團代號不可為空白"); return; }
         if (SchoolYear == "") { $.alert("學年度不可為空白"); return; }
+        if (AwardInOrOut == "") { $.alert("校內/校外需選擇"); return; }
         if (Organizer == "") { $.alert("主辦單位不可為空白"); return; }
         if (AwdActName == "") { $.alert("活動名稱不可為空白"); return; }
         if (AwdType == "") { $.alert("獲獎類別不可為空白"); return; }
@@ -278,6 +286,7 @@
         data.append('@Html.NameFor(m => m.EditModel.AwdID)', AwdID);
         data.append('@Html.NameFor(m => m.EditModel.ClubID)', ClubID);
         data.append('@Html.NameFor(m => m.EditModel.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.EditModel.AwardInOrOut)', AwardInOrOut);
         data.append('@Html.NameFor(m => m.EditModel.Organizer)', Organizer);
         data.append('@Html.NameFor(m => m.EditModel.AwdActName)', AwdActName);
         data.append('@Html.NameFor(m => m.EditModel.AwdType)', AwdType);
@@ -310,16 +319,17 @@
     }
 
     function Reset() {
-        var ClubID = $('#@Html.IdFor(m => m.EditModel.ClubID)').val("");
-        var SchoolYear = $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val("");
-        var Organizer = $('#@Html.IdFor(m => m.EditModel.Organizer)').val("");
-        var AwdActName = $('#@Html.IdFor(m => m.EditModel.AwdActName)').val("");
-        var AwdType = $('#@Html.IdFor(m => m.EditModel.AwdType)').val("");
-        var AwdDate = $('#@Html.IdFor(m => m.EditModel.AwdDate)').val("");
-        var AwdName = $('#@Html.IdFor(m => m.EditModel.AwdName)').val("");
-        var ActVerify = $('#@Html.IdFor(m => m.EditModel.ActVerify)').val("");
-        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val("");
-        var strGetAwd = $('#@Html.IdFor(m => m.EditModel.strGetAwd)').val("");
+        $('#@Html.IdFor(m => m.EditModel.ClubID)').val("");
+        $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val("");
+        $('#@Html.IdFor(m => m.EditModel.AwardInOrOut)').val("");
+        $('#@Html.IdFor(m => m.EditModel.Organizer)').val("");
+        $('#@Html.IdFor(m => m.EditModel.AwdActName)').val("");
+        $('#@Html.IdFor(m => m.EditModel.AwdType)').val("");
+        $('#@Html.IdFor(m => m.EditModel.AwdDate)').val("");
+        $('#@Html.IdFor(m => m.EditModel.AwdName)').val("");
+        $('#@Html.IdFor(m => m.EditModel.ActVerify)').val("");
+        $('#@Html.IdFor(m => m.EditModel.Memo)').val("");
+        $('#@Html.IdFor(m => m.EditModel.strGetAwd)').val("");
     }
 
     $(".fa-regular").tooltip({ title: "僅接受.xlsx檔案" });

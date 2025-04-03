@@ -44,6 +44,10 @@ namespace WebPccuClub.Models
         /// <summary>學年度</summary>
         [DisplayName("學年度")]
         public string? SchoolYear { get; set; }
+
+        /// <summary>校內/校外</summary>
+        [DisplayName("校內/校外")]
+        public string? AwardInOrOut { get; set; }
     }
 
     public class ClubAwardResultModel
@@ -63,6 +67,14 @@ namespace WebPccuClub.Models
         /// <summary>活動類型</summary>
         [DisplayName("活動類型")]
         public string? AwdType { get; set; }
+
+        /// <summary>校內/校外</summary>
+        [DisplayName("校內/校外")]
+        public string? AwardInOrOut { get; set; }
+
+        /// <summary>校內/校外</summary>
+        [DisplayName("校內/校外")]
+        public string? AwardInOrOutText { get; set; }
 
         /// <summary>獎項名稱</summary>
         [DisplayName("獎項名稱")]
@@ -130,6 +142,14 @@ namespace WebPccuClub.Models
         /// <summary>主辦單位</summary>
         [DisplayName("主辦單位")]
         public string? Organizer { get; set; }
+
+        /// <summary>校內/校外</summary>
+        [DisplayName("校內/校外")]
+        public string? AwardInOrOut { get; set; }
+
+        /// <summary>校內/校外</summary>
+        [DisplayName("校內/校外")]
+        public string? AwardInOrOutText { get; set; }
 
         /// <summary>活動名稱</summary>
         [DisplayName("活動名稱")]

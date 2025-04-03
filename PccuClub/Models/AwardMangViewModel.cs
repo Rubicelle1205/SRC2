@@ -47,7 +47,11 @@ namespace WebPccuClub.Models
         /// <summary>審核狀態</summary>
         [DisplayName("審核狀態")]
         public string? ActVerify { get; set; }
-        
+
+        /// <summary>校內/校外獲獎</summary>
+        [DisplayName("校內/校外獲獎")]
+        public string? AwardInOrOut { get; set; }
+
         /// <summary>社團代號</summary>
         [DisplayName("社團代號")]
         public string? ClubID { get; set; }
@@ -121,6 +125,14 @@ namespace WebPccuClub.Models
         [DisplayName("審核狀態")]
         public string? ActVerify { get; set; }
 
+        /// <summary>校內/校外獲獎</summary>
+        [DisplayName("校內/校外獲獎")]
+        public string? AwardInOrOut { get; set; }
+
+        /// <summary>校內/校外獲獎</summary>
+        [DisplayName("校內/校外獲獎")]
+        public string? AwardInOrOutText { get; set; }
+
         /// <summary>審核狀態</summary>
         [DisplayName("審核狀態")]
         public string? ActVerifyText { get; set; }
@@ -177,6 +189,10 @@ namespace WebPccuClub.Models
         [DisplayName("學年度")]
         public string? SchoolYear { get; set; }
 
+        /// <summary>校內/校外獲獎</summary>
+        [DisplayName("校內/校外獲獎")]
+        public string? AwardInOrOut { get; set; }
+
         /// <summary>社團代號</summary>
         [DisplayName("社團代號")]
         public string? ClubID { get; set; }
@@ -227,6 +243,10 @@ namespace WebPccuClub.Models
         /// <summary>學年度</summary>
         [DisplayName("學年度")]
         public string? SchoolYear { get; set; }
+
+        /// <summary>校內/校外獲獎</summary>
+        [DisplayName("校內/校外獲獎")]
+        public string? AwardInOrOut { get; set; }
 
         /// <summary>社團代號</summary>
         [DisplayName("社團代號")]

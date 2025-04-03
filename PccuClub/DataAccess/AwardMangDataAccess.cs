@@ -28,6 +28,7 @@ namespace WebPccuClub.DataAccess
             
             parameters.Add("@SchoolYear", model?.SchoolYear);
             parameters.Add("@ActVerify", model?.ActVerify);
+            parameters.Add("@AwardInOrOut", model?.AwardInOrOut);
             parameters.Add("@ClubID", model?.ClubID);
             parameters.Add("@ClubCName", model?.ClubCName);
             parameters.Add("@Organizer", model?.Organizer);
@@ -40,14 +41,16 @@ namespace WebPccuClub.DataAccess
             #endregion
 
             CommandText = $@"SELECT A.AwdID, A.ClubID, B.ClubCName, A.SchoolYear, A.AwdDate, A.AwdActName, A.AwdType, A.AwdName, 
-                                    A.Organizer, A.ActVerify, C.Text AS ActVerifyText, A.Created
+                                    A.Organizer, A.AwardInOrOut, D.Text AS AwardInOrOutText, A.ActVerify, C.Text AS ActVerifyText, A.Created
                                FROM AwardMang A
                           LEFT JOIN ClubMang B ON B.ClubID = A.ClubID
                           LEFT JOIN Code C ON C.Code = A.ActVerify AND C.Type = 'ActVerify'
+                          LEFT JOIN Code D ON D.Code = A.AwardInOrOut AND D.Type = 'AwardInOrOut'
                               WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.AwdDate BETWEEN @FromDate AND @ToDate" : " ")}
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 AND (@ActVerify IS NULL OR A.ActVerify = @ActVerify)
+AND (@AwardInOrOut IS NULL OR A.AwardInOrOut = @AwardInOrOut)
 AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') 
 AND (@ClubCName IS NULL OR B.ClubCName LIKE '%' + @ClubCName + '%') 
 AND (@Organizer IS NULL OR A.Organizer LIKE '%' + @Organizer + '%') 
@@ -82,7 +85,7 @@ AND (@AwdName IS NULL OR A.AwdName LIKE '%' + @AwdName + '%') ";
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT AwdID, ClubID, SchoolYear, AwdName, AwdDate, AwdActName, AwdType, Organizer, ActVerify, Attachment, Memo, Creator, 
+            CommandText = $@"SELECT AwdID, ClubID, SchoolYear, AwardInOrOut, AwdName, AwdDate, AwdActName, AwdType, Organizer, ActVerify, Attachment, Memo, Creator, 
                                     Created, LastModifier, LastModified
                                FROM AwardMang 
                               WHERE 1 = 1
@@ -136,6 +139,7 @@ AND (@AwdName IS NULL OR A.AwdName LIKE '%' + @AwdName + '%') ";
             #region 參數設定
             parameters.Add("@ClubID", vm.CreateModel.ClubID);
             parameters.Add("@SchoolYear", vm.CreateModel.SchoolYear);
+            parameters.Add("@AwardInOrOut", vm.CreateModel.AwardInOrOut);
             parameters.Add("@AwdActName", vm.CreateModel.AwdActName);
             parameters.Add("@AwdName", vm.CreateModel.AwdName);
             parameters.Add("@AwdDate", vm.CreateModel.AwdDate);
@@ -149,7 +153,8 @@ AND (@AwdName IS NULL OR A.AwdName LIKE '%' + @AwdName + '%') ";
 
             string CommendText = $@"INSERT INTO AwardMang
                                                (ClubID, 
-                                                SchoolYear, 
+                                                SchoolYear,
+                                                AwardInOrOut, 
                                                 AwdActName, 
                                                 AwdName, 
                                                 AwdDate, 
@@ -167,6 +172,7 @@ AND (@AwdName IS NULL OR A.AwdName LIKE '%' + @AwdName + '%') ";
                                          VALUES
                                                (@ClubID, 
                                                 @SchoolYear, 
+                                                @AwardInOrOut, 
                                                 @AwdActName, 
                                                 @AwdName, 
                                                 @AwdDate, 
@@ -188,7 +194,7 @@ AND (@AwdName IS NULL OR A.AwdName LIKE '%' + @AwdName + '%') ";
             return ExecuteResult;
         }
 
-        /// <summary> 新增資料 </summary>
+        /// <summary> 新增Detail資料 </summary>
         public DbExecuteInfo InsertDetailData(string AwdID, List<AwdDetailModel> dataList, UserInfo LoginUser)
         {
 
@@ -228,6 +234,7 @@ AND (@AwdName IS NULL OR A.AwdName LIKE '%' + @AwdName + '%') ";
             #region 參數設定
             parameters.Add("@AwdID", vm.EditModel.AwdID);
             parameters.Add("@SchoolYear", vm.EditModel.SchoolYear);
+            parameters.Add("@AwardInOrOut", vm.EditModel.AwardInOrOut);
             parameters.Add("@AwdActName", vm.EditModel.AwdActName); 
             parameters.Add("@AwdDate", vm.EditModel.AwdDate);
             parameters.Add("@AwdType", vm.EditModel.AwdType);
@@ -244,6 +251,7 @@ AND (@AwdName IS NULL OR A.AwdName LIKE '%' + @AwdName + '%') ";
 
             string CommendText = $@" UPDATE AwardMang 
                                         SET SchoolYear = @SchoolYear, 
+                                            AwardInOrOut = @AwardInOrOut, 
                                             AwdActName = @AwdActName, 
                                             AwdDate = @AwdDate, 
                                             AwdType = @AwdType, 
@@ -261,7 +269,7 @@ AND (@AwdName IS NULL OR A.AwdName LIKE '%' + @AwdName + '%') ";
             return ExecuteResult;
         }
 
-        /// <summary> 新增資料 </summary>
+        /// <summary> 修改Detail資料 </summary>
         public DbExecuteInfo EditDetailData(AwardMangViewModel vm, List<AwdDetailModel> dataList, UserInfo LoginUser)
         {
 
@@ -429,5 +437,26 @@ AND (@AwdName IS NULL OR A.AwdName LIKE '%' + @AwdName + '%') ";
 
             return LstItem;
         }
+
+        public List<SelectListItem> GetAwardInOrOut()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code WHERE Type = 'AwardInOrOut'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
     }
 }

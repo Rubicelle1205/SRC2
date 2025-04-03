@@ -27,17 +27,20 @@ namespace WebPccuClub.DataAccess
             #region 參數設定
             
             parameters.Add("@SchoolYear", model?.SchoolYear);
+            parameters.Add("@AwardInOrOut", model?.AwardInOrOut);
             parameters.Add("@LoginId", LoginUser.LoginId);
 
             #endregion
 
             CommandText = $@"SELECT A.AwdID, A.ClubID, B.ClubCName, A.SchoolYear, A.AwdDate, A.AwdActName, A.AwdType, A.AwdName, 
-                                    A.Organizer, A.ActVerify, C.Text AS ActVerifyText, A.Created
+                                    A.AwardInOrOut, D.Text AS AwardInOrOutText, A.Organizer, A.ActVerify, C.Text AS ActVerifyText, A.Created
                                FROM AwardMang A
                           LEFT JOIN ClubMang B ON B.ClubID = A.ClubID
                           LEFT JOIN Code C ON C.Code = A.ActVerify AND C.Type = 'ActVerify'
+                          LEFT JOIN Code D ON D.Code = A.AwardInOrOut AND D.Type = 'AwardInOrOut'
                               WHERE 1 = 1
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
+AND (@AwardInOrOut IS NULL OR A.AwardInOrOut = @AwardInOrOut)
 AND A.ClubID = @LoginId";
 
 
@@ -68,9 +71,10 @@ AND A.ClubID = @LoginId";
             #endregion
 
             CommandText = $@"SELECT A.AwdID, A.ClubID, A.SchoolYear, A.AwdName, A.AwdDate, A.AwdActName, A.AwdType, A.Organizer, 
-                                    A.ActVerify, B.Text AS ActVerifyText, A.Attachment, A.Memo
+                                    A.AwardInOrOut, C.Text AS AwardInOrOutText, A.ActVerify, B.Text AS ActVerifyText, A.Attachment, A.Memo
                                FROM AwardMang A
 						  LEFT JOIN Code B ON B.Code = A.ActVerify AND B.Type = 'ActVerify'
+                          LEFT JOIN Code C ON C.Code = A.AwardInOrOut AND C.Type = 'AwardInOrOut'
                               WHERE 1 = 1
                                 AND (AwdID = @AwdID) ";
 
@@ -121,6 +125,7 @@ AND A.ClubID = @LoginId";
             #region 參數設定
             parameters.Add("@ClubID", LoginUser.LoginId);
             parameters.Add("@SchoolYear", vm.CreateModel.SchoolYear);
+            parameters.Add("@AwardInOrOut", "02");
             parameters.Add("@AwdActName", vm.CreateModel.AwdActName);
             parameters.Add("@AwdName", vm.CreateModel.AwdName);
             parameters.Add("@AwdDate", vm.CreateModel.AwdDate);
@@ -134,6 +139,7 @@ AND A.ClubID = @LoginId";
             string CommendText = $@"INSERT INTO AwardMang
                                                (ClubID, 
                                                 SchoolYear, 
+                                                AwardInOrOut, 
                                                 AwdActName, 
                                                 AwdName, 
                                                 AwdDate, 
@@ -150,6 +156,7 @@ AND A.ClubID = @LoginId";
                                          VALUES
                                                (@ClubID, 
                                                 @SchoolYear, 
+                                                @AwardInOrOut, 
                                                 @AwdActName, 
                                                 @AwdName, 
                                                 @AwdDate, 
@@ -355,6 +362,26 @@ AND A.ClubID = @ClubID";
             #endregion
 
             CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code WHERE Type = 'ActVerify' AND Code <> '05'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetAwardInOrOut()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code WHERE Type = 'AwardInOrOut' ";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 

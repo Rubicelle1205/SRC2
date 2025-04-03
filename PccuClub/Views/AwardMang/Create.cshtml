@@ -37,6 +37,12 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.AwardInOrOut)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.AwardInOrOut, (List<SelectListItem>)ViewBag.ddlAwardInOrOut, "請選擇校內/校外", new { @class = "form-control" })
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th width="15%">@Html.LabelFor(m => m.CreateModel.Organizer)<span class="required">*</span></th>
                                         <td>@Html.TextBoxFor(m => m.CreateModel.Organizer, new {@class = "form-control"})</td>
                                     </tr>
@@ -45,7 +51,7 @@
                                         <td>@Html.TextBoxFor(m => m.CreateModel.AwdActName, new {@class = "form-control"})</td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.AwdName)<span class="required">*</span></th>
+                                        <th width="15%">@Html.LabelFor(m => m.CreateModel.AwdDate)<span class="required">*</span></th>
                                         <td>@Html.TextBoxFor(m => m.CreateModel.AwdDate, new {@class = "form-control", type="date"})</td>
                                     </tr>
                                     <tr>
@@ -178,6 +184,7 @@
         var data = new FormData()
         var ClubID = $('#@Html.IdFor(m => m.CreateModel.ClubID)').val();
         var SchoolYear = $('#@Html.IdFor(m => m.CreateModel.SchoolYear)').val();
+        var AwardInOrOut = $('#@Html.IdFor(m => m.CreateModel.AwardInOrOut)').val();
         var Organizer = $('#@Html.IdFor(m => m.CreateModel.Organizer)').val();
         var AwdActName = $('#@Html.IdFor(m => m.CreateModel.AwdActName)').val();
         var AwdType = $('#@Html.IdFor(m => m.CreateModel.AwdType)').val();
@@ -212,7 +219,8 @@
         }
 
 
-        if (ClubID == "") { $.alert("社團代號不可為空白"); return; }
+        if (ClubID == "") { $.alert("社團代號需選擇"); return; }
+        if (AwardInOrOut == "") { $.alert("校內/校外獲獎需選擇"); return; }
         if (SchoolYear == "") { $.alert("學年度不可為空白"); return; }
         if (Organizer == "") { $.alert("主辦單位不可為空白"); return; }
         if (AwdActName == "") { $.alert("活動名稱不可為空白"); return; }
@@ -222,6 +230,7 @@
         if (ActVerify == "") { $.alert("審核狀態不可為空白"); return; }
 
         data.append('@Html.NameFor(m => m.CreateModel.ClubID)', ClubID);
+        data.append('@Html.NameFor(m => m.CreateModel.AwardInOrOut)', AwardInOrOut);
         data.append('@Html.NameFor(m => m.CreateModel.SchoolYear)', SchoolYear);
         data.append('@Html.NameFor(m => m.CreateModel.Organizer)', Organizer);
         data.append('@Html.NameFor(m => m.CreateModel.AwdActName)', AwdActName);

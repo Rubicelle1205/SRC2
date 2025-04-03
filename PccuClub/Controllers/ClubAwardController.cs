@@ -38,10 +38,12 @@ namespace WebPccuClub.Controllers
         {
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify();
+            ViewBag.ddlAwardInOrOut = dbAccess.GetAwardInOrOut();
 
             ClubAwardViewModel vm = new ClubAwardViewModel();
             vm.ConditionModel = new ClubAwardConditionModel();
             vm.ConditionModel.SchoolYear = PublicFun.GetNowSchoolYear();
+           
             return View(vm);
         }
 
