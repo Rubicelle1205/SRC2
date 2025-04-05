@@ -44,7 +44,17 @@ namespace WebPccuClub.Controllers
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.CheckModel = dbAccess.GetCheckData(LoginUser.LoginId);
 
-            return View(vm);
+			string controllerName = this.ControllerContext.RouteData.Values["controller"].ToString();
+			DataTable dt = dbAccess.GetFunctionEnable(controllerName);
+
+			if (dt != null && dt.Rows.Count > 0)
+			{
+				vm.CheckModel.Enable = dt.Rows[0]["Enable"].ToString();
+				vm.CheckModel.OpenDate = dt.Rows[0]["OpenDate"].ToString();
+				vm.CheckModel.CloseDate = dt.Rows[0]["CloseDate"].ToString();
+			}
+
+			return View(vm);
         }
 
 
@@ -305,6 +315,25 @@ namespace WebPccuClub.Controllers
 		[Log(LogActionChineseName.社團負責人改選管理)]
 		public IActionResult HandOver01()
 		{
+			string controllerName = this.ControllerContext.RouteData.Values["controller"].ToString();
+			DataTable dt = dbAccess.GetFunctionEnable(controllerName);
+
+			if (dt != null && dt.Rows.Count > 0)
+			{
+				string Enable = dt.Rows[0]["Enable"].ToString();
+				string OpenDate = dt.Rows[0]["OpenDate"].ToString();
+				string CloseDate = dt.Rows[0]["CloseDate"].ToString();
+
+				if (Enable == "True")
+				{
+					if (DateTime.Parse(OpenDate).Date > DateTime.Now || DateTime.Parse(CloseDate).Date.AddDays(1).AddSeconds(-1) < DateTime.Now)
+					{
+						TempData["WEBSOL_ALERT_MESSAGE"] = new List<string> { "目前非開放申請時段" };
+						return RedirectToAction("Index");
+					}
+				}
+			}
+
 			return View();
 		}
 
@@ -730,6 +759,25 @@ namespace WebPccuClub.Controllers
 		[Log(LogActionChineseName.交接準備)]
 		public IActionResult HandOver02()
 		{
+			string controllerName = this.ControllerContext.RouteData.Values["controller"].ToString();
+			DataTable dt = dbAccess.GetFunctionEnable(controllerName);
+
+			if (dt != null && dt.Rows.Count > 0)
+			{
+				string Enable = dt.Rows[0]["Enable"].ToString();
+				string OpenDate = dt.Rows[0]["OpenDate"].ToString();
+				string CloseDate = dt.Rows[0]["CloseDate"].ToString();
+
+				if (Enable == "True")
+				{
+					if (DateTime.Parse(OpenDate).Date > DateTime.Now || DateTime.Parse(CloseDate).Date.AddDays(1).AddSeconds(-1) < DateTime.Now)
+					{
+						TempData["WEBSOL_ALERT_MESSAGE"] = new List<string> { "目前非開放申請時段" };
+						return RedirectToAction("Index");
+					}
+				}
+			}
+
 			return View();
 		}
 
@@ -1166,6 +1214,25 @@ namespace WebPccuClub.Controllers
 		[Log(LogActionChineseName.新任營運資訊)]
 		public IActionResult HandOver03()
 		{
+			string controllerName = this.ControllerContext.RouteData.Values["controller"].ToString();
+			DataTable dt = dbAccess.GetFunctionEnable(controllerName);
+
+			if (dt != null && dt.Rows.Count > 0)
+			{
+				string Enable = dt.Rows[0]["Enable"].ToString();
+				string OpenDate = dt.Rows[0]["OpenDate"].ToString();
+				string CloseDate = dt.Rows[0]["CloseDate"].ToString();
+
+				if (Enable == "True")
+				{
+					if (DateTime.Parse(OpenDate).Date > DateTime.Now || DateTime.Parse(CloseDate).Date.AddDays(1).AddSeconds(-1) < DateTime.Now)
+					{
+						TempData["WEBSOL_ALERT_MESSAGE"] = new List<string> { "目前非開放申請時段" };
+						return RedirectToAction("Index");
+					}
+				}
+			}
+
 			return View();
 		}
 

@@ -1009,7 +1009,47 @@ namespace WebPccuClub.Global
 			return ds.Tables[0].QueryFieldByDT("ActDetailId");
 		}
 
+		public virtual List<SelectListItem> GetEnable() {
 
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'Enable'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public virtual DataTable GetFunctionEnable(string Url) {
+
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@Url", Url);
+            #endregion
+
+            CommandText = @"SELECT A.Enable, A.OpenDate, A.CloseDate 
+                              FROM FrontOpeningMang A 
+                         LEFT JOIN SystemMenu B ON B.MenuNode = A.MenuNode
+                         LEFT JOIN SystemFun C ON C.FunId = B.FunId
+                             WHERE C.Url = '/' + @Url ";
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            return ds.Tables[0];
+        }
     }
 
 	public enum enumLogConst 

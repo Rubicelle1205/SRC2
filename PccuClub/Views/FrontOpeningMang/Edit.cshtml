@@ -1,0 +1,120 @@
+﻿@model WebPccuClub.Models.FrontOpeningMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.MenuName)<span class="required">*</span></th>
+                                        <td>@Html.DisplayFor(m => m.EditModel.MenuName)</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">啟用<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.Enable, (List<SelectListItem>)ViewBag.ddlEnable, "請選擇是否啟用", new { @class = "form-control" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">開放時間(起)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.EditModel.OpenDate, new { @class = "form-control", @type = "date", @placeholder = "請輸入開放時間(起)" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">開放時間(迄)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.EditModel.CloseDate, new { @class = "form-control", @type = "date", @placeholder = "請輸入開放時間(迄)" })
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                    @Html.HiddenFor(m => m.EditModel.FrontOpeningId)
+                </form> 
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+
+    function SaveData() {
+
+        var data = new FormData()
+        var FrontOpeningId = $('#@Html.IdFor(m => m.EditModel.FrontOpeningId)').val();
+        var Enable = $('#@Html.IdFor(m => m.EditModel.Enable)').val();
+        var OpenDate = $('#@Html.IdFor(m => m.EditModel.OpenDate)').val();
+        var CloseDate = $('#@Html.IdFor(m => m.EditModel.CloseDate)').val();
+
+        if (Enable == "") { $.alert("是否啟用 需填寫"); return; }
+        if (OpenDate == "") { $.alert("開放時間(起) 需填寫"); return; }
+        if (CloseDate == "") { $.alert("開放時間(迄) 需填寫"); return; }
+
+        if (OpenDate > CloseDate) {
+            $.alert("開放時間(起) 需小於 開放時間(迄)");
+            return;
+        }
+
+        data.append('@Html.NameFor(m => m.EditModel.FrontOpeningId)', FrontOpeningId);
+        data.append('@Html.NameFor(m => m.EditModel.Enable)', Enable);
+        data.append('@Html.NameFor(m => m.EditModel.OpenDate)', OpenDate);
+        data.append('@Html.NameFor(m => m.EditModel.CloseDate)', CloseDate);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+    }
+
+    function Reset() {
+        $('#@Html.IdFor(m => m.EditModel.Enable)').val("");
+        $('#@Html.IdFor(m => m.EditModel.OpenDate)').val("");
+        $('#@Html.IdFor(m => m.EditModel.CloseDate)').val("");
+    }
+</script>

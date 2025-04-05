@@ -126,6 +126,7 @@
         AjaxMethod = 111,
         盤點查詢 = 112,
         取得諮商空間可用時間 = 113,
+        前台功能開放管理 = 114,
     }
 
 	public enum DBActionChineseName

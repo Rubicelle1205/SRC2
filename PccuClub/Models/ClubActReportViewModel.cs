@@ -60,6 +60,18 @@ namespace WebPccuClub.Models
         /// <summary>排序</summary>
         [DisplayName("排序")]
         public string? OrderBy { get; set; }
+
+        /// <summary>啟用</summary>
+        [DisplayName("啟用")]
+        public string? Enable { get; set; }
+
+        /// <summary>開放時間(起)</summary>
+        [DisplayName("開放時間(起)")]
+        public string? OpenDate { get; set; }
+
+        /// <summary>開放時間(迄)</summary>
+        [DisplayName("開放時間(迄)")]
+        public string? CloseDate { get; set; }
     }
 
     public class ClubActReportResultModel

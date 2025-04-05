@@ -3,6 +3,7 @@
 @{
     Layout = "_FrontLayout";
     ViewBag.Title = "活動報備";
+    
 }
 
 <div class="col-xxl-8 col-xl-10">
@@ -31,7 +32,22 @@
             </div>
             <div class="col-md-6">
                 <div class="text-end mb-3">
-                    <a class="btn btn-primary btn-modern border-0" href="@Url.Action("Create")">新增活動報備 <i class="fas fa-plus"></i></a>
+                    @if (!string.IsNullOrEmpty(Model.ConditionModel.Enable) && Model.ConditionModel.Enable == "True")
+                    {
+                        if (DateTime.Parse(Model.ConditionModel.OpenDate).Date <= DateTime.Now && DateTime.Now < DateTime.Parse(Model.ConditionModel.CloseDate).Date.AddDays(1).AddSeconds(-1))
+                        {
+                            <a class="btn btn-primary btn-modern border-0" href="@Url.Action("Create")">新增活動報備 <i class="fas fa-plus"></i></a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-secondary btn-modern border-0" style="background-color:lightgray"
+                               href="@Url.Action("Create")">新增活動報備 <i class="fas fa-plus"></i></a>
+                        }
+                    }
+                    else
+                    {
+                        <a class="btn btn-primary btn-modern border-0" href="@Url.Action("Create")">新增活動報備 <i class="fas fa-plus"></i></a>
+                    }
                 </div>
             </div>
         </div>

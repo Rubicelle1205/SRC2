@@ -55,11 +55,22 @@ namespace WebPccuClub.Models
         [DisplayName("學年度")]
         public string? SchoolYear { get; set; }
 
-
         /// <summary>型態</summary>
         [DisplayName("型態")]
         public string? HandOverStatus { get; set; }
-    }
+
+		/// <summary>啟用</summary>
+		[DisplayName("啟用")]
+		public string? Enable { get; set; }
+
+		/// <summary>開放時間(起)</summary>
+		[DisplayName("開放時間(起)")]
+		public string? OpenDate { get; set; }
+
+		/// <summary>開放時間(迄)</summary>
+		[DisplayName("開放時間(迄)")]
+		public string? CloseDate { get; set; }
+	}
 
     #endregion
 

@@ -27,7 +27,23 @@
 								</ul>
 							</div>
 							<div class="text-center position-relative">
-								<a class="btn btn-primary w-100" href="@Url.Action("HandOver01")">開始填寫 <i class="fas fa-pen"></i></a>
+
+								@if (!string.IsNullOrEmpty(Model.CheckModel.Enable) && Model.CheckModel.Enable == "True")
+								{
+									if (DateTime.Parse(Model.CheckModel.OpenDate).Date <= DateTime.Now && DateTime.Now < DateTime.Parse(Model.CheckModel.CloseDate).Date.AddDays(1).AddSeconds(-1))
+									{
+										<a class="btn btn-primary w-100" href="@Url.Action("HandOver01")">開始填寫 <i class="fas fa-pen"></i></a>
+									}
+									else
+									{
+										<a class="btn btn-primary w-100" style="border-color:lightgray; background-color:lightgray;" href="@Url.Action("HandOver01")">開始填寫 <i class="fas fa-pen"></i></a>
+									}
+								}
+								else
+								{
+									<a class="btn btn-primary w-100" href="@Url.Action("HandOver01")">開始填寫 <i class="fas fa-pen"></i></a>
+								}
+
 							</div>
 						</div>
 					</div>
@@ -43,7 +59,23 @@
 								</ul>
 							</div>
 							<div class="text-center position-relative">
-								<a class="btn btn-primary w-100" href="@Url.Action("HandOver02")">開始填寫 <i class="fas fa-pen"></i></a>
+
+								@if (!string.IsNullOrEmpty(Model.CheckModel.Enable) && Model.CheckModel.Enable == "True")
+								{
+									if (DateTime.Parse(Model.CheckModel.OpenDate).Date <= DateTime.Now && DateTime.Now < DateTime.Parse(Model.CheckModel.CloseDate).Date.AddDays(1).AddSeconds(-1))
+									{
+										<a class="btn btn-primary w-100" href="@Url.Action("HandOver02")">開始填寫 <i class="fas fa-pen"></i></a>
+									}
+									else
+									{
+										<a class="btn btn-primary w-100" style="border-color:lightgray; background-color:lightgray;" href="@Url.Action("HandOver02")">開始填寫 <i class="fas fa-pen"></i></a>
+									}
+								}
+								else
+								{
+									<a class="btn btn-primary w-100" href="@Url.Action("HandOver02")">開始填寫 <i class="fas fa-pen"></i></a>
+								}
+
 							</div>
 						</div>
 					</div>
@@ -59,7 +91,23 @@
 							</div>
 
 							<div class="text-center position-relative">
-								<a class="btn btn-primary w-100" href="@Url.Action("HandOver03")">開始填寫 <i class="fas fa-pen"></i></a>
+
+								@if (!string.IsNullOrEmpty(Model.CheckModel.Enable) && Model.CheckModel.Enable == "True")
+								{
+									if (DateTime.Parse(Model.CheckModel.OpenDate).Date <= DateTime.Now && DateTime.Now < DateTime.Parse(Model.CheckModel.CloseDate).Date.AddDays(1).AddSeconds(-1))
+									{
+										<a class="btn btn-primary w-100" href="@Url.Action("HandOver03")">開始填寫 <i class="fas fa-pen"></i></a>
+									}
+									else
+									{
+										<a class="btn btn-primary w-100" style="border-color:lightgray; background-color:lightgray;" href="@Url.Action("HandOver03")">開始填寫 <i class="fas fa-pen"></i></a>
+									}
+								}
+								else
+								{
+									<a class="btn btn-primary w-100" href="@Url.Action("HandOver03")">開始填寫 <i class="fas fa-pen"></i></a>
+								}
+
 							</div>
 						</div>
 					</div>

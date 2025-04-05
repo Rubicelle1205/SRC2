@@ -43,6 +43,7 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.首頁)]
         public IActionResult Index()
         {
+
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlActVerify = dbAccess.GetAllActVerify("4");
             ViewBag.ddlOrderBy = dbAccess.GetOrderBy();
@@ -51,6 +52,18 @@ namespace WebPccuClub.Controllers
             vm.ConditionModel = new ClubActReportConditionModel();
             vm.ConditionModel.SchoolYear = PublicFun.GetNowSchoolYear();
             vm.ConditionModel.OrderBy = "DESC";
+
+
+            string controllerName = this.ControllerContext.RouteData.Values["controller"].ToString();
+            DataTable dt = dbAccess.GetFunctionEnable(controllerName);
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                vm.ConditionModel.Enable = dt.Rows[0]["Enable"].ToString();
+                vm.ConditionModel.OpenDate = dt.Rows[0]["OpenDate"].ToString();
+                vm.ConditionModel.CloseDate = dt.Rows[0]["CloseDate"].ToString();
+            }
+
             return View(vm);
         }
 
@@ -59,6 +72,25 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public IActionResult Create()
         {
+            string controllerName = this.ControllerContext.RouteData.Values["controller"].ToString();
+            DataTable dt = dbAccess.GetFunctionEnable(controllerName);
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                string Enable = dt.Rows[0]["Enable"].ToString();
+                string OpenDate = dt.Rows[0]["OpenDate"].ToString();
+                string CloseDate = dt.Rows[0]["CloseDate"].ToString();
+
+                if (Enable == "True")
+                {
+                    if(DateTime.Parse(OpenDate).Date > DateTime.Now || DateTime.Parse(CloseDate).Date.AddDays(1).AddSeconds(-1) < DateTime.Now)
+                    {
+                        TempData["WEBSOL_ALERT_MESSAGE"] = new List<string> { "目前非開放申請時段" };
+                        return RedirectToAction("Index");
+                    }
+                }
+            }
+
             ViewBag.ddlStaticOrDynamic = dbAccess.GetStaticOrDynamic();
             ViewBag.ddlActInOrOut = dbAccess.GetActInOrOut();
             ViewBag.ddlActType = dbAccess.GetActType();
