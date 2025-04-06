@@ -275,7 +275,7 @@ namespace WebPccuClub.Controllers
             vm.CreateModel.BuildID = Buildid;
 
 
-            return PartialView("_HolisticPlaceDataPartial", vm);
+            return PartialView("_PlaceDataPartial", vm);
         }
 
 
