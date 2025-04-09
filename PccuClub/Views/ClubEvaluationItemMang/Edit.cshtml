@@ -1,0 +1,144 @@
+﻿@model WebPccuClub.Models.ClubEvaluationItemMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Created)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DisplayFor(m => m.EditModel.Created)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.LastModified)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DisplayFor(m => m.EditModel.LastModified)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.SchoolYear)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.SchoolYear, (List<SelectListItem>)ViewBag.ddlSchoolYear, "請選擇學年度", new { @class = "form-control" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ClassId)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.ClassId, (List<SelectListItem>)ViewBag.ddlClassId, "請選擇類別分類", new { @class = "form-control" })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ItemName)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ItemName, new { @class = "form-control" })</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ScoreUpper)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ScoreUpper, new { placeholder = "請輸入分數上限", type = "number", @class = "form-control" })</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ScoreLower)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ScoreLower, new { placeholder = "請輸入分數下限", type = "number", @class = "form-control" })</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Memo)</th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new { @class = "form-control", row = "6" })</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                    @Html.HiddenFor(m => m.EditModel.ClubEvaluationItemId)
+                </form>
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+
+    function SaveData() {
+
+        var data = new FormData()
+        var ID = $('#@Html.IdFor(m => m.EditModel.ClubEvaluationItemId)').val();
+        var SchoolYear = $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val();
+        var ClassId = $('#@Html.IdFor(m => m.EditModel.ClassId)').val();
+        var ItemName = $('#@Html.IdFor(m => m.EditModel.ItemName)').val();
+        var ScoreUpper = $('#@Html.IdFor(m => m.EditModel.ScoreUpper)').val();
+        var ScoreLower = $('#@Html.IdFor(m => m.EditModel.ScoreLower)').val();
+        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+
+        if (SchoolYear == "") { $.alert("學年度需選擇"); return; }
+        if (ClassId == "") { $.alert("類別分類需選擇"); return; }
+        if (ItemName == "") { $.alert("項目名稱不可為空白"); return; }
+        if (ScoreUpper == "") { $.alert("分數上限不可為空白"); return; }
+        if (ScoreLower == "") { $.alert("分數下限不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.ClubEvaluationItemId)', ID);
+        data.append('@Html.NameFor(m => m.EditModel.SchoolYear)', SchoolYear);
+        data.append('@Html.NameFor(m => m.EditModel.ClassId)', ClassId);
+        data.append('@Html.NameFor(m => m.EditModel.ItemName)', ItemName);
+        data.append('@Html.NameFor(m => m.EditModel.ScoreUpper)', ScoreUpper);
+        data.append('@Html.NameFor(m => m.EditModel.ScoreLower)', ScoreLower);
+        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+    }
+
+    function Reset() {
+        $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val("");
+        $('#@Html.IdFor(m => m.EditModel.ClassId)').val("");
+        $('#@Html.IdFor(m => m.EditModel.ItemName)').val("");
+        $('#@Html.IdFor(m => m.EditModel.ScoreUpper)').val("");
+        $('#@Html.IdFor(m => m.EditModel.ScoreLower)').val("");
+        $('#@Html.IdFor(m => m.EditModel.Memo)').val("");
+    }
+</script>
