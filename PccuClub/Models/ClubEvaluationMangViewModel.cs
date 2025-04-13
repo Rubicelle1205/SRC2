@@ -143,6 +143,7 @@ namespace WebPccuClub.Models
 
     public class ClubEvaluationMangEditModel
     {
+        public List<ClubEvaluationHistory> HistoryModel = new List<ClubEvaluationHistory>();
         public int? ClubEvaluationId { get; set; }
 
 		/// <summary>學年度</summary>
@@ -176,5 +177,24 @@ namespace WebPccuClub.Models
         /// <summary>更新時間</summary>
         [DisplayName("更新時間")]
         public DateTime? LastModified { get; set; }
+    }
+
+    public class ClubEvaluationHistory
+    {
+        /// <summary>建立時間</summary>
+        [DisplayName("建立時間")]
+        public DateTime? Created { get; set; }
+
+        /// <summary>評鑑項目</summary>
+        [DisplayName("評鑑項目")]
+        public string? ItemName { get; set; }
+
+        /// <summary>分數</summary>
+        [DisplayName("分數")]
+        public int Score { get; set; }
+
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
+        public string Memo { get; set; }
     }
 }

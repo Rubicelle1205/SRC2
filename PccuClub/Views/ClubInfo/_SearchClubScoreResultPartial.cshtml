@@ -1,0 +1,63 @@
+﻿@model WebPccuClub.Models.ClubInfoViewModel
+
+@{
+    int BasicScore = 0;
+    int totalAdjustment = 0;
+    if (Model.ClubScoreDetailModel != null)
+    {
+        BasicScore = int.Parse(Model.ClubScoreDetailModel.BasicScore);
+        totalAdjustment = Model.ClubScoreDetailModel.Histroy.Sum(item => item.Score);
+        BasicScore = BasicScore + totalAdjustment;
+    
+    }
+
+    <style>
+
+        .score {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            color: cornflowerblue;
+        }
+
+        hr {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            border-top: 2px solid rgba(0, 0, 0, 0.3);
+        }
+
+    </style>
+}
+
+    @if (Model.ClubScoreDetailModel != null)
+    {
+        <div class="score">目前分數：<span id="current-score">@BasicScore</span></div>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width:15%; text-align: center;">建立日期</th>
+                    <th style="width:40%; text-align: center;">加減分項目</th>
+                    <th style="width:10%; text-align: center;">加減分</th>
+                    <th style="width:35%; text-align: center;">備註</th>
+                </tr>
+            </thead>
+            <tbody id="score-log">
+
+                @if (Model.ClubScoreDetailModel.Histroy.Count > 0)
+                {
+                    foreach (var item in Model.ClubScoreDetailModel.Histroy)
+                    {
+                        <tr>
+                            <td style="text-align: center;">@item.Created.Value.ToString("yyyy/MM/dd")</td>
+                            <td>@item.ItemName</td>
+                            <td style="text-align: center;">@item.Score</td>
+                            <td>@item.Memo</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+<!-- /.card-body -->

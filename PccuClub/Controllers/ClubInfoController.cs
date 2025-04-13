@@ -469,7 +469,32 @@ namespace WebPccuClub.Controllers
             return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName);
 
         }
-        
-        #endregion
-    }
+
+		#endregion
+
+		#region 社團分數查詢
+
+		[Log(LogActionChineseName.社團分數查詢)]
+		public IActionResult ClubScoreIndex()
+		{
+			ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+
+			ClubInfoViewModel vm = new ClubInfoViewModel();
+			vm.ClubScoreConditionModel = new ClubScoreConditionModel();
+			vm.ClubScoreConditionModel.SchoolYear = PublicFun.GetNowSchoolYear();
+			return View(vm);
+		}
+
+		[LogAttribute(LogActionChineseName.查詢)]
+		public IActionResult GetClubScoreSearchResult(ClubInfoViewModel vm)
+		{
+			vm.ClubScoreDetailModel = dbAccess.GetClubScoreSearchResult(vm.ClubScoreConditionModel);
+            
+            if (vm.ClubScoreDetailModel != null)
+                vm.ClubScoreDetailModel.Histroy = dbAccess.GetClubScoreHistroy(vm.ClubScoreConditionModel, LoginUser).ToList();
+
+            return PartialView("_SearchClubScoreResultPartial", vm);
+		}
+		#endregion
+	}
 }

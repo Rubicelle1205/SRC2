@@ -22,8 +22,10 @@ namespace WebPccuClub.Models
 
         public ClubScheduleEditModel ClubScheduleEditModel { get; set; }
 
+		public ClubScoreConditionModel ClubScoreConditionModel { get; set; }
 
-    }
+		public ClubScoreDetailModel ClubScoreDetailModel { get; set; }
+	}
 
 	public class MyClubEditModel
 	{
@@ -339,4 +341,55 @@ namespace WebPccuClub.Models
         [DisplayName("簡介")]
         public string? ShortDesc { get; set; }
     }
+
+	public class ClubScoreConditionModel
+	{
+		public ClubScoreConditionModel()
+		{
+			this.Page = 0;
+			this.PageSize = 10;
+			this.TotalCount = 0;
+		}
+
+		/// <summary> 目前頁數 </summary>
+		public int Page { get; set; }
+
+		/// <summary> 預設每頁顯示筆數 - 依需求更改 </summary>
+		public int PageSize { get; set; }
+
+		/// <summary> 總筆數 </summary>
+		public int TotalCount { get; set; }
+
+		/// <summary>學年度</summary>
+		[DisplayName("學年度")]
+		public string? SchoolYear { get; set; }
+	}
+
+	public class ClubScoreDetailModel
+    {
+		public List<ClubScoreHistory> Histroy = new List<ClubScoreHistory>();
+
+        /// <summary>社團基本分</summary>
+        [DisplayName("社團基本分")]
+		public string? BasicScore { get; set; }
+	}
+
+	public class ClubScoreHistory
+	{
+		/// <summary>建立時間</summary>
+		[DisplayName("建立時間")]
+		public DateTime? Created { get; set; }
+
+		/// <summary>評鑑項目</summary>
+		[DisplayName("評鑑項目")]
+		public string? ItemName { get; set; }
+
+		/// <summary>分數</summary>
+		[DisplayName("分數")]
+		public int Score { get; set; }
+
+		/// <summary>備註</summary>
+		[DisplayName("備註")]
+		public string Memo { get; set; }
+	}
 }

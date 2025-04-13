@@ -3,6 +3,7 @@ using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.ComponentModel;
+using System.Data;
 using System.Reflection;
 using System.Web.Mvc;
 using Utility;
@@ -13,7 +14,7 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WebPccuClub.Controllers
 {
-    [LogAttribute(LogActionChineseName.評鑑類別維護)]
+    [LogAttribute(LogActionChineseName.社團評鑑計分維護)]
     public class ClubEvaluationMangController : BaseController
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
@@ -66,6 +67,9 @@ namespace WebPccuClub.Controllers
 
             //ClubEvaluationMangViewModel vm = new ClubEvaluationMangViewModel();
             vm.EditModel = dbAccess.GetEditData(submitBtn);
+            vm.EditModel.HistoryModel = dbAccess.GetHistoryData(vm, submitBtn);
+            ViewBag.BaseScore = dbAccess.GetBaseScore(vm);
+
             return View(vm);
         }
 

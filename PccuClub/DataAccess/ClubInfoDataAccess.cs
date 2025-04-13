@@ -416,5 +416,87 @@ namespace WebPccuClub.DataAccess
 
             return ExecuteResult;
         }
-    }
+
+        public ClubScoreDetailModel GetClubScoreSearchResult(ClubScoreConditionModel vm)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@SchoolYear", vm.SchoolYear == null ? PublicFun.GetNowSchoolYear() : vm.SchoolYear);
+
+            #endregion
+
+            CommandText = $@"SELECT BasicScore
+                               FROM ClubBasicScoreMang
+                              WHERE 1 = 1
+                                AND (SchoolYear = @SchoolYear)";
+
+
+            (DbExecuteInfo info, IEnumerable<ClubScoreDetailModel> entitys) dbResult = DbaExecuteQuery<ClubScoreDetailModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList().FirstOrDefault();
+
+            return null;
+        }
+
+        public List<ClubScoreHistory> GetClubScoreHistroy(ClubScoreConditionModel vm, UserInfo LoginUser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+            #region 參數設定
+
+            parameters.Add("@ClubId", LoginUser.LoginId);
+            parameters.Add("@SchoolYear", vm.SchoolYear == null ? PublicFun.GetNowSchoolYear() : vm.SchoolYear);
+
+            #endregion
+
+            CommandText = $@"SELECT A.Score, A.Memo, C.ItemName, A.Created
+                               FROM ClubEvaluationMang A
+                          LEFT JOIN ClubMang B ON B.ClubID = A.ClubID 
+                          LEFT JOIN ClubEvaluationItemMang C ON C.ClubEvaluationItemId = A.ClubEvaluationItemId 
+                          LEFT JOIN ClubEvaluationClassMang D ON D.ClubEvaluationClassId = A.ClubEvaluationClassId 
+                              WHERE 1 = 1
+AND A.SchoolYear = @SchoolYear 
+AND A.ClubID = @ClubID ";
+
+            (DbExecuteInfo info, IEnumerable<ClubScoreHistory> entitys) dbResult = DbaExecuteQuery<ClubScoreHistory>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ClubScoreHistory>();
+        }
+
+        public string GetBaseScore(ClubEvaluationMangViewModel vm)
+		{
+			string CommandText = string.Empty;
+			DataSet ds = new DataSet();
+
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			parameters.Add("@SchoolYear", vm.EditModel.SchoolYear);
+			#endregion
+
+			CommandText = $@"SELECT A.BasicScore
+                               FROM ClubBasicScoreMang A
+                              WHERE 1 = 1
+                                AND (A.SchoolYear = @SchoolYear) ";
+
+			(DbExecuteInfo info, IEnumerable<string> entitys) dbResult = DbaExecuteQuery<string>(CommandText, parameters, true, DBAccessException);
+
+			if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+				return dbResult.entitys.ToList().FirstOrDefault();
+
+			return null;
+		}
+
+	}
 }

@@ -90,6 +90,63 @@ AND (@ClubEvaluationClassId IS NULL OR D.ClubEvaluationClassId LIKE '%' + @ClubE
             return null;
         }
 
+
+        public List<ClubEvaluationHistory> GetHistoryData(ClubEvaluationMangViewModel vm, string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@SchoolYear", vm.EditModel.SchoolYear);
+            parameters.Add("@ClubID", vm.EditModel.ClubID);
+            parameters.Add("@ID", Ser);
+
+            #endregion
+
+            CommandText = $@"SELECT A.Score, A.Memo, C.ItemName, A.Created
+                               FROM ClubEvaluationMang A
+                          LEFT JOIN ClubMang B ON B.ClubID = A.ClubID 
+                          LEFT JOIN ClubEvaluationItemMang C ON C.ClubEvaluationItemId = A.ClubEvaluationItemId 
+                          LEFT JOIN ClubEvaluationClassMang D ON D.ClubEvaluationClassId = A.ClubEvaluationClassId 
+                              WHERE 1 = 1
+AND A.SchoolYear = @SchoolYear 
+AND A.ClubID = @ClubID ";
+
+
+            (DbExecuteInfo info, IEnumerable<ClubEvaluationHistory> entitys) dbResult = DbaExecuteQuery<ClubEvaluationHistory>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ClubEvaluationHistory>();
+        }
+
+        public string GetBaseScore(ClubEvaluationMangViewModel vm)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@SchoolYear", vm.EditModel.SchoolYear);
+            #endregion
+
+            CommandText = $@"SELECT A.BasicScore
+                               FROM ClubBasicScoreMang A
+                              WHERE 1 = 1
+                                AND (A.SchoolYear = @SchoolYear) ";
+
+            (DbExecuteInfo info, IEnumerable<string> entitys) dbResult = DbaExecuteQuery<string>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList().FirstOrDefault();
+
+            return null;
+        }
+
         /// <summary> 新增資料 </summary>
         public DbExecuteInfo InsertData(ClubEvaluationMangViewModel vm, UserInfo LoginUser)
         {
@@ -161,6 +218,7 @@ AND (@ClubEvaluationClassId IS NULL OR D.ClubEvaluationClassId LIKE '%' + @ClubE
 
             return ExecuteResult;
         }
+
 
         /// <summary>
         /// 刪除資料
