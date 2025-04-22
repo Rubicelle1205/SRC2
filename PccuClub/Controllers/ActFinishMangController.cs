@@ -144,12 +144,14 @@ namespace WebPccuClub.Controllers
                             IRow row = sheet.GetRow(i);
 
                             row.GetCell(0).SetCellType(CellType.String);
+                            row.GetCell(1).SetCellType(CellType.String);
 
                             if (row != null)
                             {
                                 PersonModel excel = new PersonModel
                                 {
-                                    SNO = row.GetCell(0)?.StringCellValue.TrimStartAndEnd()
+                                    SNO = row.GetCell(0)?.StringCellValue.TrimStartAndEnd(),
+                                    Name = row.GetCell(1)?.StringCellValue.TrimStartAndEnd()
                                 };
 
                                 LstActFinishPersonDetail.Add(excel);
@@ -228,12 +230,14 @@ namespace WebPccuClub.Controllers
                             IRow row = sheet.GetRow(i);
 
                             row.GetCell(0).SetCellType(CellType.String);
+                            row.GetCell(1).SetCellType(CellType.String);
 
                             if (row != null)
                             {
                                 PersonModel excel = new PersonModel
                                 {
-                                    SNO = row.GetCell(0)?.StringCellValue.TrimStartAndEnd()
+                                    SNO = row.GetCell(0)?.StringCellValue.TrimStartAndEnd(),
+                                    Name = row.GetCell(1)?.StringCellValue.TrimStartAndEnd()
                                 };
 
                                 LstAwdDetail.Add(excel);
@@ -426,7 +430,10 @@ namespace WebPccuClub.Controllers
                     IRow dataRow = sheet.CreateRow(i + 1);
 
                     dataRow.CreateCell(0).SetCellType(CellType.String);
+                    dataRow.CreateCell(1).SetCellType(CellType.String);
+
                     dataRow.GetCell(0).SetCellValue(vm.PersonModel[i].SNO);
+                    dataRow.GetCell(1).SetCellValue(vm.PersonModel[i].Name);
 
                     foreach (var cell in dataRow.Cells)
                         cell.CellStyle = contentStyle;

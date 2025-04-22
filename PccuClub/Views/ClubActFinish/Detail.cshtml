@@ -111,6 +111,18 @@
                 </div>
             </div>
 
+            @if (Model.DetailModel.type == "P")
+            {
+                <div class="row justify-content-center mb-5">
+                    <div class="col-lg-3">
+                        <a href=@Url.Action("SelectedPersonal", new { id = @Model.DetailModel.ActFinishId }) class="btn btn-secondary btn-modern border-0 w-100" target="_blank">匯出列印活動證明(個人)</a>
+                    </div>
+                    <div class="col-lg-3">
+                        <a href=@Url.Action("PrintGroup", new { id = @Model.DetailModel.ActFinishId }) class="btn btn-primary btn-modern border-0 w-100" target="_blank">列印活動證明(全體)</a>
+                    </div>
+                </div>
+            }
+
         </div>
     </div>
 }

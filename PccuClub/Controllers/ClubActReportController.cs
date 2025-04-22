@@ -630,6 +630,7 @@ namespace WebPccuClub.Controllers
                 dt.Dispose();
 
                 #region 整理一下..
+
                 List<ActListMangRundownModel> LstRundown = new List<ActListMangRundownModel>();
                 string[] arr = vm.CreateModel.strRundown.Split("|");
 
@@ -674,6 +675,7 @@ namespace WebPccuClub.Controllers
                     }
                 }
                 #endregion
+
                 List<string> WritedDate = new List<string>();
 
                 for (int i = 0; i <= LstRundown.Count - 1; i++)
@@ -950,12 +952,14 @@ namespace WebPccuClub.Controllers
                             IRow row = sheet.GetRow(i);
 
                             row.GetCell(0).SetCellType(CellType.String);
+                            row.GetCell(1).SetCellType(CellType.String);
 
                             if (row != null)
                             {
                                 ActFinishPersonModel excel = new ActFinishPersonModel
                                 {
-                                    SNO = row.GetCell(0)?.StringCellValue.TrimStartAndEnd()
+                                    SNO = row.GetCell(0)?.StringCellValue.TrimStartAndEnd(),
+                                    Name = row.GetCell(1)?.StringCellValue.TrimStartAndEnd()
                                 };
 
                                 LstActFinishPersonDetail.Add(excel);

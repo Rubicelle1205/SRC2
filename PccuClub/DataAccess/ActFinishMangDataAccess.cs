@@ -159,7 +159,7 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT A.SNO
+            CommandText = $@"SELECT A.SNO, A.NAME
                                FROM ActFinishPerson A
                               WHERE 1 = 1
                                 AND (A.ActFinishId = @ActFinishId) ";
@@ -200,7 +200,7 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
 
             #endregion
 
-            CommandText = $@"SELECT A.SNO
+            CommandText = $@"SELECT A.SNO, A.NAME
                                FROM ActFinishPerson A
                               WHERE 1 = 1
                                 AND ActFinishId = @ActFinishId

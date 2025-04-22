@@ -1,0 +1,56 @@
+﻿@model WebPccuClub.Models.ClubActFinishViewModel
+
+@{
+    Layout = "_FrontSimpleLayout";
+}
+
+ <style>
+        .certificate {
+            padding: 40px;
+        }
+        .field {
+            margin: 25px 0;
+        }
+        .field span {
+            font-weight: bold;
+        }
+    </style>
+
+<div role="main" class="main">
+    <div class="container p-relative py-md-5 py-4">
+
+        <div class="row justify-content-center">
+            <div class="col-xxl-10">
+                <div class="printContent">
+
+                    <div class="certificate">
+                        <h3 class="text-center text-6">活動參與證明</h3>
+
+                        <div class="field"><span>姓名：</span>@Model.PrintModel.Name</div>
+                        <div class="field"><span>學號：</span>@Model.PrintModel.SNO</div>
+                        <div class="field"><span>活動名稱：</span>@Model.DetailModel.ActName</div>
+                        <div class="field"><span>活動時間：</span> 
+                            @Model.DetailModel.ActDate.Value.Year 年
+                            @Model.DetailModel.ActDate.Value.Month 月
+                            @Model.DetailModel.ActDate.Value.Day 日
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button class="print-btn btn btn-secondary btn-modern px-5" type="button">列印</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    function SaveData() {
+
+    }
+
+</script>

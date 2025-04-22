@@ -54,25 +54,52 @@ namespace WebPccuClub.Controllers
         }
 
         [Log(LogActionChineseName.編輯)]
-        public IActionResult Detail(string id, ClubActFinishViewModel vm)
+        public IActionResult Detail(string id, string type, ClubActFinishViewModel vm)
         {
             if (string.IsNullOrEmpty(id))
+                return RedirectToAction("Index");
+
+            if(type != "P" && type != "D")
                 return RedirectToAction("Index");
 
             vm.DetailModel = dbAccess.GetDetailData(id);
             vm.DetailModel.PersonModel = dbAccess.GetPersonData(id);
+            vm.DetailModel.type = type;
 
             return View(vm);
         }
 
-        [Log(LogActionChineseName.編輯)]
-        public IActionResult EditModel(string id, ClubActFinishViewModel vm)
+        [Log(LogActionChineseName.匯出列印活動證明_個人)]
+        public IActionResult SelectedPersonal(string id)
         {
-            if (string.IsNullOrEmpty(id))
-                return RedirectToAction("Index");
+            ViewBag.ddlName = dbAccess.GetActFinishNames(id);
 
-            vm.EditModel = dbAccess.GetEditData(id);
-            vm.EditModel.PersonModel = dbAccess.GetPersonData(id);
+            ClubActFinishViewModel vm = new ClubActFinishViewModel();
+            vm.DetailModel = dbAccess.GetDetailData(id);
+
+            return View(vm);
+        }
+        
+        [Log(LogActionChineseName.匯出列印活動證明_個人)]
+        public IActionResult PrintPersonal()
+        {
+            ClubActFinishViewModel vmm = HttpContext.Session.GetObject<ClubActFinishViewModel>("ClubActFinishViewModel");
+            string ActFinishPersonId = vmm.PrintModel.ActFinishPersonId;
+            string ActFinishId = vmm.DetailModel.ActFinishId;
+
+            ClubActFinishViewModel vm = new ClubActFinishViewModel();
+            vm.DetailModel = dbAccess.GetDetailData(ActFinishId);
+            vm.PrintModel = dbAccess.GetPrintData(ActFinishPersonId);
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.匯出列印活動證明_社團)]
+        public IActionResult PrintGroup(string id)
+        {
+            ClubActFinishViewModel vm = new ClubActFinishViewModel();
+            vm.DetailModel = dbAccess.GetDetailData(id);
+            vm.GroupPrintModel = dbAccess.GetPrintGroupData(id);
 
             return View(vm);
         }
@@ -136,7 +163,10 @@ namespace WebPccuClub.Controllers
                     IRow dataRow = sheet.CreateRow(i + 1);
                     
                     dataRow.CreateCell(0).SetCellType(CellType.String);
+                    dataRow.CreateCell(1).SetCellType(CellType.String);
+
                     dataRow.GetCell(0).SetCellValue(vm.ExcelModel[i].SNO);
+                    dataRow.GetCell(1).SetCellValue(vm.ExcelModel[i].Name);
 
                     foreach (var cell in dataRow.Cells)
                         cell.CellStyle = contentStyle;
@@ -230,6 +260,30 @@ namespace WebPccuClub.Controllers
             AlertMsg.Add("無資料已供匯出");
             return Redirect("Index");
 
+        }
+
+        [Log(LogActionChineseName.新增儲存)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> SendPersonalData(ClubActFinishViewModel vmm)
+        {
+            try
+            {
+                string ActFinishPersonId = vmm.PrintModel.ActFinishPersonId;
+                string ActFinishId = vmm.DetailModel.ActFinishId;
+
+                ClubActFinishViewModel vm = new ClubActFinishViewModel();
+                vm.DetailModel = dbAccess.GetDetailData(ActFinishId);
+                vm.PrintModel = dbAccess.GetPrintData(ActFinishPersonId);
+
+                HttpContext.Session.SetObject("ClubActFinishViewModel", vm);
+
+                return Json(vmRtn);
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                return RedirectToAction("ActFail");
+            }
         }
     }
 }

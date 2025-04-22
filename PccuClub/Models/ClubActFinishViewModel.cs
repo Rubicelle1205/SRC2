@@ -18,6 +18,10 @@ namespace WebPccuClub.Models
 
         public ClubActFinishDetailModel DetailModel { get; set; }
 
+        public ClubActFinishPrintModel PrintModel { get; set; }
+
+        public List<ClubActFinishPrintModel> GroupPrintModel { get; set; }
+
         public List<PersonModel> ExcelModel { get; set; }
 
         public List<ALLPersonModel> ALLExcelModel { get; set; }
@@ -214,6 +218,25 @@ namespace WebPccuClub.Models
         /// <summary>審核備註</summary>
         [DisplayName("審核備註")]
         public string? Memo { get; set; }
+
+        /// <summary>頁面動作</summary>
+        [DisplayName("頁面動作")]
+        public string? type { get; set; }
+    }
+
+    public class ClubActFinishPrintModel
+    {
+        /// <summary>活動參與人</summary>
+        [DisplayName("活動參與人")]
+        public string? ActFinishPersonId { get; set; }
+
+        /// <summary>學號</summary>
+        [DisplayName("學號")]
+        public string? SNO { get; set; }
+
+        /// <summary>活動參與人</summary>
+        [DisplayName("活動參與人")]
+        public string? Name { get; set; }
     }
 
     public class PersonModel
@@ -221,6 +244,11 @@ namespace WebPccuClub.Models
         /// <summary>學號</summary>
         [DisplayName("學號")]
         public string? SNO { get; set; }
+
+        /// <summary>姓名</summary>
+        [DisplayName("姓名")]
+        public string? Name { get; set; }
+
     }
 
     public class ALLPersonModel

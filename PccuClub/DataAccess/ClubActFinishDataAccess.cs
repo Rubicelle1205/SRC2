@@ -89,6 +89,66 @@ namespace WebPccuClub.DataAccess
         }
 
         /// <summary>
+        /// 取得列印資料
+        /// </summary>
+        /// <param name="Ser"></param>
+        /// <returns></returns>
+        public ClubActFinishPrintModel GetPrintData(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+
+            #region 參數設定
+            parameters.Add("@ActFinishPersonId", Ser);
+            #endregion
+
+            CommandText = $@"SELECT ActFinishPersonId, ActFinishId, Name, SNO, Department, Creator, Created, LastModifier, LastModified
+                               FROM ActFinishPerson
+                              WHERE 1 = 1
+                                AND (ActFinishPersonId = @ActFinishPersonId) ";
+
+            (DbExecuteInfo info, IEnumerable<ClubActFinishPrintModel> entitys) dbResult = DbaExecuteQuery<ClubActFinishPrintModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList().FirstOrDefault();
+
+            return null;
+        }
+
+        /// <summary>
+        /// 取得列印資料
+        /// </summary>
+        /// <param name="Ser"></param>
+        /// <returns></returns>
+        public List<ClubActFinishPrintModel> GetPrintGroupData(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+
+            #region 參數設定
+            parameters.Add("@ActFinishId", Ser);
+            #endregion
+
+            CommandText = $@"SELECT ActFinishPersonId, ActFinishId, Name, SNO, Department, Creator, Created, LastModifier, LastModified
+                               FROM ActFinishPerson
+                              WHERE 1 = 1
+                                AND (ActFinishId = @ActFinishId) ";
+
+            (DbExecuteInfo info, IEnumerable<ClubActFinishPrintModel> entitys) dbResult = DbaExecuteQuery<ClubActFinishPrintModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return null;
+        }
+
+        /// <summary>
         /// 取得編輯資料
         /// </summary>
         /// <param name="submitBtn"></param>
@@ -198,7 +258,7 @@ namespace WebPccuClub.DataAccess
 
             #endregion
 
-            CommandText = $@"SELECT A.SNO
+            CommandText = $@"SELECT A.SNO, A.Name
                                FROM ActFinishPerson A
                               WHERE 1 = 1
                                 AND ActFinishId = @ActFinishId
@@ -246,5 +306,30 @@ namespace WebPccuClub.DataAccess
 
             return new List<ALLPersonModel>();
         }
+
+        public List<SelectListItem> GetActFinishNames(string id)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@id", id);
+
+            #endregion
+
+            CommandText = @"SELECT ActFinishPersonId AS VALUE, Name + ' (' + SNO + ')' AS TEXT FROM ActFinishPerson WHERE ActFinishId = @id ";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+
     }
 }
