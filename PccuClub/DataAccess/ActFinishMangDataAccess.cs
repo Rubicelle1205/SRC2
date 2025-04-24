@@ -486,5 +486,91 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
             return ExecuteResult;
         }
 
+        public List<SelectListItem> GetActFinishNames(string id)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@id", id);
+
+            #endregion
+
+            CommandText = @"SELECT ActFinishPersonId AS VALUE, Name + ' (' + SNO + ')' AS TEXT FROM ActFinishPerson WHERE ActFinishId = @id ";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        /// <summary>
+        /// 取得編輯資料
+        /// </summary>
+        /// <param name="submitBtn"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public ActFinishMangPrintDetailModel GetPrintDetailData(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@ActFinishId", Ser);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT A.ActFinishId, A.ActID, A.ActDetailId, A.ClubId, A.ClubCName, A.Caseman, A.Email, A.Tel, A.ActDate, A.ActName, A.Course, 
+                                    A.ShortInfo, A.ElseFile, A.ActFinishVerify, B.Text AS ActVerifyText, A.Memo
+                               FROM ActFinish A
+                          LEFT JOIN Code B ON B.Code = A.ActFinishVerify AND B.Type = 'ActVerify'
+                              WHERE 1 = 1
+                                AND (A.ActFinishId = @ActFinishId) ";
+
+
+            (DbExecuteInfo info, IEnumerable<ActFinishMangPrintDetailModel> entitys) dbResult = DbaExecuteQuery<ActFinishMangPrintDetailModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList().FirstOrDefault();
+
+            return null;
+        }
+
+        /// <summary>
+        /// 取得列印資料
+        /// </summary>
+        /// <param name="Ser"></param>
+        /// <returns></returns>
+        public List<ActFinishMangPrintDetailNamesModel> GetPrintPersonData(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+
+            #region 參數設定
+            parameters.Add("@ActFinishPersonId", Ser);
+            #endregion
+
+            CommandText = $@"SELECT ActFinishPersonId, ActFinishId, Name, SNO, Department, Creator, Created, LastModifier, LastModified
+                               FROM ActFinishPerson
+                              WHERE 1 = 1
+                                AND (ActFinishPersonId = @ActFinishPersonId) ";
+
+            (DbExecuteInfo info, IEnumerable<ActFinishMangPrintDetailNamesModel> entitys) dbResult = DbaExecuteQuery<ActFinishMangPrintDetailNamesModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return null;
+        }
     }
 }

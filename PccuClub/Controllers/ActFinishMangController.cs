@@ -13,6 +13,7 @@ using System.Web.Mvc;
 using Utility;
 using WebPccuClub.DataAccess;
 using WebPccuClub.Global;
+using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
@@ -24,6 +25,7 @@ namespace WebPccuClub.Controllers
         PublicFun PublicFun = new PublicFun();
         ReturnViewModel vmRtn = new ReturnViewModel();
         ActFinishMangDataAccess dbAccess = new ActFinishMangDataAccess();
+        ClubActFinishDataAccess dbAccess2 = new ClubActFinishDataAccess();
         UploadUtil upload = new UploadUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
@@ -75,6 +77,35 @@ namespace WebPccuClub.Controllers
             vm.EditModel.PersonModel = dbAccess.GetDetailData(submitBtn);
             
             
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.匯出列印活動證明_個人)]
+        public IActionResult SelectedPersonal(string submitBtn)
+        {
+            ViewBag.ddlName = dbAccess.GetActFinishNames(submitBtn);
+
+            ClubActFinishViewModel vm = new ClubActFinishViewModel();
+            vm.DetailModel = dbAccess2.GetDetailData(submitBtn);
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.匯出列印活動證明_個人)]
+        public IActionResult PrintPersonal()
+        {
+            ActFinishMangViewModel vm = HttpContext.Session.GetObject<ActFinishMangViewModel>("ActFinishMangViewModel");
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.匯出列印活動證明_社團)]
+        public IActionResult PrintGroup(string submitBtn)
+        {
+            ActFinishMangViewModel vm = new ActFinishMangViewModel();
+            vm.PrintDetailModel = dbAccess.GetPrintDetailData(submitBtn);
+            vm.PrintNamesModel = dbAccess.GetPrintPersonData(submitBtn);
+
             return View(vm);
         }
 
@@ -517,6 +548,30 @@ namespace WebPccuClub.Controllers
             AlertMsg.Add("無資料已供匯出");
             return Redirect("Index");
 
+        }
+
+        [Log(LogActionChineseName.匯出列印活動證明_個人_傳送列印資料)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> SendPersonalData(ClubActFinishViewModel vmm)
+        {
+            try
+            {
+                string ActFinishPersonId = vmm.PrintModel.ActFinishPersonId;
+                string ActFinishId = vmm.DetailModel.ActFinishId;
+
+                ActFinishMangViewModel vm = new ActFinishMangViewModel();
+                vm.PrintDetailModel = dbAccess.GetPrintDetailData(ActFinishId);
+                vm.PrintNamesModel = dbAccess.GetPrintPersonData(ActFinishPersonId);
+
+                HttpContext.Session.SetObject("ActFinishMangViewModel", vm);
+
+                return Json(vmRtn);
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                return RedirectToAction("ActFail");
+            }
         }
     }
 }

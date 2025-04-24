@@ -262,7 +262,7 @@ namespace WebPccuClub.Controllers
 
         }
 
-        [Log(LogActionChineseName.新增儲存)]
+        [Log(LogActionChineseName.匯出列印活動證明_個人_傳送列印資料)]
         [ValidateInput(false)]
         public async Task<IActionResult> SendPersonalData(ClubActFinishViewModel vmm)
         {

@@ -70,6 +70,20 @@
                         }
                         
                         <td class="text-center text-sm">
+                            @if (item.ActFinishVerify == "02" || item.ActFinishVerify == "04")
+                            {
+                                @using (Html.BeginForm("SelectedPersonal", "ActFinishMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
+                                {
+                                    <button type="submit" value="@item.ActFinishId" name="submitBtn" class="mx-1 btn btn-sm btn-outline-success">匯出列印活動證明(個人)</button>
+                                }
+
+                                @using (Html.BeginForm("PrintGroup", "ActFinishMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
+                                {
+                                    <button type="submit" value="@item.ActFinishId" name="submitBtn" class="mx-1 btn btn-sm btn-outline-info">匯出列印活動證明(全體)</button>
+                                }
+                            }
+                            
+
                             @using (Html.BeginForm("Edit", "ActFinishMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
                             {
                                 <button type="submit" value="@item.ActFinishId" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
