@@ -1,4 +1,5 @@
 ﻿@using PccuClub.WebAuth;
+@using Microsoft.AspNetCore.Http.Extensions
 
 @{
     Layout = "_FrontSimpleLayout";
@@ -7,6 +8,8 @@
     string SSORole = "";
 
     UserInfo LoginUser = (UserInfo)ViewBag.LoginUser;
+    var url = Context.Request.GetDisplayUrl();
+    bool IsMasterEnv = url.Contains("sais-bk", StringComparison.OrdinalIgnoreCase);
 
     @if (null != LoginUser)
     {
@@ -65,6 +68,27 @@
                                     </div>
                                     <div class="icon"><i class="fas fa-chevron-right"></i></div>
                                 </a>
+                                @if (IsMasterEnv)
+                                {
+                                    <a href="https://cgcs.pccu.edu.tw/" target="_blank" class="listItem">
+                                        <div class="textbox ">
+                                            <div class="title font-weight-bold mb-0">諮商輔導系統</div>
+                                            <p class="fs-90percent mb-0"></p>
+                                        </div>
+                                        <div class="icon"><i class="fas fa-chevron-right"></i></div>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="https://demo.triotechno.com:20252/" target="_blank" class="listItem">
+                                        <div class="textbox ">
+                                            <div class="title font-weight-bold mb-0">諮商輔導系統</div>
+                                            <p class="fs-90percent mb-0">模擬環境</p>
+                                        </div>
+                                        <div class="icon"><i class="fas fa-chevron-right"></i></div>
+                                    </a>
+                                }
+
                                 @if (LoginUser.SSORole != "student")
                                 {
                                     <a href="@Url.Action("Index", "MenuBackend")" class="listItem">
