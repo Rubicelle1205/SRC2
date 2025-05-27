@@ -6,7 +6,7 @@
 
     UserInfo LoginUser = (UserInfo)ViewBag.LoginUser;
     var url = Context.Request.GetDisplayUrl();
-    bool IsMasterEnv = url.Contains("sais-bk", StringComparison.OrdinalIgnoreCase);
+    bool IsUATEnv = url.Contains("sais-bk", StringComparison.OrdinalIgnoreCase);
 }
 
 <div class="position-relative w-100 min-vh-100 bg-gradient-liquid">
@@ -51,16 +51,16 @@
                             </a>
                         }
 
-                        @if (IsMasterEnv)
+                        @if (IsUATEnv)
                         {
-                            <a href="https://cgcs.pccu.edu.tw/" target="_blank" class="list-group-item list-group-item-action">
-                                <i class="fa-solid fa-mug-saucer"></i> 諮商輔導系統
+                            <a href="https://demo.triotechno.com:20252/" target="_blank" class="list-group-item list-group-item-action">
+                                <i class="fa-solid fa-mug-saucer"></i> 諮商輔導系統(模擬環境)
                             </a>
                         }
                         else
                         {
-                            <a href="https://demo.triotechno.com:20252/" target="_blank" class="list-group-item list-group-item-action">
-                                <i class="fa-solid fa-mug-saucer"></i> 諮商輔導系統(模擬環境)
+                            <a href="https://cgcs.pccu.edu.tw/" target="_blank" class="list-group-item list-group-item-action">
+                                <i class="fa-solid fa-mug-saucer"></i> 諮商輔導系統
                             </a>
                         }
 
