@@ -115,7 +115,7 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT ID, ClubID, ActID, ActName, HolisticActName, ActDesc, MainID, SecondID, ThridID, ActSTime, ActETime, RegistrationWay, 
+            CommandText = $@"SELECT ID, SchoolYear, ClubID, ActID, ActName, HolisticActName, ActDesc, MainID, SecondID, ThridID, ActSTime, ActETime, RegistrationWay, 
                                     PlaceSource, BuildID, PlaceID, PlaceName, Presenter, PresenterIntro, Host, HostIntro, 
                                     ClubCName, ContactMan, RegistrationMan, OpenObject, Tag, PosterIconPath, Memo, ActVerify, ActVerifyMemo, 
                                     Creator, Created, LastModifier, LastModified

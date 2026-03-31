@@ -53,14 +53,16 @@
                                 <span class="text-primary">@item.ActVerifyText</span>
                             }
                         </td>
-                        <td class="text-left text-sm">@item.Created.Value.ToString("yyyy/MM/dd HH:mm")</td>
-                        <td class="text-center text-sm" style="display: flex; justify-content: center; align-items: center;">
-                            @using (Html.BeginForm("Edit", "HolisticPassportMang", FormMethod.Post, new { style = "float:left" }))
-                            {
-                                <button type="submit" value="@item.ID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
-                            }
+                        <td class="text-center text-sm">@item.Created.Value.ToString("yyyy/MM/dd HH:mm")</td>
+                        <td class="text-center text-sm">
+                            <div style="display: flex; justify-content: center; align-items: center;">
+                                @using (Html.BeginForm("Edit", "HolisticPassportMang", FormMethod.Post, new { style = "float:left" }))
+                                {
+                                    <button type="submit" value="@item.ID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
+                                }
 
-                            <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel(@item.ID);">刪除</a>
+                                <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel(@item.ID);">刪除</a>
+                            </div>
                         </td>
                     </tr>
                 }
