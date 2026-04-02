@@ -36,6 +36,7 @@ namespace WebPccuClub.Controllers
 
             HolisticPassportMangViewModel vm = new HolisticPassportMangViewModel();
             vm.ConditionModel = new HolisticPassportMangConditionModel();
+            vm.ConditionModel.LstColumnDataModel = dbAccess.GetHolisticPassportResultColumnData().ToList();
             return View(vm);
         }
 
@@ -76,6 +77,32 @@ namespace WebPccuClub.Controllers
         [LogAttribute(LogActionChineseName.查詢)]
         public IActionResult GetSearchResult(HolisticPassportMangViewModel vm)
         {
+            var allLegalColumns = dbAccess.GetHolisticPassportResultColumnData().ToList();
+            vm.ConditionModel.LstColumnDataModel = allLegalColumns;
+
+            if (!string.IsNullOrEmpty(vm.ConditionModel.SelectedColumns))
+            {
+                var rawSelected = vm.ConditionModel.SelectedColumns.Split(',');
+
+                // 只保留「確實存在於資料庫定義中」的欄位名稱 (白名單比對)
+                var activeColumns = allLegalColumns.Where(x => rawSelected.Contains(x.ColumnValue)).ToList();
+
+                // 3. 【產生安全字串】用於 SQL 查詢
+                // 加上 [] 可以防止欄位名稱與 SQL 關鍵字衝突
+                var safeFieldsForSql = string.Join(", ", activeColumns.Select(x => $"[{x.ColumnValue}]"));
+
+                // 將過濾後的合法清單傳給 View 渲染標頭
+                ViewBag.ActiveColumns = activeColumns;
+
+                // 將安全字串存入 ConditionModel，供 dbAccess 內部組 SQL 使用
+                vm.ConditionModel.SafeSqlColumns = safeFieldsForSql;
+            }
+            else
+            {
+                // 如果完全沒選，可以給予預設必選欄位
+                ViewBag.ActiveColumns = allLegalColumns.Where(x => x.IsDefault).ToList();
+            }
+
             vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel).ToList();
 
             #region 分頁

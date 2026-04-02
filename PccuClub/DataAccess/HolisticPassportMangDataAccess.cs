@@ -97,6 +97,54 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')
             return new List<HolisticPassportMangResultModel>();
         }
 
+        public List<ColumnDataModel> GetHolisticPassportResultColumnData()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT T.ColumnValue, T.ColumnName, T.IsDefault
+                               FROM (VALUES                                         
+                                        ('SchoolYear', '學年度', 1), 
+                                        ('ClubID', '社團代號', 1),
+                                        ('ActID', '活動報備編號', 1),
+                                        ('HolisticActName', '全人端名稱', 0),
+                                        ('ActName', '活動名稱', 1),
+                                        ('ActDesc', '活動說明', 0),
+                                        ('MainID', '全人學習認證群組', 0),
+                                        ('SecondID', '全人學習認證類別', 0),
+                                        ('ThridID', '全人學習認證項目', 0),
+                                        ('ActSTime', '活動開始時間', 0),
+                                        ('ActETime', '活動結束時間', 0),
+                                        ('RegistrationWay', '報名方式', 0),
+                                        ('Presenter', '主講人', 0),
+                                        ('PresenterIntro', '主講人介紹', 0),
+                                        ('Host', '主持人', 0),
+                                        ('HostIntro', '主持人介紹', 0),
+                                        ('ClubCName', '主辦單位', 0),
+                                        ('ContactMan', '聯絡人', 0),
+                                        ('RegistrationMan', '負責補登者', 0),
+                                        ('OpenObject', '開放對象', 0),
+                                        ('Tag', '關鍵字標籤', 0),
+                                        ('ActVerify', '審核狀態', 1),
+                                        ('ActVerifyMemo', '審核備註', 0),
+                                        ('Created', '建立時間', 1)
+                                    ) AS T(ColumnValue, ColumnName, IsDefault);
+";
+
+
+            (DbExecuteInfo info, IEnumerable<ColumnDataModel> entitys) dbResult = DbaExecuteQuery<ColumnDataModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ColumnDataModel>();
+        }
+
         /// <summary>
         /// 取得編輯資料
         /// </summary>

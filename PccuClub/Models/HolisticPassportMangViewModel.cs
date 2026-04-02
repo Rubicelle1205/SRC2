@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebPccuClub.Models
 {
-    public class HolisticPassportMangViewModel
+    public class HolisticPassportMangViewModel:BaseViewModel
     {
         [DisplayName("檔案上傳")]
         [UIHint("_UploadFile")]
@@ -28,6 +28,10 @@ namespace WebPccuClub.Models
             this.TotalCount = 0;
         }
 
+        public List<ColumnDataModel> LstColumnDataModel = new List<ColumnDataModel>();
+
+        public string SafeSqlColumns { get; set; }
+
         /// <summary> 目前頁數 </summary>
         public int Page { get; set; }
 
@@ -36,6 +40,9 @@ namespace WebPccuClub.Models
 
         /// <summary> 總筆數 </summary>
         public int TotalCount { get; set; }
+
+        /// <summary> 選擇欄位 </summary>
+        public string SelectedColumns { get; set; }
 
         /// <summary>學年度</summary>
         [DisplayName("學年度")]
@@ -423,7 +430,6 @@ namespace WebPccuClub.Models
         [DisplayName("建立時間")]
         public DateTime? Created { get; set; }
     }
-
 
 
 

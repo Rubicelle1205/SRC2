@@ -15,7 +15,47 @@
                 <form method="post" id="SearchForm" enctype="multipart/form-data" action="">
                     <div class="card">
                         <div class="card-header">
+                            
+                            <button type="button" class="btn btn-sm btn-outline-info" onclick="openColumnModal()">
+                                <i class="fa fa-list"></i> 自選欄位
+                            </button>
+                            <div id="columnModalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999;">
+                                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:#fff; padding:20px; border-radius:8px; width:80%; max-width:1000px; box-shadow:0 5px 15px rgba(0,0,0,0.3);">
+                                    <h4 style="margin-top:0; border-bottom:1px solid #eee; padding-bottom:10px;">請勾選匯出欄位</h4>
+
+                                    <div style="margin: 15px 0;">
+                                        @if (Model.ConditionModel.LstColumnDataModel.Count > 0)
+                                        {
+                                            <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+                                                <label style="font-weight: bold; cursor: pointer; color: #28a745;">
+                                                    <input type="checkbox" id="selectAllCols" style="margin-right: 5px;">
+                                                    全選 / 取消全選
+                                                </label>
+                                            </div>
+
+                                            <div id="checkboxGrid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
+                                                @foreach (ColumnDataModel item in Model.ConditionModel.LstColumnDataModel)
+                                                {
+                                                    <div style="padding: 5px 0; white-space: nowrap;">
+                                                        <label style="font-weight: normal; cursor: pointer; display: flex; align-items: center;">
+                                                            <input type="checkbox" class="col-cbx" value="@item.ColumnValue" @(item.IsDefault ? "checked" : "") style="margin-right: 5px;">
+                                                            @item.ColumnName
+                                                        </label>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+
+                                    <div style="text-align:right; border-top:1px solid #eee; padding-top:15px;">
+                                        <button type="button" class="btn btn-secondary" onclick="closeColumnModal()">取消</button>
+                                        <button type="button" class="btn btn-primary" onclick="saveColumnSettings()" style="background:#28a745; border-color:#28a745; color:#fff; padding:6px 12px; border-radius:4px;">確定</button>
+                                    </div>
+                                </div>
+                            </div>
+
                             <button type="button" class="btn btn-sm btn-outline-dark" onclick="ExportSearchResult()">匯出填報紀錄</button>
+
                             <div class="card-tools">
                                 <a href=@Url.Action("Create") class="btn btn-sm btn-success">新增</a>
                             </div>
@@ -61,6 +101,7 @@
                                             每頁顯示 {{:pever}} 筆 / 共 {{:ptotleever}} 筆
                                         </span>
                                     </div>
+
                                     <div class="col-md-6 col-sm-12 float-right d-flex flex-wrap align-items-end justify-content-end p-0">
                                         @Html.Partial("_JumpPagePartial", @perpage)
                                         <input type="reset" class="btn btn-sm btn-outline-info mx-1 mt-2" value="清除條件">
@@ -74,6 +115,7 @@
                     @Html.HiddenFor(m => m.ConditionModel.Page)
                     @Html.HiddenFor(m => m.ConditionModel.PageSize)
                     @Html.HiddenFor(m => m.ConditionModel.TotalCount)
+                    @Html.HiddenFor(m => m.ConditionModel.SelectedColumns)
                 </form>
                 <div id="SearchResultList" class="card"></div>
 
@@ -86,10 +128,74 @@
 
 <script>
 
+    // 打開彈窗
+function openColumnModal() {
+    document.getElementById('columnModalOverlay').style.display = 'block';
+}
+
+// 關閉彈窗
+function closeColumnModal() {
+    document.getElementById('columnModalOverlay').style.display = 'none';
+}
+
+// 儲存並產生字串
+function saveColumnSettings() {
+    var selected = [];
+    var checkboxes = document.querySelectorAll('.col-cbx');
+
+    checkboxes.forEach(function (cb) {
+        if (cb.checked) {
+            selected.push(cb.value);
+        }
+    });
+
+    // 更新隱藏欄位
+    var finalString = selected.join(',');
+    $('#@Html.IdFor(m => m.ConditionModel.SelectedColumns)').val(finalString);
+        var SelectedColumns = $('#@Html.IdFor(m => m.ConditionModel.SelectedColumns)').val();
+            console.log("已更新字串為: " + SelectedColumns);
+
+
+    // 關閉彈窗
+    closeColumnModal();
+}
+
+// 點擊遮罩背景也可關閉
+window.onclick = function(event) {
+    var overlay = document.getElementById('columnModalOverlay');
+    if (event.target == overlay) {
+        closeColumnModal();
+    }
+}
+
+$(document).ready(function () {
+    // 1. 全選/取消全選邏輯
+    $('#selectAllCols').on('change', function () {
+        var isChecked = $(this).prop('checked');
+        $('.col-cbx').prop('checked', isChecked);
+    });
+
+    // 2. 自動連動全選按鈕狀態 (如果手動把所有子項勾選，全選也要自動打勾)
+    $(document).on('change', '.col-cbx', function () {
+        var allCount = $('.col-cbx').length;
+        var checkedCount = $('.col-cbx:checked').length;
+        
+        // 如果全部都勾了，全選就打勾；否則取消全選
+        $('#selectAllCols').prop('checked', allCount === checkedCount);
+    });
+});
+
     function GoSearch(source) {
 
         if (source == 0)
             $('#@(Html.IdFor(m => m.ConditionModel.Page))').val(0);
+
+        var selected = [];
+        $('.col-cbx:checked').each(function () {
+            selected.push($(this).val());
+        });
+
+        $('#@Html.IdFor(m => m.ConditionModel.SelectedColumns)').val(selected.join(','));
 
         SendAjax({
             url: '@Url.Action("GetSearchResult")',
