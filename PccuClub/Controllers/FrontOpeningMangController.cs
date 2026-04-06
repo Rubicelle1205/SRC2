@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DataAccess;
+using Microsoft.AspNetCore.Mvc;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.ComponentModel;
 using System.Reflection;
+using System.Text.Json;
 using System.Web.Mvc;
 using Utility;
 using WebPccuClub.DataAccess;
@@ -47,6 +49,15 @@ namespace WebPccuClub.Controllers
 
             //FrontOpeningMangViewModel vm = new FrontOpeningMangViewModel();
             vm.EditModel = dbAccess.GetEditData(submitBtn);
+            vm.EditModel.LstHourTimeFrame = dbAccess.GetTimeFrameData(submitBtn);
+
+            // 序列化成字串丟給前端
+            string InitialData = JsonSerializer.Serialize(vm.EditModel.LstHourTimeFrame);
+
+            vm.EditModel.ScheduleJson = InitialData;
+
+
+
             return View(vm);
         }
 
@@ -72,7 +83,7 @@ namespace WebPccuClub.Controllers
             {
                 dbAccess.DbaInitialTransaction();
 
-                var dbResult = dbAccess.UpdateData(vm, LoginUser);
+                var dbResult = dbAccess.UpdateFrontOpeningMangData(vm, LoginUser);
 
                 if (!dbResult.isSuccess)
                 {
@@ -80,6 +91,38 @@ namespace WebPccuClub.Controllers
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "修改失敗";
                     return Json(vmRtn);
+                }
+
+                if (string.IsNullOrEmpty(vm.EditModel.ScheduleJson))
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
+                vm.EditModel.LstHourTimeFrame = JsonSerializer.Deserialize<List<HourTimeFrame>>(vm.EditModel.ScheduleJson);
+                dbResult = dbAccess.DeleteFrontOpeningDetailMangData(vm);
+
+                if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
+                foreach (HourTimeFrame item in vm.EditModel.LstHourTimeFrame)
+                {
+                    dbResult = dbAccess.InsertFrontOpeningDetailMangData(vm, item, LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "修改失敗";
+                        return Json(vmRtn);
+                    }
                 }
 
                 dbAccess.DbaCommit();
