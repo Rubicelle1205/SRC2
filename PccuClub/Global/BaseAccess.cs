@@ -1038,13 +1038,15 @@ namespace WebPccuClub.Global
 
             #region 參數設定
             parameters.Add("@Url", Url);
+            parameters.Add("@DayOfWeek", (int)DateTime.Now.DayOfWeek);
             #endregion
 
-            CommandText = @"SELECT A.Enable, A.OpenDate, A.CloseDate 
+            CommandText = @"SELECT A.Enable, A.OpenDate, A.CloseDate, D.HourMask
                               FROM FrontOpeningMang A 
                          LEFT JOIN SystemMenu B ON B.MenuNode = A.MenuNode
                          LEFT JOIN SystemFun C ON C.FunId = B.FunId
-                             WHERE C.Url = '/' + @Url ";
+                         LEFT JOIN FrontOpeningDetailMang D ON D.FrontOpeningId = A.FrontOpeningId
+                             WHERE C.Url = '/' + @Url AND D.DayOfWeek = @DayOfWeek";
 
             DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
 

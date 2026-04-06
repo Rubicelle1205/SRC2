@@ -62,6 +62,7 @@ namespace WebPccuClub.Controllers
                 vm.ConditionModel.Enable = dt.Rows[0]["Enable"].ToString();
                 vm.ConditionModel.OpenDate = dt.Rows[0]["OpenDate"].ToString();
                 vm.ConditionModel.CloseDate = dt.Rows[0]["CloseDate"].ToString();
+                vm.ConditionModel.HourMask = (int)dt.Rows[0]["HourMask"];
             }
 
             return View(vm);
@@ -80,10 +81,18 @@ namespace WebPccuClub.Controllers
                 string Enable = dt.Rows[0]["Enable"].ToString();
                 string OpenDate = dt.Rows[0]["OpenDate"].ToString();
                 string CloseDate = dt.Rows[0]["CloseDate"].ToString();
+                int dbMask = (int)dt.Rows[0]["HourMask"];
 
                 if (Enable == "True")
                 {
                     if(DateTime.Parse(OpenDate).Date > DateTime.Now || DateTime.Parse(CloseDate).Date.AddDays(1).AddSeconds(-1) < DateTime.Now)
+                    {
+
+                        TempData["WEBSOL_ALERT_MESSAGE"] = new List<string> { "目前非開放申請時段" };
+                        return RedirectToAction("Index");
+                    }
+
+                    if (!((dbMask & (1 << DateTime.Now.Hour)) != 0))
                     {
                         TempData["WEBSOL_ALERT_MESSAGE"] = new List<string> { "目前非開放申請時段" };
                         return RedirectToAction("Index");

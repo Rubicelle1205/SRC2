@@ -72,6 +72,10 @@ namespace WebPccuClub.Models
         /// <summary>開放時間(迄)</summary>
         [DisplayName("開放時間(迄)")]
         public string? CloseDate { get; set; }
+
+        /// <summary>開放時段</summary>
+        [DisplayName("開放時段")]
+        public int HourMask { get; set; }
     }
 
     public class ClubActReportResultModel
