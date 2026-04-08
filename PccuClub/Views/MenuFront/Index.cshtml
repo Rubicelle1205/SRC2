@@ -1,4 +1,5 @@
-﻿@using PccuClub.WebAuth;
+﻿@model WebPccuClub.Models.MenuFrontViewModel
+@using PccuClub.WebAuth;
 @using Microsoft.AspNetCore.Http.Extensions
 
 @{
@@ -32,6 +33,20 @@
     }
 }
 
+
+<style>
+
+    .icon-prefix {
+        flex: 0 0 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 20px;
+    }
+
+</style>
+
+
 <div role="main" class="main">
 
     <div class="container-fluid p-relative py-md-5 py-4">
@@ -46,46 +61,85 @@
                                 @SSOName @SSORole 歡迎！<small class="text-yellow font-weight-normal ms-2">Welcome</small>
                             </h4>
                             <div class="pagelist">
-                                <a href="@Url.Action("Index", "ClubList")" class="listItem">
-                                    <div class="textbox ">
-                                        <div class="title font-weight-bold mb-0">社團報備管理/結案管理</div>
-                                        <p class="fs-90percent mb-0">維護社團相關資訊，如活動報備、結案管理、幹部名冊</p>
-                                    </div>
-                                    <div class="icon"><i class="fas fa-chevron-right"></i></div>
-                                </a>
-                                <a href="@Url.Action("Index", "FBorrowIndex")" class="listItem">
-                                    <!-- target="_blank" -->
-                                    <div class="textbox ">
-                                        <div class="title font-weight-bold mb-0">借用資源借用</div>
-                                        <p class="fs-90percent mb-0">借用社團器材、海報欄位、學位服、醫療器材...等</p>
-                                    </div>
-                                    <div class="icon"><i class="fas fa-chevron-right"></i></div>
-                                </a>
-                                <div class="listItem disabled">
-                                    <div class="textbox">
-                                        <div class="title font-weight-bold mb-0">輔導預約系統</div>
-                                        <p class="fs-90percent mb-0">請改用下方諮商輔導系統</p>
-                                    </div>
-                                    <div class="icondisabled"><i class="fas fa-chevron-right"></i></div>
-                                </div>
-                                @if (IsUATEnv)
+                                @foreach (MenuFrontResultModel item in Model.ResultModel)
                                 {
-                                    <a href="https://demo.triotechno.com:20252/" target="_blank" class="listItem">
-                                        <div class="textbox ">
-                                            <div class="title font-weight-bold mb-0">諮商輔導系統</div>
+                                    string targetUrl = "#";
+
+                                    switch (item.MenuBoardCode)
+                                    {
+                                        case "01":
+                                            targetUrl = Url.Action("Index", "ClubList");
+                                            break;
+                                        case "02":
+                                            targetUrl = Url.Action("Index", "FBorrowIndex");
+                                            break;
+                                        case "03":
+                                            targetUrl = "";
+                                            break;
+                                        case "04":
+                                            if (IsUATEnv)
+                                            {
+                                                targetUrl = "https://demo.triotechno.com:20252/";
+                                            }
+                                            else
+                                            {
+                                                targetUrl = "https://cgcs.pccu.edu.tw/";
+                                            }
+
+                                            break;
+                                        default:
+                                            targetUrl = "#";
+                                            break;
+                                    }
+
+                                    @if (item.IsEnable)
+                                    {
+                                        <a href="@targetUrl" class="listItem">
+
+                                            <div class="icon-prefix">
+                                                <img src="@item.IconPath" class="menu-icon-img">
+                                            </div>
+
+                                            <div class="textbox">
+                                                <div class="title font-weight-bold mb-0">@item.Header</div>
+                                                @if (string.IsNullOrEmpty(item.ShortDesc))
+                                                {
+                                                    <p class="fs-90percent mb-0" style="height:1.2em;">@item.ShortDesc</p>
+                                                }
+                                                else
+                                                {
+                                                    <p class="fs-90percent mb-0">@item.ShortDesc</p>
+                                                }
+                                            
+                                            </div>
+
+                                            <div class="icon">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </div>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <div class="listItem disabled">
+                                            <div class="icon-prefix">
+                                                <img src="@item.IconPath" class="menu-icon-img">
+                                            </div>
+
+                                            <div class="textbox">
+                                                <div class="title font-weight-bold mb-0">@item.Header</div>
+                                                @if (string.IsNullOrEmpty(item.ShortDesc))
+                                                {
+                                                    <p class="fs-90percent mb-0" style="height:1.2em;">@item.ShortDesc</p>
+                                                }
+                                                else
+                                                {
+                                                    <p class="fs-90percent mb-0">@item.ShortDesc</p>
+                                                }
+                                            </div>
+                                            <div class="icondisabled"><i class="fas fa-chevron-right"></i></div>
                                         </div>
-                                        <div class="icon"><i class="fas fa-chevron-right"></i></div>
-                                    </a>
-                                }
-                                else
-                                {
-                                    <a href="https://cgcs.pccu.edu.tw/" target="_blank" class="listItem">
-                                        <div class="textbox ">
-                                            <div class="title font-weight-bold mb-0">諮商輔導系統</div>
-                                            <p class="fs-90percent mb-0"></p>
-                                        </div>
-                                        <div class="icon"><i class="fas fa-chevron-right"></i></div>
-                                    </a>
+                                    }
+
                                 }
 
                                 @if (LoginUser.SSORole != "student")
