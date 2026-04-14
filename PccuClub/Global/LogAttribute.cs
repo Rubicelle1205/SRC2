@@ -135,6 +135,7 @@
         匯出列印活動證明_個人 = 120,
         匯出列印活動證明_社團 = 121,
         匯出列印活動證明_個人_傳送列印資料 = 122,
+        前台MenuBoard維護=123,
     }
 
 	public enum DBActionChineseName
