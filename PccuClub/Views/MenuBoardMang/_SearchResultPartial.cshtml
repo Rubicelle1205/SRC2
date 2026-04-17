@@ -6,8 +6,8 @@
         <table class="table table-bordered table-hover text-nowrap">
             <thead>
                 <tr class="text-center">
-                    <th width="30%">名稱</th>
-                    <th width="50%">備註</th>
+                <th width="30%">功能名稱</th>
+                <th width="50%">功能描述</th>
                     <th width="20%">功能</th>
                 </tr>
             </thead>
@@ -17,15 +17,14 @@
                     foreach (var item in Model.ResultModel)
                     {
                         <tr>
-                            <td class="text-center text-sm">@item.FloorName</td>
-                            <td class="text-left text-sm">@item.Memo</td>
+                            <td class="text-center text-sm">@item.Header</td>
+                            <td class="text-left text-sm">@item.ShortDesc</td>
                             <td class="text-center text-sm" style="display: flex; justify-content: center; align-items: center;">
                             @using (Html.BeginForm("Edit", "MenuBoardMang", FormMethod.Post, new { style = "float:left" }))
                             {
-                                <button type="submit" value="@item.FloorID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
+                                <button type="submit" value="@item.MenuBoardId" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
                             }
 
-                            <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel(@item.FloorID);">刪除</a>
                             </td>
                         </tr>
                     }
@@ -74,28 +73,6 @@
         GoSearch();
     }
 
-    function ChkDel(Ser) {
-        $.confirm({
-            title: '確定刪除?',
-            content: '刪除後資料無法復原!',
-            buttons: {
-                確定: function () {
-                    SendAjax({
-                        url: '@Url.Action("Delete")',
-                        data: { 'Ser': Ser },
-                        success: function (result) {
-                            if (result.errorCode == 0) { $.alert("刪除成功"); }
-                            else { $.alert(result.errorMsg); }
-
-                            GoSearch();
-                        }
-                    });
-                },
-                取消: function () {
-                },
-            }
-        });
-    }
     
 
 </script>

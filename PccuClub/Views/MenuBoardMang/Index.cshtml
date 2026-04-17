@@ -21,10 +21,10 @@
                                 @Html.AntiForgeryToken()
 
                                 <div class="col-md-3 col-sm-6 mt-2">
-                                    @Html.TextBoxFor(m => m.ConditionModel.FloorName, new { @class = "form-control", placeholder = "請輸入樓層名稱" })
+                                    @Html.TextBoxFor(m => m.ConditionModel.Header, new { @class = "form-control", placeholder = "請輸入功能名稱" })
                                 </div>
                                 <div class="col-md-3 col-sm-6 mt-2">
-                                    @Html.TextBoxFor(m => m.ConditionModel.Memo, new { @class = "form-control", placeholder = "請輸入備註" })
+                                    @Html.TextBoxFor(m => m.ConditionModel.ShortDesc, new { @class = "form-control", placeholder = "請輸入功能描述" })
                                 </div>
                                 <div class="col-md-12 mt-2 row">
                                     <div class="col-md-6 col-sm-12 float-left">
@@ -92,7 +92,7 @@
         $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val("10");
     });
 
-    $('#@Html.IdFor(m => m.ConditionModel.FloorName)').tooltip({ title: "樓層名稱" });
-    $('#@Html.IdFor(m => m.ConditionModel.Memo)').tooltip({ title: "備註" });
+    $('#@Html.IdFor(m => m.ConditionModel.Header)').tooltip({ title: "功能名稱" });
+    $('#@Html.IdFor(m => m.ConditionModel.ShortDesc)').tooltip({ title: "功能描述" });
 
 </script>

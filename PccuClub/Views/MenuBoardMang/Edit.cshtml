@@ -2,6 +2,7 @@
 
 @{
     Layout = "_BackendLayout";
+    var IconPath = Model.EditModel.IconPath;
 }
 
 <!-- Main content -->
@@ -21,12 +22,33 @@
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.EditModel.FloorName)<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.FloorName, new {@class = "form-control"})</td>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Header)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Header, new { @class = "form-control" })</td>
                                     </tr>
                                     <tr>
-                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Memo)<span class="required">*</span></th>
-                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class = "form-control"})</td>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ShortDesc)<span class="required">*</span></th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.ShortDesc, new { @class = "form-control" })</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            @Html.LabelFor(m => m.EditModel.IconPath)
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">可上傳.jpeg,.jpg,.png</span>
+                                        </th>
+                                        <td style="display:flex;">
+                                            <div class="d-block mb-1 item">
+                                                <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
+                                                    @Html.TextBoxFor(m => m.EditModel.IconPath, new { @style = "display:none;", @class = "filesupload", type = "file", accept = ".jpeg,.jpg,.png" })
+                                                </label>
+                                                <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                            </div>
+                                            @if (IconPath != null)
+                                            {
+                                                <label class="upload_cover img-thumbnail" name="file1_prev">
+                                                    <img src="@Model.EditModel.IconPath" style="width:100%;" />
+                                                </label>
+                                            }
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -39,7 +61,7 @@
                         </div>
                     </div>
                     <!-- /.card -->
-                    @Html.HiddenFor(m => m.EditModel.FloorID)
+                    @Html.HiddenFor(m => m.EditModel.MenuBoardId)
                 </form> 
                 <!-- /.form -->
             </div>
@@ -57,15 +79,27 @@
     function SaveData() {
 
         var data = new FormData()
-        var FloorID = $('#@Html.IdFor(m => m.EditModel.FloorID)').val();
-        var FloorName = $('#@Html.IdFor(m => m.EditModel.FloorName)').val();
-        var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
+        var MenuBoardId = $('#@Html.IdFor(m => m.EditModel.MenuBoardId)').val();
+        var Header = $('#@Html.IdFor(m => m.EditModel.Header)').val();
+        var ShortDesc = $('#@Html.IdFor(m => m.EditModel.ShortDesc)').val();
 
-        if (FloorName == "") { $.alert("樓層名稱不可為空白"); return; }
+        if (Header == "") { $.alert("樓層名稱不可為空白"); return; }
 
-        data.append('@Html.NameFor(m => m.EditModel.FloorID)', FloorID);
-        data.append('@Html.NameFor(m => m.EditModel.FloorName)', FloorName);
-        data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+        data.append('@Html.NameFor(m => m.EditModel.MenuBoardId)', MenuBoardId);
+        data.append('@Html.NameFor(m => m.EditModel.Header)', Header);
+        data.append('@Html.NameFor(m => m.EditModel.ShortDesc)', ShortDesc);
+
+        var Logo = $('#@Html.IdFor(m => m.EditModel.IconPath)')[0].files[0];
+        if (typeof Logo !== 'undefined') {
+            var fileExtension = Logo.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("Logo檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.EditModel.IconPath)', Logo);
+        }
 
         SendAjax({
             url: '@Url.Action("EditOldData")',
@@ -90,7 +124,23 @@
     }
 
     function Reset() {
-        $('#@Html.IdFor(m => m.EditModel.FloorName)').val("");
-        $('#@Html.IdFor(m => m.EditModel.Memo)').val("");
+        $('#@Html.IdFor(m => m.EditModel.Header)').val("");
+        $('#@Html.IdFor(m => m.EditModel.ShortDesc)').val("");
     }
+
+    $(document).on('change', ".filesupload", function (e) {
+        var file = e.target.files[0];
+
+        $(this).closest('.item').find('.text-muted#filename').text(file.name);
+
+        var reader = new FileReader();
+        var $closestLabel = $(this).closest('label.upload_cover');
+
+        reader.onload = function (e) {
+            $closestLabel.css('background-image', 'url(' + e.target.result + ')');
+        };
+
+        reader.readAsDataURL(file);
+
+    });
 </script>

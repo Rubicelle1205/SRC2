@@ -23,18 +23,19 @@ namespace WebPccuClub.DataAccess
 
             DBAParameter parameters = new DBAParameter();
 
-            parameters.Add("@FloorName", model?.FloorName);
-            parameters.Add("@Memo", model?.Memo);
+            parameters.Add("@Header", model?.Header);
+            parameters.Add("@ShortDesc", model?.ShortDesc);
 
             #region 參數設定
             #endregion
 
             CommandText = $@"
-SELECT FloorID, FloorName, Memo, Creator, Created, LastModifier, LastModified, ModifiedReason
+SELECT MenuBoardId, MenuBoardCode, Header, ShortDesc, IconPath, IsEnable, Creator, Created, LastModifier, LastModified
 FROM MenuBoardMang
 WHERE 1 = 1
-AND (@FloorName IS NULL OR FloorName LIKE '%' + @FloorName + '%') 
-AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
+AND MenuBoardCode = '01'
+AND (@Header IS NULL OR Header LIKE '%' + @Header + '%') 
+AND (@ShortDesc IS NULL OR ShortDesc LIKE '%' + @ShortDesc + '%') ";
 
 
             (DbExecuteInfo info, IEnumerable<MenuBoardMangResultModel> entitys) dbResult = DbaExecuteQuery<MenuBoardMangResultModel>(CommandText, parameters, true, DBAccessException);
@@ -58,16 +59,16 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
 
             DBAParameter parameters = new DBAParameter();
 
-            parameters.Add("@FloorID", Ser);
+            parameters.Add("@MenuBoardId", Ser);
 
             #region 參數設定
             #endregion
 
             CommandText = $@"
-SELECT FloorID, FloorName, Memo, Creator, Created, LastModifier, LastModified, ModifiedReason
+SELECT MenuBoardId, MenuBoardCode, Header, ShortDesc, IconPath, IsEnable, Creator, Created, LastModifier, LastModified
 FROM MenuBoardMang
 WHERE 1 = 1
-AND (FloorID = @FloorID) ";
+AND (MenuBoardId = @MenuBoardId) ";
 
 
             (DbExecuteInfo info, IEnumerable<MenuBoardMangEditModel> entitys) dbResult = DbaExecuteQuery<MenuBoardMangEditModel>(CommandText, parameters, true, DBAccessException);
@@ -78,41 +79,6 @@ AND (FloorID = @FloorID) ";
             return null;
         }
 
-        /// <summary> 新增資料 </summary>
-        public DbExecuteInfo InsertData(MenuBoardMangViewModel vm, UserInfo LoginUser)
-        {
-
-            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
-            DBAParameter parameters = new DBAParameter();
-
-            #region 參數設定
-            parameters.Add("@FloorName", vm.CreateModel.FloorName);
-            parameters.Add("@Memo", vm.CreateModel.Memo);
-            parameters.Add("@LoginId", LoginUser.LoginId);
-            #endregion 參數設定
-
-            string CommendText = $@"INSERT INTO MenuBoardMang
-                                               (FloorName
-                                               ,Memo
-                                               ,Creator
-                                               ,Created
-                                               ,LastModifier
-                                               ,LastModified
-                                               ,ModifiedReason)
-                                         VALUES
-                                               (@FloorName
-                                               ,@Memo
-                                               ,@LoginId
-                                               ,GETDATE()
-                                               ,@LoginId
-                                               ,GETDATE()
-                                               ,NULL)";
-
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-            return ExecuteResult;
-        }
-
         /// <summary> 修改資料 </summary>
         public DbExecuteInfo UpdateData(MenuBoardMangViewModel vm, UserInfo LoginUser)
         {
@@ -120,41 +86,28 @@ AND (FloorID = @FloorID) ";
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@FloorID", vm.EditModel.FloorID);
-            parameters.Add("@FloorName", vm.EditModel.FloorName);
-            parameters.Add("@Memo", vm.EditModel.Memo);
+            parameters.Add("@MenuBoardId", vm.EditModel.MenuBoardId);
+            parameters.Add("@Header", vm.EditModel.Header);
+            parameters.Add("@ShortDesc", vm.EditModel.ShortDesc);
             parameters.Add("@LoginId", LoginUser.LoginId);
+
+            if (!string.IsNullOrEmpty(vm.EditModel.IconPath))
+                parameters.Add("@IconPath", vm.EditModel.IconPath);
+
             #endregion 參數設定
 
             string CommendText = $@"UPDATE MenuBoardMang 
-                                       SET FloorName = @FloorName, Memo = @Memo, LastModifier = @LoginId, LastModified = GETDATE()
-                                     WHERE FloorID = @FloorID";
+                                       SET Header = @Header, ShortDesc = @ShortDesc,  %IconPath% LastModifier = @LoginId, LastModified = GETDATE()
+                                     WHERE MenuBoardId = @MenuBoardId";
+
+            if (!string.IsNullOrEmpty(vm.EditModel.IconPath))
+                CommendText = CommendText.Replace("%IconPath%", "IconPath = @IconPath,");
+            else
+                CommendText = CommendText.Replace("%IconPath%", string.Empty);
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
             return ExecuteResult;
         }
-
-        /// <summary>
-        /// 刪除資料
-        /// </summary>
-        /// <param name="ser"></param>
-        /// <returns></returns>
-        public DbExecuteInfo DeletetData(string ser)
-        {
-            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
-            DBAParameter parameters = new DBAParameter();
-
-            #region 參數設定
-            parameters.Add("@FloorID", ser);
-            #endregion 參數設定
-
-            string CommendText = $@"DELETE FROM MenuBoardMang WHERE FloorID = @FloorID ";
-
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
-
-            return ExecuteResult;
-        }
-        
     }
 }

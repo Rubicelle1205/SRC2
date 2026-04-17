@@ -13,11 +13,7 @@ namespace WebPccuClub.Models
 
         public List<MenuBoardMangResultModel> ResultModel { get; set; }
 
-        public MenuBoardMangCreateModel CreateModel { get; set; }
-
         public MenuBoardMangEditModel EditModel { get; set; }
-
-        public MenuBoardMangExcelResultModel ExcelModel { get; set; }
     }
 
     public class MenuBoardMangConditionModel
@@ -38,62 +34,56 @@ namespace WebPccuClub.Models
         /// <summary> 總筆數 </summary>
         public int TotalCount { get; set; }
 
-        /// <summary>名稱</summary>
-        [DisplayName("名稱")]
-        public string? FloorName { get; set; }
+        /// <summary>功能名稱</summary>
+        [DisplayName("功能名稱")]
+        public string? Header { get; set; }
 
-        /// <summary>備註</summary>
-        [DisplayName("備註")]
-        public string? Memo { get; set; }
+        /// <summary>功能描述</summary>
+        [DisplayName("功能描述")]
+        public string? ShortDesc { get; set; }
     }
 
     public class MenuBoardMangResultModel
     {
-        public int? FloorID { get; set; }
+        public int? MenuBoardId { get; set; }
 
-        /// <summary>名稱</summary>
-        [DisplayName("名稱")]
-        public string? FloorName { get; set; }
+        /// <summary>功能名稱</summary>
+        [DisplayName("功能名稱")]
+        public string? Header { get; set; }
 
-        /// <summary>備註</summary>
-        [DisplayName("備註")]
-        public string? Memo { get; set; }
-    }
+        /// <summary>功能描述</summary>
+        [DisplayName("功能描述")]
+        public string? ShortDesc { get; set; }
 
-    public class MenuBoardMangExcelResultModel
-    {
-        /// <summary>名稱</summary>
-        [DisplayName("名稱")]
-        public string? FloorName { get; set; }
+        /// <summary>最後更新人</summary>
+        [DisplayName("最後更新人")]
+        public string? LastModifier { get; set; }
 
-        /// <summary>備註</summary>
-        [DisplayName("備註")]
-        public string? Memo { get; set; }
-    }
+        /// <summary>最後更新時間</summary>
+        [DisplayName("最後更新時間")]
+        public string? LastModified { get; set; }
 
-    public class MenuBoardMangCreateModel
-    {
-        public int? FloorID { get; set; }
-
-        /// <summary>名稱</summary>
-        [DisplayName("名稱")]
-        public string? FloorName { get; set; }
-
-        /// <summary>備註</summary>
-        [DisplayName("備註")]
-        public string? Memo { get; set; }
     }
 
     public class MenuBoardMangEditModel
     {
-        public int? FloorID { get; set; }
+        public int? MenuBoardId { get; set; }
 
-        /// <summary>名稱</summary>
-        [DisplayName("名稱")]
-        public string? FloorName { get; set; }
+        /// <summary>功能名稱</summary>
+        [DisplayName("功能名稱")]
+        public string? Header { get; set; }
 
-        /// <summary>備註</summary>
-        [DisplayName("備註")]
-        public string? Memo { get; set; }
+        /// <summary>功能描述</summary>
+        [DisplayName("功能描述")]
+        public string? ShortDesc { get; set; }
+
+        /// <summary>功能圖示</summary>
+        [DisplayName("功能圖示")]
+        public string? IconPath { get; set; }
+
+        /// <summary>是否啟用</summary>
+        [DisplayName("是否啟用")]
+        public bool? IsEnable { get; set; }
+        
     }
 }

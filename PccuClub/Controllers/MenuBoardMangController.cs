@@ -18,6 +18,7 @@ namespace WebPccuClub.Controllers
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
         MenuBoardMangDataAccess dbAccess = new MenuBoardMangDataAccess();
+        UploadUtil upload = new UploadUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
@@ -32,14 +33,6 @@ namespace WebPccuClub.Controllers
         {
             MenuBoardMangViewModel vm = new MenuBoardMangViewModel();
             vm.ConditionModel = new MenuBoardMangConditionModel();
-            return View(vm);
-        }
-
-        [Log(LogActionChineseName.新增)]
-        public IActionResult Create()
-        {
-            MenuBoardMangViewModel vm = new MenuBoardMangViewModel();
-            vm.CreateModel = new MenuBoardMangCreateModel();
             return View(vm);
         }
 
@@ -69,44 +62,29 @@ namespace WebPccuClub.Controllers
             return PartialView("_SearchResultPartial", vm);
         }
 
-        [Log(LogActionChineseName.新增儲存)]
-        [ValidateInput(false)]
-        public IActionResult SaveNewData(MenuBoardMangViewModel vm)
-        {
-            try
-            {
-                dbAccess.DbaInitialTransaction();
-
-                var dbResult = dbAccess.InsertData(vm, LoginUser);
-
-                if (!dbResult.isSuccess)
-                {
-                    dbAccess.DbaRollBack();
-                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "新增失敗";
-                    return Json(vmRtn);
-                }
-
-                dbAccess.DbaCommit();
-            }
-            catch (Exception ex)
-            {
-                dbAccess.DbaRollBack();
-                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                vmRtn.ErrorMsg = "新增失敗" + ex.Message;
-                return Json(vmRtn);
-            }
-
-            return Json(vmRtn);
-        }
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
-        public IActionResult EditOldData(MenuBoardMangViewModel vm)
+        public async Task<IActionResult> EditOldData(MenuBoardMangViewModel vm)
         {
             try
             {
                 dbAccess.DbaInitialTransaction();
+
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("IconPath"))
+                        {
+                            var file = Request.Form.Files.GetFile("EditModel.IconPath");
+
+                            string strFilePath = await upload.UploadFileAsync("IconPath", file);
+
+                            vm.EditModel.IconPath = strFilePath;
+                        }
+                    }
+                }
 
                 var dbResult = dbAccess.UpdateData(vm, LoginUser);
 
@@ -125,36 +103,6 @@ namespace WebPccuClub.Controllers
                 dbAccess.DbaRollBack();
                 vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                 vmRtn.ErrorMsg = "修改失敗" + ex.Message;
-                return Json(vmRtn);
-            }
-
-            return Json(vmRtn);
-        }
-
-        [Log(LogActionChineseName.刪除)]
-        [ValidateInput(false)]
-        public IActionResult Delete(string Ser)
-        {
-            try
-            {
-                dbAccess.DbaInitialTransaction();
-
-                var dbResult = dbAccess.DeletetData(Ser);
-
-                if (!dbResult.isSuccess)
-                {
-                    vmRtn.ErrorCode =  (int)DBActionChineseName.失敗;
-                    vmRtn.ErrorMsg = "刪除失敗";
-                    return Json(vmRtn);
-                }
-
-                dbAccess.DbaCommit();
-            }
-            catch (Exception ex)
-            {
-                dbAccess.DbaRollBack();
-                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                vmRtn.ErrorMsg = "刪除失敗" + ex.Message;
                 return Json(vmRtn);
             }
 
