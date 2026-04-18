@@ -42,11 +42,16 @@
                                                 </label>
                                                 <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
                                             </div>
-                                            @if (IconPath != null)
+                                            @if (!string.IsNullOrEmpty(IconPath))
                                             {
-                                                <label class="upload_cover img-thumbnail" name="file1_prev">
-                                                    <img src="@Model.EditModel.IconPath" style="width:100%;" />
-                                                </label>
+                                                <div id="div-show-img">
+                                                    <label class="upload_cover img-thumbnail" name="file1_prev">
+                                                        <img src="@Model.EditModel.IconPath" style="width:100%;" />
+                                                    </label>
+                                                    <div style="text-align: center;">
+                                                        <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">移除圖片</button>
+                                                    </div>
+                                                </div>
                                             }
                                         </td>
                                     </tr>
@@ -56,12 +61,12 @@
                         </div>
 
                         <div class="card-footer d-flex justify-content-end">
-                            <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">重設</button>
                             <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
                         </div>
                     </div>
                     <!-- /.card -->
                     @Html.HiddenFor(m => m.EditModel.MenuBoardId)
+                    @Html.HiddenFor(m => m.EditModel.RemoveIcon)
                 </form> 
                 <!-- /.form -->
             </div>
@@ -82,12 +87,14 @@
         var MenuBoardId = $('#@Html.IdFor(m => m.EditModel.MenuBoardId)').val();
         var Header = $('#@Html.IdFor(m => m.EditModel.Header)').val();
         var ShortDesc = $('#@Html.IdFor(m => m.EditModel.ShortDesc)').val();
+        var RemoveIcon = $('#@Html.IdFor(m => m.EditModel.RemoveIcon)').val();
 
-        if (Header == "") { $.alert("樓層名稱不可為空白"); return; }
+        if (Header == "") { $.alert("功能名稱不可為空白"); return; }
 
         data.append('@Html.NameFor(m => m.EditModel.MenuBoardId)', MenuBoardId);
         data.append('@Html.NameFor(m => m.EditModel.Header)', Header);
         data.append('@Html.NameFor(m => m.EditModel.ShortDesc)', ShortDesc);
+        data.append('@Html.NameFor(m => m.EditModel.RemoveIcon)', RemoveIcon);
 
         var Logo = $('#@Html.IdFor(m => m.EditModel.IconPath)')[0].files[0];
         if (typeof Logo !== 'undefined') {
@@ -124,13 +131,30 @@
     }
 
     function Reset() {
-        $('#@Html.IdFor(m => m.EditModel.Header)').val("");
-        $('#@Html.IdFor(m => m.EditModel.ShortDesc)').val("");
+        $.confirm({
+            title: "",
+            content: "確定移除Icon圖片?",
+            buttons: {
+                確定: function () {
+                    
+                    $('#@Html.IdFor(m => m.EditModel.RemoveIcon)').val("true");
+                    $('#div-show-img').hide();
+                    $('#@Html.IdFor(m => m.EditModel.IconPath)').val('');
+                    $('#filename').text('尚未選擇檔案...');
+
+                    $('.upload_cover[name="file1_prev"]').css('background-image', 'url(./../uploads/others/nophoto.png)');
+                },
+                取消: function () {
+                    },
+            }
+        });
+        
     }
 
     $(document).on('change', ".filesupload", function (e) {
         var file = e.target.files[0];
 
+        $('#@Html.IdFor(m => m.EditModel.RemoveIcon)').val("");
         $(this).closest('.item').find('.text-muted#filename').text(file.name);
 
         var reader = new FileReader();

@@ -84,6 +84,11 @@ namespace WebPccuClub.Models
         /// <summary>是否啟用</summary>
         [DisplayName("是否啟用")]
         public bool? IsEnable { get; set; }
+
+        /// <summary>
+        /// 是否移除Icon圖片
+        /// </summary>
+        public bool RemoveIcon { get; set; }
         
     }
 }

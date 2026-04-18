@@ -16,7 +16,7 @@ namespace WebPccuClub.DataAccess
 
         /// <summary> 查詢結果 </summary>
 
-        public List<MenuBoardMangResultModel> GetSearchResult(MenuBoardMangConditionModel model)
+        public List<MenuBoardMangResultModel> GetSearchResult(MenuBoardMangConditionModel model, string SystemCode)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -25,6 +25,7 @@ namespace WebPccuClub.DataAccess
 
             parameters.Add("@Header", model?.Header);
             parameters.Add("@ShortDesc", model?.ShortDesc);
+            parameters.Add("@MenuBoardCode", SystemCode);
 
             #region 參數設定
             #endregion
@@ -33,7 +34,7 @@ namespace WebPccuClub.DataAccess
 SELECT MenuBoardId, MenuBoardCode, Header, ShortDesc, IconPath, IsEnable, Creator, Created, LastModifier, LastModified
 FROM MenuBoardMang
 WHERE 1 = 1
-AND MenuBoardCode = '01'
+AND MenuBoardCode = @MenuBoardCode 
 AND (@Header IS NULL OR Header LIKE '%' + @Header + '%') 
 AND (@ShortDesc IS NULL OR ShortDesc LIKE '%' + @ShortDesc + '%') ";
 
@@ -99,6 +100,9 @@ AND (MenuBoardId = @MenuBoardId) ";
             string CommendText = $@"UPDATE MenuBoardMang 
                                        SET Header = @Header, ShortDesc = @ShortDesc,  %IconPath% LastModifier = @LoginId, LastModified = GETDATE()
                                      WHERE MenuBoardId = @MenuBoardId";
+
+            if(vm.EditModel.RemoveIcon)
+                CommendText = CommendText.Replace("%IconPath%", "IconPath = '', ");
 
             if (!string.IsNullOrEmpty(vm.EditModel.IconPath))
                 CommendText = CommendText.Replace("%IconPath%", "IconPath = @IconPath,");

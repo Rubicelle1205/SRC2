@@ -51,7 +51,7 @@ namespace WebPccuClub.Controllers
         [LogAttribute(LogActionChineseName.查詢)]
         public IActionResult GetSearchResult(MenuBoardMangViewModel vm)
         {
-            vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel).ToList();
+            vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel, "01").ToList();
 
             #region 分頁
             vm.ConditionModel.TotalCount = vm.ResultModel.Count();
