@@ -137,6 +137,7 @@
         匯出列印活動證明_個人_傳送列印資料 = 122,
         前台MenuBoard維護=123,
         Hyper前台MenuBoard維護 = 124,
+        借用前台MenuBoard維護 = 125,
     }
 
 	public enum DBActionChineseName

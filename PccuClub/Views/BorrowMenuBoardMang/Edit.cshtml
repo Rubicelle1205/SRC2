@@ -1,0 +1,170 @@
+﻿@model WebPccuClub.Models.BorrowMenuBoardMangViewModel
+
+@{
+    Layout = "_BackendLayout";
+    var IconPath = Model.EditModel.IconPath;
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-12">
+                <form method="post" id="form" enctype="multipart/form-data" action="">
+
+                    <div class="card">
+                        <div class="card-body table-responsive-sm">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+                                <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
+                            </h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.Header)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Header, new { @class = "form-control" })</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ShortDesc)<span class="required">*</span></th>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.ShortDesc, new { @class = "form-control" })</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">
+                                            @Html.LabelFor(m => m.EditModel.IconPath)
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">可上傳.jpeg,.jpg,.png</span>
+                                        </th>
+                                        <td style="display:flex;">
+                                            <div class="d-block mb-1 item">
+                                                <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
+                                                    @Html.TextBoxFor(m => m.EditModel.IconPath, new { @style = "display:none;", @class = "filesupload", type = "file", accept = ".jpeg,.jpg,.png" })
+                                                </label>
+                                                <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(IconPath))
+                                            {
+                                                <div id="div-show-img">
+                                                    <label class="upload_cover img-thumbnail" name="file1_prev">
+                                                        <img src="@Model.EditModel.IconPath" style="width:100%;" />
+                                                    </label>
+                                                    <div style="text-align: center;">
+                                                        <button type="button" class="mx-1 btn btn-outline-dark" onclick="Reset()">移除圖片</button>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                    @Html.HiddenFor(m => m.EditModel.MenuBoardId)
+                    @Html.HiddenFor(m => m.EditModel.RemoveIcon)
+                </form> 
+                <!-- /.form -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+
+
+    function SaveData() {
+
+        var data = new FormData()
+        var MenuBoardId = $('#@Html.IdFor(m => m.EditModel.MenuBoardId)').val();
+        var Header = $('#@Html.IdFor(m => m.EditModel.Header)').val();
+        var ShortDesc = $('#@Html.IdFor(m => m.EditModel.ShortDesc)').val();
+        var RemoveIcon = $('#@Html.IdFor(m => m.EditModel.RemoveIcon)').val();
+
+        if (Header == "") { $.alert("功能名稱不可為空白"); return; }
+
+        data.append('@Html.NameFor(m => m.EditModel.MenuBoardId)', MenuBoardId);
+        data.append('@Html.NameFor(m => m.EditModel.Header)', Header);
+        data.append('@Html.NameFor(m => m.EditModel.ShortDesc)', ShortDesc);
+        data.append('@Html.NameFor(m => m.EditModel.RemoveIcon)', RemoveIcon);
+
+        var Logo = $('#@Html.IdFor(m => m.EditModel.IconPath)')[0].files[0];
+        if (typeof Logo !== 'undefined') {
+            var fileExtension = Logo.name.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                $.alert("Logo檔案類型不符合");
+                return;
+            }
+
+            data.append('@Html.NameFor(m => m.EditModel.IconPath)', Logo);
+        }
+
+        SendAjax({
+            url: '@Url.Action("EditOldData")',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (result.errorCode == 0) {
+                    $.confirm({
+                        title: "",
+                        content: "修改成功",
+                        buttons: {
+                            確定: function () {
+                                window.location = $("#Back").attr("href");
+                            },
+                        }
+                    });
+                }
+                else { $.alert(result.errorMsg); }
+            },
+        });
+    }
+
+    function Reset() {
+        $.confirm({
+            title: "",
+            content: "確定移除Icon圖片?",
+            buttons: {
+                確定: function () {
+                    
+                    $('#@Html.IdFor(m => m.EditModel.RemoveIcon)').val("true");
+                    $('#div-show-img').hide();
+                    $('#@Html.IdFor(m => m.EditModel.IconPath)').val('');
+                    $('#filename').text('尚未選擇檔案...');
+
+                    $('.upload_cover[name="file1_prev"]').css('background-image', 'url(./../uploads/others/nophoto.png)');
+                },
+                取消: function () {
+                    },
+            }
+        });
+        
+    }
+
+    $(document).on('change', ".filesupload", function (e) {
+        var file = e.target.files[0];
+
+        $('#@Html.IdFor(m => m.EditModel.RemoveIcon)').val("");
+        $(this).closest('.item').find('.text-muted#filename').text(file.name);
+
+        var reader = new FileReader();
+        var $closestLabel = $(this).closest('label.upload_cover');
+
+        reader.onload = function (e) {
+            $closestLabel.css('background-image', 'url(' + e.target.result + ')');
+        };
+
+        reader.readAsDataURL(file);
+
+    });
+</script>
