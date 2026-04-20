@@ -11,12 +11,12 @@ using WebPccuClub.Models;
 namespace WebPccuClub.DataAccess
 {
     
-    public class MenuBoardMangDataAccess : BaseAccess
+    public class HyperMenuBoardMangDataAccess : BaseAccess
     {
 
         /// <summary> 查詢結果 </summary>
 
-        public List<MenuBoardMangResultModel> GetSearchResult(MenuBoardMangConditionModel model, string SystemCode = null)
+        public List<HyperMenuBoardMangResultModel> GetSearchResult(HyperMenuBoardMangConditionModel model, string SystemCode = null)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -39,12 +39,12 @@ AND (@Header IS NULL OR Header LIKE '%' + @Header + '%')
 AND (@ShortDesc IS NULL OR ShortDesc LIKE '%' + @ShortDesc + '%') ";
 
 
-            (DbExecuteInfo info, IEnumerable<MenuBoardMangResultModel> entitys) dbResult = DbaExecuteQuery<MenuBoardMangResultModel>(CommandText, parameters, true, DBAccessException);
+            (DbExecuteInfo info, IEnumerable<HyperMenuBoardMangResultModel> entitys) dbResult = DbaExecuteQuery<HyperMenuBoardMangResultModel>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList();
 
-            return new List<MenuBoardMangResultModel>();
+            return new List<HyperMenuBoardMangResultModel>();
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ AND (@ShortDesc IS NULL OR ShortDesc LIKE '%' + @ShortDesc + '%') ";
         /// <param name="submitBtn"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public MenuBoardMangEditModel GetEditData(string Ser)
+        public HyperMenuBoardMangEditModel GetEditData(string Ser)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -72,7 +72,7 @@ WHERE 1 = 1
 AND (MenuBoardId = @MenuBoardId) ";
 
 
-            (DbExecuteInfo info, IEnumerable<MenuBoardMangEditModel> entitys) dbResult = DbaExecuteQuery<MenuBoardMangEditModel>(CommandText, parameters, true, DBAccessException);
+            (DbExecuteInfo info, IEnumerable<HyperMenuBoardMangEditModel> entitys) dbResult = DbaExecuteQuery<HyperMenuBoardMangEditModel>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList().FirstOrDefault();
@@ -81,7 +81,7 @@ AND (MenuBoardId = @MenuBoardId) ";
         }
 
         /// <summary> 修改資料 </summary>
-        public DbExecuteInfo UpdateData(MenuBoardMangViewModel vm, UserInfo LoginUser)
+        public DbExecuteInfo UpdateData(HyperMenuBoardMangViewModel vm, UserInfo LoginUser)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();

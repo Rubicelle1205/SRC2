@@ -13,16 +13,16 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WebPccuClub.Controllers
 {
-    [LogAttribute(LogActionChineseName.前台MenuBoard維護)]
-    public class MenuBoardMangController : BaseController
+    [LogAttribute(LogActionChineseName.Hyper前台MenuBoard維護)]
+    public class HyperMenuBoardMangController : BaseController
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
-        MenuBoardMangDataAccess dbAccess = new MenuBoardMangDataAccess();
+        HyperMenuBoardMangDataAccess dbAccess = new HyperMenuBoardMangDataAccess();
         UploadUtil upload = new UploadUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
-        public MenuBoardMangController(IHostingEnvironment _hostingEnvironment)
+        public HyperMenuBoardMangController(IHostingEnvironment _hostingEnvironment)
         {
             hostingEnvironment = _hostingEnvironment;
         }
@@ -31,29 +31,29 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.首頁)]
         public IActionResult Index()
         {
-            MenuBoardMangViewModel vm = new MenuBoardMangViewModel();
-            vm.ConditionModel = new MenuBoardMangConditionModel();
+            HyperMenuBoardMangViewModel vm = new HyperMenuBoardMangViewModel();
+            vm.ConditionModel = new HyperMenuBoardMangConditionModel();
             return View(vm);
         }
 
         [Log(LogActionChineseName.編輯)]
-        public IActionResult Edit(string submitBtn, MenuBoardMangViewModel vm)
+        public IActionResult Edit(string submitBtn, HyperMenuBoardMangViewModel vm)
         {
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
-            //MenuBoardMangViewModel vm = new MenuBoardMangViewModel();
+            //HyperMenuBoardMangViewModel vm = new HyperMenuBoardMangViewModel();
             vm.EditModel = dbAccess.GetEditData(submitBtn);
             return View(vm);
         }
 
 
         [LogAttribute(LogActionChineseName.查詢)]
-        public IActionResult GetSearchResult(MenuBoardMangViewModel vm)
+        public IActionResult GetSearchResult(HyperMenuBoardMangViewModel vm)
         {
             //LoginSystemCode >> MenuBoardCode
             //01 >> null, 02 >> 01, 03 >> 02, 04 >> 03, 05 >> 04
-            vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel, "01").ToList();
+            vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel).ToList();
 
             #region 分頁
             vm.ConditionModel.TotalCount = vm.ResultModel.Count();
@@ -67,7 +67,7 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
-        public async Task<IActionResult> EditOldData(MenuBoardMangViewModel vm)
+        public async Task<IActionResult> EditOldData(HyperMenuBoardMangViewModel vm)
         {
             try
             {
