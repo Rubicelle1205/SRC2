@@ -13,16 +13,16 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WebPccuClub.Controllers
 {
-    [LogAttribute(LogActionChineseName.Hyper前台MenuBoard維護)]
-    public class HyperMenuBoardMangController : BaseController
+    [LogAttribute(LogActionChineseName.借用前台MenuBoard維護)]
+    public class BorrowMenuBoardMangController : BaseController
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
-        HyperMenuBoardMangDataAccess dbAccess = new HyperMenuBoardMangDataAccess();
+        BorrowMenuBoardMangDataAccess dbAccess = new BorrowMenuBoardMangDataAccess();
         UploadUtil upload = new UploadUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
-        public HyperMenuBoardMangController(IHostingEnvironment _hostingEnvironment)
+        public BorrowMenuBoardMangController(IHostingEnvironment _hostingEnvironment)
         {
             hostingEnvironment = _hostingEnvironment;
         }
@@ -31,25 +31,25 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.首頁)]
         public IActionResult Index()
         {
-            HyperMenuBoardMangViewModel vm = new HyperMenuBoardMangViewModel();
-            vm.ConditionModel = new HyperMenuBoardMangConditionModel();
+            BorrowMenuBoardMangViewModel vm = new BorrowMenuBoardMangViewModel();
+            vm.ConditionModel = new BorrowMenuBoardMangConditionModel();
             return View(vm);
         }
 
         [Log(LogActionChineseName.編輯)]
-        public IActionResult Edit(string submitBtn, HyperMenuBoardMangViewModel vm)
+        public IActionResult Edit(string submitBtn, BorrowMenuBoardMangViewModel vm)
         {
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
-            //HyperMenuBoardMangViewModel vm = new HyperMenuBoardMangViewModel();
+            //BorrowMenuBoardMangViewModel vm = new BorrowMenuBoardMangViewModel();
             vm.EditModel = dbAccess.GetEditData(submitBtn);
             return View(vm);
         }
 
 
         [LogAttribute(LogActionChineseName.查詢)]
-        public IActionResult GetSearchResult(HyperMenuBoardMangViewModel vm)
+        public IActionResult GetSearchResult(BorrowMenuBoardMangViewModel vm)
         {
             //LoginSystemCode >> MenuBoardCode
             //01 >> null, 02 >> 01, 03 >> 02, 04 >> 03, 05 >> 04
@@ -67,7 +67,7 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
-        public async Task<IActionResult> EditOldData(HyperMenuBoardMangViewModel vm)
+        public async Task<IActionResult> EditOldData(BorrowMenuBoardMangViewModel vm)
         {
             try
             {
