@@ -1,5 +1,6 @@
 ﻿using DataAccess;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NPOI.POIFS.Crypt;
 using PccuClub.WebAuth;
 using System.Data;
@@ -88,6 +89,7 @@ AND (MenuBoardId = @MenuBoardId) ";
 
             #region 參數設定
             parameters.Add("@MenuBoardId", vm.EditModel.MenuBoardId);
+            parameters.Add("@IsEnable", vm.EditModel.IsEnable);
             parameters.Add("@Header", vm.EditModel.Header);
             parameters.Add("@ShortDesc", vm.EditModel.ShortDesc);
             parameters.Add("@LoginId", LoginUser.LoginId);
@@ -98,7 +100,7 @@ AND (MenuBoardId = @MenuBoardId) ";
             #endregion 參數設定
 
             string CommendText = $@"UPDATE MenuBoardMang 
-                                       SET Header = @Header, ShortDesc = @ShortDesc,  %IconPath% LastModifier = @LoginId, LastModified = GETDATE()
+                                       SET Header = @Header, ShortDesc = @ShortDesc, IsEnable = @IsEnable, %IconPath% LastModifier = @LoginId, LastModified = GETDATE()
                                      WHERE MenuBoardId = @MenuBoardId";
 
             if(vm.EditModel.RemoveIcon)
@@ -112,6 +114,26 @@ AND (MenuBoardId = @MenuBoardId) ";
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
             return ExecuteResult;
+        }
+
+        public List<SelectListItem> GetIsEnable()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code WHERE Type = 'Enable'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
         }
     }
 }

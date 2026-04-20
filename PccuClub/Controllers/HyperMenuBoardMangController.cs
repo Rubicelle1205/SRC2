@@ -42,6 +42,8 @@ namespace WebPccuClub.Controllers
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
+            ViewBag.ddlIsEnable = dbAccess.GetIsEnable();
+
             //HyperMenuBoardMangViewModel vm = new HyperMenuBoardMangViewModel();
             vm.EditModel = dbAccess.GetEditData(submitBtn);
             return View(vm);

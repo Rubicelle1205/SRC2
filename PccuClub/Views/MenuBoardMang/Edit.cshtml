@@ -22,6 +22,12 @@
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.IsEnable)<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.EditModel.IsEnable, (List<SelectListItem>)ViewBag.ddlIsEnable, "是否啟用", new { @class = "form-control" })
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.Header)<span class="required">*</span></th>
                                         <td>@Html.TextBoxFor(m => m.EditModel.Header, new { @class = "form-control" })</td>
                                     </tr>
@@ -85,13 +91,16 @@
 
         var data = new FormData()
         var MenuBoardId = $('#@Html.IdFor(m => m.EditModel.MenuBoardId)').val();
+        var IsEnable = $('#@Html.IdFor(m => m.EditModel.IsEnable)').val();
         var Header = $('#@Html.IdFor(m => m.EditModel.Header)').val();
         var ShortDesc = $('#@Html.IdFor(m => m.EditModel.ShortDesc)').val();
         var RemoveIcon = $('#@Html.IdFor(m => m.EditModel.RemoveIcon)').val();
 
         if (Header == "") { $.alert("功能名稱不可為空白"); return; }
+        if (IsEnable == "") { $.alert("啟用不可為空"); return; }
 
         data.append('@Html.NameFor(m => m.EditModel.MenuBoardId)', MenuBoardId);
+        data.append('@Html.NameFor(m => m.EditModel.IsEnable)', IsEnable);
         data.append('@Html.NameFor(m => m.EditModel.Header)', Header);
         data.append('@Html.NameFor(m => m.EditModel.ShortDesc)', ShortDesc);
         data.append('@Html.NameFor(m => m.EditModel.RemoveIcon)', RemoveIcon);
