@@ -138,6 +138,7 @@
         前台MenuBoard維護=123,
         Hyper前台MenuBoard維護 = 124,
         借用前台MenuBoard維護 = 125,
+        諮商前台MenuBoard維護 = 126,
     }
 
 	public enum DBActionChineseName

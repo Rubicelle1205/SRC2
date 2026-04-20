@@ -52,7 +52,7 @@ namespace WebPccuClub.Controllers
         public IActionResult GetSearchResult(HyperMenuBoardMangViewModel vm)
         {
             //LoginSystemCode >> MenuBoardCode
-            //01 >> null, 02 >> 01, 03 >> 02, 04 >> 03, 05 >> 04
+            //01 >> null, 02 >> 01, 03 >> 02, 05 >> 03
             vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel).ToList();
 
             #region 分頁

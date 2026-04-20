@@ -13,16 +13,16 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WebPccuClub.Controllers
 {
-    [LogAttribute(LogActionChineseName.借用前台MenuBoard維護)]
-    public class BorrowMenuBoardMangController : BaseController
+    [LogAttribute(LogActionChineseName.諮商前台MenuBoard維護)]
+    public class ConsultationMenuBoardMangController : BaseController
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
-        BorrowMenuBoardMangDataAccess dbAccess = new BorrowMenuBoardMangDataAccess();
+        ConsultationMenuBoardMangDataAccess dbAccess = new ConsultationMenuBoardMangDataAccess();
         UploadUtil upload = new UploadUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
-        public BorrowMenuBoardMangController(IHostingEnvironment _hostingEnvironment)
+        public ConsultationMenuBoardMangController(IHostingEnvironment _hostingEnvironment)
         {
             hostingEnvironment = _hostingEnvironment;
         }
@@ -31,29 +31,31 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.首頁)]
         public IActionResult Index()
         {
-            BorrowMenuBoardMangViewModel vm = new BorrowMenuBoardMangViewModel();
-            vm.ConditionModel = new BorrowMenuBoardMangConditionModel();
+            ConsultationMenuBoardMangViewModel vm = new ConsultationMenuBoardMangViewModel();
+            vm.ConditionModel = new ConsultationMenuBoardMangConditionModel();
             return View(vm);
         }
 
         [Log(LogActionChineseName.編輯)]
-        public IActionResult Edit(string submitBtn, BorrowMenuBoardMangViewModel vm)
+        public IActionResult Edit(string submitBtn, ConsultationMenuBoardMangViewModel vm)
         {
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
-            //BorrowMenuBoardMangViewModel vm = new BorrowMenuBoardMangViewModel();
+            ViewBag.ddlIsEnable = dbAccess.GetIsEnable();
+
+            //ConsultationMenuBoardMangViewModel vm = new ConsultationMenuBoardMangViewModel();
             vm.EditModel = dbAccess.GetEditData(submitBtn);
             return View(vm);
         }
 
 
         [LogAttribute(LogActionChineseName.查詢)]
-        public IActionResult GetSearchResult(BorrowMenuBoardMangViewModel vm)
+        public IActionResult GetSearchResult(ConsultationMenuBoardMangViewModel vm)
         {
             //LoginSystemCode >> MenuBoardCode
             //01 >> null, 02 >> 01, 03 >> 02, 05 >> 03
-            vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel, "02").ToList();
+            vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel, "03").ToList();
 
             #region 分頁
             vm.ConditionModel.TotalCount = vm.ResultModel.Count();
@@ -67,7 +69,7 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
-        public async Task<IActionResult> EditOldData(BorrowMenuBoardMangViewModel vm)
+        public async Task<IActionResult> EditOldData(ConsultationMenuBoardMangViewModel vm)
         {
             try
             {
