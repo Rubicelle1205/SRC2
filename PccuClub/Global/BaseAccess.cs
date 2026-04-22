@@ -548,27 +548,33 @@ namespace WebPccuClub.Global
 
             int NowSchoolYear = int.Parse(PublicFun.GetNowSchoolYear());
 
-			if (type == 0)  //取得本學年度資料 (-2 ~ +2)
-			{
-				for (int i = NowSchoolYear - 2; i <= NowSchoolYear + 2; i++)
-				{
-					LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
-				}
-			}
-			else if (type == 1)  //取得本學年度資料 (-2)
-			{
-				for (int i = NowSchoolYear - 2; i <= NowSchoolYear; i++)
-				{
-					LstItem.Add(new SelectListItem() { Value = string.Format("{0}1", i), Text = string.Format("{0}1", i) });
-					LstItem.Add(new SelectListItem() { Value = string.Format("{0}2", i), Text = string.Format("{0}2", i) });
-				}
-			}
-			else if (type == 2)
-			{
-                for (int i = NowSchoolYear - 10; i <= NowSchoolYear; i++)
-                {
-                    LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
-                }
+            switch (type)
+            {
+                case 0: //回饋本學年度 + 上 2 個學年度 + 下 2 個學年度，格式為YYY學年度，例如：110學年度、111學年度
+                    for (int i = NowSchoolYear - 2; i <= NowSchoolYear + 2; i++)
+                    {
+                        LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
+                    }
+                    break;
+                case 1: //回饋本學年度 + 上 2 個學年度，格式為YYYS，例如：20231、20232
+                    for (int i = NowSchoolYear - 2; i <= NowSchoolYear; i++)
+                    {
+                        LstItem.Add(new SelectListItem() { Value = string.Format("{0}1", i), Text = string.Format("{0}1", i) });
+                        LstItem.Add(new SelectListItem() { Value = string.Format("{0}2", i), Text = string.Format("{0}2", i) });
+                    }
+                    break;
+                case 2: //回饋本學年度 + 上 10 個學年度，格式為YYY學年度，例如：110學年度、111學年度
+                    for (int i = NowSchoolYear - 10; i <= NowSchoolYear; i++)
+                    {
+                        LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
+                    }
+                    break;
+                case 3: //回饋本學年度 + 上 1 個學年度 + 下 1 個學年度，格式為YYY學年度，例如：110學年度、111學年度
+                    for (int i = NowSchoolYear - 1; i <= NowSchoolYear + 1; i++)
+                    {
+                        LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
+                    }
+                    break;
             }
 
             return LstItem;
