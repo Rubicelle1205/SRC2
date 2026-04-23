@@ -106,6 +106,7 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlUseITEquip = dbAccess.GetUseITEquip();
             ViewBag.ddlPassport = dbAccess.GetPassport();
             ViewBag.ddlAllSDGs = dbAccess.GetSDGs();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(3);
 
             ClubActReportViewModel vm = new ClubActReportViewModel();
             vm.CreateModel = new ClubActReportCreateModel();
