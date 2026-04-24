@@ -221,6 +221,7 @@ namespace WebPccuClub.Controllers
         [LogAttribute(LogActionChineseName.新增)]
         public IActionResult ClubScheduleCreate()
         {
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(3);
             ViewBag.ddlAllActType = dbAccess.GetAllActType();
 
             ClubInfoViewModel vm = new ClubInfoViewModel();

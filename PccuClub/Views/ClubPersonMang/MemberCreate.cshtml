@@ -30,7 +30,7 @@
                             <div class="col-lg-3 col-md-3">
                                 <div class="form-item">
                                     <label for="">學年度<span class="req-star">*</span></label>
-                                    @Html.TextBoxFor(m => m.MemberMangCreateModel.SchoolYear, new {@class = "form-control", @readonly="readonly", disabled="disabled"})
+                                    @Html.DropDownListFor(m => m.MemberMangCreateModel.SchoolYear, (List<SelectListItem>)ViewBag.ddlSchoolYear, "請選擇", new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="col-lg-9 col-md-9">

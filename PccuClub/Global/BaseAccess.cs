@@ -427,7 +427,7 @@ namespace WebPccuClub.Global
         /// <summary>
         /// 撈取ActVerify Code
         /// </summary>
-        /// <param name="type">1:顯示01~04；2 => 顯示01~05；3 => 顯示01~07; 4 => 顯示01~07，沒有05</param>
+        /// <param name="type">01 >> 尚未審核, 02 >> 審核完成, 03 >> 審核失敗, 04 >> 工讀生審核完成, 05 >> 批次單, 06 >> 取消, 07 >> 前台不顯示</param>
         /// <returns></returns>
         public List<SelectListItem> GetAllActVerify(string type = "")
         {
@@ -441,7 +441,7 @@ namespace WebPccuClub.Global
             //type = 1 => 顯示01~04，其他頁面
             //type = 2 => 顯示01~05，活動報備(新增)
             //type = 3 => 顯示01~07，活動報備(首頁、編輯)
-            //type = 3 => 顯示01~07，沒有05，活動報備前台(首頁)
+            //type = 4 => 顯示01~07，沒有05，活動報備前台(首頁)
             switch (type)
             {
                 case "1":
@@ -556,7 +556,7 @@ namespace WebPccuClub.Global
                         LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
                     }
                     break;
-                case 1: //回饋本學年度 + 上 2 個學年度，格式為YYYS，例如：20231、20232
+                case 1: //回饋本學年度 + 上 2 個學年度，格式為YYYS，例如：1101、1102
                     for (int i = NowSchoolYear - 2; i <= NowSchoolYear; i++)
                     {
                         LstItem.Add(new SelectListItem() { Value = string.Format("{0}1", i), Text = string.Format("{0}1", i) });

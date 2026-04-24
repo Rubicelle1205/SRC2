@@ -225,25 +225,25 @@ namespace WebPccuClub.DataAccess
             return LstItem;
         }
 
-        public List<SelectListItem> GetActVerify()
-        {
-            string CommandText = string.Empty;
-            DataSet ds = new DataSet();
+        //public List<SelectListItem> GetActVerify()
+        //{
+        //    string CommandText = string.Empty;
+        //    DataSet ds = new DataSet();
 
-            DBAParameter parameters = new DBAParameter();
+        //    DBAParameter parameters = new DBAParameter();
 
-            #region 參數設定
-            #endregion
+        //    #region 參數設定
+        //    #endregion
 
-            CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code WHERE Type = 'ActVerify' AND Code <> '05'";
+        //    CommandText = @"SELECT Code AS VALUE, Text AS TEXT FROM Code WHERE Type = 'ActVerify' AND Code <> '05'";
 
-            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+        //    (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 
-            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
-                return dbResult.entitys.ToList();
+        //    if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+        //        return dbResult.entitys.ToList();
 
-            return new List<SelectListItem>();
-        }
+        //    return new List<SelectListItem>();
+        //}
 
         public List<PersonModel> GetExportResult(string id)
         {

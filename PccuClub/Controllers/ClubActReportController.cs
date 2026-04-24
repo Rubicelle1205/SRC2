@@ -45,7 +45,7 @@ namespace WebPccuClub.Controllers
         {
 
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
-            ViewBag.ddlActVerify = dbAccess.GetAllActVerify("4");
+            ViewBag.ddlActVerify = dbAccess.GetAllActVerify("1");
             ViewBag.ddlOrderBy = dbAccess.GetOrderBy();
 
             ClubActReportViewModel vm = new ClubActReportViewModel();

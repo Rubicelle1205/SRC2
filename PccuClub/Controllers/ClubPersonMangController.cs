@@ -67,7 +67,8 @@ namespace WebPccuClub.Controllers
 		[Log(LogActionChineseName.新增)]
 		public IActionResult CadreCreate()
 		{
-			ViewBag.ddlAllSex = dbAccess.GetAllSex();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(3);
+            ViewBag.ddlAllSex = dbAccess.GetAllSex();
 
             ClubPersonMangViewModel vm = new ClubPersonMangViewModel();
 			vm.CadreMangCreateModel = new ClubCadreMangCreateModel();
@@ -556,6 +557,7 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public IActionResult MemberCreate()
         {
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(3);
             ViewBag.ddlAllSex = dbAccess.GetAllSex();
 
             ClubPersonMangViewModel vm = new ClubPersonMangViewModel();

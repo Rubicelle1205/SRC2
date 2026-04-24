@@ -44,7 +44,7 @@ namespace WebPccuClub.Controllers
         public IActionResult Index()
         {
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
-            ViewBag.ddlActVerify = dbAccess.GetActVerify();
+            ViewBag.ddlActVerify = dbAccess.GetAllActVerify("1");
 
             ClubActFinishViewModel vm = new ClubActFinishViewModel();
             vm.ConditionModel = new ClubActFinishConditionModel();
