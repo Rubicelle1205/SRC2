@@ -3,6 +3,8 @@
 @{
     Layout = "_FrontSimpleLayout";
     ViewBag.Title = "社團負責人資訊";
+    string DisplaySchoolYear = Model.Handover0103Model.SchoolYear != null ? Model.Handover0103Model.SchoolYear : "";
+
 }
 
 
@@ -11,7 +13,7 @@
         <div class="row justify-content-center">
             <div class="col-xxl-12">
                 <div class="printContent">
-                    <h3 class="text-center text-6"><u>@Html.DisplayFor(m => m.Handover0103Model.SchoolYear)</u>學年度社團負責人資訊</h3>
+                    <h3 class="text-center text-6"><u id="DisplaySchoolYearLabel">@DisplaySchoolYear</u>學年度社團負責人資訊</h3>
                     <form class="form-box checkthisform" action="" method="post" enctype="application/x-www-form-urlencoded">
                         <div class="row justify-content-center">
                             <div class="col-md-10">
@@ -23,7 +25,7 @@
                                                 <label for="">學年度：</label>
                                             </td>
                                             <td class="">
-                                                @Html.TextBoxFor(m => m.Handover0103Model.SchoolYear, new { @class="form-control", @readonly="readonly"})
+                                                @Html.DropDownListFor(m => m.Handover0103Model.SchoolYear, (List<SelectListItem>)ViewBag.ddlSchoolYear, "請選擇", new { @class = "form-control" })
                                             </td>
                                         </tr>
                                         <tr>
@@ -440,4 +442,18 @@
         }
     }
 
+    $(document).ready(function () {
+        // 監聽下拉選單的變更事件
+        $('#@Html.IdFor(m => m.Handover0103Model.SchoolYear)').change(function () {
+            var selectedText = $(this).find("option:selected").text();
+            var selectedValue = $(this).val();
+
+            // 判斷是否選中了有效選項（排除 "請選擇"）
+            if (selectedValue !== "") {
+                $('#DisplaySchoolYearLabel').text(selectedValue);
+            } else {
+                $('#DisplaySchoolYearLabel').text(""); // 若選回請選擇，則清空
+            }
+        });
+    });
 </script>
