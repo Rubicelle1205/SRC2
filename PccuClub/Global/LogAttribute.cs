@@ -139,6 +139,7 @@
         Hyper前台MenuBoard維護 = 124,
         借用前台MenuBoard維護 = 125,
         諮商前台MenuBoard維護 = 126,
+        社團社長解除綁定 = 127,
     }
 
 	public enum DBActionChineseName

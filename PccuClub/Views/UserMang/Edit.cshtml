@@ -49,11 +49,7 @@
                                     </tr>
 
                                     <tr>
-                                        <th width="15%">
-                                            @Html.LabelFor(m => m.EditModel.FUserId)<span class="required">*</span>
-                                            <br/>
-                                            @*<button type="button" name="BtnChkID" class="btn btn-success" onclick="ChkID()">確認學校/人員代號</button>*@
-                                        </th>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.FUserId)<span class="required">*</span></th>
                                         <td>@Html.TextBoxFor(m => m.EditModel.FUserId, new {@class="form-control", placeholder="請輸入學校/人員代號"})</td>
                                     </tr>
                                     <tr>
@@ -87,6 +83,11 @@
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer d-flex justify-content-end">
+                        @if (!string.IsNullOrEmpty(Model.EditModel.FUserId))
+                        {
+                            <button type="button" class="mx-1 btn btn-outline-danger" onclick="Reset()">移除社長綁定</button>
+                        }
+                        
                         <button type="button" name="submitBtn" class="btn btn-success" onclick="SaveEditData()">儲存</button>
                     </div>
                 </div>
@@ -158,25 +159,45 @@
 
     }
 
-    function ChkID() {
-        var data = new FormData()
+    function Reset() { 
 
+         var data = new FormData()
 
-        SendAjax({
-            url: '@Url.Action("ChkID")',
-            data: data,
-            processData: false,
-            contentType: false,
-            success: function (result) {
-                if (result.errorCode == 0) {
-                   
+        var ClubId = $('#@Html.IdFor(m => m.EditModel.ClubId)').val();
 
+        data.append('@Html.NameFor(m => m.EditModel.ClubId)', ClubId);
 
+        $.confirm({
+            title: "確認清除社團與社長的綁定?",
+            content: "若移除該社團會沒有社長進行帳號連動!",
+            buttons: {
+                確定: function () {
+                    SendAjax({
+                        url: '@Url.Action("UnBind")',
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        success: function (result) {
+                            if (result.errorCode == 0) {
+                                $.confirm({
+                                    title: "",
+                                    content: "修改成功",
+                                    buttons: {
+                                        確定: function () {
+                                            window.location = $("#Back").attr("href");
+                                        },
+                                    }
+                                });
+                            }
+                            else { $.alert(result.errorMsg); }
+                        },
+                    });
+                },
+                取消: function () {
 
-
-                }
-                else { $.alert(result.errorMsg); }
-            },
+                },
+            }
         });
     }
+
 </script>

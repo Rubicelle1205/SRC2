@@ -256,6 +256,58 @@ AND (@LifeClass IS NULL OR A.LifeClass = @LifeClass)
 
         #endregion
 
+        #region 解除綁定
+
+        /// <summary> 解除綁定資料 </summary>
+        public DbExecuteInfo UnBind(UserMangViewModel vm)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommendText = string.Empty;
+
+            #region 參數設定
+            parameters.Add("@ClubId", vm.EditModel.ClubId);
+            parameters.Add("@FUserId", vm.EditModel.FUserId);
+            #endregion 參數設定
+
+            CommendText = $@"DELETE ClubUser WHERE ClubId = @ClubId";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            if (ExecuteResult.isSuccess || ExecuteResult.ErrorCode == dbErrorCode._EC_NotAffect)
+            {
+                CommendText = $@"INSERT INTO ClubUser (ClubId, FUserID) VALUES (@ClubId, @FUserId) ";
+
+                ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+            }
+
+            return ExecuteResult;
+        }
+
+        /// <summary> 解除綁定 </summary>
+        public DbExecuteInfo UnBindUserClub(UserMangViewModel vm)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+
+            #region 參數設定
+            parameters.Add("@ClubId", vm.EditModel.ClubId);
+            #endregion 參數設定
+
+
+            string CommendText = string.Empty;
+
+            CommendText = $@"UPDATE ClubUser SET FUserId = '' WHERE ClubId = @ClubId";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        #endregion
+
         #region 刪除
 
 
