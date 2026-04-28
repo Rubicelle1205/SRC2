@@ -32,7 +32,7 @@ namespace WebPccuClub.Controllers
         };
         public List<string> LstFreeAccessController = new List<string>()
         {
-            "ClubList", "WeekActivity", "ClubHandover", "MenuFront", "ConsultationApply", "FBorrowIndex", "FResourceBorrow", "FBorrowRecord"
+            "ClubList", "WeekActivity", "MenuFront", "ConsultationApply", "FBorrowIndex", "FResourceBorrow", "FBorrowRecord"
         };
 
 
@@ -216,7 +216,7 @@ namespace WebPccuClub.Controllers
                 if (!LstFreeAccessController.Contains(controllerName))
                 {
                     if(functionSource != "B")
-                        filterContext.Result = AlertMsgRedirect(strConst_NoAccess, SystemMenu.GetSubUrl() + strConst_FrontMenu);
+                        filterContext.Result = AlertMsgRedirect(strConst_Timeout, SystemMenu.GetSubUrl() + strConst_FrontMenu);
                     else
                         filterContext.Result = AlertMsgRedirect(strConst_NoAccess, SystemMenu.GetSubUrl() + strConst_FrontMenu);
                 }
