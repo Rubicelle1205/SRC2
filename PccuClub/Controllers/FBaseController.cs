@@ -21,7 +21,6 @@ namespace WebPccuClub.Controllers
         private const string strConst_LoginPageUrl = @"/FrontLogin";
         private const string strConst_FrontDefaultPageUrl = @"/FrontLogin/Index";
         private const string strConst_FrontMenu = @"/MenuFront/Index";
-        private const string strConst_BackDefaultPageUrl = @"/BakeendLogin/Index";
         private const string strConst_Timeout = "操作逾時，請重新登入！";
 		private const string strConst_NoLogin = "請先登入以操作此功能!!";
 		private const string strConst_NoAccess = "很抱歉 您無此頁面的存取權限！！";
