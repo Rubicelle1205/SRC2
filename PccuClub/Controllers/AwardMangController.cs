@@ -49,7 +49,7 @@ namespace WebPccuClub.Controllers
         public IActionResult Create()
         {
             ViewBag.ddlAllClub = dbAccess.GetAllClub();
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify();
             ViewBag.ddlAwardInOrOut = dbAccess.GetAwardInOrOut();
 
@@ -64,7 +64,7 @@ namespace WebPccuClub.Controllers
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify();
             ViewBag.ddlAwardInOrOut = dbAccess.GetAwardInOrOut();
 

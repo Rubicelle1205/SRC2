@@ -41,7 +41,7 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public IActionResult Create()
         {
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
 
             ClubBasicScoreMangViewModel vm = new ClubBasicScoreMangViewModel();
             vm.CreateModel = new ClubBasicScoreMangCreateModel();
@@ -54,7 +54,7 @@ namespace WebPccuClub.Controllers
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
 
             //ClubBasicScoreMangViewModel vm = new ClubBasicScoreMangViewModel();
             vm.EditModel = dbAccess.GetEditData(submitBtn);

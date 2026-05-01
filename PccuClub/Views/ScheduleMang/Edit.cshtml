@@ -27,7 +27,16 @@
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.SchoolYear)<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.EditModel.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇學年度", new {@class = "form-control"})
+                                            @Html.EditorFor(m => m.EditModel.SchoolYear, new
+                                                {
+                                                    htmlAttributes = new
+                                                    {
+                                                        @class = "form-control",
+                                                        type = "number",
+                                                        placeholder = "請輸入學年度",
+                                                        onkeydown = "return ['e', 'E', '+', '-'].includes(event.key) ? false : true;"
+                                                    }
+                                                })
                                         </td>
                                     </tr>
                                     <tr>

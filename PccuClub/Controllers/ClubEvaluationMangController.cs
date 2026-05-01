@@ -44,7 +44,7 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public IActionResult Create()
         {
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlClub = dbAccess.GetAllClub();
             ViewBag.ddlClassId = dbAccess.GetClassId();
             ViewBag.ddlItemId = dbAccess.GetItemId();
@@ -60,7 +60,7 @@ namespace WebPccuClub.Controllers
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlClub = dbAccess.GetAllClub();
             ViewBag.ddlClassId = dbAccess.GetClassId();
             ViewBag.ddlItemId = dbAccess.GetItemId();

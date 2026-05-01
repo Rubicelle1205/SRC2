@@ -49,7 +49,7 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public IActionResult Create()
         {
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlStaticOrDynamic = dbAccess.GetStaticOrDynamic();
             ViewBag.ddlActInOrOut = dbAccess.GetActInOrOut();
             ViewBag.ddlActType = dbAccess.GetActType();

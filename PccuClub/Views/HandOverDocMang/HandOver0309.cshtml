@@ -36,7 +36,16 @@
                                     <tr>
                                         <th width="15%">學年度<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.Handover0309Model.SchoolYear ,(List<SelectListItem>)ViewBag.ddlSchoolYear,"請選擇", new {@class = "form-control"})
+                                            @Html.EditorFor(m => m.Handover0309Model.SchoolYear, new
+                                                {
+                                                    htmlAttributes = new
+                                                    {
+                                                        @class = "form-control",
+                                                        type = "number",
+                                                        placeholder = "請輸入學年度",
+                                                        onkeydown = "return ['e', 'E', '+', '-'].includes(event.key) ? false : true;"
+                                                    }
+                                                })
                                         </td>
                                     </tr>
                                     <tr>
