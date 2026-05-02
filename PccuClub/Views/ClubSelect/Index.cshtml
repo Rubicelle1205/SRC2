@@ -1,0 +1,63 @@
+﻿@model WebPccuClub.Models.ClubSelectViewModel
+@using PccuClub.WebAuth;
+@using Microsoft.AspNetCore.Http.Extensions
+
+@{
+    Layout = "_FrontSimpleLayout";
+
+    string UserName = "";
+
+    List<UserInfo> LstUserInfo = (List<UserInfo>)ViewBag.LstUserInfo;
+    var url = Context.Request.GetDisplayUrl();
+    bool IsUATEnv = url.Contains("sais-bk", StringComparison.OrdinalIgnoreCase);
+
+    @if (null != LstUserInfo)
+    {
+        UserName = LstUserInfo.First().UserName;
+    }
+}
+
+<div role="main" class="main">
+
+    <div class="container-fluid p-relative py-md-5 py-4">
+        <div class="row justify-content-center">
+            <div class="col-xxl-8 col-xl-8">
+                <div class="card border-radius bg-color-light">
+
+                    <div class="card-body">
+                        @if (null != LstUserInfo)
+                        {
+                            <h4 class="card-title mb-4 pb-2 text-6">
+                                @UserName 同學 歡迎！<small class="text-yellow font-weight-normal ms-2">請選擇要進入的社團</small>
+                            </h4>
+                            <div class="pagelist">
+                                @foreach (UserInfo item in LstUserInfo)
+                                {
+                                    <a href="@Url.Action("Index", "ClubList", new { ClubId = item.ClubId } )" class="listItem">
+                                        
+                                        <div class="icon-prefix">
+                                        </div>
+                                        <div class="textbox ">
+                                            <div class="title font-weight-bold mb-0">@item.ClubCName</div>
+                                            <p class="fs-90percent mb-0"></p>
+                                        </div>
+                                        <div class="icon"><i class="fas fa-chevron-right"></i></div>
+                                    </a>
+                                }
+
+                            </div>
+                        }
+                        else
+                        {
+                            <h4 class="card-title mb-4 pb-2 text-6">
+                                請透過專區登入後使用！<small class="text-yellow font-weight-normal ms-2">Thanks</small>
+                            </h4>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>

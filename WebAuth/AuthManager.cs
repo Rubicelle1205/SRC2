@@ -112,12 +112,12 @@ namespace PccuClub.WebAuth
         /// <param name="LoginId">帳號</param>
         /// <param name="oUser">使用者資訊</param>
         /// <returns>驗證結果(True:驗證成功，False:驗證失敗)</returns>
-        public bool SSOLogin(string SSOAccount, out UserInfo oUser, string LoginType)
+        public bool SSOLogin(string SSOAccount, out List<UserInfo> LstUserInfo, string LoginType)
         {
-            oUser = null;
+            LstUserInfo = new List<UserInfo>();
             try
             {
-                UserInfo LoginUser = new UserInfo();
+                List<UserInfo> LstLoginUser = new List<UserInfo>();
 
                 // 查詢基本資料
                 (DbExecuteInfo Info, IEnumerable<UserInfo> entitys) mainResult = LoginType == "F" ? dbAccess.SelectFUserMain(SSOAccount) : dbAccess.SelectUserMain(SSOAccount, true);
@@ -125,24 +125,32 @@ namespace PccuClub.WebAuth
                 if (!mainResult.Info.isSuccess || mainResult.entitys.Count() == 0)
                 { return false; }
 
-                LoginUser = mainResult.entitys.First();
-                if (LoginUser == null)
-                { return false; }
+                //20260501 由於要判斷一個學生多個社團的情境，因此此處可能會回傳多筆
+                if(mainResult.entitys.ToList().Count == 0)
+                    { return false; }
 
-                // 查詢使用者角色
-                (DbExecuteInfo Info, IEnumerable<RoleInfo> entitys) roleResult = dbAccess.SelectRoleInfo(LoginUser.LoginId);
-                if (!mainResult.Info.isSuccess)
-                { return false; }
+                //逐個處理每個登入者(學生可能會有多筆社團資料)
+                for (int i = 0; i < mainResult.entitys.ToList().Count; i++)
+                {
+                    UserInfo LoginUser = mainResult.entitys.ToList()[i];
 
-                LoginUser.UserRole = roleResult.entitys.ToList(); 
+                    // 查詢使用者角色
+                    (DbExecuteInfo Info, IEnumerable<RoleInfo> entitys) roleResult = dbAccess.SelectRoleInfo(LoginUser.LoginId);
+                    if (!mainResult.Info.isSuccess)
+                    { return false; }
 
-                // 查詢角色功能
-                (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = LoginType == "F" ? dbAccess.SelectFunInfo(LoginUser.LoginId, "F") : dbAccess.SelectFunInfo(LoginUser.LoginId, "B");
-                if (!funResult.Info.isSuccess)
-                { return false; }
-                LoginUser.UserRoleFun = funResult.entitys.ToList();
+                    LoginUser.UserRole = roleResult.entitys.ToList();
 
-                oUser = LoginUser;
+                    // 查詢角色功能
+                    (DbExecuteInfo Info, IEnumerable<FunInfo> entitys) funResult = LoginType == "F" ? dbAccess.SelectFunInfo(LoginUser.LoginId, "F") : dbAccess.SelectFunInfo(LoginUser.LoginId, "B");
+                    if (!funResult.Info.isSuccess)
+                    { return false; }
+                    LoginUser.UserRoleFun = funResult.entitys.ToList();
+
+                    LstLoginUser.Add(LoginUser);
+                }
+
+                LstUserInfo = LstLoginUser;
 
                 return true;
             }

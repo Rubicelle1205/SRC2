@@ -190,15 +190,41 @@ namespace WebPccuClub.Controllers
             if (LoginUser != null)
             {
                 UserInfo thisUser = HttpContext.Session.GetObject<UserInfo>("FLoginUser");
-                thisUser.LoginSystemCode = SystemCode;
-                thisUser.LoginSource = "F";
+                if (null != thisUser)
+                {
+                    thisUser.LoginSystemCode = SystemCode;
+                    thisUser.LoginSource = "F";
 
-                if (thisUser.LoginSystemCode != "02") { thisUser.LoginId = thisUser.SSOAccount; } else { thisUser.LoginId = thisUser.ClubId; }
-                HttpContext.Session.SetObject("FLoginUser", thisUser);
+                    if (thisUser.LoginSystemCode != "02")
+                    { thisUser.LoginId = thisUser.SSOAccount; }
+                    else
+                    { thisUser.LoginId = thisUser.ClubId; }
 
+                    HttpContext.Session.SetObject("FLoginUser", thisUser);
+                }
+
+                List<UserInfo> LstUserInfo = HttpContext.Session.GetObject<List<UserInfo>>("FLoginUser_MultipleClub");
+                if (null != LstUserInfo)
+                {
+                    foreach (UserInfo item in LstUserInfo)
+                    {
+                        item.LoginSystemCode = SystemCode;
+                        item.LoginSource = "F";
+
+                        if (item.LoginSystemCode != "02")
+                        { item.LoginId = item.SSOAccount; }
+                        else
+                        { item.LoginId = item.ClubId; }
+                    }
+
+                    HttpContext.Session.SetObject("FLoginUser_MultipleClub", LstUserInfo);
+                }
+
+                
+                
             }
 
-            if (LoginUser != null && (LoginUser.LoginSource == "F") && (LoginUser.UserRoleFun.Count > 0))
+            if (LoginUser != null && (LoginUser.LoginSource == "F") && (LoginUser.UserRoleFun != null && LoginUser.UserRoleFun.Count > 0))
 			{
                 LogViewModel logModel = new LogViewModel()
 				{
