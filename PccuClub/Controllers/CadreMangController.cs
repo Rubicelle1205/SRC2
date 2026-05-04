@@ -108,9 +108,9 @@ namespace WebPccuClub.Controllers
 
                     if (!isStudent)
                     {
-                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", vm.CreateModel.SNo);
-                        return Json(vmRtn);
+                        //vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = string.Format("學號:{0}", vm.CreateModel.SNo);
+                        //return Json(vmRtn);
                     }
                 }
 
@@ -153,9 +153,9 @@ namespace WebPccuClub.Controllers
 
                     if (!isStudent)
                     {
-                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", vm.EditModel.SNo);
-                        return Json(vmRtn);
+                        //vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg += string.Format("學號:{0}", vm.EditModel.SNo);
+                        //return Json(vmRtn);
                     }
                 }
 
@@ -366,9 +366,15 @@ namespace WebPccuClub.Controllers
 
                                 if (!isStudent)
                                 {
-                                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                                    vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
-                                    return Json(vmRtn);
+                                    if (!string.IsNullOrEmpty(vmRtn.ErrorMsg))
+                                    {
+                                        vmRtn.ErrorMsg += "<br>";
+                                        vmRtn.ErrorMsg += string.Format("學號:{0}", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
+                                    }
+                                    else
+                                    {
+                                        vmRtn.ErrorMsg = string.Format("學號:{0}", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
+                                    }
                                 }
                             }
                             else

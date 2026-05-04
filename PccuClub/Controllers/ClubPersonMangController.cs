@@ -125,18 +125,7 @@ namespace WebPccuClub.Controllers
 
                     if (!isStudent)
                     {
-                        //vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        if (!string.IsNullOrEmpty(vmRtn.ErrorMsg))
-                        {
-                            vmRtn.ErrorMsg += "<br>";
-                            vmRtn.ErrorMsg += string.Format("學號:{0}不是學生身分", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
-                        }
-                        else
-                        {
-                            vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
-                        }
-                        continue;
-                        //return Json(vmRtn);
+                        vmRtn.ErrorMsg += string.Format("學號:{0}", vm.CadreMangCreateModel.SNo);
                     }
                 }
 
@@ -179,18 +168,7 @@ namespace WebPccuClub.Controllers
 
                     if (!isStudent)
                     {
-                        //vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        if (!string.IsNullOrEmpty(vmRtn.ErrorMsg))
-                        {
-                            vmRtn.ErrorMsg += "<br>";
-                            vmRtn.ErrorMsg += string.Format("學號:{0}不是學生身分", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
-                        }
-                        else
-                        {
-                            vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
-                        }
-                        continue;
-                        //return Json(vmRtn);
+                        vmRtn.ErrorMsg += string.Format("學號:{0}", vm.CadreMangEditModel.SNo);
                     }
                 }
 
@@ -407,18 +385,15 @@ namespace WebPccuClub.Controllers
 
                                 if (!isStudent)
                                 {
-                                    //vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                                     if (!string.IsNullOrEmpty(vmRtn.ErrorMsg))
                                     {
                                         vmRtn.ErrorMsg += "<br>";
-                                        vmRtn.ErrorMsg += string.Format("學號:{0}不是學生身分", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
+                                        vmRtn.ErrorMsg += string.Format("學號:{0}", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
                                     }
                                     else
                                     {
-                                        vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
+                                        vmRtn.ErrorMsg = string.Format("學號:{0}", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
                                     }
-                                    continue;
-                                    //return Json(vmRtn);
                                 }
                             }
                             else
@@ -644,9 +619,7 @@ namespace WebPccuClub.Controllers
 
                     if (!isStudent)
                     {
-                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", vm.MemberMangCreateModel.SNo);
-                        return Json(vmRtn);
+                        vmRtn.ErrorMsg = string.Format("學號:{0}", vm.MemberMangCreateModel.SNo);
                     }
                 }
 
@@ -699,18 +672,7 @@ namespace WebPccuClub.Controllers
 
                     if (!isStudent)
                     {
-                        //vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
-                        if (!string.IsNullOrEmpty(vmRtn.ErrorMsg))
-                        {
-                            vmRtn.ErrorMsg += "<br>";
-                            vmRtn.ErrorMsg += string.Format("學號:{0}不是學生身分", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
-                        }
-                        else
-                        {
-                            vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
-                        }
-                        continue;
-                        //return Json(vmRtn);
+                        vmRtn.ErrorMsg += string.Format("學號:{0}", vm.CadreMangEditModel.SNo);
                     }
                 }
 
@@ -947,18 +909,15 @@ namespace WebPccuClub.Controllers
 
                                 if (!isStudent)
                                 {
-                                    //vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                                     if (!string.IsNullOrEmpty(vmRtn.ErrorMsg))
                                     {
                                         vmRtn.ErrorMsg += "<br>";
-                                        vmRtn.ErrorMsg += string.Format("學號:{0}不是學生身分", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
+                                        vmRtn.ErrorMsg += string.Format("學號:{0}", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
                                     }
                                     else
                                     {
-                                        vmRtn.ErrorMsg = string.Format("學號:{0}不是學生身分", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
+                                        vmRtn.ErrorMsg = string.Format("學號:{0}", row.GetCell(3)?.StringCellValue.TrimStartAndEnd());
                                     }
-                                    continue;
-                                    //return Json(vmRtn);
                                 }
 
                                 //判斷該學號是否已存在該年度與該社團

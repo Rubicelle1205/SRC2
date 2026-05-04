@@ -370,18 +370,27 @@ namespace WebPccuClub.Global
         public bool ChkDateFormat(string? d, out string reDateStr)
         {
             reDateStr = "";
-            bool Bln = false;
-            DateTime dd = DateTime.Now;
+            DateTime dd;
 
-            if (string.IsNullOrEmpty(d)) { return Bln; }
+            if (string.IsNullOrEmpty(d)) return false;
 
-            if (!DateTime.TryParse(d, out dd)) { return Bln; }
+            // 1. 先嘗試標準日期解析
+            if (DateTime.TryParse(d, out dd))
+            {
+                reDateStr = dd.ToString("yyyy-MM-dd");
+                return true;
+            }
 
-            reDateStr = dd.ToString("yyyy-MM-dd");
+            // 2. 如果失敗，嘗試檢查是否為 Excel 的數字格式 (Serial Number)
+            if (double.TryParse(d, out double n))
+            {
+                // Excel 數字轉為 DateTime
+                dd = DateTime.FromOADate(n);
+                reDateStr = dd.ToString("yyyy-MM-dd");
+                return true;
+            }
 
-            Bln = true;
-
-            return Bln;
+            return false;
         }
     }
 }
