@@ -47,12 +47,15 @@ namespace WebPccuClub.Controllers
 			string controllerName = this.ControllerContext.RouteData.Values["controller"].ToString();
 			DataTable dt = dbAccess.GetFunctionEnable(controllerName);
 
-			if (dt != null && dt.Rows.Count > 0)
+			if (vm.CheckModel != null)
 			{
-				vm.CheckModel.Enable = dt.Rows[0]["Enable"].ToString();
-				vm.CheckModel.OpenDate = dt.Rows[0]["OpenDate"].ToString();
-				vm.CheckModel.CloseDate = dt.Rows[0]["CloseDate"].ToString();
-			}
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    vm.CheckModel.Enable = dt.Rows[0]["Enable"].ToString();
+                    vm.CheckModel.OpenDate = dt.Rows[0]["OpenDate"].ToString();
+                    vm.CheckModel.CloseDate = dt.Rows[0]["CloseDate"].ToString();
+                }
+            }
 
 			return View(vm);
         }
