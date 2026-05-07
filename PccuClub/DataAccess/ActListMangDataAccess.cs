@@ -25,32 +25,39 @@ namespace WebPccuClub.DataAccess
             DataSet ds = new DataSet();
 
             DBAParameter parameters = new DBAParameter();
-
-            parameters.Add("@ActId", model?.ActId);
-            parameters.Add("@ActName", model?.ActName);
-            parameters.Add("@ClubName", model?.ClubName);  //
-            parameters.Add("@ActVerify", model?.ActVerify);
-            parameters.Add("@LifeClass", model?.LifeClass);  //
-            parameters.Add("@PassPort", model?.PassPort);  //
-            parameters.Add("@SchoolYear", model?.SchoolYear);
-            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
-            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
-
             #region 參數設定
+
+            if (string.IsNullOrWhiteSpace(model?.ActId?.ToString()))
+                parameters.Add("@ActId", null);
+            else if (long.TryParse(model?.ActId?.ToString(), out long validActId))
+                parameters.Add("@ActId", validActId);
+            else
+                parameters.Add("@ActId", "-1");
+
+            parameters.Add("@ActName", model?.ActName);
+            parameters.Add("@ClubName", model?.ClubName);  
+            parameters.Add("@ActVerify", model?.ActVerify);
+            parameters.Add("@LifeClass", model?.LifeClass);  
+            parameters.Add("@PassPort", model?.PassPort);  
+            parameters.Add("@SchoolYear", model?.SchoolYear);
+            parameters.Add("@DuringDate", model?.DuringDate?.Date);
+            parameters.Add("@FromDate", model?.From_ReleaseDate?.Date);
+            parameters.Add("@ToDatePlusOne", model?.To_ReleaseDate?.Date.AddDays(1));
+
             #endregion
 
             CommandText = $@"SELECT A.ActID, A.SchoolYear, A.ActName, B.ActVerify, C.Text AS ActVerifyText, A.BrrowUnit, A.PassPort, G.Text AS PassPortText,  
-                                    CASE WHEN B.ActVerify = '05' THEN C.Text + '(' + B.Creator + ')' ELSE D.ClubCName END ClubName, 
-	                                F.MinDate AS SDate, F.MaxDate AS EDate, A.Created
-                               FROM ActDetail A
-                          LEFT JOIN ActMain B ON B.ActID = A.ActID
-                          LEFT JOIN Code C ON C.Code = B.ActVerify AND C.Type = 'ActVerify'
-                          LEFT JOIN ClubMang D ON D.ClubId = A.BrrowUnit
-                          LEFT JOIN ActSection E ON E.ActDetailId = A.ActDetailId
-                          LEFT JOIN (SELECT ActID, MIN(Date) AS MinDate, MAX(Date) AS MaxDate FROM ActSection GROUP BY ActID) F ON F.ActID = B.ActID
-                          LEFT JOIN Code G ON G.Code = A.PassPort AND G.Type = 'PassPort'
+                                    CASE WHEN B.ActVerify = '05' THEN C.Text + '(' + ISNULL(B.Creator, '') + ')' ELSE D.ClubCName END AS ClubName, 
+                                    F.MinDate AS SDate, F.MaxDate AS EDate, A.Created
+FROM ActDetail A
+LEFT JOIN ActMain B ON B.ActID = A.ActID
+LEFT JOIN Code C ON C.Code = B.ActVerify AND C.Type = 'ActVerify'
+LEFT JOIN ClubMang D ON D.ClubId = A.BrrowUnit
+LEFT JOIN (SELECT ActID, MIN(Date) AS MinDate, MAX(Date) AS MaxDate FROM ActSection GROUP BY ActID) F ON F.ActID = A.ActID
+LEFT JOIN Code G ON G.Code = A.PassPort AND G.Type = 'PassPort'
+
                               WHERE 1 = 1
-{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created >= @FromDate AND A.Created < @ToDatePlusOne" : "")}
 AND (@ActId IS NULL OR A.ActId = @ActId)
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 AND (@ActVerify IS NULL OR B.ActVerify = @ActVerify)
@@ -58,10 +65,9 @@ AND (@LifeClass IS NULL OR D.LifeClass LIKE '%' + @LifeClass + '%')
 AND (@PassPort IS NULL OR A.PassPort LIKE '%' + @PassPort + '%')
 AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%') 
 AND (@ClubName IS NULL OR D.ClubCName LIKE '%' + @ClubName + '%')
-GROUP BY A.ActID, A.SchoolYear, A.ActName, B.ActVerify, C.Text, A.BrrowUnit, F.MinDate, F.MaxDate, B.Creator, D.ClubCName, A.Created, A.PassPort, G.Text
+AND (@DuringDate IS NULL OR (@DuringDate BETWEEN F.MinDate AND F.MaxDate))
 ORDER BY A.ActID DESC
 ";
-
 
             (DbExecuteInfo info, IEnumerable<ActListMangResultModel> entitys) dbResult = DbaExecuteQuery<ActListMangResultModel>(CommandText, parameters, true, DBAccessException);
 

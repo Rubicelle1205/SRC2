@@ -89,8 +89,6 @@ namespace WebPccuClub.Controllers
             return View(vm);
         }
 
-
-
         [LogAttribute(LogActionChineseName.查詢)]
         public IActionResult GetSearchResult(ActListMangViewModel vm)
         {
