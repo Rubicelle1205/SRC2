@@ -382,9 +382,10 @@ namespace WebPccuClub.Controllers
                     dataRow.CreateCell(1).SetCellValue(vm.ExcelModel[i].SchoolYear);
                     dataRow.CreateCell(2).SetCellValue(vm.ExcelModel[i].ClubCName);
                     dataRow.CreateCell(3).SetCellValue(vm.ExcelModel[i].ActID);
-                    dataRow.CreateCell(4).SetCellValue(vm.ExcelModel[i].ActName);
-                    dataRow.CreateCell(5).SetCellValue(vm.ExcelModel[i].ActVerifyText);
-                    dataRow.CreateCell(6).SetCellValue(vm.ExcelModel[i].Created.Value.ToString("yyyy/MM/dd"));
+                    dataRow.CreateCell(4).SetCellValue(vm.ExcelModel[i].ActDate?.ToString("yyyy/MM/dd"));
+                    dataRow.CreateCell(5).SetCellValue(vm.ExcelModel[i].ActName);
+                    dataRow.CreateCell(6).SetCellValue(vm.ExcelModel[i].ActVerifyText);
+                    dataRow.CreateCell(7).SetCellValue(vm.ExcelModel[i].Created.Value.ToString("yyyy/MM/dd"));
 
                     foreach (var cell in dataRow.Cells)
                         cell.CellStyle = contentStyle;

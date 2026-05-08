@@ -74,6 +74,9 @@ namespace WebPccuClub.Models
         [DisplayName("活動名稱")]
         public string? ActName { get; set; }
 
+        [DisplayName("活動日期")]
+        public DateTime? ActDate { get; set; }
+
         [DisplayName("建立日期_起")]
         public DateTime? From_ReleaseDate { get; set; }
 
@@ -102,6 +105,10 @@ namespace WebPccuClub.Models
         /// <summary>主辦單位名稱</summary>
         [DisplayName("主辦單位名稱")]
         public string? ClubCName { get; set; }
+
+        /// <summary>活動日期</summary>
+        [DisplayName("活動日期")]
+        public DateTime? ActDate { get; set; }
 
         /// <summary>活動名稱</summary>
         [DisplayName("活動名稱")]
@@ -137,6 +144,10 @@ namespace WebPccuClub.Models
         /// <summary>活動報備編號</summary>
         [DisplayName("活動報備編號")]
         public string? ActID { get; set; }
+
+        /// <summary>活動日期</summary>
+        [DisplayName("活動日期")]
+        public DateTime? ActDate { get; set; }
 
         /// <summary>活動名稱</summary>
         [DisplayName("活動名稱")]

@@ -33,21 +33,24 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@ClubID", model?.ClubId);
             parameters.Add("@ClubCName", model?.ClubCName);
             parameters.Add("@ActID", model?.ActID);
+            parameters.Add("@ActDate", model?.ActDate?.ToString("yyyy-MM-dd"));
             parameters.Add("@ActName", model?.ActName);
-            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy-MM-dd 00:00:00") : null);
-            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy-MM-dd 23:59:59") : null);
+
+            parameters.Add("@FromDate", model?.From_ReleaseDate?.Date);
+            parameters.Add("@ToDatePlusOne", model?.To_ReleaseDate?.Date.AddDays(1));
 
             #endregion
 
-            CommandText = $@"SELECT A.ActFinishId, A.ActID, B.ActDetailId, A.ClubId, A.ClubCName, A.ActName, B.SchoolYear, A.ActFinishVerify, D.Text AS ActVerifyText, A.Created
+            CommandText = $@"SELECT A.ActFinishId, A.ActID, B.ActDetailId, A.ClubId, A.ClubCName, A.ActDate, A.ActName, B.SchoolYear, A.ActFinishVerify, D.Text AS ActVerifyText, A.Created
                                FROM ActFinish A
                           LEFT JOIN ActDetail B ON B.ActID = A.ActID AND B.ActDetailId = A.ActDetailId
                           LEFT JOIN ActMain C ON C.ActID = B.ActID
                           LEFT JOIN Code D ON D.Code = A.ActFinishVerify AND D.Type = 'ActVerify'
                               WHERE 1 = 1
-{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created >= @FromDate AND A.Created < @ToDatePlusOne" : "")}
 AND (@SchoolYear IS NULL OR B.SchoolYear = @SchoolYear)
 AND (@ActVerify IS NULL OR A.ActFinishVerify = @ActVerify)
+AND (@ActDate IS NULL OR A.ActDate = @ActDate)
 AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') 
 AND (@ClubCName IS NULL OR A.ClubCName LIKE '%' + @ClubCName + '%') 
 AND (@ActID IS NULL OR A.ActID LIKE '%' + @ActID + '%') 
@@ -77,21 +80,24 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')  ";
             parameters.Add("@ClubID", model?.ClubId);
             parameters.Add("@ClubCName", model?.ClubCName);
             parameters.Add("@ActID", model?.ActID);
+            parameters.Add("@ActDate", model?.ActDate?.ToString("yyyy-MM-dd"));
             parameters.Add("@ActName", model?.ActName);
-            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy-MM-dd 00:00:00") : null);
-            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy-MM-dd 23:59:59") : null);
+
+            parameters.Add("@FromDate", model?.From_ReleaseDate?.Date);
+            parameters.Add("@ToDatePlusOne", model?.To_ReleaseDate?.Date.AddDays(1));
 
             #endregion
 
-            CommandText = $@"SELECT A.ActFinishId, A.ActID, B.ActDetailId, A.ClubId, A.ClubCName, A.ActName, B.SchoolYear, A.ActFinishVerify, D.Text AS ActVerifyText, A.Created
+            CommandText = $@"SELECT A.ActFinishId, A.ActID, B.ActDetailId, A.ClubId, A.ClubCName, A.ActDate, A.ActName, B.SchoolYear, A.ActFinishVerify, D.Text AS ActVerifyText, A.Created
                                FROM ActFinish A
                           LEFT JOIN ActDetail B ON B.ActID = A.ActID AND B.ActDetailId = A.ActDetailId
                           LEFT JOIN ActMain C ON C.ActID = B.ActID
                           LEFT JOIN Code D ON D.Code = A.ActFinishVerify AND D.Type = 'ActVerify'
                               WHERE 1 = 1
-{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created >= @FromDate AND A.Created < @ToDatePlusOne" : "")}
 AND (@SchoolYear IS NULL OR B.SchoolYear = @SchoolYear)
 AND (@ActVerify IS NULL OR A.ActFinishVerify = @ActVerify)
+AND (@ActDate IS NULL OR A.ActDate = @ActDate)
 AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') 
 AND (@ClubCName IS NULL OR A.ClubCName LIKE '%' + @ClubCName + '%') 
 AND (@ActID IS NULL OR A.ActID LIKE '%' + @ActID + '%') 
