@@ -81,6 +81,9 @@ namespace WebPccuClub.Models
 
         [DisplayName("結束日期")]
         public DateTime? To_ReleaseDate { get; set; }
+
+        [DisplayName("參與期間")]
+        public DateTime? DuringDate { get; set; }
     }
 
     public class AwardMangResultModel
