@@ -91,8 +91,13 @@ namespace WebPccuClub.Controllers
                 // 加上 [] 可以防止欄位名稱與 SQL 關鍵字衝突
                 var safeFieldsForSql = string.Join(", ", activeColumns.Select(x => $"[{x.ColumnValue}]"));
 
+                var orderedColumns = rawSelected
+    .Select(val => allLegalColumns.FirstOrDefault(x => x.ColumnValue == val))
+    .Where(x => x != null)
+    .ToList();
+
                 // 將過濾後的合法清單傳給 View 渲染標頭
-                ViewBag.ActiveColumns = activeColumns;
+                ViewBag.ActiveColumns = orderedColumns;
 
                 // 將安全字串存入 ConditionModel，供 dbAccess 內部組 SQL 使用
                 vm.ConditionModel.SafeSqlColumns = safeFieldsForSql;

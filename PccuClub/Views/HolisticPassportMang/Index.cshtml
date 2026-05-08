@@ -15,7 +15,7 @@
                 <form method="post" id="SearchForm" enctype="multipart/form-data" action="">
                     <div class="card">
                         <div class="card-header">
-                            
+
                             <button type="button" class="btn btn-sm btn-outline-info" onclick="openColumnModal()">
                                 <i class="fa fa-list"></i> 自選欄位
                             </button>
@@ -40,6 +40,7 @@
                                                         <label style="font-weight: normal; cursor: pointer; display: flex; align-items: center;">
                                                             <input type="checkbox" class="col-cbx" value="@item.ColumnValue" @(item.IsDefault ? "checked" : "") style="margin-right: 5px;">
                                                             @item.ColumnName
+                                                            <span class="sort-badge" style="display:none; margin-left:5px; background:#28a745; color:#fff; border-radius:50%; width:18px; height:18px; font-size:12px; text-align:center; line-height:18px;"></span>
                                                         </label>
                                                     </div>
                                                 }
@@ -63,7 +64,7 @@
                         <div class="card-body">
                             <div class="row">
                                 @Html.AntiForgeryToken()
-                                
+
                                 <div class="col-md-6 input-group mt-2">
                                     <input type="date" class="form-control" id="@Html.IdFor(m => m.ConditionModel.From_ReleaseDate)" name="@Html.NameFor(m => m.ConditionModel.From_ReleaseDate)">
                                     <span class="input-group-text">至</span>
@@ -71,24 +72,24 @@
                                 </div>
 
                                 <div class="col-md-3 col-sm-6 mt-2">
-                                    @Html.DropDownListFor(m => m.ConditionModel.SchoolYear,(List<SelectListItem>)ViewBag.ddlAllSchoolYear,"全部學年度", new {@class = "form-control"})
+                                    @Html.DropDownListFor(m => m.ConditionModel.SchoolYear, (List<SelectListItem>)ViewBag.ddlAllSchoolYear, "全部學年度", new { @class = "form-control" })
                                 </div>
 
                                 <div class="col-md-3 col-sm-6 mt-2">
-                                    @Html.DropDownListFor(m => m.ConditionModel.ActVerify,(List<SelectListItem>)ViewBag.ddlAllActVerify,"全部審核狀態", new {@class = "form-control"})
+                                    @Html.DropDownListFor(m => m.ConditionModel.ActVerify, (List<SelectListItem>)ViewBag.ddlAllActVerify, "全部審核狀態", new { @class = "form-control" })
                                 </div>
 
                                 <div class="col-md-3 col-sm-6 mt-2">
-                                    @Html.TextBoxFor(m => m.ConditionModel.ClubID, new {@class="form-control", placeholder="請輸入社團代號"})
+                                    @Html.TextBoxFor(m => m.ConditionModel.ClubID, new { @class = "form-control", placeholder = "請輸入社團代號" })
                                 </div>
                                 <div class="col-md-3 col-sm-6 mt-2">
-                                    @Html.TextBoxFor(m => m.ConditionModel.ClubCName, new {@class="form-control", placeholder="請輸入主辦單位名稱"})
+                                    @Html.TextBoxFor(m => m.ConditionModel.ClubCName, new { @class = "form-control", placeholder = "請輸入主辦單位名稱" })
                                 </div>
                                 <div class="col-md-3 col-sm-6 mt-2">
-                                    @Html.TextBoxFor(m => m.ConditionModel.ActID, new {@class="form-control", placeholder="請輸入活動報備編號"})
+                                    @Html.TextBoxFor(m => m.ConditionModel.ActID, new { @class = "form-control", placeholder = "請輸入活動報備編號" })
                                 </div>
                                 <div class="col-md-3 col-sm-6 mt-2">
-                                    @Html.TextBoxFor(m => m.ConditionModel.ActName, new {@class="form-control", placeholder="請輸入活動名稱"})
+                                    @Html.TextBoxFor(m => m.ConditionModel.ActName, new { @class = "form-control", placeholder = "請輸入活動名稱" })
                                 </div>
 
                                 <div class="col-md-12 mt-2 row">
@@ -128,74 +129,110 @@
 
 <script>
 
-    // 打開彈窗
-function openColumnModal() {
-    document.getElementById('columnModalOverlay').style.display = 'block';
-}
+    // 宣告在最外層，確保所有 function 都能讀取到順序
+    var selectedOrder = [];
 
-// 關閉彈窗
-function closeColumnModal() {
-    document.getElementById('columnModalOverlay').style.display = 'none';
-}
+    function openColumnModal() {
+        document.getElementById('columnModalOverlay').style.display = 'block';
+    }
 
-// 儲存並產生字串
-function saveColumnSettings() {
-    var selected = [];
-    var checkboxes = document.querySelectorAll('.col-cbx');
+    function closeColumnModal() {
+        document.getElementById('columnModalOverlay').style.display = 'none';
+    }
 
-    checkboxes.forEach(function (cb) {
-        if (cb.checked) {
-            selected.push(cb.value);
-        }
-    });
+    // 存檔與同步順序
+    function saveColumnSettings() {
+        var finalString = selectedOrder.join(',');
 
-    // 更新隱藏欄位
-    var finalString = selected.join(',');
-    $('#@Html.IdFor(m => m.ConditionModel.SelectedColumns)').val(finalString);
-        var SelectedColumns = $('#@Html.IdFor(m => m.ConditionModel.SelectedColumns)').val();
-            console.log("已更新字串為: " + SelectedColumns);
+        // 更新隱藏欄位 (確保 ID 與後端 ViewModel 接收名稱一致)
+        $('#SelectedColumns').val(finalString);
 
-
-    // 關閉彈窗
-    closeColumnModal();
-}
-
-// 點擊遮罩背景也可關閉
-window.onclick = function(event) {
-    var overlay = document.getElementById('columnModalOverlay');
-    if (event.target == overlay) {
         closeColumnModal();
     }
-}
 
-$(document).ready(function () {
-    // 1. 全選/取消全選邏輯
-    $('#selectAllCols').on('change', function () {
-        var isChecked = $(this).prop('checked');
-        $('.col-cbx').prop('checked', isChecked);
+    $(document).ready(function () {
+
+        // 初始化：抓取頁面載入時已勾選的順序
+        function initSelection() {
+            selectedOrder = [];
+            $('.col-cbx:checked').each(function () {
+                selectedOrder.push($(this).val());
+            });
+            refreshBadges();
+            updateHiddenString();
+        }
+
+        // 1. Checkbox 點擊事件 (處理順序陣列)
+        $(document).off('change', '.col-cbx').on('change', '.col-cbx', function () {
+            var val = $(this).val();
+
+            if ($(this).is(':checked')) {
+                if (selectedOrder.indexOf(val) === -1) {
+                    selectedOrder.push(val);
+                }
+            } else {
+                selectedOrder = selectedOrder.filter(item => item !== val);
+            }
+
+            // 連動全選按鈕狀態
+            var allCount = $('.col-cbx').length;
+            var checkedCount = $('.col-cbx:checked').length;
+            $('#selectAllCols').prop('checked', allCount === checkedCount && allCount > 0);
+
+            refreshBadges();
+            updateHiddenString();
+        });
+
+        // 2. 全選按鈕邏輯
+        $(document).off('change', '#selectAllCols').on('change', '#selectAllCols', function () {
+            var isChecked = $(this).is(':checked');
+            selectedOrder = [];
+
+            $('.col-cbx').prop('checked', isChecked);
+
+            if (isChecked) {
+                $('.col-cbx').each(function () {
+                    selectedOrder.push($(this).val());
+                });
+            }
+
+            refreshBadges();
+            updateHiddenString();
+        });
+
+        // 3. 顯示序號標籤
+        function refreshBadges() {
+            $('.sort-badge').hide().text('');
+
+            selectedOrder.forEach((val, index) => {
+                var $cbx = $(`.col-cbx[value='${val}']`);
+                var $badge = $cbx.siblings('.sort-badge');
+                if ($badge.length > 0) {
+                    $badge.text(index + 1).show();
+                }
+            });
+        }
+
+        // 4. 更新隱藏欄位值
+        function updateHiddenString() {
+            var orderString = selectedOrder.join(',');
+            $('#SelectedColumns').val(orderString);
+        }
+
+        // 5. 按下搜尋按鈕時強制呼叫存檔
+        $(document).on('click', '#btnSearch', function () {
+            saveColumnSettings();
+        });
     });
 
-    // 2. 自動連動全選按鈕狀態 (如果手動把所有子項勾選，全選也要自動打勾)
-    $(document).on('change', '.col-cbx', function () {
-        var allCount = $('.col-cbx').length;
-        var checkedCount = $('.col-cbx:checked').length;
-        
-        // 如果全部都勾了，全選就打勾；否則取消全選
-        $('#selectAllCols').prop('checked', allCount === checkedCount);
-    });
-});
 
     function GoSearch(source) {
 
         if (source == 0)
             $('#@(Html.IdFor(m => m.ConditionModel.Page))').val(0);
 
-        var selected = [];
-        $('.col-cbx:checked').each(function () {
-            selected.push($(this).val());
-        });
-
-        $('#@Html.IdFor(m => m.ConditionModel.SelectedColumns)').val(selected.join(','));
+        var orderString = selectedOrder.join(',');
+        $('#@Html.IdFor(m => m.ConditionModel.SelectedColumns)').val(orderString);
 
         SendAjax({
             url: '@Url.Action("GetSearchResult")',
@@ -214,7 +251,7 @@ $(document).ready(function () {
         $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val(e.target.value);
         GoSearch();
     });
-    
+
     $('#Jumppage').change(function (e) {
         $("#@Html.IdFor(m => m.ConditionModel.Page)").val(e.target.value);
         GoSearch();
