@@ -24,24 +24,36 @@ namespace WebPccuClub.DataAccess
 
             DBAParameter parameters = new DBAParameter();
 
+            #region 參數設定
+
             parameters.Add("@SchoolYear", model?.SchoolYear);
             parameters.Add("@ActVerify", model?.ActVerify);
             parameters.Add("@ClubID", model?.ClubID);
             parameters.Add("@ClubCName", model?.ClubCName);
             parameters.Add("@ActID", model?.ActID);
             parameters.Add("@ActName", model?.ActName);
-            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
-            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
-            #region 參數設定
+
+            string duringDateStr = model.DuringDate?.ToString("yyyy-MM-dd");
+            parameters.Add("@DuringDate", string.IsNullOrWhiteSpace(duringDateStr) ? null : duringDateStr);
+
+            parameters.Add("@FromDate", model?.From_ReleaseDate?.Date);
+            parameters.Add("@ToDatePlusOne", model?.To_ReleaseDate?.Date.AddDays(1));
+    
             #endregion
 
-            CommandText = $@"SELECT A.ID, A.SchoolYear, A.ClubID, A.ClubCName, A.ActID, A.ActName, A.ActVerify, B.Text AS ActVerifyText, A.Created
-                               FROM HolisticPassportMang A
-                          LEFT JOIN Code B ON B.Code = A.ActVerify AND B.Type = 'ActVerify'
+            CommandText = $@"SELECT A.SchoolYear, A.ClubID, A.ActID, A.HolisticActName, A.ActName, A.ActDesc, 
+    A.MainID, A.SecondID, A.ThridID, A.ActSTime, A.ActETime, A.RegistrationWay, 
+    A.Presenter, A.PresenterIntro, A.Host, A.HostIntro, A.ClubCName, A.ContactMan, 
+    A.RegistrationMan, A.OpenObject, A.Tag, A.ActVerify, B.Text AS ActVerifyText, A.ActVerifyMemo, A.Created
+
+FROM HolisticPassportMang A
+LEFT JOIN Code B ON B.Code = A.ActVerify AND B.Type = 'ActVerify'
+
 WHERE 1 = 1
-{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND Created BETWEEN @FromDate AND @ToDate" : " ")}
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created >= @FromDate AND A.Created < @ToDatePlusOne" : "")}
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear) 
 AND (@ActVerify IS NULL OR ActVerify = @ActVerify) 
+AND (@DuringDate IS NULL OR (A.ActSTime < DATEADD(DAY, 1, @DuringDate) AND A.ActETime >= @DuringDate))
 AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') 
 AND (@ClubCName IS NULL OR A.ClubCName LIKE '%' + @ClubCName + '%') 
 AND (@ActID IS NULL OR A.ActID LIKE '%' + @ActID + '%') 
@@ -118,8 +130,8 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')
                                         ('MainID', '全人學習認證群組', 0),
                                         ('SecondID', '全人學習認證類別', 0),
                                         ('ThridID', '全人學習認證項目', 0),
-                                        ('ActSTime', '活動開始時間', 0),
-                                        ('ActETime', '活動結束時間', 0),
+                                        ('ActSTime', '活動開始時間', 1),
+                                        ('ActETime', '活動結束時間', 1),
                                         ('RegistrationWay', '報名方式', 0),
                                         ('Presenter', '主講人', 0),
                                         ('PresenterIntro', '主講人介紹', 0),
@@ -130,7 +142,7 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')
                                         ('RegistrationMan', '負責補登者', 0),
                                         ('OpenObject', '開放對象', 0),
                                         ('Tag', '關鍵字標籤', 0),
-                                        ('ActVerify', '審核狀態', 1),
+                                        ('ActVerifyText', '審核狀態', 1),
                                         ('ActVerifyMemo', '審核備註', 0),
                                         ('Created', '建立時間', 1)
                                     ) AS T(ColumnValue, ColumnName, IsDefault);

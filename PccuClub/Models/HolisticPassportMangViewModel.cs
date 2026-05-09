@@ -73,6 +73,9 @@ namespace WebPccuClub.Models
 
         [DisplayName("結束日期")]
         public DateTime? To_ReleaseDate { get; set; }
+
+        [DisplayName("活動期間")]
+        public DateTime? DuringDate { get; set; }
     }
 
     public class HolisticPassportMangResultModel
@@ -87,26 +90,95 @@ namespace WebPccuClub.Models
         [DisplayName("社團代號")]
         public string? ClubID { get; set; }
 
-        /// <summary>主辦單位名稱</summary>
-        [DisplayName("主辦單位名稱")]
-        public string? ClubCName { get; set; }
-
         /// <summary>活動報備編號</summary>
         [DisplayName("活動報備編號")]
         public string? ActID { get; set; }
 
+        /// <summary>全人端名稱</summary>
+        [DisplayName("全人端名稱")]
+        public string? HolisticActName { get; set; }
+
         /// <summary>活動名稱</summary>
         [DisplayName("活動名稱")]
         public string? ActName { get; set; }
+
+        /// <summary>活動說明</summary>
+        [DisplayName("活動說明")]
+        public string? ActDesc { get; set; }
+
+        /// <summary>全人學習認證群組</summary>
+        [DisplayName("全人學習認證群組")]
+        public string? MainID { get; set; }
+
+        /// <summary>全人學習認證類別</summary>
+        [DisplayName("全人學習認證類別")]
+        public string? SecondID { get; set; }
+
+        /// <summary>全人學習認證項目</summary>
+        [DisplayName("全人學習認證項目")]
+        public string? ThridID { get; set; }
+
+        /// <summary>活動開始時間</summary>
+        [DisplayName("活動開始時間")]
+        public DateTime? ActSTime { get; set; }
+
+        /// <summary>活動結束時間</summary>
+        [DisplayName("活動結束時間")]
+        public DateTime? ActETime { get; set; }
+
+        /// <summary>報名方式</summary>
+        [DisplayName("報名方式")]
+        public string? RegistrationWay { get; set; }
+
+        /// <summary>主講人</summary>
+        [DisplayName("主講人")]
+        public string? Presenter { get; set; }
+
+        /// <summary>主講人介紹</summary>
+        [DisplayName("主講人介紹")]
+        public string? PresenterIntro { get; set; }
+
+        /// <summary>主持人</summary>
+        [DisplayName("主持人")]
+        public string? Host { get; set; }
+
+        /// <summary>主持人介紹</summary>
+        [DisplayName("主持人介紹")]
+        public string? HostIntro { get; set; }
+
+        /// <summary>主辦單位</summary>
+        [DisplayName("主辦單位")]
+        public string? ClubCName { get; set; }
+
+        /// <summary>聯絡人</summary>
+        [DisplayName("聯絡人")]
+        public string? ContactMan { get; set; }
+
+        /// <summary>負責補登者</summary>
+        [DisplayName("負責補登者")]
+        public string? RegistrationMan { get; set; }
+
+        /// <summary>開放對象</summary>
+        [DisplayName("開放對象")]
+        public string? OpenObject { get; set; }
+
+        /// <summary>關鍵字標籤</summary>
+        [DisplayName("關鍵字標籤")]
+        public string? Tag { get; set; }
 
         /// <summary>審核狀態</summary>
         [DisplayName("審核狀態")]
         public string? ActVerify { get; set; }
 
         /// <summary>審核狀態</summary>
-		[DisplayName("審核狀態")]
+        [DisplayName("審核狀態")]
         public string? ActVerifyText { get; set; }
 
+        /// <summary>審核備註</summary>
+        [DisplayName("審核備註")]
+        public string? ActVerifyMemo { get; set; }
+
+        /// <summary>建立時間</summary>
         [DisplayName("建立時間")]
         public DateTime? Created { get; set; }
     }
