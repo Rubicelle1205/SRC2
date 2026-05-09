@@ -215,7 +215,7 @@ namespace WebPccuClub.Controllers
         public IActionResult ExportSearchResult(HolisticPassportMangViewModel vm)
         {
             string FileName = string.Format("{0}_{1}", LogActionChineseName.全人學習護照管理, DateTime.Now.ToString("yyyyMMdd"));
-            vm.ResultModel = dbAccess.GetExportResult(vm.ConditionModel);
+            vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel);
 
             if (vm.ResultModel != null && vm.ResultModel.Count > 0)
             {
