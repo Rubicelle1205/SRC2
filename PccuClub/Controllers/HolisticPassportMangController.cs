@@ -2,6 +2,7 @@
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using NuGet.Protocol;
 using System.ComponentModel;
 using System.Data;
 using System.Reflection;
@@ -219,47 +220,78 @@ namespace WebPccuClub.Controllers
 
             if (vm.ResultModel != null && vm.ResultModel.Count > 0)
             {
-                IWorkbook workbook = new XSSFWorkbook();
-                List<int> LstWidth = new List<int> { 20, 20, 20, 20, 80, 20, 20 };
+                // 1. 取得欄位定義白名單 (確保能從 ColumnValue 對應到中文名稱)
+                var allLegalColumns = dbAccess.GetHolisticPassportResultColumnData().ToList();
 
-                ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
-
-                var properties = typeof(HolisticPassportMangExcelHeaderModel).GetProperties();
-
-                //設定欄位
-                IRow headerRow = sheet.CreateRow(0);
-
-                XSSFCellStyle headStyle = ExcelUtil.GetDefaultHeaderStyle(workbook);
-
-                for (int i = 0; i <= properties.Length - 1; i++)
+                if (string.IsNullOrEmpty(vm.ConditionModel.SelectedColumns))
                 {
-                    var displayAttribute = (DisplayNameAttribute)properties[i].GetCustomAttribute(typeof(DisplayNameAttribute));
-                    var displayName = displayAttribute?.DisplayName ?? properties[i].Name;
+                    // 將 IsDefault 的欄位用逗號串接回字串
+                    var defaultCols = allLegalColumns
+                                        .Where(x => x.IsDefault)
+                                        .Select(x => x.ColumnValue);
 
-                    headerRow.CreateCell(i).SetCellValue(displayName);
-
-                    foreach (ICell cell in headerRow.Cells)
-                        cell.CellStyle = headStyle;
-
+                    vm.ConditionModel.SelectedColumns = string.Join(",", defaultCols);
                 }
 
-                XSSFCellStyle contentStyle = ExcelUtil.GetDefaultContentStyle(workbook);
+                // 2. 解析順序字串 (由前端傳回的 "ActName,ClubID...")
+                var rawSelected = (vm.ConditionModel.SelectedColumns ?? "").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-                //設定資料
-                for (int i = 0; i <= vm.ResultModel.Count - 1; i++)
+                // 3. 依照順序重組欄位物件清單
+                var activeColumns = rawSelected
+                    .Select(val => allLegalColumns.FirstOrDefault(x => x.ColumnValue == val))
+                    .Where(x => x != null)
+                    .ToList();
+
+                IWorkbook workbook = new XSSFWorkbook();
+
+                // 動態設定寬度 (這裡可以根據 activeColumns 的數量給予預設值)
+                List<int> LstWidth = activeColumns.Select(x => 25).ToList();
+                ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
+
+                // --- 設定標頭 (Header Row) ---
+                IRow headerRow = sheet.CreateRow(0);
+                XSSFCellStyle headStyle = ExcelUtil.GetDefaultHeaderStyle(workbook);
+
+                for (int i = 0; i < activeColumns.Count; i++)
+                {
+                    // 直接使用白名單定義的 ColumnName
+                    headerRow.CreateCell(i).SetCellValue(activeColumns[i].ColumnName);
+                    headerRow.GetCell(i).CellStyle = headStyle;
+                }
+
+                // --- 設定資料 (Content Rows) ---
+                XSSFCellStyle contentStyle = ExcelUtil.GetDefaultContentStyle(workbook);
+                var itemType = typeof(HolisticPassportMangResultModel); // 你的資料模型類別
+
+                for (int i = 0; i < vm.ResultModel.Count; i++)
                 {
                     IRow dataRow = sheet.CreateRow(i + 1);
+                    var rowData = vm.ResultModel[i];
 
-                    dataRow.CreateCell(0).SetCellValue(vm.ResultModel[i].ClubID);
-                    dataRow.CreateCell(1).SetCellValue(vm.ResultModel[i].SchoolYear);
-                    dataRow.CreateCell(2).SetCellValue(vm.ResultModel[i].ClubCName);
-                    dataRow.CreateCell(3).SetCellValue(vm.ResultModel[i].ActID);
-                    dataRow.CreateCell(4).SetCellValue(vm.ResultModel[i].ActName);
-                    dataRow.CreateCell(5).SetCellValue(vm.ResultModel[i].ActVerifyText);
-                    dataRow.CreateCell(6).SetCellValue(vm.ResultModel[i].Created != null ? vm.ResultModel[i].Created.Value.ToString("yyyy/MM/dd HH:mm") : "");
+                    for (int j = 0; j < activeColumns.Count; j++)
+                    {
+                        var colValue = activeColumns[j].ColumnValue;
+                        var cell = dataRow.CreateCell(j);
 
-                    foreach (ICell cell in dataRow.Cells)
+                        if (colValue == "ActVerify") 
+                            colValue = "ActVerifyText";
+
+                        // 使用 Reflection (反射) 依照 ColumnValue 動態抓取屬性值
+                        var prop = itemType.GetProperty(colValue);
+                        object val = prop?.GetValue(rowData, null);
+
+                        // 針對特定欄位或型別做處理 (例如日期)
+                        if (val is DateTime dateVal)
+                        {
+                            cell.SetCellValue(dateVal.ToString("yyyy/MM/dd HH:mm"));
+                        }
+                        else
+                        {
+                            cell.SetCellValue(val?.ToString() ?? "");
+                        }
+
                         cell.CellStyle = contentStyle;
+                    }
                 }
 
                 MemoryStream ms = new MemoryStream();
