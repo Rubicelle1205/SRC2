@@ -20,6 +20,7 @@ namespace WebPccuClub.Controllers
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
         HolisticPassportMangDataAccess dbAccess = new HolisticPassportMangDataAccess();
+        UploadUtil upload = new UploadUtil();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
@@ -122,10 +123,25 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.新增儲存)]
         [ValidateInput(false)]
-        public IActionResult SaveNewData(HolisticPassportMangViewModel vm)
+        public async Task<IActionResult> SaveNewData(HolisticPassportMangViewModel vm)
         {
             try
             {
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("PosterIconPath"))
+                        {
+                            var file = Request.Form.Files.GetFile("CreateModel.PosterIconPath");
+
+                            string strFilePath = await upload.UploadFileAsync("ClubHolisticPassport", file);
+
+                            vm.CreateModel.PosterIconPath = strFilePath;
+                        }
+                    }
+                }
+
                 dbAccess.DbaInitialTransaction();
 
                 var dbResult = dbAccess.InsertData(vm, LoginUser);
@@ -153,10 +169,25 @@ namespace WebPccuClub.Controllers
 
         [Log(LogActionChineseName.編輯儲存)]
         [ValidateInput(false)]
-        public IActionResult EditOldData(HolisticPassportMangViewModel vm)
+        public async Task<IActionResult> EditOldData(HolisticPassportMangViewModel vm)
         {
             try
             {
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("PosterIconPath"))
+                        {
+                            var file = Request.Form.Files.GetFile("EditModel.PosterIconPath");
+
+                            string strFilePath = await upload.UploadFileAsync("ClubHolisticPassport", file);
+
+                            vm.EditModel.PosterIconPath = strFilePath;
+                        }
+                    }
+                }
+
                 dbAccess.DbaInitialTransaction();
 
                 var dbResult = dbAccess.UpdateData(vm, LoginUser);

@@ -3,6 +3,7 @@
 @{
     Layout = "_BackendLayout";
     List<SelectListItem> LstPlaceSource = ViewBag.ddlActInOrOut;
+    var PosterIconPath = Model.EditModel.PosterIconPath;
 }
 
 <head>
@@ -15,81 +16,87 @@
         <!-- /.row -->
         <div class="row">
             <div class="col-12">
-                <form method="post" id="form" enctype="multipart/form-data" action="">
-
-                    <div class="card">
+                <div class="card">
+                    @if (null != Model.EditModel)
+                    {
                         <div class="card-body table-responsive-sm">
                             <h6 class="card-subtitle mb-2 text-muted">
                                 <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
                                 <span class="required font-weight-bold">*</span> <small>為必填欄位</small>
                             </h6>
+
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.Created)<span class="required">*</span></th>
-                                        <td>@Html.DisplayFor(m => m.EditModel.Created, new {@class = "form-control"})</td>
+                                        <td>@Html.DisplayFor(m => m.EditModel.Created, new { @class = "form-control" })</td>
                                     </tr>
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.LastModified)<span class="required">*</span></th>
-                                        <td>@Html.DisplayFor(m => m.EditModel.LastModified, new {@class = "form-control"})</td>
+                                        <td>@Html.DisplayFor(m => m.EditModel.LastModified, new { @class = "form-control" })</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">學年度<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.SchoolYear, new {@class = "form-control", @placeholder = "請輸入學年度"})</td>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.SchoolYear, new { @class = "form-control", @placeholder = "請輸入學年度" })</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">社團代號<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.EditModel.ClubID ,(List<SelectListItem>)ViewBag.ddlAllClub,"請選擇社團", new {@class = "form-control"})
+                                            @Html.DropDownListFor(m => m.EditModel.ClubID, (List<SelectListItem>)ViewBag.ddlAllClub, "請選擇社團", new { @class = "form-control" })
                                         </td>
                                     </tr>
                                     <tr>
                                         <th width="10%">活動報備編號<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.EditModel.ActID ,(List<SelectListItem>)ViewBag.ddlAllActName,"請選擇活動報備編號", new {@class = "form-control"})
+                                            @Html.DropDownListFor(m => m.EditModel.ActID, (List<SelectListItem>)ViewBag.ddlAllActName, "請選擇活動報備編號", new { @class = "form-control" })
                                         </td>
                                     </tr>
                                     <tr>
                                         <th width="10%">全人端名稱<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.HolisticActName, new {@class = "form-control", @placeholder = "請輸入全人端名稱"})</td>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.HolisticActName, new { @class = "form-control", @placeholder = "請輸入全人端名稱" })</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">活動名稱<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.ActName, new {@class = "form-control", @placeholder = "請輸入活動名稱"})</td>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ActName, new { @class = "form-control", @placeholder = "請輸入活動名稱" })</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">活動說明<span class="required">*</span></th>
-                                        <td>@Html.TextAreaFor(m => m.EditModel.ActDesc, new {@class = "form-control", @placeholder = "請輸入活動說明", rows="4"})</td>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.ActDesc, new { @class = "form-control", @placeholder = "請輸入活動說明", rows = "4" })</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">全人學習認證群組<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.EditModel.MainID ,(List<SelectListItem>)ViewBag.ddlHolisticMainClass,"請選擇全人學習認證群組", new {@class = "form-control"})
+                                            @Html.DropDownListFor(m => m.EditModel.MainID, (List<SelectListItem>)ViewBag.ddlHolisticMainClass, "請選擇全人學習認證群組", new { @class = "form-control" })
                                         </td>
                                     </tr>
                                     <tr>
                                         <th width="10%">全人學習認證類別<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.EditModel.SecondID ,(List<SelectListItem>)ViewBag.ddlHolisticSecondClass,"請選擇全人學習認證類別", new {@class = "form-control"})
+                                            @Html.DropDownListFor(m => m.EditModel.SecondID, (List<SelectListItem>)ViewBag.ddlHolisticSecondClass, "請選擇全人學習認證類別", new { @class = "form-control" })
                                         </td>
                                     </tr>
                                     <tr>
                                         <th width="10%">全人學習認證項目<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.EditModel.ThridID ,(List<SelectListItem>)ViewBag.ddlHolisticThridClass,"請選擇全人學習認證項目", new {@class = "form-control"})
+                                            @Html.DropDownListFor(m => m.EditModel.ThridID, (List<SelectListItem>)ViewBag.ddlHolisticThridClass, "請選擇全人學習認證項目", new { @class = "form-control" })
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th width="10%">活動開始時間<span class="required">*</span></th>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.EditModel.ActSTime, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", @type = "datetime-local" })
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="10%">活動開始時間<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.ActSTime, new {@class = "form-control", @type="date", @placeholder = "請點選輸入框填入活動開始時間"})</td>
-                                    </tr>
-                                    <tr>
                                         <th width="10%">活動結束時間<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.ActETime, new {@class = "form-control", @type="date", @placeholder = "請點選輸入框填入活動結束時間"})</td>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.EditModel.ActETime, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", @type = "datetime-local" })
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th width="10%">報名方式<span class="required">*</span></th>
-                                        <td>@Html.TextAreaFor(m => m.EditModel.RegistrationWay, new {@class = "form-control", @placeholder = "請輸入報名方式"})</td>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.RegistrationWay, new { @class = "form-control", @placeholder = "請輸入報名方式" })</td>
                                     </tr>
                                     <tr>
                                         <th width="15%">活動地點<span class="required">*</span></th>
@@ -107,59 +114,70 @@
                                     </tr>
                                     <tr>
                                         <th width="10%">主講人<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.Presenter, new {@class = "form-control", @placeholder = "請輸入主講人"})</td>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Presenter, new { @class = "form-control", @placeholder = "請輸入主講人" })</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">主講人介紹<span class="required">*</span></th>
-                                        <td>@Html.TextAreaFor(m => m.EditModel.PresenterIntro, new {@class = "form-control", @placeholder = "請輸入主講人介紹", rows = "4"})</td>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.PresenterIntro, new { @class = "form-control", @placeholder = "請輸入主講人介紹", rows = "4" })</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">主持人<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.Host, new {@class = "form-control", @placeholder = "請輸入主持人"})</td>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Host, new { @class = "form-control", @placeholder = "請輸入主持人" })</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">主持人介紹<span class="required">*</span></th>
-                                        <td>@Html.TextAreaFor(m => m.EditModel.HostIntro, new {@class = "form-control", @placeholder = "請輸入主持人介紹", rows = "4"})</td>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.HostIntro, new { @class = "form-control", @placeholder = "請輸入主持人介紹", rows = "4" })</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">主辦單位<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.ClubCName, new {@class = "form-control", @placeholder = "請輸入主辦單位"})</td>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ClubCName, new { @class = "form-control", @placeholder = "請輸入主辦單位" })</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">聯絡人<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.ContactMan, new {@class = "form-control", @placeholder = "請輸入聯絡人"})</td>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ContactMan, new { @class = "form-control", @placeholder = "請輸入聯絡人" })</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">負責補登者<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.RegistrationMan, new {@class = "form-control", @placeholder = "請輸入負責補登者"})</td>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.RegistrationMan, new { @class = "form-control", @placeholder = "請輸入負責補登者" })</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">開放對象<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.OpenObject, new {@class = "form-control", @placeholder = "請輸入開放對象"})</td>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.OpenObject, new { @class = "form-control", @placeholder = "請輸入開放對象" })</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">關鍵字標籤<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.Tag, new {@class = "form-control", @placeholder = "請輸入關鍵字標籤"})</td>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Tag, new { @class = "form-control", @placeholder = "請輸入關鍵字標籤" })</td>
                                     </tr>
+
                                     <tr>
-                                        <th width="10%">
-                                            海報縮圖<span class="required">*</span>
+                                        <th width="15%">
+                                            @Html.LabelFor(m => m.EditModel.PosterIconPath)
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">可上傳.jpeg,.jpg,.png</span>
                                         </th>
-                                        <td>
-                                            <label class="btn btn-outline-primary mb-0">
-                                                @Html.TextBoxFor(m => m.EditModel.PosterIconPath, new{ @class="filesupload", type="file", style="display:none;", accept=".jpeg,.jpg,.png"})
-                                                <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
-                                            </label>
-                                            <span id="filename" class="text-sm mx-2 text-muted">尚未選擇檔案...</span>
+                                        <td style="display:flex;">
+                                            <div class="d-block mb-1 item">
+                                                <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
+                                                    @Html.TextBoxFor(m => m.EditModel.PosterIconPath, new { @style = "display:none;", @class = "filesupload", type = "file", accept = ".jpeg,.jpg,.png" })
+                                                </label>
+                                                <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                            </div>
+                                            @if (PosterIconPath != null)
+                                            {
+                                                <label class="upload_cover img-thumbnail" name="file1_prev">
+                                                    <img src="@Model.EditModel.PosterIconPath" style="width:100%;" />
+                                                </label>
+                                            }
                                         </td>
                                     </tr>
+
+
                                     <tr>
                                         <th width="10%">備註<span class="required"></span></th>
-                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class = "form-control", @placeholder = "請輸入備註", rows = "6"})</td>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new { @class = "form-control", @placeholder = "請輸入備註", rows = "6" })</td>
                                     </tr>
                                 </tbody>
                             </table>
-
                         </div>
 
                         <div class="card-body table-responsive-sm">
@@ -171,23 +189,24 @@
                                     <tr>
                                         <th width="10%">審核狀態<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.EditModel.ActVerify ,(List<SelectListItem>)ViewBag.ddlAllActVerify,"請選擇審核狀態", new {@class = "form-control"})
+                                            @Html.DropDownListFor(m => m.EditModel.ActVerify, (List<SelectListItem>)ViewBag.ddlAllActVerify, "請選擇審核狀態", new { @class = "form-control" })
                                         </td>
                                     </tr>
                                     <tr>
                                         <th width="10%">審核備註<span class="required"></span></th>
-                                        <td>@Html.TextAreaFor(m => m.EditModel.ActVerifyMemo, new {@class = "form-control", @placeholder = "請輸入審核備註", rows = "6"})</td>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.ActVerifyMemo, new { @class = "form-control", @placeholder = "請輸入審核備註", rows = "6" })</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-
-                        <div class="card-footer d-flex justify-content-end">
-                            <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
-                        </div>
+                        @Html.HiddenFor(m => m.EditModel.ID)
+                    }
+                    <div class="card-footer d-flex justify-content-end">
+                        <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
                     </div>
-                    <!-- /.card -->
-                </form>
+                </div>
+
+                <!-- /.card -->
                 <!-- /.form -->
             </div>
         </div>
@@ -231,7 +250,7 @@
 
         var data = new FormData()
 
-
+        var ID = $('#@Html.IdFor(m => m.EditModel.ID)').val();
         var SchoolYear = $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val();
         var ClubID = $('#@Html.IdFor(m => m.EditModel.ClubID)').val();
         var ActID = $('#@Html.IdFor(m => m.EditModel.ActID)').val();
@@ -244,10 +263,21 @@
         var ActSTime = $('#@Html.IdFor(m => m.EditModel.ActSTime)').val();
         var ActETime = $('#@Html.IdFor(m => m.EditModel.ActETime)').val();
         var RegistrationWay = $('#@Html.IdFor(m => m.EditModel.RegistrationWay)').val();
-        var PlaceSource = $('#@Html.IdFor(m => m.EditModel.PlaceSource)').val();
+
+        var PlaceSource = $("[id ^= 'PlaceSource_']:checked").val()
         var BuildID = $('#@Html.IdFor(m => m.EditModel.BuildID)').val();
         var PlaceID = $('#@Html.IdFor(m => m.EditModel.PlaceID)').val();
         var PlaceName = $('#@Html.IdFor(m => m.EditModel.PlaceName)').val();
+
+        var placeID;
+        var placetext;
+        if (PlaceSource == "01") {
+            placeID = $('#@Html.IdFor(m => m.EditModel.PlaceID) option:selected').val();
+            placetext = $('#@Html.IdFor(m => m.EditModel.PlaceID) option:selected').text();
+        } else {
+            placeID = $('#@Html.IdFor(m => m.EditModel.PlaceName)').val();
+            placetext = $('#@Html.IdFor(m => m.EditModel.PlaceName)').val();
+        }
 
         var Presenter = $('#@Html.IdFor(m => m.EditModel.Presenter)').val();
         var PresenterIntro = $('#@Html.IdFor(m => m.EditModel.PresenterIntro)').val();
@@ -276,10 +306,12 @@
             data.append('@Html.NameFor(m => m.EditModel.PosterIconPath)', PosterIconPath);
         }
 
+        if (ActSTime > ActETime) { $.alert("開始時間不可大於結束時間"); return false; }
 
+
+        if (typeof PlaceSource === 'undefined') { PlaceSource = ""; }
         if (typeof BuildID === 'undefined') { BuildID = ""; }
         if (typeof PlaceID === 'undefined') { PlaceID = ""; }
-        if (typeof PlaceName === 'undefined') { PlaceName = ""; }
 
         if (SchoolYear == "") { $.alert("學年度不可為空白"); return; }
         if (ClubID == "") { $.alert("社團代號不可為空白"); return; }
@@ -293,7 +325,16 @@
         if (ActSTime == "") { $.alert("活動開始時間不可為空白"); return; }
         if (ActETime == "") { $.alert("活動結束時間不可為空白"); return; }
         if (RegistrationWay == "") { $.alert("報名方式不可為空白"); return; }
+
         if (PlaceSource == "") { $.alert("活動地點不可為空白"); return; }
+
+        if (PlaceSource == "01") {
+            if (BuildID == "") { $.alert("樓館需選擇"); return; }
+            if (PlaceID == "") { $.alert("場地需選擇不可為空白"); return; }
+        }
+        else {
+            if (PlaceID == "") { $.alert("場地不可為空白"); return; }
+        }
 
         if (Presenter == "") { $.alert("主講人不可為空白"); return; }
         if (PresenterIntro == "") { $.alert("主講人介紹不可為空白"); return; }
@@ -307,7 +348,7 @@
         if (ActVerify == "") { $.alert("審核狀態不可為空白"); return; }
 
 
-
+        data.append('@Html.NameFor(m => m.EditModel.ID)', ID);
         data.append('@Html.NameFor(m => m.EditModel.SchoolYear)', SchoolYear);
         data.append('@Html.NameFor(m => m.EditModel.ClubID)', ClubID);
         data.append('@Html.NameFor(m => m.EditModel.ActID)', ActID);

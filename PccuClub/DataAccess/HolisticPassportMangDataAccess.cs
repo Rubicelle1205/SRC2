@@ -314,6 +314,7 @@ AND (ID = @ID) ";
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
+            parameters.Add("@ID", vm.EditModel.ID);
             parameters.Add("@SchoolYear", vm.EditModel.SchoolYear);
             parameters.Add("@ClubID", vm.EditModel.ClubID);
             parameters.Add("@ActID", vm.EditModel.ActID);
@@ -372,13 +373,18 @@ AND (ID = @ID) ";
                                             RegistrationMan = @RegistrationMan, 
                                             OpenObject = @OpenObject, 
                                             Tag = @Tag, 
-                                            PosterIconPath = @PosterIconPath, 
+                                            %PosterIconPath%
                                             Memo = @Memo, 
                                             ActVerify = @ActVerify, 
                                             ActVerifyMemo = @ActVerifyMemo, 
                                             LastModifier = @LoginId, 
                                             LastModified = GETDATE()
                                      WHERE ID = @ID";
+
+            if (!string.IsNullOrEmpty(vm.EditModel.PosterIconPath))
+                CommendText = CommendText.Replace("%PosterIconPath%", "PosterIconPath = @PosterIconPath, ");
+
+            CommendText = CommendText.Replace("%PosterIconPath%", "");
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 

@@ -31,8 +31,49 @@
                             {
                                 <td class="text-center text-sm">
                                     @{
-                                        var propValue = item.GetType().GetProperty(col.ColumnValue)?.GetValue(item, null);
-                                        @propValue
+                                        if (col.ColumnValue == "ActVerifyText")
+                                        {
+                                            switch (item.ActVerify)
+                                            {
+                                                case "01":
+                                                    <span class="text-primary">@item.ActVerifyText</span>
+                                                    break;
+                                                case "02":
+                                                    <span class="text-success">@item.ActVerifyText</span>
+                                                    break;
+                                                case "03":
+                                                    <span class="text-secondary">@item.ActVerifyText</span>
+                                                    break;
+                                                case "04":
+                                                    <span class="text-info">@item.ActVerifyText</span>
+                                                    break;
+                                                case "05":
+                                                    <span class="text-dark">@item.ActVerifyText</span>
+                                                    break;
+                                                case "06":
+                                                    <span class="text-warning">@item.ActVerifyText</span>
+                                                    break;
+                                                case "07":
+                                                    <span class="text-danger">@item.ActVerifyText</span>
+                                                    break;
+                                                default:
+                                                    <span>@item.ActVerifyText</span>
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var propValue = item.GetType().GetProperty(col.ColumnValue)?.GetValue(item, null);
+
+                                            if (propValue is DateTime dateValue)
+                                            {
+                                                @dateValue.ToString("yyyy/MM/dd HH:mm")
+                                            }
+                                            else
+                                            {
+                                                @propValue?.ToString()
+                                            }
+                                        }
                                     }
                                 </td>
                             }
