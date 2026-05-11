@@ -10,7 +10,11 @@
             <tr class="text-center">
                 @foreach (var col in LstColumnDataModel)
                 {
-                    <th style="min-width:120px;">@col.ColumnName</th>
+                    if (col.ColumnName != "ID")
+                    {
+                        <th style="min-width:120px;">@col.ColumnName</th>
+                    }
+                    
                 }
                 <th width="10%">功能</th>
             </tr>
@@ -23,13 +27,15 @@
                     <tr>
                         @foreach (var col in LstColumnDataModel)
                         {
-                            <td class="text-center text-sm">
-                                @{
-                                    // 利用反射抓取對應屬性的值
-                                    var propValue = item.GetType().GetProperty(col.ColumnValue)?.GetValue(item, null);
-                                    @propValue
-                                }
-                            </td>
+                            if (col.ColumnName != "ID")
+                            {
+                                <td class="text-center text-sm">
+                                    @{
+                                        var propValue = item.GetType().GetProperty(col.ColumnValue)?.GetValue(item, null);
+                                        @propValue
+                                    }
+                                </td>
+                            }
                         }
                         <td class="text-center text-sm">
                             <div style="display: flex; justify-content: center; align-items: center;">

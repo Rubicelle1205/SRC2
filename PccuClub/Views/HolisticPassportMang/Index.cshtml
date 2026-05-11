@@ -36,13 +36,16 @@
                                             <div id="checkboxGrid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
                                                 @foreach (ColumnDataModel item in Model.ConditionModel.LstColumnDataModel)
                                                 {
-                                                    <div style="padding: 5px 0; white-space: nowrap;">
-                                                        <label style="font-weight: normal; cursor: pointer; display: flex; align-items: center;">
-                                                            <input type="checkbox" class="col-cbx" value="@item.ColumnValue" @(item.IsDefault ? "checked" : "") style="margin-right: 5px;">
-                                                            @item.ColumnName
-                                                            <span class="sort-badge" style="display:none; margin-left:5px; background:#28a745; color:#fff; border-radius:50%; width:18px; height:18px; font-size:12px; text-align:center; line-height:18px;"></span>
-                                                        </label>
-                                                    </div>
+                                                    if (item.ColumnName != "ID")
+                                                    {
+                                                        <div style="padding: 5px 0; white-space: nowrap;">
+                                                            <label style="font-weight: normal; cursor: pointer; display: flex; align-items: center;">
+                                                                <input type="checkbox" class="col-cbx" value="@item.ColumnValue" @(item.IsDefault ? "checked" : "") style="margin-right: 5px;">
+                                                                @item.ColumnName
+                                                                <span class="sort-badge" style="display:none; margin-left:5px; background:#28a745; color:#fff; border-radius:50%; width:18px; height:18px; font-size:12px; text-align:center; line-height:18px;"></span>
+                                                            </label>
+                                                        </div>
+                                                    }
                                                 }
                                             </div>
                                         }

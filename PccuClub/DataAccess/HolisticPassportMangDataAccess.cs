@@ -41,7 +41,7 @@ namespace WebPccuClub.DataAccess
     
             #endregion
 
-            CommandText = $@"SELECT A.SchoolYear, A.ClubID, A.ActID, A.HolisticActName, A.ActName, A.ActDesc, 
+            CommandText = $@"SELECT A.ID, A.SchoolYear, A.ClubID, A.ActID, A.HolisticActName, A.ActName, A.ActDesc, 
     A.MainID, A.SecondID, A.ThridID, A.ActSTime, A.ActETime, A.RegistrationWay, 
     A.Presenter, A.PresenterIntro, A.Host, A.HostIntro, A.ClubCName, A.ContactMan, 
     A.RegistrationMan, A.OpenObject, A.Tag, A.ActVerify, B.Text AS ActVerifyText, A.ActVerifyMemo, A.Created
@@ -120,7 +120,8 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')
             #endregion
 
             CommandText = $@"SELECT T.ColumnValue, T.ColumnName, T.IsDefault
-                               FROM (VALUES                                         
+                               FROM (VALUES
+                                        ('ID', 'ID', 1), 
                                         ('SchoolYear', '學年度', 1), 
                                         ('ClubID', '社團代號', 1),
                                         ('ActID', '活動報備編號', 1),

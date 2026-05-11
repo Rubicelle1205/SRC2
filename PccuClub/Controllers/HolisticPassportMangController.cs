@@ -233,6 +233,10 @@ namespace WebPccuClub.Controllers
                     vm.ConditionModel.SelectedColumns = string.Join(",", defaultCols);
                 }
 
+                //移除ID欄位
+                allLegalColumns = allLegalColumns.Where(x => x.ColumnValue != "ID").ToList();
+                vm.ConditionModel.SelectedColumns = string.Join(",", vm.ConditionModel.SelectedColumns.Split(',').Where(x => x != "ID"));
+
                 // 2. 解析順序字串 (由前端傳回的 "ActName,ClubID...")
                 var rawSelected = (vm.ConditionModel.SelectedColumns ?? "").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
