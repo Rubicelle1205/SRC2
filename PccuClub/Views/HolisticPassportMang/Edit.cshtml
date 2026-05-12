@@ -200,6 +200,9 @@
                             </table>
                         </div>
                         @Html.HiddenFor(m => m.EditModel.ID)
+                        @Html.HiddenFor(m => m.EditModel.BuildID)
+                        @Html.HiddenFor(m => m.EditModel.PlaceID)
+                        @Html.HiddenFor(m => m.EditModel.PlaceName)
                     }
                     <div class="card-footer d-flex justify-content-end">
                         <button type="button" class="btn btn-success" onclick="SaveData()">儲存</button>
@@ -221,20 +224,34 @@
 
     $(document).ready(function () {
 
-        $("[id ^= 'PlaceSource_']").on('change', function () {
+        // $("[id ^= 'PlaceSource_']").on('change', function () {
 
+        //     InitBuildSelect($("[id ^= 'PlaceSource_']:checked").val());
+        // });
+
+        $("[id ^= 'PlaceSource_']").on('change', function () {
             InitBuildSelect($("[id ^= 'PlaceSource_']:checked").val());
         });
+
+        $("[id ^= 'PlaceSource_']:checked").trigger('change');
 
     });
 
     function InitBuildSelect(PlaceSource) {
 
+        var BuildID = $('#@Html.IdFor(m => m.EditModel.BuildID)').val();
+        var PlaceID = $('#@Html.IdFor(m => m.EditModel.PlaceID)').val();
+        var PlaceName = $('#@Html.IdFor(m => m.EditModel.PlaceName)').val();
+
         SendAjax({
             url: '@Url.Action("InitBuildSelect")',
-            data: { 'PlaceSource': PlaceSource },
+            data: { 'PlaceSource': PlaceSource, 'BuildID': BuildID, 'PlaceID': PlaceID, 'PlaceName': PlaceName },
             success: function (result) {
                 $('#class_input_box').html(result);
+
+                $('#@Html.IdFor(m => m.EditModel.BuildID)').val('');
+                $('#@Html.IdFor(m => m.EditModel.PlaceID)').val('');
+                $('#@Html.IdFor(m => m.EditModel.PlaceName)').val('');
             }
         });
     }

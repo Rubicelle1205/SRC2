@@ -342,40 +342,48 @@ namespace WebPccuClub.Controllers
 
         }
 
-
+        #region 樓館、場地清單取得
 
         [Log(LogActionChineseName.取得樓館選單)]
         [ValidateInput(false)]
-        public IActionResult InitBuildSelect(string PlaceSource)
+        public IActionResult InitBuildSelect(string PlaceSource, string BuildID, string PlaceID, string PlaceName)
         {
-            if (PlaceSource == "01")
-            {
+            if (!string.IsNullOrEmpty(PlaceSource) && PlaceSource == "01")
                 ViewBag.ddlBuild = dbAccess.GetBuild();
-            }
+
+            if(!string.IsNullOrEmpty(BuildID))
+                ViewBag.ddlPlace = dbAccess.GetPlace(PlaceSource, BuildID);
 
             HolisticPassportMangViewModel vm = new HolisticPassportMangViewModel();
-            vm.CreateModel = new HolisticPassportMangCreateModel();
-            vm.CreateModel.PlaceSource = PlaceSource;
+            vm.BuildSelectModel = new HolisticPassportMangBuildSelectModel();
+            vm.BuildSelectModel.PlaceSource = PlaceSource;
+            vm.BuildSelectModel.BuildID = BuildID;
+            vm.BuildSelectModel.PlaceID = PlaceID;
+            vm.BuildSelectModel.PlaceName = PlaceName;
 
             return PartialView("_PlaceDataPartial", vm);
         }
 
         [Log(LogActionChineseName.取得場地選單)]
         [ValidateInput(false)]
-        public IActionResult InitPlaceSelect(string PlaceSource, string Buildid)
+        public IActionResult InitPlaceSelect(string PlaceSource, string Buildid, string PlaceID, string PlaceName)
         {
             ViewBag.ddlBuild = dbAccess.GetBuild();
             ViewBag.ddlPlace = dbAccess.GetPlace(PlaceSource, Buildid);
 
-
             HolisticPassportMangViewModel vm = new HolisticPassportMangViewModel();
-            vm.CreateModel = new HolisticPassportMangCreateModel();
-            vm.CreateModel.PlaceSource = PlaceSource;
-            vm.CreateModel.BuildID = Buildid;
-
+            vm.BuildSelectModel = new HolisticPassportMangBuildSelectModel();
+            vm.BuildSelectModel.PlaceSource = PlaceSource;
+            vm.BuildSelectModel.BuildID = Buildid;
+            vm.BuildSelectModel.PlaceID = PlaceID;
+            vm.BuildSelectModel.PlaceName = PlaceName;
 
             return PartialView("_PlaceDataPartial", vm);
         }
+
+        #endregion
+
+
 
 
     }

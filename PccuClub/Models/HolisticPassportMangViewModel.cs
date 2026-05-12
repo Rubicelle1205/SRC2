@@ -17,6 +17,8 @@ namespace WebPccuClub.Models
 
         public HolisticPassportMangEditModel EditModel { get; set; }
 
+        public HolisticPassportMangBuildSelectModel BuildSelectModel { get; set; }
+
     }
 
     public class HolisticPassportMangConditionModel
@@ -501,6 +503,14 @@ namespace WebPccuClub.Models
 
         [DisplayName("建立時間")]
         public DateTime? Created { get; set; }
+    }
+
+    public class HolisticPassportMangBuildSelectModel
+    {
+        public string PlaceSource { get; set; }
+        public string BuildID { get; set; }
+        public string PlaceID { get; set; }
+        public string PlaceName { get; set; }
     }
 
 
