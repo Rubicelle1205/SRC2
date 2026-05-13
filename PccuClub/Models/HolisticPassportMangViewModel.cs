@@ -112,13 +112,25 @@ namespace WebPccuClub.Models
         [DisplayName("全人學習認證群組")]
         public string? MainID { get; set; }
 
+        /// <summary>全人學習認證群組</summary>
+        [DisplayName("全人學習認證群組")]
+        public string? MainText { get; set; }
+
         /// <summary>全人學習認證類別</summary>
         [DisplayName("全人學習認證類別")]
         public string? SecondID { get; set; }
 
+        /// <summary>全人學習認證類別</summary>
+        [DisplayName("全人學習認證類別")]
+        public string? SecondText { get; set; }
+
         /// <summary>全人學習認證項目</summary>
         [DisplayName("全人學習認證項目")]
         public string? ThridID { get; set; }
+
+        /// <summary>全人學習認證項目</summary>
+        [DisplayName("全人學習認證項目")]
+        public string? ThridText { get; set; }
 
         /// <summary>活動開始時間</summary>
         [DisplayName("活動開始時間")]

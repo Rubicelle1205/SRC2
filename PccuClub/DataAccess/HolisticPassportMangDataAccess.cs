@@ -42,13 +42,15 @@ namespace WebPccuClub.DataAccess
             #endregion
 
             CommandText = $@"SELECT A.ID, A.SchoolYear, A.ClubID, A.ActID, A.HolisticActName, A.ActName, A.ActDesc, 
-    A.MainID, A.SecondID, A.ThridID, A.ActSTime, A.ActETime, A.RegistrationWay, 
+    A.MainID, C.Text AS MainText, A.SecondID, D.Text AS SecondText, A.ThridID, E.Text AS ThridText, A.ActSTime, A.ActETime, A.RegistrationWay, 
     A.Presenter, A.PresenterIntro, A.Host, A.HostIntro, A.ClubCName, A.ContactMan, 
     A.RegistrationMan, A.OpenObject, A.Tag, A.ActVerify, B.Text AS ActVerifyText, A.ActVerifyMemo, A.Created
 
 FROM HolisticPassportMang A
 LEFT JOIN Code B ON B.Code = A.ActVerify AND B.Type = 'ActVerify'
-
+LEFT JOIN HolisticMainClassMang C ON C.ID = A.MainID
+LEFT JOIN HolisticSecondClassMang D ON D.ID = A.SecondID
+LEFT JOIN HolisticThirdClassMang E ON E.ID = A.ThridID
 WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created >= @FromDate AND A.Created < @ToDatePlusOne" : "")}
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear) 
@@ -128,9 +130,9 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')
                                         ('HolisticActName', '全人端名稱', 0),
                                         ('ActName', '活動名稱', 1),
                                         ('ActDesc', '活動說明', 0),
-                                        ('MainID', '全人學習認證群組', 0),
-                                        ('SecondID', '全人學習認證類別', 0),
-                                        ('ThridID', '全人學習認證項目', 0),
+                                        ('MainText', '全人學習認證群組', 0),
+                                        ('SecondText', '全人學習認證類別', 0),
+                                        ('ThridText', '全人學習認證項目', 0),
                                         ('ActSTime', '活動開始時間', 1),
                                         ('ActETime', '活動結束時間', 1),
                                         ('RegistrationWay', '報名方式', 0),

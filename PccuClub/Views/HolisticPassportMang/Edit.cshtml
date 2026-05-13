@@ -282,18 +282,16 @@
         var RegistrationWay = $('#@Html.IdFor(m => m.EditModel.RegistrationWay)').val();
 
         var PlaceSource = $("[id ^= 'PlaceSource_']:checked").val()
-        var BuildID = $('#@Html.IdFor(m => m.EditModel.BuildID)').val();
-        var PlaceID = $('#@Html.IdFor(m => m.EditModel.PlaceID)').val();
-        var PlaceName = $('#@Html.IdFor(m => m.EditModel.PlaceName)').val();
+        var BuildID = $('#@Html.IdFor(m => m.BuildSelectModel.BuildID)').val();
 
         var placeID;
         var placetext;
         if (PlaceSource == "01") {
-            placeID = $('#@Html.IdFor(m => m.EditModel.PlaceID) option:selected').val();
-            placetext = $('#@Html.IdFor(m => m.EditModel.PlaceID) option:selected').text();
+            placeID = $('#@Html.IdFor(m => m.BuildSelectModel.PlaceID) option:selected').val();
+            placetext = $('#@Html.IdFor(m => m.BuildSelectModel.PlaceID) option:selected').text();
         } else {
-            placeID = $('#@Html.IdFor(m => m.EditModel.PlaceName)').val();
-            placetext = $('#@Html.IdFor(m => m.EditModel.PlaceName)').val();
+            placeID = $('#@Html.IdFor(m => m.BuildSelectModel.PlaceName)').val();
+            placetext = $('#@Html.IdFor(m => m.BuildSelectModel.PlaceName)').val();
         }
 
         var Presenter = $('#@Html.IdFor(m => m.EditModel.Presenter)').val();
@@ -325,11 +323,6 @@
 
         if (ActSTime > ActETime) { $.alert("開始時間不可大於結束時間"); return false; }
 
-
-        if (typeof PlaceSource === 'undefined') { PlaceSource = ""; }
-        if (typeof BuildID === 'undefined') { BuildID = ""; }
-        if (typeof PlaceID === 'undefined') { PlaceID = ""; }
-
         if (SchoolYear == "") { $.alert("學年度不可為空白"); return; }
         if (ClubID == "") { $.alert("社團代號不可為空白"); return; }
         if (ActID == "") { $.alert("活動報備編號不可為空白"); return; }
@@ -347,10 +340,10 @@
 
         if (PlaceSource == "01") {
             if (BuildID == "") { $.alert("樓館需選擇"); return; }
-            if (PlaceID == "") { $.alert("場地需選擇不可為空白"); return; }
+            if (placeID == "") { $.alert("場地需選擇不可為空白"); return; }
         }
         else {
-            if (PlaceID == "") { $.alert("場地不可為空白"); return; }
+            if (placetext == "") { $.alert("場地不可為空白"); return; }
         }
 
         if (Presenter == "") { $.alert("主講人不可為空白"); return; }
@@ -380,8 +373,8 @@
         data.append('@Html.NameFor(m => m.EditModel.RegistrationWay)', RegistrationWay);
         data.append('@Html.NameFor(m => m.EditModel.PlaceSource)', PlaceSource);
         data.append('@Html.NameFor(m => m.EditModel.BuildID)', BuildID);
-        data.append('@Html.NameFor(m => m.EditModel.PlaceID)', PlaceID);
-        data.append('@Html.NameFor(m => m.EditModel.PlaceName)', PlaceName);
+        data.append('@Html.NameFor(m => m.EditModel.PlaceID)', placeID);
+        data.append('@Html.NameFor(m => m.EditModel.PlaceName)', placetext);
         data.append('@Html.NameFor(m => m.EditModel.Presenter)', Presenter);
         data.append('@Html.NameFor(m => m.EditModel.PresenterIntro)', PresenterIntro);
         data.append('@Html.NameFor(m => m.EditModel.Host)', Host);
