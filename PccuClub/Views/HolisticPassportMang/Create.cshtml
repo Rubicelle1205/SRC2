@@ -71,14 +71,20 @@
                                             @Html.DropDownListFor(m => m.CreateModel.ThridID ,(List<SelectListItem>)ViewBag.ddlHolisticThridClass,"請選擇全人學習認證項目", new {@class = "form-control"})
                                         </td>
                                     </tr>
+
                                     <tr>
                                         <th width="10%">活動開始時間<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.CreateModel.ActSTime, new {@class = "form-control", @type="date", @placeholder = "請點選輸入框填入活動開始時間"})</td>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.CreateModel.ActSTime, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", @type = "datetime-local" })
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th width="10%">活動結束時間<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.CreateModel.ActETime, new {@class = "form-control", @type="date", @placeholder = "請點選輸入框填入活動結束時間"})</td>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.CreateModel.ActETime, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", @type = "datetime-local" })
+                                        </td>
                                     </tr>
+
                                     <tr>
                                         <th width="10%">報名方式<span class="required">*</span></th>
                                         <td>@Html.TextAreaFor(m => m.CreateModel.RegistrationWay, new {@class = "form-control", @placeholder = "請輸入報名方式"})</td>
@@ -134,15 +140,18 @@
                                         <td>@Html.TextBoxFor(m => m.CreateModel.Tag, new {@class = "form-control", @placeholder = "請輸入關鍵字標籤"})</td>
                                     </tr>
                                     <tr>
-                                        <th width="10%">
-                                            海報縮圖<span class="required">*</span>
+                                        <th width="15%">
+                                            @Html.LabelFor(m => m.CreateModel.PosterIconPath)
+                                            <br />
+                                            <span class="text-xs text-danger font-weight-normal">可上傳.jpeg,.jpg,.png</span>
                                         </th>
-                                        <td>
-                                            <label class="btn btn-outline-primary mb-0">
-                                                @Html.TextBoxFor(m => m.CreateModel.PosterIconPath, new{ @class="filesupload", type="file", style="display:none;", accept=".jpeg,.jpg,.png"})
-                                                <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
-                                            </label>
-                                            <span id="filename" class="text-sm mx-2 text-muted">尚未選擇檔案...</span>
+                                        <td style="display:flex;">
+                                            <div class="d-block mb-1 item">
+                                                <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
+                                                    @Html.TextBoxFor(m => m.CreateModel.PosterIconPath, new { @style = "display:none;", @class = "filesupload", type = "file", accept = ".jpeg,.jpg,.png" })
+                                                </label>
+                                                <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>
@@ -236,11 +245,20 @@
         var ActSTime = $('#@Html.IdFor(m => m.CreateModel.ActSTime)').val();
         var ActETime = $('#@Html.IdFor(m => m.CreateModel.ActETime)').val();
         var RegistrationWay = $('#@Html.IdFor(m => m.CreateModel.RegistrationWay)').val();
-        var PlaceSource = $('#@Html.IdFor(m => m.CreateModel.PlaceSource)').val();
-        var BuildID = $('#@Html.IdFor(m => m.CreateModel.BuildID)').val();
-        var PlaceID = $('#@Html.IdFor(m => m.CreateModel.PlaceID)').val();
-        var PlaceName = $('#@Html.IdFor(m => m.CreateModel.PlaceName)').val();
-        
+
+        var PlaceSource = $("[id ^= 'PlaceSource_']:checked").val()
+        var BuildID = $('#@Html.IdFor(m => m.BuildSelectModel.BuildID)').val();
+
+        var placeID;
+        var placetext;
+        if (PlaceSource == "01") {
+            placeID = $('#@Html.IdFor(m => m.BuildSelectModel.PlaceID) option:selected').val();
+            placetext = $('#@Html.IdFor(m => m.BuildSelectModel.PlaceID) option:selected').text();
+        } else {
+            placeID = $('#@Html.IdFor(m => m.BuildSelectModel.PlaceName)').val();
+            placetext = $('#@Html.IdFor(m => m.BuildSelectModel.PlaceName)').val();
+        }
+
         var Presenter = $('#@Html.IdFor(m => m.CreateModel.Presenter)').val();
         var PresenterIntro = $('#@Html.IdFor(m => m.CreateModel.PresenterIntro)').val();
         var Host = $('#@Html.IdFor(m => m.CreateModel.Host)').val();
@@ -314,8 +332,8 @@
         data.append('@Html.NameFor(m => m.CreateModel.RegistrationWay)', RegistrationWay);
         data.append('@Html.NameFor(m => m.CreateModel.PlaceSource)', PlaceSource);
         data.append('@Html.NameFor(m => m.CreateModel.BuildID)', BuildID);
-        data.append('@Html.NameFor(m => m.CreateModel.PlaceID)', PlaceID);
-        data.append('@Html.NameFor(m => m.CreateModel.PlaceName)', PlaceName);
+        data.append('@Html.NameFor(m => m.CreateModel.PlaceID)', placeID);
+        data.append('@Html.NameFor(m => m.CreateModel.PlaceName)', placetext);
         data.append('@Html.NameFor(m => m.CreateModel.Presenter)', Presenter);
         data.append('@Html.NameFor(m => m.CreateModel.PresenterIntro)', PresenterIntro);
         data.append('@Html.NameFor(m => m.CreateModel.Host)', Host);
@@ -341,7 +359,7 @@
                         content: "新增成功",
                         buttons: {
                             確定: function () {
-                                Reset();
+                                window.location = $("#Back").attr("href");
                             },
                         }
                     });
