@@ -92,6 +92,10 @@ namespace WebPccuClub.Models
         [DisplayName("社團代號")]
         public string? ClubID { get; set; }
 
+        /// <summary>社團名稱</summary>
+        [DisplayName("社團名稱")]
+        public string? ClubName { get; set; }
+
         /// <summary>活動報備編號</summary>
         [DisplayName("活動報備編號")]
         public string? ActID { get; set; }
@@ -107,6 +111,22 @@ namespace WebPccuClub.Models
         /// <summary>活動說明</summary>
         [DisplayName("活動說明")]
         public string? ActDesc { get; set; }
+
+        /// <summary>活動地點</summary>
+        [DisplayName("活動地點")]
+        public string? PlaceSource { get; set; }
+
+        /// <summary>活動地點</summary>
+        [DisplayName("活動地點")]
+        public string? BuildID { get; set; }
+
+        /// <summary>活動地點</summary>
+        [DisplayName("活動地點")]
+        public string? BuildName { get; set; }
+        
+        /// <summary>活動地點</summary>
+        [DisplayName("活動地點")]
+        public string? PlaceName { get; set; }
 
         /// <summary>全人學習認證群組</summary>
         [DisplayName("全人學習認證群組")]
@@ -179,6 +199,14 @@ namespace WebPccuClub.Models
         /// <summary>關鍵字標籤</summary>
         [DisplayName("關鍵字標籤")]
         public string? Tag { get; set; }
+
+        /// <summary>海報縮圖</summary>
+        [DisplayName("海報縮圖")]
+        public string? PosterIconPath { get; set; }
+
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
+        public string? Memo { get; set; }
 
         /// <summary>審核狀態</summary>
         [DisplayName("審核狀態")]

@@ -61,6 +61,35 @@
                                                     break;
                                             }
                                         }
+                                        else if (col.ColumnValue == "PlaceName")
+                                        {
+                                            if (item.PlaceSource == "01")
+                                            {
+                                                if (null != item.BuildName && null != item.PlaceName)
+                                                {
+                                                    <span>@item.BuildName - @item.PlaceName</span>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @item.ActVerifyText
+                                            }
+                                        }
+                                        else if (col.ColumnValue == "PosterIconPath")
+                                        {
+                                            if (!string.IsNullOrWhiteSpace(item.PosterIconPath) && item.PosterIconPath.Length >= 2)
+                                            {
+                                                string absoluteUrl = "";
+                                                string subPath = item.PosterIconPath.Substring(2);
+
+                                                var request = ViewContext.HttpContext.Request;
+                                                string baseUrl = $"{request.Scheme}://{request.Host}{request.PathBase}";
+
+                                                absoluteUrl = $"{baseUrl}{subPath}";
+
+                                                @absoluteUrl
+                                            }
+                                        }
                                         else
                                         {
                                             var propValue = item.GetType().GetProperty(col.ColumnValue)?.GetValue(item, null);

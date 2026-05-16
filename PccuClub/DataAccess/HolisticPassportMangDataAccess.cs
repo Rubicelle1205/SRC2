@@ -41,18 +41,23 @@ namespace WebPccuClub.DataAccess
     
             #endregion
 
-            CommandText = $@"SELECT A.ID, A.SchoolYear, A.ClubID, A.ActID, A.HolisticActName, A.ActName, A.ActDesc, 
-    A.MainID, C.Text AS MainText, A.SecondID, D.Text AS SecondText, A.ThridID, E.Text AS ThridText, A.ActSTime, A.ActETime, A.RegistrationWay, 
+            CommandText = $@"SELECT A.ID, A.SchoolYear, A.ClubID, F.ClubCName AS ClubName, A.ActID, A.HolisticActName, A.ActName, A.ActDesc,
+    A.PlaceSource, A.BuildID, G.BuildName, A.PlaceName,
+    A.MainID, C.Text AS MainText, A.SecondID, D.Text AS SecondText, A.ThridID, E.Text AS ThridText, 
+    A.ActSTime, A.ActETime, A.RegistrationWay, 
     A.Presenter, A.PresenterIntro, A.Host, A.HostIntro, A.ClubCName, A.ContactMan, 
-    A.RegistrationMan, A.OpenObject, A.Tag, A.ActVerify, B.Text AS ActVerifyText, A.ActVerifyMemo, A.Created
+    A.RegistrationMan, A.OpenObject, A.Tag, A.PosterIconPath, A.Memo, 
+    A.ActVerify, B.Text AS ActVerifyText, A.ActVerifyMemo, A.Created
 
 FROM HolisticPassportMang A
 LEFT JOIN Code B ON B.Code = A.ActVerify AND B.Type = 'ActVerify'
 LEFT JOIN HolisticMainClassMang C ON C.ID = A.MainID
 LEFT JOIN HolisticSecondClassMang D ON D.ID = A.SecondID
 LEFT JOIN HolisticThirdClassMang E ON E.ID = A.ThridID
+LEFT JOIN ClubMang F ON F.ClubId = A.ClubID
+LEFT JOIN BuildMang G ON G.BuildID = A.BuildID
 WHERE 1 = 1
-{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created >= @FromDate AND A.Created < @ToDatePlusOne" : "")}
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created >= @FromDate AND A.Created <= @ToDatePlusOne" : "")}
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear) 
 AND (@ActVerify IS NULL OR ActVerify = @ActVerify) 
 AND (@DuringDate IS NULL OR (A.ActSTime < DATEADD(DAY, 1, @DuringDate) AND A.ActETime >= @DuringDate))
@@ -123,31 +128,35 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')
 
             CommandText = $@"SELECT T.ColumnValue, T.ColumnName, T.IsDefault
                                FROM (VALUES
-                                        ('ID', 'ID', 1), 
-                                        ('SchoolYear', '學年度', 1), 
-                                        ('ClubID', '社團代號', 1),
-                                        ('ActID', '活動報備編號', 1),
-                                        ('HolisticActName', '全人端名稱', 0),
-                                        ('ActName', '活動名稱', 1),
-                                        ('ActDesc', '活動說明', 0),
-                                        ('MainText', '全人學習認證群組', 0),
-                                        ('SecondText', '全人學習認證類別', 0),
-                                        ('ThridText', '全人學習認證項目', 0),
-                                        ('ActSTime', '活動開始時間', 1),
-                                        ('ActETime', '活動結束時間', 1),
-                                        ('RegistrationWay', '報名方式', 0),
-                                        ('Presenter', '主講人', 0),
-                                        ('PresenterIntro', '主講人介紹', 0),
-                                        ('Host', '主持人', 0),
-                                        ('HostIntro', '主持人介紹', 0),
-                                        ('ClubCName', '主辦單位', 0),
-                                        ('ContactMan', '聯絡人', 0),
-                                        ('RegistrationMan', '負責補登者', 0),
-                                        ('OpenObject', '開放對象', 0),
-                                        ('Tag', '關鍵字標籤', 0),
-                                        ('ActVerifyText', '審核狀態', 1),
-                                        ('ActVerifyMemo', '審核備註', 0),
-                                        ('Created', '建立時間', 1)
+('ID', 'ID', 1), 
+('SchoolYear', '學年度', 1), 
+('ClubID', '社團代號', 1),
+('ClubName', '社團名稱', 1),
+('ActID', '活動報備編號', 1),
+('HolisticActName', '全人端名稱', 0),
+('ActName', '活動名稱', 1),
+('ActDesc', '活動說明', 0),
+('MainText', '全人學習認證群組', 0),
+('SecondText', '全人學習認證類別', 0),
+('ThridText', '全人學習認證項目', 0),
+('ActSTime', '活動開始時間', 1),
+('ActETime', '活動結束時間', 1),
+('RegistrationWay', '報名方式', 0),
+('PlaceName', '活動地點', 1),
+('Presenter', '主講人', 0),
+('PresenterIntro', '主講人介紹', 0),
+('Host', '主持人', 0),
+('HostIntro', '主持人介紹', 0),
+('ClubCName', '主辦單位', 0),
+('ContactMan', '聯絡人', 0),
+('RegistrationMan', '負責補登者', 0),
+('OpenObject', '開放對象', 0),
+('Tag', '關鍵字標籤', 0),
+('PosterIconPath', '海報縮圖', 0),
+('Memo', '備註', 0),
+('ActVerifyText', '審核狀態', 1),
+('ActVerifyMemo', '審核備註', 0),
+('Created', '建立時間', 1)
                                     ) AS T(ColumnValue, ColumnName, IsDefault);
 ";
 
