@@ -1,0 +1,179 @@
+﻿@model WebPccuClub.Models.BorrowResourceListMangViewModel
+@{
+    <link rel="stylesheet" href="@string.Format("/assets/css/custom.css?v={0}", DateTime.Now.Ticks)">
+    <link rel="stylesheet" href="~/assets/vendor/vanilla-calendar-master/vanilla-calendar.min.css">
+
+    <script src="~/assets/vendor/vanilla-calendar-master/vanilla-calendar.min.js"></script>
+    <script src="~/assets/js/custom_borrowing.js?v=@DateTime.Now.Ticks"></script>
+}
+@{
+    Layout = "_BackendLayout";
+
+    ViewBag.Title = "資源借用系統";
+}
+
+<style>
+    /* 主外殼：確保左右兩欄頂端完美對齊 */
+    .contentWrapper {
+        display: flex;
+        gap: 24px;
+        align-items: flex-start; /* 確保左右兩欄從最頂端對齊 */
+        padding: 24px;
+        background-color: #f8f9fa;
+    }
+
+    /* 左側欄位固定寬度，移除任何可能導致向下掉的 margin */
+    .sidebar-left {
+        flex: 0 0 320px;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+    }
+
+    /* 🎯 月曆卡片：調整為淡黃色背景（如圖 1 的卡片質感） */
+    .calendar-card {
+        background-color: #ffffff; /* 換成白底 */
+        border-radius: 8px;
+        padding: 20px; /* 稍微增加留白，讓內層黃底更好看 */
+        border: 1px solid #eef0f2; /* 淡淡的灰色邊框 */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    }
+
+        /* 🎯 Hint 提示文字：水平置中 */
+        .calendar-card .hint {
+            color: #4ba3bc; /* 藍綠色調文字 */
+            font-size: 15px;
+            font-weight: 500;
+            margin-top: 0;
+            margin-bottom: 20px; /* 與下方內層月曆拉開距離 */
+            display: flex;
+            align-items: center;
+            justify-content: center; /* 水平置中 */
+            gap: 6px;
+            width: 100%;
+        }
+        /* 🎯 內層月曆主體：改為淡黃色底、淡黃色邊框 */
+        .calendar-card #calendar.vanilla-calendar {
+            background-color: #fff9e6 !important;
+            border: 1px solid #fbe7b5 !important;
+            border-radius: 8px;
+            padding: 16px; /* 讓月曆內部數字與黃底邊緣有呼吸空間 */
+        }
+    /* 右側欄位樣式維持不變 */
+    .main-content-right {
+        flex: 1;
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 24px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        border: 1px solid #eef0f2;
+    }
+
+    /* 本日借用者卡片（維持白底） */
+    .borrowers-card {
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 16px;
+        border: 1px solid #eef0f2;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+
+</style>
+<div class="contentWrapper">
+
+    <div class="sidebar-left">
+
+        <div class="calendar-card">
+            <p class="hint text-center justify-content-center">
+                <i class="icon-bulb"></i> 點選日期檢視當日資源借用狀況。
+            </p>
+
+            <div class="scroll-box d-flex justify-content-center">
+                <div id="calendar" class="vanilla-calendar vanilla-calendar_default">
+                </div>
+            </div>
+        </div>
+
+        <div class="borrowers-card mt-3">
+            <h5 class="borrowers-title">本日借用者</h5>
+            <div id="SearchResultList" class="borrowlist">
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content-right col-xxl-9">
+        <form method="post" id="SearchForm" enctype="multipart/form-data" action="">
+            @Html.HiddenFor(m => m.ConditionModel.SDate)
+
+            <div class="filterbox form-box mb-4">
+                <div class="row justify-content-between align-items-center">
+
+                    <div class="col-md-12">
+                        <div class="d-flex align-items-center justify-content-md-end">
+                            <label class="flex-shrink-0 m-0 me-2" for="resource_type">資源類別：</label>
+                            @Html.DropDownListFor(m => m.ConditionModel.BorrowSecondClassID, (List<SelectListItem>)ViewBag.ddlAllBuild, "全部資源", new { @class = "form-control w-auto" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scroll-hint hint mb-2"><i class="fas fa-info-circle"></i> 左右滑動查看完整表格</div>
+            <div class="scroll-box">
+                <div class="memberlist item-9 mb-5">
+                    <div class="listHeader">
+                        <div class="listItem">
+                            <div class="item item-sm">資源類別</div>
+                            <div class="item">資源名稱</div>
+                            <div class="item">當日剩餘數量</div>
+                            <div class="item">資源總數量</div>
+                            <div class="item"></div>
+                        </div>
+                    </div>
+                    <div id="SearchResultList2" class="listBody">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        GoSearch();
+    });
+
+    $('#@Html.IdFor(m => m.ConditionModel.BorrowSecondClassID)').change(function (e) {
+        GoSearch();
+    });
+
+    function GoSearch() {
+        SendAjax({
+            url: '@Url.Action("GetSearchResult")',
+            data: $("#SearchForm").serialize(),
+            success: function (result) {
+                $('#SearchResultList').html(result);
+            }
+        });
+
+        SendAjax({
+            url: '@Url.Action("GetSearchResourceResult")',
+            data: $("#SearchForm").serialize(),
+            success: function (result) {
+                $('#SearchResultList2').html(result);
+            }
+        });
+    }
+
+    $('#JumpPergroup').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.PageSize)").val(e.target.value);
+        GoSearch();
+    });
+
+    $('#Jumppage').change(function (e) {
+        $("#@Html.IdFor(m => m.ConditionModel.Page)").val(e.target.value);
+        GoSearch();
+    });
+
+</script>
