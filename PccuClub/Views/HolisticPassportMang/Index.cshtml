@@ -136,9 +136,6 @@
     // 宣告在最外層，確保所有 function 都能讀取到順序
     var selectedOrder = [];
 
-    // 定義系統的「預設欄位」 (如果後端完全沒給值時的底線)
-    // var defaultCols = ["SchoolYear", "ClubID", "ActID", "ActName", "ActSTime", "ActETime", "ActVerifyText", "Created"];
-
     function openColumnModal() {
         // 每次打開 Modal 時，確保 UI 勾選與目前的 selectedOrder 陣列百分之百同步
         syncArrayToCheckboxUI();
@@ -151,12 +148,6 @@
 
     // 存檔與同步順序
     function saveColumnSettings() {
-        // 檢查防錯：如果使用者把勾選全部取消，則強制填入預設欄位
-        // if (selectedOrder.length === 0) {
-        //     selectedOrder = [...defaultCols];
-        //     syncArrayToCheckboxUI(); // 同步回畫面的 Checkbox
-        // }
-
         updateHiddenString();
         closeColumnModal();
     }
@@ -223,11 +214,6 @@
                 });
             }
 
-            // 如果連畫面預設勾選都沒有，才啟動大補底
-            // if (selectedOrder.length === 0) {
-            //     selectedOrder = [...defaultCols];
-            // }
-
             // 根據最終確定的 selectedOrder 去刷新 UI 與隱藏欄位
             syncArrayToCheckboxUI();
             updateHiddenString();
@@ -293,12 +279,6 @@
         if (source == 0)
             $('#@(Html.IdFor(m => m.ConditionModel.Page))').val(0);
 
-        // 搜尋前再次確保防錯補底
-        // if (selectedOrder.length === 0) {
-        //     selectedOrder = [...defaultCols];
-        //     syncArrayToCheckboxUI();
-        // }
-
         updateHiddenString();
 
         SendAjax({
@@ -312,10 +292,6 @@
 
     // 匯出 Excel 功能 (同步套用最新的順序)
     function ExportSearchResult() {
-        // if (selectedOrder.length === 0) {
-        //     selectedOrder = [...defaultCols];
-        //     syncArrayToCheckboxUI();
-        // }
 
         updateHiddenString();
 
