@@ -136,7 +136,12 @@
     // 宣告在最外層，確保所有 function 都能讀取到順序
     var selectedOrder = [];
 
+    // 定義系統的「預設欄位」 (如果後端完全沒給值時的底線)
+    // var defaultCols = ["SchoolYear", "ClubID", "ActID", "ActName", "ActSTime", "ActETime", "ActVerifyText", "Created"];
+
     function openColumnModal() {
+        // 每次打開 Modal 時，確保 UI 勾選與目前的 selectedOrder 陣列百分之百同步
+        syncArrayToCheckboxUI();
         document.getElementById('columnModalOverlay').style.display = 'block';
     }
 
@@ -146,35 +151,102 @@
 
     // 存檔與同步順序
     function saveColumnSettings() {
-        var finalString = selectedOrder.join(',');
+        // 檢查防錯：如果使用者把勾選全部取消，則強制填入預設欄位
+        // if (selectedOrder.length === 0) {
+        //     selectedOrder = [...defaultCols];
+        //     syncArrayToCheckboxUI(); // 同步回畫面的 Checkbox
+        // }
 
-        // 更新隱藏欄位 (確保 ID 與後端 ViewModel 接收名稱一致)
-        $('#SelectedColumns').val(finalString);
-
+        updateHiddenString();
         closeColumnModal();
+    }
+
+    // 將目前的 selectedOrder 狀態同步勾選到 HTML Checkbox 畫面上
+    function syncArrayToCheckboxUI() {
+        // 1. 先把畫面上所有的 Checkbox 取消勾選
+        $('.col-cbx').prop('checked', false);
+
+        // 2. 根據陣列依序勾起來
+        selectedOrder.forEach(val => {
+            $(`.col-cbx[value='${val}']`).prop('checked', true);
+        });
+
+        // 3. 連動全選按鈕狀態
+        var allCount = $('.col-cbx').length;
+        var checkedCount = selectedOrder.length;
+        $('#selectAllCols').prop('checked', allCount === checkedCount && allCount > 0);
+
+        // 4. 刷新序號數字
+        refreshBadges();
+    }
+
+    // 刷新序號標籤（抽出來讓 ready 外面也能呼叫）
+    function refreshBadges() {
+        $('.sort-badge').hide().text('');
+
+        selectedOrder.forEach((val, index) => {
+            var $cbx = $(`.col-cbx[value='${val}']`);
+            var $badge = $cbx.siblings('.sort-badge');
+            if ($badge.length > 0) {
+                $badge.text(index + 1).show();
+            }
+        });
+    }
+
+    // 更新所有隱藏欄位值
+    function updateHiddenString() {
+        var orderString = selectedOrder.join(',');
+
+        // 同步更新通用 ID 欄位
+        $('#SelectedColumns').val(orderString);
+
+        // 同步更新 ASP.NET ViewModel 繫結的欄位
+        var aspNetId = '#@Html.IdFor(m => m.ConditionModel.SelectedColumns)';
+        $(aspNetId).val(orderString);
     }
 
     $(document).ready(function () {
 
-        // 初始化：抓取頁面載入時已勾選的順序
+        // 【修正核心】初始化：優先遵循已存在的順序字串
         function initSelection() {
-            selectedOrder = [];
-            $('.col-cbx:checked').each(function () {
-                selectedOrder.push($(this).val());
-            });
-            refreshBadges();
+            // 嘗試從 ViewModel 產生的隱藏欄位撈取可能已存在的字串
+            var existingValue = $('#@Html.IdFor(m => m.ConditionModel.SelectedColumns)').val();
+
+            if (existingValue && existingValue.trim() !== "") {
+                // 如果後端有給定順序，直接切成陣列
+                selectedOrder = existingValue.split(',');
+            } else {
+                // 如果是全新的（空的），則抓取畫面上目前已經勾選的（如 HTML 裡寫 checked 的預設欄位）
+                selectedOrder = [];
+                $('.col-cbx:checked').each(function () {
+                    selectedOrder.push($(this).val());
+                });
+            }
+
+            // 如果連畫面預設勾選都沒有，才啟動大補底
+            // if (selectedOrder.length === 0) {
+            //     selectedOrder = [...defaultCols];
+            // }
+
+            // 根據最終確定的 selectedOrder 去刷新 UI 與隱藏欄位
+            syncArrayToCheckboxUI();
             updateHiddenString();
         }
 
-        // 1. Checkbox 點擊事件 (處理順序陣列)
+        // 執行初始化
+        initSelection();
+
+        // 1. Checkbox 點擊事件 (新增直接 push 到陣列最後面)
         $(document).off('change', '.col-cbx').on('change', '.col-cbx', function () {
             var val = $(this).val();
 
             if ($(this).is(':checked')) {
+                // 使用者點選新欄位 -> 視為多選項目，一律加到陣列最尾端 (Push)
                 if (selectedOrder.indexOf(val) === -1) {
                     selectedOrder.push(val);
                 }
             } else {
+                // 取消勾選 -> 從陣列中移除
                 selectedOrder = selectedOrder.filter(item => item !== val);
             }
 
@@ -190,53 +262,44 @@
         // 2. 全選按鈕邏輯
         $(document).off('change', '#selectAllCols').on('change', '#selectAllCols', function () {
             var isChecked = $(this).is(':checked');
-            selectedOrder = [];
-
-            $('.col-cbx').prop('checked', isChecked);
 
             if (isChecked) {
+                // 全選時，保留原本已經排好的，把剩下沒勾的依序加在後面
                 $('.col-cbx').each(function () {
-                    selectedOrder.push($(this).val());
+                    var val = $(this).val();
+                    if (selectedOrder.indexOf(val) === -1) {
+                        selectedOrder.push(val);
+                    }
                 });
+                $('.col-cbx').prop('checked', true);
+            } else {
+                // 全部取消勾選
+                selectedOrder = [];
+                $('.col-cbx').prop('checked', false);
             }
 
             refreshBadges();
             updateHiddenString();
         });
 
-        // 3. 顯示序號標籤
-        function refreshBadges() {
-            $('.sort-badge').hide().text('');
-
-            selectedOrder.forEach((val, index) => {
-                var $cbx = $(`.col-cbx[value='${val}']`);
-                var $badge = $cbx.siblings('.sort-badge');
-                if ($badge.length > 0) {
-                    $badge.text(index + 1).show();
-                }
-            });
-        }
-
-        // 4. 更新隱藏欄位值
-        function updateHiddenString() {
-            var orderString = selectedOrder.join(',');
-            $('#SelectedColumns').val(orderString);
-        }
-
-        // 5. 按下搜尋按鈕時強制呼叫存檔
+        // 5. 按下搜尋按鈕時強制呼叫存檔同步
         $(document).on('click', '#btnSearch', function () {
             saveColumnSettings();
         });
     });
 
-
+    // 搜尋功能
     function GoSearch(source) {
-
         if (source == 0)
             $('#@(Html.IdFor(m => m.ConditionModel.Page))').val(0);
 
-        var orderString = selectedOrder.join(',');
-        $('#@Html.IdFor(m => m.ConditionModel.SelectedColumns)').val(orderString);
+        // 搜尋前再次確保防錯補底
+        // if (selectedOrder.length === 0) {
+        //     selectedOrder = [...defaultCols];
+        //     syncArrayToCheckboxUI();
+        // }
+
+        updateHiddenString();
 
         SendAjax({
             url: '@Url.Action("GetSearchResult")',
@@ -245,6 +308,18 @@
                 $('#SearchResultList').html(result);
             }
         });
+    }
+
+    // 匯出 Excel 功能 (同步套用最新的順序)
+    function ExportSearchResult() {
+        // if (selectedOrder.length === 0) {
+        //     selectedOrder = [...defaultCols];
+        //     syncArrayToCheckboxUI();
+        // }
+
+        updateHiddenString();
+
+        window.open('@Url.Action("ExportSearchResult")' + '?' + $("#SearchForm").serialize());
     }
 
     function ExportSearchResult() {
