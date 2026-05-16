@@ -7,10 +7,11 @@
         <div class="listItem">
             <div class="item item-sm">@item.MainClassText</div>
             <div class="item">@item.MainResourceName</div>
-            <div class="item ">@item.RemainAmt
+            <div class="item ">
+                @item.RemainAmt
                 @if (!string.IsNullOrEmpty(item.ShortDesc))
                 {
-                    <i class="fa-solid fa-circle-exclamation" onclick="ShowDesc('@item.ShortDesc')"></i>     
+                    <i class="fa-solid fa-circle-exclamation" onclick="ShowDesc('@item.ShortDesc')"></i>
                 }
             </div>
             <div class="item">@item.AmtShelves</div>
@@ -26,9 +27,34 @@
 
 <!-- /.card-body -->
 
+<style>
+    /* 讓外層變成 Flex 容器，並讓子物件垂直居中 */
+    .listItem {
+        display: flex;
+        align-items: center; /* 垂直置中 */
+        justify-content: space-between; /* 根據你原本的排版調整，或用 flex-start */
+    }
+
+        /* 讓每個欄位內部也置中 */
+        .listItem .item {
+            display: flex;
+            align-items: center; /* 垂直置中 */
+            justify-content: center; /* 水平置中 */
+            text-align: center; /* 確保多行文字時也能居中 */
+            /* 彈性：如果需要欄位等寬，可以加上下面這行 */
+            /* flex: 1; */
+        }
+
+            /* 修正表單產生的預設邊距，避免影響置中 */
+            .listItem .item form {
+                margin: 0;
+                display: flex;
+                align-items: center;
+            }
+</style>
+
 <script>
-    function ShowDesc(msg)
-    {
+    function ShowDesc(msg) {
         alert(msg);
     }
 </script>

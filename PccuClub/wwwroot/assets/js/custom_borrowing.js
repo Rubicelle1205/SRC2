@@ -390,6 +390,7 @@ $(document).ready(function () {
                     if (self !== undefined) {
                         var date = self[0];
                         $("#ConditionModel_SDate").val(date);
+                        $('.dateTitle').text(date);
                         GoSearch();
                         //getBorrowList(date);
                         //getPeopleList(date);
