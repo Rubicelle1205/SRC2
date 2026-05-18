@@ -54,6 +54,10 @@ namespace WebPccuClub.Models
         [DisplayName("分類名稱")]
         public string? Text { get; set; }
 
+        /// <summary>審核單位</summary>
+        [DisplayName("審核單位")]
+        public string? ActVerifyUnit { get; set; }
+
         /// <summary>可借用日期</summary>
         [DisplayName("可借用日期")]
         public DateTime? BorrowSDate { get; set; }
@@ -61,6 +65,10 @@ namespace WebPccuClub.Models
         /// <summary>可借用日期</summary>
         [DisplayName("可借用日期")]
         public DateTime? BorrowEDate { get; set; }
+
+        /// <summary>借用規定</summary>
+        [DisplayName("借用規定")]
+        public string? BorrowRule { get; set; }
 
         /// <summary>備註</summary>
         [DisplayName("備註")]

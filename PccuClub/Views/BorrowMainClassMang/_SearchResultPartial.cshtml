@@ -1,27 +1,31 @@
 ﻿@model WebPccuClub.Models.BorrowMainClassMangViewModel
 
 
-    <!-- /.card-header -->
-    <div class="card-body table-responsive p-0">
-        <table class="table table-bordered table-hover text-nowrap">
-            <thead>
-                <tr class="text-center">
+<!-- /.card-header -->
+<div class="card-body table-responsive p-0">
+    <table class="table table-bordered table-hover text-nowrap">
+        <thead>
+            <tr class="text-center">
                 <th width="20%">分類名稱</th>
+                <th width="10%">審核單位</th>
+                <th width="10%">借用規定</th>
                 <th width="30%">可借用日期</th>
-                <th width="30%">備註</th>
-                    <th width="20%">功能</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.ResultModel.Count > 0)
-                { 
-                    foreach (var item in Model.ResultModel)
-                    {
-                        <tr>
-                            <td class="text-center text-sm">@item.Text</td>
-                        <td class="text-left text-sm">@item.BorrowSDate.Value.ToString("yyyy/MM/dd") ~ @item.BorrowEDate.Value.ToString("yyyy/MM/dd")</td>
-                            <td class="text-left text-sm">@item.Memo</td>
-                            <td class="text-center text-sm" style="display: flex; justify-content: center; align-items: center;">
+                <th width="15%">備註</th>
+                <th width="15%">功能</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.ResultModel.Count > 0)
+            {
+                foreach (var item in Model.ResultModel)
+                {
+                    <tr>
+                        <td class="text-center text-sm">@item.Text</td>
+                        <td class="text-center text-sm">@item.ActVerifyUnit</td>
+                        <td class="text-center text-sm">@item.BorrowRule</td>
+                        <td class="text-center text-sm">@item.BorrowSDate.Value.ToString("yyyy/MM/dd") ~ @item.BorrowEDate.Value.ToString("yyyy/MM/dd")</td>
+                        <td class="text-center text-sm">@item.Memo</td>
+                        <td class="text-center text-sm" style="display: flex; justify-content: center; align-items: center;">
                             @using (Html.BeginForm("Edit", "BorrowMainClassMang", FormMethod.Post, new { style = "float:left" }))
                             {
                                 <button type="submit" value="@item.ID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">編輯</button>
@@ -29,22 +33,22 @@
 
                             <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel(@item.ID);">刪除</a>
 
-                            </td>
-                        </tr>
-                    }
+                        </td>
+                    </tr>
                 }
-                else
-                {
-                    <td colspan="10">查無資料</td>
-                }
-            </tbody>
-        </table>
-    </div>
+            }
+            else
+            {
+            <td colspan="10">查無資料</td>
+            }
+        </tbody>
+    </table>
+</div>
 
 <div class="card-footer clearfix">
     <div class="pagination justify-content-end" id="SearchResultListPagination"></div>
 </div>
-    <!-- /.card-body -->
+<!-- /.card-body -->
 
 <script>
     $("#SearchResultListPagination").solventoPageBar(
@@ -99,6 +103,6 @@
             }
         });
     }
-    
+
 
 </script>

@@ -27,20 +27,37 @@
                                 </div>
                                 <div class="textbox">
                                     <div class="num">@item.Text</div>
-                                    @*<div class="title title-3 text-muted">
-                                        實際借用品項現場核判不收借使用費。
-                                        1.驗收無誤且清潔完畢完成歸還手續，無息歸還其保證金。
-                                        2.逾期罰款每日100元按日累加，遺失照價賠償。
-                                    </div>*@
                                     <div class="title d-flex justify-content-around mt-2">
                                         @using (Html.BeginForm("Detail", "FBorrowIndex", FormMethod.Post, new { style = "float:left" }))
                                         {
                                             <button type="submit" value="@item.ID" name="submitBtn" class="btn btn btn-secondary">相關說明</button>
                                         }
-                                        @using (Html.BeginForm("Create", "FBorrowRecord", FormMethod.Post, new { style = "float:left" }))
+
+                                        @if (null != item.BorrowSDate && null != item.BorrowEDate)
                                         {
-                                            <button type="submit" value="@item.ID" name="submitBtn" class="btn btn btn-primary">前往借用</button>
+                                            DateTime now = DateTime.Now;
+
+                                            if (now < item.BorrowSDate)
+                                            {
+                                                <div style="float:left">
+                                                    <button type="button" class="btn btn-secondary" disabled>尚未開放</button>
+                                                </div>
+                                            }
+                                            else if (now > item.BorrowEDate)
+                                            {
+                                                <div style="float:left">
+                                                    <button type="button" class="btn btn-secondary" disabled>前往借用</button>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                @using (Html.BeginForm("Create", "FBorrowRecord", FormMethod.Post, new { style = "float:left" }))
+                                                {
+                                                    <button type="submit" value="@item.ID" name="submitBtn" class="btn btn-primary">前往借用</button>
+                                                }
+                                            }
                                         }
+                                        
                                     </div>
                                 </div>
                             </div>
