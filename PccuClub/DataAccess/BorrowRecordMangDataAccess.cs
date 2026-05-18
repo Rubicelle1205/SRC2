@@ -678,6 +678,7 @@ AND BorrowMainID = @BorrowMainID";
                                FROM (SELECT BorrowMainID, MainResourceID, SUM(BorrowAmt) AS BorrowCnt
                                        FROM BorrowDevice A
                                        WHERE 1 = 1
+                                       %BorrowDeviceList%
                                          AND A.MainResourceID IN ({strDevice})
                                          AND A.BorrowMainID IN (SELECT BorrowMainID 
                                                                   FROM BorrowMain
@@ -687,6 +688,12 @@ AND BorrowMainID = @BorrowMainID";
                                     GROUP BY BorrowMainID, MainResourceID) T
                            GROUP BY T.MainResourceID
 ";
+
+            if (!string.IsNullOrEmpty(strDevice))
+                CommandText = CommandText.Replace("%BorrowDeviceList%", $" AND A.MainResourceID IN ({strDevice}) ");
+            else
+                CommandText = CommandText.Replace("%BorrowDeviceList%", string.Empty);
+
 
             DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
 
