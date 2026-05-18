@@ -46,11 +46,13 @@
                                 <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel(@item.MainResourceID);">刪除</a>
                             </div>
                         </td>
-                        <td class="text-center text-sm">
-                            @using (Html.BeginForm("InventoryIndex", "BorrowMainResourceMang", FormMethod.Post, new {}))
-                            {
-                                <button type="submit" value="@item.MainResourceID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">盤點</button>
-                            }
+                        <td class="text-center text-sm p-1">
+                            <div class="d-flex justify-content-center align-items-center gap-1">
+                                @using (Html.BeginForm("InventoryIndex", "BorrowMainResourceMang", FormMethod.Post, new { }))
+                                {
+                                    <button type="submit" value="@item.MainResourceID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">盤點</button>
+                                }
+                            </div>
                         </td>
                     </tr>
                     }
