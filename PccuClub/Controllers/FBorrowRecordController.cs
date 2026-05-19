@@ -39,15 +39,17 @@ namespace WebPccuClub.Controllers
         }
 
         [Log(LogActionChineseName.新增)]
-        public IActionResult Create()
+        public IActionResult Create(string submitBtn)
         {
             ViewBag.ddlMainClass = dbAccess.GetddlMainClass();
             ViewBag.ddlApplyUnitType = dbAccess.GetddlApplyUnitType();
             ViewBag.ddlBorrowActVerify = dbAccess.GetddlBorrowActVerify();
-            ViewBag.ddlSecondResurce = dbAccess.GetddlSecondResurce();
+            ViewBag.ddlSecondResurce = dbAccess.GetddlSecondResurce(submitBtn);
 
             FBorrowRecordViewModel vm = new FBorrowRecordViewModel();
             vm.CreateModel = new FBorrowRecordCreateModel();
+            vm.CreateModel.MainClassID = submitBtn;
+
             return View(vm);
         }
 
@@ -259,6 +261,19 @@ namespace WebPccuClub.Controllers
             }
 
             ViewBag.ddlSecondAmt = LstItem;
+
+            return PartialView("_BorrowAmtPartial", vm);
+        }
+
+        [Log(LogActionChineseName.取得上架數量)]
+        [ValidateInput(false)]
+        public IActionResult InitBorrowResource(string MainClassID)
+        {
+            ViewBag.ddlSecondResurce = dbAccess.GetddlSecondResurce(MainClassID);
+
+            FBorrowRecordViewModel vm = new FBorrowRecordViewModel();
+            vm.CreateModel = new FBorrowRecordCreateModel();
+            vm.CreateModel.MainClassID = MainClassID;
 
             return PartialView("_BorrowAmtPartial", vm);
         }

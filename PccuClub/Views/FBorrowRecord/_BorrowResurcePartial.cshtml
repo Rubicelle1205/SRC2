@@ -1,0 +1,22 @@
+﻿@model WebPccuClub.Models.BorrowRecordMangViewModel
+
+@{
+
+}
+
+@if (!string.IsNullOrEmpty(Model.CreateModel.MainClassID))
+{
+    @if (ViewBag.ddlSecondResurce != null)
+    {
+        @Html.DropDownListFor(m => m.CreateModel.MainResourceID, (List<SelectListItem>)ViewBag.ddlSecondResurce, "請選擇資源名稱", new { @class = "form-control" })
+    }
+}
+
+
+<script>
+
+</script>
+
+<style>
+
+</style>
