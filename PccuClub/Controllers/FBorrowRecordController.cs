@@ -275,7 +275,7 @@ namespace WebPccuClub.Controllers
             vm.CreateModel = new FBorrowRecordCreateModel();
             vm.CreateModel.MainClassID = MainClassID;
 
-            return PartialView("_BorrowAmtPartial", vm);
+            return PartialView("_BorrowResurcePartial", vm);
         }
 
     }

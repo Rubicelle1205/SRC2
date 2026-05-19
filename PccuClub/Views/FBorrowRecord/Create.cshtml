@@ -129,7 +129,6 @@
                             <div class="col-sm-4">
                                 <label class="flex-shrink-0 mx-2" for="resource_id">資源名稱：</label>
                                 <div id="borrowResurcePartial"></div>
-                                @Html.DropDownListFor(m => m.CreateModel.MainResourceID, (List<SelectListItem>)ViewBag.ddlSecondResurce, "請選擇資源名稱", new { @class = "form-control" })
                             </div>
                             <div class="col-sm-4">
                                 <label class="flex-shrink-0 mx-2" for="resource_num">借用數量：</label>
@@ -269,9 +268,9 @@
         $('#@Html.IdFor(m => m.CreateModel.MainClassID)').trigger('change');
 
 
-        $("[id $= 'MainResourceID']").on('change', function () {
-
-            InitBorrowAmt($("[id $= 'MainResourceID']").val());
+        $('#@Html.IdFor(m => m.CreateModel.MainResourceID)').on('change', function () {
+            var selectedValue = $(this).val();
+            InitBorrowAmt(selectedValue.val());
         });
 
         function updateRecordText() {
@@ -342,7 +341,7 @@
             url: '@Url.Action("InitBorrowResource")',
             data: { 'MainClassID': MainClassID },
             success: function (result) {
-                $('#borrowAmtPartial').html(result);
+                $('#borrowResurcePartial').html(result);
             }
         });
     }
