@@ -162,7 +162,7 @@
                                     <input id="ProposalFile0" name="ProposalFile0" type="file" class="filesupload" style="display:none;" accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z" />
                                     <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
                                 </label>
-                                <span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                <span class="filename text-sm mx-2 text-muted">尚未選擇檔案...</span>
                                 <button class="del-btn btn btn-sm btn-outline-secondary hidden" type="button"><i class="fas fa-times"></i> 移除</button>
                             </div>
                         </div>
@@ -199,96 +199,127 @@
 
 
 <script>
+    // 全域變數：記錄已加入的借用設備
+    var addedItems = {};
 
     $(document).ready(function () {
-        // 多檔上傳
+
+        /* ==========================================================================
+           1. 多檔案上傳管理
+           ========================================================================== */
         if ($(".target_list_information").length > 0) {
 
+            // 點擊新增檔案欄位
             $(document).on('click', '#add_input_btn', function () {
-
                 var num = checkNum();
+
                 var addItem = '<div class="d-block mb-1 item">';
                 addItem += '<label class="btn btn-outline-primary mb-0">';
                 addItem += '<input id="ProposalFile' + num + '" style="display:none;" req class="filesupload" data-title="附件" type="file" name="ProposalFile' + num + '" value="" accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z" data-file="">';
                 addItem += '<i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案';
                 addItem += '</label>';
-                addItem += '<span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>';
+                addItem += '<span class="filename text-sm mx-2 text-muted">尚未選擇檔案...</span>';
                 addItem += '<button class="del-btn btn btn-sm btn-outline-secondary" type="button"><i class="fas fa-times"></i> 移除</button>';
                 addItem += '</div>';
+
+                // 限制最多 7 個檔案欄位
                 if ($(".target_list_information").find("[type='file']").length <= 7) {
                     $(".target_list_information").append(addItem);
-                    $(".target_list_information .del-btn").removeClass("hidden")
                 }
-            })
 
+                checkNum(); // 動態更新按鈕狀態與刪除按鈕顯示
+            });
+
+            // 點擊移除檔案欄位
             $(document).on('click', '.target_list_information .del-btn', function () {
-                var num = $(".target_list_information").find("[type='file']").length
+                var num = $(".target_list_information").find("[type='file']").length;
 
                 if (confirm("確認清除？") == false) {
-                    return false
+                    return false;
                 } else {
                     if (num >= 2) {
-                        $(this).closest(".item").remove()
-                        $("#add_input_btn").prop("disabled", false)
+                        $(this).closest(".item").remove();
                     }
-
-                    if (num <= 2) {
-                        $(".target_list_information .del-btn").addClass("hidden")
-                    } else {
-                        $(".target_list_information .del-btn").removeClass("hidden")
-                    }
+                    checkNum(); // 移除後重新計算數量並連動「新增按鈕」狀態
                 }
-            })
+            });
 
+            // 計算並控制檔案欄位數量與按鈕狀態
             function checkNum() {
-                var num = $(".target_list_information").find(".d-block.mb-1.item").length
-                if (num >= 7) {
-                    $("#add_input_btn").prop("disabled", true)
+                var currentItems = $(".target_list_information").find(".d-block.mb-1.item").length;
+                var fileCount = $(".target_list_information").find("[type='file']").length;
+
+                // 控制新增按鈕是否停用 (大於等於 7 個則停用)
+                if (currentItems >= 7) {
+                    $("#add_input_btn").prop("disabled", true);
                 } else {
-                    $("#add_input_btn").prop("disabled", false)
+                    $("#add_input_btn").prop("disabled", false);
                 }
-                return num;
+
+                // 控制刪除按鈕顯示 (剩 1 個時隱藏刪除鈕)
+                if (fileCount <= 1) {
+                    $(".target_list_information .del-btn").addClass("hidden");
+                } else {
+                    $(".target_list_information .del-btn").removeClass("hidden");
+                }
+                return currentItems;
             }
         }
 
+        // 當檔案選取變更時，更新顯示的檔名
         $(document).on('change', ".filesupload", function (e) {
-            var filename = e.target.files[0].name;
-            $(this).closest('.item').find('.text-muted#filename').text(filename);
+            if (e.target.files.length > 0) {
+                var filename = e.target.files[0].name;
+                // 修正：改用 .filename 類別選擇器
+                $(this).closest('.item').find('.filename').text(filename);
+            }
         });
-    });
 
-    $(document).ready(function () {
-        var addedItems = {};
 
+        /* ==========================================================================
+           2. 設備借用清單管理
+           ========================================================================== */
+        // 大類變更：連動載入資源項目
         $('#@Html.IdFor(m => m.CreateModel.MainClassID)').on('change', function () {
             var selectedValue = $(this).val();
             InitBorrowResource(selectedValue);
         });
 
+        // 觸發初始的大類變更事件
         $('#@Html.IdFor(m => m.CreateModel.MainClassID)').trigger('change');
 
-
-        $('#@Html.IdFor(m => m.CreateModel.MainResourceID)').on('change', function () {
+        // 改用事件代理：監聽整個 document，只要裡面有 ID 叫 MainResourceID 的元件改變，就一定抓得到！
+        $(document).on('change', '#@Html.IdFor(m => m.CreateModel.MainResourceID)', function () {
             var selectedValue = $(this).val();
-            InitBorrowAmt(selectedValue.val());
+            InitBorrowAmt(selectedValue);
         });
 
-        function updateRecordText() {
-            var itemList = Object.keys(addedItems).map(function (key) {
-                return addedItems[key].text + ',' + addedItems[key].quantity;
-            }).join('|');
-
-            $('#@Html.IdFor(m => m.CreateModel.strDeviceData)').val(itemList);
-        }
-
+        // 點擊「加入」設備按鈕
         $('#btnAddevent').click(function () {
 
+            var MainClassID = $('#@Html.IdFor(m => m.CreateModel.MainClassID)').val();
             var MainResourceID = $('#@Html.IdFor(m => m.CreateModel.MainResourceID) option:selected');
             var BorrowAmt = $('#@Html.IdFor(m => m.CreateModel.BorrowAmt) option:selected');
 
+            // 基本防呆驗證
+            if (MainClassID == "") { $.alert("請選擇大類項目"); return; }
             if (MainResourceID.val() == "") { $.alert("請選擇資源名稱"); return; }
             if (BorrowAmt.val() == "") { $.alert("請選擇借用數量"); return; }
 
+            var existingKeys = Object.keys(addedItems);
+            if (existingKeys.length > 0) {
+                // 取出清單中第一筆資料的大類 ID 來比對
+                var firstItemKey = existingKeys[0];
+                var existingClassID = addedItems[firstItemKey].classId;
+
+                // 如果目前選取的大類跟清單中已有的大類不同，就攔截！
+                if (MainClassID !== existingClassID) {
+                    $.alert("單筆申請單僅允許借用同一個大類的資源。若需借用其他類別，請建立新的申請單。");
+                    return;
+                }
+            }
+            
+            // 若項目已存在，提示是否更新數量
             if (addedItems[MainResourceID.val()]) {
                 if (confirm('此項目已存在。是否要更新數量？')) {
                     var existingItem = $('#borrow-list').find(`[data-id="${MainResourceID.val()}"]`);
@@ -297,6 +328,7 @@
                     updateRecordText();
                 }
             } else {
+                // 新增項目至畫面的 <ul> 清單中
                 var listItem = $('<li>', {
                     class: 'list-group-item d-flex justify-content-between p-1',
                     'data-id': MainResourceID.val()
@@ -308,11 +340,14 @@
 
                 $('#borrow-list').append(listItem);
 
+                // 同步記錄至全域物件
                 addedItems[MainResourceID.val()] = {
                     text: MainResourceID.val(),
-                    quantity: BorrowAmt.val()
+                    quantity: BorrowAmt.val(),
+                    classId: MainClassID // 記錄它是哪一個大類的，供下次比對使用
                 };
 
+                // 綁定動態項目的移除事件
                 listItem.find('.del-btn').click(function () {
                     delete addedItems[MainResourceID.val()];
                     listItem.remove();
@@ -322,10 +357,22 @@
                 updateRecordText();
             }
         });
+
+        // 將物件資料轉為字串存入隱藏欄位 (格式: ID,數量|ID,數量)
+        function updateRecordText() {
+            var itemList = Object.keys(addedItems).map(function (key) {
+                return addedItems[key].text + ',' + addedItems[key].quantity;
+            }).join('|');
+
+            $('#@Html.IdFor(m => m.CreateModel.strDeviceData)').val(itemList);
+        }
     });
 
+    /* ==========================================================================
+       3. 後端連動非同步要求 (Ajax)
+       ========================================================================== */
+    // 獲取借用數量 PartialView
     function InitBorrowAmt(MainResourceID) {
-
         SendAjax({
             url: '@Url.Action("InitBorrowAmt")',
             data: { 'MainResourceID': MainResourceID },
@@ -335,8 +382,8 @@
         });
     }
 
+    // 獲取資源清單 PartialView
     function InitBorrowResource(MainClassID) {
-
         SendAjax({
             url: '@Url.Action("InitBorrowResource")',
             data: { 'MainClassID': MainClassID },
@@ -346,10 +393,13 @@
         });
     }
 
+    /* ==========================================================================
+       4. 表單驗證與儲存送出
+       ========================================================================== */
     function SaveData() {
+        var data = new FormData();
 
-        var data = new FormData()
-
+        // 讀取所有表單欄位值
         var ApplyUnitType = $('#@Html.IdFor(m => m.CreateModel.ApplyUnitType)').val();
         var ApplyUnitName = $('#@Html.IdFor(m => m.CreateModel.ApplyUnitName)').val();
         var ApplyMan = $('#@Html.IdFor(m => m.CreateModel.ApplyMan)').val();
@@ -367,7 +417,7 @@
         var BorrowMemo = $('#@Html.IdFor(m => m.CreateModel.BorrowMemo)').val();
         var strDeviceData = $('#@Html.IdFor(m => m.CreateModel.strDeviceData)').val();
 
-
+        // 欄位必填驗證
         if (ApplyUnitType == "") { $.alert("申請單位類型不可為空"); return; }
         if (ApplyUnitName == "") { $.alert("申請單位不可為空"); return; }
         if (ApplyMan == "") { $.alert("角色名稱不可為空"); return; }
@@ -381,31 +431,31 @@
         if (TakeEDate == "") { $.alert("計畫歸還日期不可為空"); return; }
         if (strDeviceData == "") { $.alert("需選擇借用設備"); return; }
 
+        // 日期格式驗證 (Moment.js)
         if (!moment(UseSDate, "YYYY-MM-DD", true).isValid()) { $.alert("實際使用起日格式不正確"); return; }
         if (!moment(UseEDate, "YYYY-MM-DD", true).isValid()) { $.alert("實際使用訖日格式不正確"); return; }
         if (!moment(TakeSDate, "YYYY-MM-DD", true).isValid()) { $.alert("計畫領取日期格式不正確"); return; }
         if (!moment(TakeEDate, "YYYY-MM-DD", true).isValid()) { $.alert("計畫歸還日期格式不正確"); return; }
 
+        // 日期前後順序邏輯驗證
         if (UseSDate > UseEDate) {
             $.alert("實際使用起日不可大於實際使用訖日");
             return false;
         }
-
         if (TakeSDate > TakeEDate) {
             $.alert("計畫領取日期不可大於計畫歸還日期");
             return false;
         }
-
         if (TakeSDate > UseSDate) {
             $.alert("計畫領取日期不可大於實際使用起日");
             return false;
         }
-
         if (UseEDate > TakeEDate) {
             $.alert("實際使用訖日不可大於計畫歸還日期");
             return false;
         }
 
+        // 將驗證通過的欄位填入 FormData
         data.append('@Html.NameFor(m => m.CreateModel.ApplyUnitType)', ApplyUnitType);
         data.append('@Html.NameFor(m => m.CreateModel.ApplyUnitName)', ApplyUnitName);
         data.append('@Html.NameFor(m => m.CreateModel.ApplyMan)', ApplyMan);
@@ -423,34 +473,31 @@
         data.append('@Html.NameFor(m => m.CreateModel.BorrowMemo)', BorrowMemo);
         data.append('@Html.NameFor(m => m.CreateModel.strDeviceData)', strDeviceData);
 
-
-
-        var allEmpty = true;
+        // 走訪並驗證所有上傳檔案 (包含動態產生的 ProposalFile0 ~ ProposalFile8)
         for (var i = 0; i <= 8; i++) {
-            var file = $('#ProposalFile' + i);
+            var fileInput = $('#ProposalFile' + i);
 
-            if (file.length > 0 && file.val() !== '') {
-                allEmpty = false;
-                var File = $('#ProposalFile' + i)[0].files[0];
-                if (typeof File !== 'undefined') {
-                    var fileExtension = File.name.split('.').pop().toLowerCase();
+            if (fileInput.length > 0 && fileInput.val() !== '') {
+                var fileObj = fileInput[0].files[0];
+                if (typeof fileObj !== 'undefined') {
+                    var fileExtension = fileObj.name.split('.').pop().toLowerCase();
+                    var allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png', 'zip', 'rar', '7z'];
 
-                    if (fileExtension !== 'pdf' && fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png'
-                        && fileExtension !== 'zip' && fileExtension !== 'rar' && fileExtension !== '7z') {
-                        $.alert("檔案類型不符合");
+                    if ($.inArray(fileExtension, allowedExtensions) === -1) {
+                        $.alert("檔案類型不符合 (僅接受 PDF, JPG, PNG, ZIP, RAR, 7Z)");
                         return;
                     }
-
-                    data.append('@Html.NameFor(m => m.File)', File);
+                    data.append('@Html.NameFor(m => m.File)', fileObj);
                 }
             }
         }
 
+        // 送出 Ajax 要求
         SendAjax({
             url: '@Url.Action("SaveNewData")',
             data: data,
-            processData: false,
-            contentType: false,
+            processData: false, // 必須為 false，告知 jQuery 不要處理發送的資料
+            contentType: false, // 必須為 false，告知 jQuery 不要設定 Content-Type 標頭
             success: function (result) {
                 if (result.errorCode == 0) {
                     $.confirm({
@@ -462,20 +509,16 @@
                             },
                         }
                     });
-                }
-                else {
+                } else {
                     $.confirm({
                         title: "",
                         content: "新增失敗",
                         buttons: {
-                            確定: function () {
-                            },
+                            確定: function () { }
                         }
                     });
                 }
             }
         });
-
     }
-
 </script>
