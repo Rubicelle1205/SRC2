@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WS.ActivityDateOutput", "WS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDel", "DataDel\DataDel.csproj", "{BEA9949C-7A0A-4BAB-80BA-4031FE465887}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoReturn", "AutoReturn\AutoReturn.csproj", "{1D76D275-ABB1-4859-9945-09AABB2C54F4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoReturn", "AutoReturn\AutoReturn.csproj", "{A3793C36-B24B-4D99-BE6E-29503B5E5286}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +47,10 @@ Global
 		{BEA9949C-7A0A-4BAB-80BA-4031FE465887}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEA9949C-7A0A-4BAB-80BA-4031FE465887}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEA9949C-7A0A-4BAB-80BA-4031FE465887}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1D76D275-ABB1-4859-9945-09AABB2C54F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D76D275-ABB1-4859-9945-09AABB2C54F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1D76D275-ABB1-4859-9945-09AABB2C54F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1D76D275-ABB1-4859-9945-09AABB2C54F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3793C36-B24B-4D99-BE6E-29503B5E5286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3793C36-B24B-4D99-BE6E-29503B5E5286}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3793C36-B24B-4D99-BE6E-29503B5E5286}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3793C36-B24B-4D99-BE6E-29503B5E5286}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

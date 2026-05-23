@@ -1,37 +1,29 @@
-﻿using System;
-using System.IO;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
-using System.Text;
+using System.Data.SqlClient;
 using System.Globalization;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration; // 💡 請確認已安裝 Microsoft.Extensions.Configuration.Json NuGet 套件
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace AutoReturnApp
+namespace AutoReturn
 {
-    class Program
+    internal class Program
     {
-        // 讀取自 appsettings.json 的全域連線字串變數
-        private static string ConnectionString;
-
         static void Main(string[] args)
         {
-            // 1. 初始化環境：從同目錄下的 appsettings.json 讀取資料庫連線設定
+
             try
             {
-                string basePath = AppDomain.CurrentDomain.BaseDirectory;
-
-                var builder = new ConfigurationBuilder()
-                    .SetBasePath(basePath)
-                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-
-                IConfiguration config = builder.Build();
-
-                // 對應 JSON 結構: ConnectionString -> DefaultDatabase
-                ConnectionString = config.GetSection("ConnectionString")?["DefaultDatabase"];
+                string ConnectionString = ConfigurationManager.ConnectionStrings["DefaultDatabase"].ConnectionString;
 
                 if (string.IsNullOrEmpty(ConnectionString))
                 {
-                    throw new Exception("在 appsettings.json 中找不到 [ConnectionString] -> [DefaultDatabase] 的設定值！");
+                    throw new Exception("沒有找到Connect String");
                 }
             }
             catch (FileNotFoundException)
@@ -134,67 +126,22 @@ namespace AutoReturnApp
         private static void FetchPreviewJson(DateTime simulateDate)
         {
             // 使用 SQL Server 內建的 FOR JSON PATH 在資料庫端直接揉成 JSON
-            string sqlQuery = @"
-                SELECT 
-                    bm.Id AS BorrowMainID,
-                    bm.TakeEDate,
-                    bm.ActVerify AS CurrentActVerify,
-                    '05' AS TargetActVerify,
-                    bd.MainResourceID,
-                    bd.BorrowSecondResourceID,
-                    bd.BorrowRealAmt
-                FROM BorrowDevice bd
-                INNER JOIN BorrowMain bm ON bd.BorrowMainID = bm.Id -- 👈 請確認實際主外鍵關聯欄位
-                INNER JOIN BorrowMainResourceMang bmr ON bd.MainResourceID = bmr.MainResourceID
-                WHERE bm.TakeEDate < @TargetDate  
-                  AND bmr.IsAutoReturn = 1       -- 👈 請確認「可自動歸還」的實際欄位
-                  AND bm.ActVerify <> '05'
-                FOR JSON PATH, ROOT('ToUpdateList');";
+            string sqlQuery = @"SELECT 
+    A.ID, B.TakeSDate, B.TakeEDate, B.ActVerify, A.MainResourceID, A.BorrowSecondResourceID, A.BorrowRealAmt, A.ReturnRealAmt
+FROM BorrowDevice A
+INNER JOIN BorrowMain B ON A.BorrowMainID = B.BorrowMainID 
+INNER JOIN BorrowMainResourceMang C ON A.MainResourceID = C.MainResourceID
+WHERE B.TakeEDate < @TargetDate
+  AND C.IsAutoReturn = 1
+  AND A.BorrowStatus = '02'
+  AND A.ReturnRealAmt IS NULL
 
-            using (SqlConnection conn = new SqlConnection(ConnectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand(sqlQuery, conn))
-                {
-                    cmd.Parameters.Add("@TargetDate", SqlDbType.DateTime).Value = simulateDate;
+FOR JSON PATH";
 
-                    try
-                    {
-                        conn.Open();
+            DataTable dt = RunSQL(sqlQuery, true, new SqlParameter("@TargetDate", simulateDate));
 
-                        // 使用 StringBuilder 串接，避免大 JSON 格式資料被 Reader 預設大小截斷
-                        StringBuilder jsonResult = new StringBuilder();
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                jsonResult.Append(reader.GetValue(0).ToString());
-                            }
-                        }
-
-                        string output = jsonResult.ToString();
-
-                        // 若無符合資料，組出空的標準結構
-                        if (string.IsNullOrEmpty(output))
-                        {
-                            output = $"{{\"SimulatedDate\": \"{simulateDate:yyyy-MM-dd HH:mm:ss}\", \"ToUpdateList\": []}}";
-                        }
-                        else
-                        {
-                            // 若有資料，在開頭塞入模擬的時間標記
-                            string dateHeader = $"\"SimulatedDate\": \"{simulateDate:yyyy-MM-dd HH:mm:ss}\",";
-                            output = output.Insert(1, dateHeader);
-                        }
-
-                        // 輸出 JSON 到標準控制台
-                        Console.WriteLine(output);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"{{\"Error\": \"SQL執行錯誤: {ex.Message.Replace("\"", "\\\"")}\"}}");
-                        Environment.ExitCode = 1;
-                    }
-                }
-            }
+            string json = JsonConvert.SerializeObject(dt);
+            Console.WriteLine(json);
         }
 
         /// <summary>
@@ -205,50 +152,78 @@ namespace AutoReturnApp
             Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] 自動歸還排程開始執行...");
 
             string sqlUpdate = @"
-                -- 宣告 Table 變數，用以記錄本次真正有更新變動的 BorrowMainID
+                -- 宣告 Table 變數，精準記錄本次受影響的主表 ID
                 DECLARE @UpdatedMains TABLE (BorrowMainID INT);
 
-                -- 1. 更新子表 BorrowDevice 的欄位，並利用 OUTPUT 撈出對應的主表 ID
-                UPDATE bd
+                -- 1. 更新明細表 (BorrowDevice) 
+                UPDATE A
                 SET 
-                    bd.ReturnSecondResourceID = bd.BorrowSecondResourceID,
-                    bd.ReturnRealAmt = bd.BorrowRealAmt
-                OUTPUT inserted.BorrowMainID INTO @UpdatedMains -- 👈 請確認關聯外鍵欄位名稱
-                FROM BorrowDevice bd
-                INNER JOIN BorrowMain bm ON bd.BorrowMainID = bm.Id 
-                INNER JOIN BorrowMainResourceMang bmr ON bd.MainResourceID = bmr.MainResourceID
-                WHERE bm.TakeEDate < GETDATE()  
-                  AND bmr.IsAutoReturn = 1      -- 👈 請確認「可自動歸還」的實際欄位
-                  AND bm.ActVerify <> '05';
+                    A.ReturnSecondResourceID = A.BorrowSecondResourceID,
+                    A.ReturnRealAmt = A.BorrowRealAmt,
+                    A.BorrowStatus = '01'
+                OUTPUT inserted.BorrowMainID INTO @UpdatedMains
+                FROM BorrowDevice A
+                INNER JOIN BorrowMain B ON A.BorrowMainID = B.BorrowMainID 
+                INNER JOIN BorrowMainResourceMang C ON A.MainResourceID = C.MainResourceID
+                WHERE B.TakeEDate < GETDATE()
+                  AND C.IsAutoReturn = 1
+                  AND A.BorrowStatus = '02'
+                  AND A.ReturnRealAmt IS NULL;
 
-                -- 2. 根據剛剛有受影響的主表 ID，將主狀態全面改為 '05'
-                UPDATE bm
-                SET bm.ActVerify = '05'
-                FROM BorrowMain bm
-                WHERE bm.Id IN (SELECT DISTINCT BorrowMainID FROM @UpdatedMains);
+                -- 2. 同步將受影響的主表狀態改為 '05'
+                UPDATE B
+                SET B.ActVerify = '05'
+                FROM BorrowMain B
+                WHERE B.BorrowMainID IN (SELECT DISTINCT BorrowMainID FROM @UpdatedMains);
                 
-                -- 回傳本次更新受影響的明細總筆數
+                -- 回傳總更新筆數
                 SELECT @@ROWCOUNT;";
 
-            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            RunSQL(sqlUpdate);
+
+        }
+        private static void RunSQL(string strSQL)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["DefaultDatabase"].ConnectionString;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand(sqlUpdate, conn))
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand(strSQL, connection))
                 {
-                    try
+                    int rowsAffected = command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private static DataTable RunSQL(string strSQL, bool isQuery, params SqlParameter[] parameters)
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["DefaultDatabase"].ConnectionString;
+
+            // 建立一個空的 DataTable 準備用來裝資料
+            DataTable dataTable = new DataTable();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand(strSQL, connection))
+                {
+                    if (parameters != null)
                     {
-                        conn.Open();
-                        int rowsAffected = (int)cmd.ExecuteScalar();
-                        Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] 執行成功！共自動歸還了 {rowsAffected} 筆裝置紀錄。");
+                        command.Parameters.AddRange(parameters);
                     }
-                    catch (Exception ex)
+
+                    // 使用 SqlDataAdapter 來執行查詢並填入 DataTable
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] 發生嚴重錯誤: {ex.Message}");
-                        Console.ResetColor();
-                        Environment.ExitCode = 1;
+                        adapter.Fill(dataTable);
                     }
                 }
             }
+
+            return dataTable;
         }
     }
 }
