@@ -17,6 +17,8 @@ namespace WebPccuClub.Models
 
         public ClubEvaluationClassMangEditModel EditModel { get; set; }
 
+        public ClubEvaluationClassMangExcelModel ExcelModel { get; set; }
+
     }
 
     public class ClubEvaluationClassMangConditionModel
@@ -114,5 +116,20 @@ namespace WebPccuClub.Models
         /// <summary>更新時間</summary>
         [DisplayName("更新時間")]
         public DateTime? LastModified { get; set; }
+    }
+
+    public class ClubEvaluationClassMangExcelModel
+    {
+        /// <summary>學年度</summary>
+        [DisplayName("學年度")]
+        public string? SchoolYear { get; set; }
+
+        /// <summary>類別名稱</summary>
+        [DisplayName("類別名稱")]
+        public string? ClassName { get; set; }
+
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
+        public string? Memo { get; set; }
     }
 }

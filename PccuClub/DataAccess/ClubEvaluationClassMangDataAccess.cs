@@ -157,5 +157,38 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
 
             return ExecuteResult;
         }
+
+        /// <summary>
+        /// 匯入資料
+        /// </summary>
+        /// <param name="lstExcel"></param>
+        /// <param name="loginUser"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public DbExecuteInfo ImportData(List<ClubEvaluationClassMangExcelModel> dataList, UserInfo loginUser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            string CommendText = $@"INSERT INTO ClubEvaluationClassMang
+                                               (SchoolYear
+                                               ,ClassName
+                                               ,Memo
+                                               ,Creator
+                                               ,Created
+                                               ,LastModifier
+                                               ,LastModified)
+                                         VALUES
+                                               (@SchoolYear
+                                               ,@ClassName
+                                               ,@Memo
+                                               ,'{loginUser.LoginId}'
+                                               ,GETDATE()
+                                               ,'{loginUser.LoginId}'
+                                               ,GETDATE()) ";
+
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+            return ExecuteResult;
+        }
     }
 }
