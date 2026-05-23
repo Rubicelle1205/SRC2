@@ -14,7 +14,7 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WebPccuClub.Controllers
 {
-    [LogAttribute(LogActionChineseName.社團年度基本分維護)]
+    [LogAttribute(LogActionChineseName.基本分維護)]
     public class ClubBasicScoreMangController : BaseController
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
@@ -187,6 +187,68 @@ namespace WebPccuClub.Controllers
             }
 
             return Json(vmRtn);
+        }
+
+        [LogAttribute(LogActionChineseName.匯出Excel)]
+        public IActionResult ExportSearchResult(ClubBasicScoreMangViewModel vm)
+        {
+            string FileName = string.Format("{0}_{1}", LogActionChineseName.基本分維護, DateTime.Now.ToString("yyyyMMdd"));
+            vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel);
+
+            if (vm.ResultModel != null && vm.ResultModel.Count > 0)
+            {
+                IWorkbook workbook = new XSSFWorkbook();
+                List<int> LstWidth = new List<int> { 20, 20, 50, 20 };
+
+                ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
+
+                string[] allowedFields = new string[] { "SchoolYear", "BasicScore", "Memo", "Created" };
+
+                var properties = typeof(ClubBasicScoreMangResultModel).GetProperties()
+                        .Where(p => allowedFields.Contains(p.Name))
+                        .ToArray();
+
+                IRow headerRow = sheet.CreateRow(0);
+                XSSFCellStyle headStyle = ExcelUtil.GetDefaultHeaderStyle(workbook);
+
+                for (int i = 0; i <= properties.Length - 1; i++)
+                {
+                    var displayAttribute = (DisplayNameAttribute)properties[i].GetCustomAttribute(typeof(DisplayNameAttribute));
+                    var displayName = displayAttribute?.DisplayName ?? properties[i].Name;
+
+                    headerRow.CreateCell(i).SetCellValue(displayName);
+
+                    // 效能優化提醒：原本你的 foreach 寫在 for 迴圈內，會導致每次建立新 Cell 時
+                    // 都把整排 headerRow 的 Cell 全部重新跑一次迴圈設定 Style，這裡順便幫你改成只設定當前建立的 Cell 
+                    headerRow.GetCell(i).CellStyle = headStyle;
+                }
+
+                XSSFCellStyle contentStyle = ExcelUtil.GetDefaultContentStyle(workbook);
+
+                //設定資料
+                for (int i = 0; i <= vm.ResultModel.Count - 1; i++)
+                {
+                    IRow dataRow = sheet.CreateRow(i + 1);
+
+                    dataRow.CreateCell(0).SetCellValue(vm.ResultModel[i].SchoolYear);
+                    dataRow.CreateCell(1).SetCellValue(vm.ResultModel[i].BasicScore);
+                    dataRow.CreateCell(2).SetCellValue(vm.ResultModel[i].Memo);
+                    dataRow.CreateCell(3).SetCellValue(vm.ResultModel[i].Created?.ToString("yyyy/MM/dd"));
+
+                    foreach (var cell in dataRow.Cells)
+                        cell.CellStyle = contentStyle;
+                }
+
+                MemoryStream ms = new MemoryStream();
+                workbook.Write(ms, true);
+                ms.Flush();
+                ms.Position = 0;
+
+                return File(ms, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName + ".xlsx");
+            }
+
+            AlertMsg.Add("無資料已供匯出");
+            return Redirect("Index");
         }
     }
 }
