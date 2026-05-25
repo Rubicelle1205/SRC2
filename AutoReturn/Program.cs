@@ -132,7 +132,7 @@ FROM BorrowDevice A
 INNER JOIN BorrowMain B ON A.BorrowMainID = B.BorrowMainID 
 INNER JOIN BorrowMainResourceMang C ON A.MainResourceID = C.MainResourceID
 WHERE B.TakeEDate < @TargetDate
-  AND C.IsAutoReturn = 1
+  AND C.IsAutoReturn = '01'
   AND A.BorrowStatus = '02'
   AND A.ReturnRealAmt IS NULL
 
@@ -155,7 +155,7 @@ FOR JSON PATH";
                 -- 宣告 Table 變數，精準記錄本次受影響的主表 ID
                 DECLARE @UpdatedMains TABLE (BorrowMainID INT);
 
-                -- 1. 更新明細表 (BorrowDevice) 
+                -- 1. 歸還上架
                 UPDATE A
                 SET 
                     A.ReturnSecondResourceID = A.BorrowSecondResourceID,
@@ -166,11 +166,27 @@ FOR JSON PATH";
                 INNER JOIN BorrowMain B ON A.BorrowMainID = B.BorrowMainID 
                 INNER JOIN BorrowMainResourceMang C ON A.MainResourceID = C.MainResourceID
                 WHERE B.TakeEDate < GETDATE()
-                  AND C.IsAutoReturn = 1
+                  AND C.AutoReturn = '01'
                   AND A.BorrowStatus = '02'
                   AND A.ReturnRealAmt IS NULL;
 
-                -- 2. 同步將受影響的主表狀態改為 '05'
+
+                -- 2. 歸還下架
+                UPDATE A
+                SET 
+                    A.ReturnSecondResourceID = A.BorrowSecondResourceID,
+                    A.ReturnRealAmt = A.BorrowRealAmt,
+                    A.BorrowStatus = '03'
+                OUTPUT inserted.BorrowMainID INTO @UpdatedMains
+                FROM BorrowDevice A
+                INNER JOIN BorrowMain B ON A.BorrowMainID = B.BorrowMainID 
+                INNER JOIN BorrowMainResourceMang C ON A.MainResourceID = C.MainResourceID
+                WHERE B.TakeEDate < GETDATE()
+                  AND C.AutoReturn = '02'
+                  AND A.BorrowStatus = '02'
+                  AND A.ReturnRealAmt IS NULL;
+
+                -- 3. 同步將受影響的主表狀態改為 '05'
                 UPDATE B
                 SET B.ActVerify = '05'
                 FROM BorrowMain B

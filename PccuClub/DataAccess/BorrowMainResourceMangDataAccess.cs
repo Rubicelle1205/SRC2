@@ -81,7 +81,7 @@ AND (@Memo IS NULL OR A.Memo LIKE '%' + @Memo + '%') ";
             CommandText = $@"
 SELECT MainResourceID, MainResourceName, MainClass, SecondClass, BorrowType, ShortDesc, BorrowRule, 
        ResourceImg1, ResourceImg2, ResourceImg3, ResourceImg4, 
-       AmtReal, AmtShelves, AmtOnce, AmtSafe, SafeMessage, Enable, Memo, InventoryStatus, 
+       AmtReal, AmtShelves, AmtOnce, AmtSafe, SafeMessage, Enable, AutoReturn, Memo, InventoryStatus, 
        Creator, Created, LastModifier, LastModified
 FROM BorrowMainResourceMang
 WHERE 1 = 1
@@ -121,6 +121,7 @@ AND (MainResourceID = @MainResourceID) ";
             parameters.Add("@AmtSafe", vm.CreateModel.AmtSafe);
             parameters.Add("@SafeMessage", vm.CreateModel.SafeMessage);
             parameters.Add("@Enable", vm.CreateModel.Enable);
+            parameters.Add("@AutoReturn", vm.CreateModel.AutoReturn);
             parameters.Add("@Memo", vm.CreateModel.Memo);
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
@@ -143,6 +144,7 @@ AND (MainResourceID = @MainResourceID) ";
                                                ,AmtSafe
                                                ,SafeMessage
                                                ,Enable
+                                               ,AutoReturn
                                                ,Memo
                                                ,InventoryStatus
                                                ,Creator
@@ -167,6 +169,7 @@ AND (MainResourceID = @MainResourceID) ";
                                                ,@AmtSafe
                                                ,@SafeMessage
                                                ,@Enable
+                                               ,@AutoReturn
                                                ,@Memo
                                                ,'01'
                                                ,@LoginId
@@ -203,6 +206,7 @@ AND (MainResourceID = @MainResourceID) ";
             parameters.Add("@AmtSafe", vm.EditModel.AmtSafe);
             parameters.Add("@SafeMessage", vm.EditModel.SafeMessage);
             parameters.Add("@Enable", vm.EditModel.Enable);
+            parameters.Add("@AutoReturn", vm.EditModel.AutoReturn);
             parameters.Add("@Memo", vm.EditModel.Memo);
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
@@ -212,7 +216,7 @@ AND (MainResourceID = @MainResourceID) ";
                                            BorrowType = @BorrowType, ShortDesc = @ShortDesc, BorrowRule = @BorrowRule, 
                                            ResourceImg1 = @ResourceImg1, ResourceImg2 = @ResourceImg2, ResourceImg3 = @ResourceImg3, ResourceImg4 = @ResourceImg4, 
                                            AmtReal = @AmtReal, AmtShelves = @AmtShelves, AmtOnce = @AmtOnce, AmtSafe = @AmtSafe, SafeMessage = @SafeMessage, 
-                                           Enable = @Enable, Memo = @Memo, LastModifier = @LoginId, LastModified = GETDATE()
+                                           Enable = @Enable, AutoReturn = @AutoReturn, Memo = @Memo, LastModifier = @LoginId, LastModified = GETDATE()
                                      WHERE MainResourceID = @MainResourceID";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
@@ -741,6 +745,26 @@ AND (MainResourceID = @MainResourceID) ";
             #endregion
 
             CommandText = @"SELECT Code AS Value, Text AS Text FROM Code WHERE Type = 'BorrowMultType'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetddlAutoReturn()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS Value, Text AS Text FROM Code WHERE Type = 'AutoReturn'";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 

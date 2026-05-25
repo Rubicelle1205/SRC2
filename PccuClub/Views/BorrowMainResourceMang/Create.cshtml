@@ -57,6 +57,12 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <th width="10%">歸還方式<span class="required">*</span></th>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.AutoReturn, (List<SelectListItem>)ViewBag.ddlAutoReturn, "請選擇歸還方式", new { @class = "form-control" })
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th width="10%">簡易說明<span class="required">*</span></th>
                                         <td>@Html.TextBoxFor(m => m.CreateModel.ShortDesc, new {@class = "form-control", placeholder = "請輸入簡易說明"})</td>
                                     </tr>
@@ -210,7 +216,7 @@
         var MainResourceName = $('#@Html.IdFor(m => m.CreateModel.MainResourceName)').val();
         var MainClass = $('#@Html.IdFor(m => m.CreateModel.MainClass)').val();
         var BorrowType = $('#@Html.IdFor(m => m.CreateModel.BorrowType)').val();
-
+        var AutoReturn = $('#@Html.IdFor(m => m.CreateModel.AutoReturn)').val();
         
         var SecondClass = $('#@Html.IdFor(m => m.CreateModel.SecondClass)').val();
         var ShortDesc = $('#@Html.IdFor(m => m.CreateModel.ShortDesc)').val();
@@ -227,6 +233,7 @@
         if (MainResourceName == "") { $.alert("資源名稱不可為空白"); return; }
         if (MainClass == "") { $.alert("業務分類不可為空白"); return; }
         if (BorrowType == "") { $.alert("物品類型不可為空白"); return; }
+        if (AutoReturn == "") { $.alert("歸還方式不可為空白"); return; }
         if (SecondClass == "") { $.alert("子業務分類不可為空白"); return; }
         if (ShortDesc == "") { $.alert("簡易說明不可為空白"); return; }
 
@@ -292,6 +299,7 @@
         data.append('@Html.NameFor(m => m.CreateModel.MainResourceID)', MainResourceID);
         data.append('@Html.NameFor(m => m.CreateModel.MainResourceName)', MainResourceName);
         data.append('@Html.NameFor(m => m.CreateModel.BorrowType)', BorrowType);
+        data.append('@Html.NameFor(m => m.CreateModel.AutoReturn)', AutoReturn);
         data.append('@Html.NameFor(m => m.CreateModel.MainClass)', MainClass);
         data.append('@Html.NameFor(m => m.CreateModel.SecondClass)', SecondClass);
         data.append('@Html.NameFor(m => m.CreateModel.BorrowRule)', BorrowRule);

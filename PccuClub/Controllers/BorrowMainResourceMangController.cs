@@ -50,6 +50,7 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlSecondClass = dbAccess.GetddlSecondClass();
             ViewBag.ddlEnable = dbAccess.GetddlEnable();
             ViewBag.ddlBorrowMultType = dbAccess.GetddlBorrowMultType();
+            ViewBag.ddlAutoReturn = dbAccess.GetddlAutoReturn();
 
             BorrowMainResourceMangViewModel vm = new BorrowMainResourceMangViewModel();
             vm.CreateModel = new BorrowMainResourceMangCreateModel();
@@ -66,6 +67,7 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlSecondClass = dbAccess.GetddlSecondClass();
             ViewBag.ddlEnable = dbAccess.GetddlEnable();
             ViewBag.ddlBorrowMultType = dbAccess.GetddlBorrowMultType();
+            ViewBag.ddlAutoReturn = dbAccess.GetddlAutoReturn();
 
             //BorrowMainResourceMangViewModel vm = new BorrowMainResourceMangViewModel();
             vm.EditModel = dbAccess.GetEditData(submitBtn);
