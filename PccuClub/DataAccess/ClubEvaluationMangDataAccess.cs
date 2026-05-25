@@ -263,7 +263,7 @@ AND A.ClubID = @ClubID ";
             return new List<SelectListItem>();
         }
 
-        public List<SelectListItem> GetItemId()
+        public List<SelectListItem> GetItemId(string Ser)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -271,10 +271,12 @@ AND A.ClubID = @ClubID ";
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
+            parameters.Add("@ClassId", Ser);
             #endregion
 
             CommandText = @"SELECT A.ClubEvaluationItemId AS VALUE, A.ItemName AS Text 
 							  FROM ClubEvaluationItemMang A 
+WHERE A.ClassId = @ClassId
 ";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);

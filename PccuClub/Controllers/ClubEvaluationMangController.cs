@@ -34,7 +34,6 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlClub = dbAccess.GetAllClub();
             ViewBag.ddlClassId = dbAccess.GetClassId();
-            ViewBag.ddlItemId = dbAccess.GetItemId();
 
             ClubEvaluationMangViewModel vm = new ClubEvaluationMangViewModel();
             vm.ConditionModel = new ClubEvaluationMangConditionModel();
@@ -44,10 +43,8 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public IActionResult Create()
         {
-            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlClub = dbAccess.GetAllClub();
             ViewBag.ddlClassId = dbAccess.GetClassId();
-            ViewBag.ddlItemId = dbAccess.GetItemId();
 
             ClubEvaluationMangViewModel vm = new ClubEvaluationMangViewModel();
             vm.CreateModel = new ClubEvaluationMangCreateModel();
@@ -60,15 +57,15 @@ namespace WebPccuClub.Controllers
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
-            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlClub = dbAccess.GetAllClub();
             ViewBag.ddlClassId = dbAccess.GetClassId();
-            ViewBag.ddlItemId = dbAccess.GetItemId();
 
-            //ClubEvaluationMangViewModel vm = new ClubEvaluationMangViewModel();
             vm.EditModel = dbAccess.GetEditData(submitBtn);
             vm.EditModel.HistoryModel = dbAccess.GetHistoryData(vm, submitBtn);
             ViewBag.BaseScore = dbAccess.GetBaseScore(vm);
+
+            if(!string.IsNullOrEmpty(vm.EditModel.ClubEvaluationClassId))
+                ViewBag.ddlItemId = dbAccess.GetItemId(vm.EditModel.ClubEvaluationClassId);
 
             return View(vm);
         }
@@ -178,5 +175,21 @@ namespace WebPccuClub.Controllers
 
             return Json(vmRtn);
         }
+        
+        public Microsoft.AspNetCore.Mvc.JsonResult GetItemsByClassId(string classId)
+        {
+            var items = dbAccess .GetItemId(classId)
+                   .Select(x => new SelectListItem
+                   {
+                       Value = x.Value.ToString(), // 前端 option 的 value
+                       Text = x.Text            // 前端 option 顯示的文字
+                   })
+                   .ToList();
+
+            return Json(items);
+        }
+
+
+
     }
 }

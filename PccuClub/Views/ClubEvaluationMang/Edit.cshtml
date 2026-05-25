@@ -1,7 +1,7 @@
 ﻿@model WebPccuClub.Models.ClubEvaluationMangViewModel
 
 @{
-    int BasicScore = int.Parse(ViewBag.BaseScore);
+    int BasicScore = ViewBag.BaseScore == null? 0:int.Parse(ViewBag.BaseScore);
     int totalAdjustment = Model.EditModel.HistoryModel.Sum(item => item.Score);
     BasicScore = BasicScore + totalAdjustment;
     Layout = "_BackendLayout";
@@ -114,7 +114,10 @@
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.ClubEvaluationItemId)<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.EditModel.ClubEvaluationItemId, (List<SelectListItem>)ViewBag.ddlItemId, "請選擇項目", new { @class = "form-control" })
+                                            @if(null == Model.EditModel.ClubEvaluationItemId)
+                                                @Html.DropDownListFor(m => m.EditModel.ClubEvaluationItemId, new List<SelectListItem>(), "請先選擇類別", new { @class = "form-control", @disabled = "disabled" })
+                                             else
+                                                @Html.DropDownListFor(m => m.EditModel.ClubEvaluationItemId, (List<SelectListItem>)ViewBag.ddlItemId, "請選擇項目", new { @class = "form-control" })
                                         </td>
                                     </tr>
                                     <tr>
@@ -149,7 +152,46 @@
 <!-- /.content -->
 
 <script>
+    $(document).ready(function () {
+        // 監聽「類別」下拉選單的變更事件
+        $('#@Html.IdFor(m => m.EditModel.ClubEvaluationClassId)').change(function () {
+            var classId = $(this).val();
+            var itemSelect = $('#@Html.IdFor(m => m.EditModel.ClubEvaluationItemId)');
 
+            // 清空目前的選項
+            itemSelect.empty();
+
+            if (classId === "") {
+                itemSelect.append($('<option>', { value: '', text: '請先選擇類別' }));
+                itemSelect.prop('disabled', true);
+                return;
+            }
+
+            // 發送 Ajax 取得該類別下的所有項目
+            SendAjax({
+                url: '@Url.Action("GetItemsByClassId")', // 請確認後端有此 Action
+                data: { classId: classId },
+                success: function (result) {
+                    if (result && result.length > 0) {
+                        itemSelect.append($('<option>', { value: '', text: '請選擇項目' }));
+                        $.each(result, function (index, item) {
+                            itemSelect.append($('<option>', {
+                                value: item.value,
+                                text: item.text
+                            }));
+                        });
+                        itemSelect.prop('disabled', false); // 啟用下拉選單
+                    } else {
+                        itemSelect.append($('<option>', { value: '', text: '此類別下無項目' }));
+                        itemSelect.prop('disabled', true);
+                    }
+                },
+                error: function () {
+                    $.alert("取得項目資料失敗");
+                }
+            });
+        });
+    });
 
     function SaveData() {
 
