@@ -218,12 +218,12 @@ namespace WebPccuClub.Controllers
         public IActionResult ExportSearchResult(CadreMangViewModel vm)
         {
             string FileName = string.Format("{0}_{1}", LogActionChineseName.幹部名冊, DateTime.Now.ToString("yyyyMMdd"));
-            vm.ResultModel = dbAccess.GetExportResult(vm.ConditionModel);
+            vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel);
 
             if (vm.ResultModel != null && vm.ResultModel.Count > 0)
             {
                 IWorkbook workbook = new XSSFWorkbook();
-                List<int> LstWidth = new List<int> { 20, 50, 20, 20, 20, 20, 20, 30 };
+                List<int> LstWidth = new List<int> { 20, 20, 40, 20, 20, 20, 50, 20, 20, 20, 30, 30, 50 };
 
                 ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
 
@@ -254,13 +254,18 @@ namespace WebPccuClub.Controllers
                     IRow dataRow = sheet.CreateRow(i + 1);
 
                     dataRow.CreateCell(0).SetCellValue(vm.ResultModel[i].SchoolYear);
-                    dataRow.CreateCell(1).SetCellValue(vm.ResultModel[i].ClubName);
-                    dataRow.CreateCell(2).SetCellValue(vm.ResultModel[i].UserName);
-                    dataRow.CreateCell(3).SetCellValue(vm.ResultModel[i].Department);
-                    dataRow.CreateCell(4).SetCellValue(vm.ResultModel[i].CadreName);
-                    dataRow.CreateCell(5).SetCellValue(vm.ResultModel[i].SDuring.Value.ToString("yyyy/MM/dd"));
-                    dataRow.CreateCell(6).SetCellValue(vm.ResultModel[i].EDuring.Value.ToString("yyyy/MM/dd"));
-                    dataRow.CreateCell(7).SetCellValue(vm.ResultModel[i].Created.Value.ToString("yyyy/MM/dd HH:mm:ss"));
+                    dataRow.CreateCell(1).SetCellValue(vm.ResultModel[i].ClubID);
+                    dataRow.CreateCell(2).SetCellValue(vm.ResultModel[i].ClubName);
+                    dataRow.CreateCell(4).SetCellValue(vm.ResultModel[i].UserName);
+                    dataRow.CreateCell(3).SetCellValue(vm.ResultModel[i].SNo);
+                    dataRow.CreateCell(5).SetCellValue(vm.ResultModel[i].SexText);
+                    dataRow.CreateCell(6).SetCellValue(vm.ResultModel[i].EMail);
+                    dataRow.CreateCell(7).SetCellValue(vm.ResultModel[i].CellPhone);
+                    dataRow.CreateCell(8).SetCellValue(vm.ResultModel[i].Department);
+                    dataRow.CreateCell(9).SetCellValue(vm.ResultModel[i].CadreName);
+                    dataRow.CreateCell(10).SetCellValue(vm.ResultModel[i].SDuring.Value.ToString("yyyy/MM/dd"));
+                    dataRow.CreateCell(11).SetCellValue(vm.ResultModel[i].EDuring.Value.ToString("yyyy/MM/dd"));
+                    dataRow.CreateCell(12).SetCellValue(vm.ResultModel[i].Created.Value.ToString("yyyy/MM/dd HH:mm:ss"));
 
                     foreach (var cell in dataRow.Cells)
                         cell.CellStyle = contentStyle;

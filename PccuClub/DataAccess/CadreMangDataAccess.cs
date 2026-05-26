@@ -43,9 +43,11 @@ namespace WebPccuClub.DataAccess
 
             #endregion
 
-            CommandText = $@"SELECT A.CadreID, A.ClubID, B.ClubCName AS ClubName, A.CadreName, A.SchoolYear, A.UserName, A.Department, A.SDuring, A.EDuring, A.Created
+            CommandText = $@"SELECT A.CadreID, A.ClubID, B.ClubCName AS ClubName, A.CadreName, A.SchoolYear, A.SNo, A.EMail, 
+A.Sex, C.Text AS SexText, A.CellPhone, A.UserName, A.Department, A.SDuring, A.EDuring, A.Created
                                FROM CadreMang A
                           LEFT JOIN ClubMang B ON B.ClubID = A.ClubID
+						  LEFT JOIN Code C ON C.Code = A.Sex AND Type = 'Sex'
                               WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created >= @FromDate AND A.Created < @ToDatePlusOne" : "")}
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
