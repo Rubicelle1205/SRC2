@@ -53,23 +53,23 @@
                                     </tr>
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.Organizer)<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.Organizer, new {@class = "form-control"})</td>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.Organizer, new { @class = "form-control" })</td>
                                     </tr>
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.AwdActName)<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.AwdActName, new {@class = "form-control"})</td>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.AwdActName, new { @class = "form-control" })</td>
                                     </tr>
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.AwdName)<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.AwdDate, new {@class = "form-control", type="date"})</td>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.AwdDate, new { @class = "form-control", type = "date" })</td>
                                     </tr>
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.AwdType)<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.AwdType, new {@class = "form-control"})</td>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.AwdType, new { @class = "form-control" })</td>
                                     </tr>
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.AwdName)<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.AwdName, new {@class = "form-control"})</td>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.AwdName, new { @class = "form-control" })</td>
                                     </tr>
                                     <tr>
                                         <th width="15%">
@@ -77,7 +77,7 @@
                                         </th>
                                         <td>
                                             <label class="btn btn-outline-primary mb-0">
-                                                @Html.TextBoxFor(m => m.EditModel.Attachment, new{ @class="filesupload", type="file", style="display:none;", accept=".jpeg,.jpg,.png"})
+                                                @Html.TextBoxFor(m => m.EditModel.Attachment, new { @class = "filesupload", type = "file", style = "display:none;", accept = ".jpeg,.jpg,.png" })
                                                 <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
                                             </label>
                                             @if (!string.IsNullOrEmpty(Model.EditModel.Attachment))
@@ -111,10 +111,10 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @for(int i = 0; i <= Model.DetailModel.Count -1; i++)
+                                                        @for (int i = 0; i <= Model.DetailModel.Count - 1; i++)
                                                         {
                                                             <tr>
-                                                                <th width="15%">@(i+1)</th>
+                                                                <th width="15%">@(i + 1)</th>
                                                                 <td>@Model.DetailModel[i].Department</td>
                                                                 <td>@Model.DetailModel[i].Name</td>
                                                                 <td>@Model.DetailModel[i].SNO</td>
@@ -122,7 +122,7 @@
                                                         }
                                                     </tbody>
                                                 </table>
-                                                
+
                                             }
                                         </td>
                                     </tr>
@@ -143,6 +143,9 @@
                                                 <input id="updFile" name="updFile" style="display:none;" class="filesupload" type="file" accept=".xlsx">
                                                 <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
                                             </label><span class="text-sm mx-2 text-muted" id="filename2">尚未選擇檔案...</span>
+                                            <button type="button" id="btnExport" class="btn btn-sm btn-outline-success">
+                                                <i class="fa-solid fa-file-excel mr-1"></i> 匯出目前名冊
+                                            </button>
                                         </td>
                                     </tr>
                                     <tr>
@@ -166,12 +169,12 @@
                                     <tr>
                                         <th width="15%">審核狀態<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.EditModel.ActVerify ,(List<SelectListItem>)ViewBag.ddlAllActVerify,"請選擇審核狀態", new {@class = "form-control"})
+                                            @Html.DropDownListFor(m => m.EditModel.ActVerify, (List<SelectListItem>)ViewBag.ddlAllActVerify, "請選擇審核狀態", new { @class = "form-control" })
                                         </td>
                                     </tr>
                                     <tr>
                                         <th width="15%">備註<span class="required"></span></th>
-                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new {@class="form-control", rows="5", placeholder="請輸入備註"})</td>
+                                        <td>@Html.TextAreaFor(m => m.EditModel.Memo, new { @class = "form-control", rows = "5", placeholder = "請輸入備註" })</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -230,21 +233,79 @@
 
             reader.readAsArrayBuffer(file);
         });
-    });
 
-    $('@Html.NameFor(m => m.EditModel.Attachment)').change(function (e) {
-        var geekss = e.target.files[0].name;
-        $('#filename').text(geekss);
-    });
+        // ==== 呼叫後端查詢並匯出 Excel ====
+        $('#btnExport').click(function () {
+            var awdID = $('#@Html.IdFor(m => m.EditModel.AwdID)').val();
 
-    $('#updFile').change(function (e) {
-        var geekss = e.target.files[0].name;
-        $('#filename2').text(geekss);
-    });
+            if (!awdID || awdID === "0") {
+                $.alert("找不到該筆獲獎紀錄 ID，無法匯出");
+                return;
+            }
 
+            // 呼叫後端取得資料庫最新的名冊資料
+            SendAjax({
+                url: '@Url.Action("GetAwardDetails")', // 對應後端的 Action 名稱
+                type: 'POST',
+                data: { awdID: awdID },
+                success: function (result) {
+                    if (result.errorCode == 0) {
+                        var list = result.data;
+
+                        if (!list || list.length === 0) {
+                            $.alert("資料庫中查無此活動的獲獎名冊");
+                            return;
+                        }
+
+                        // 1. 定義 Excel 欄位表頭（中文對照）
+                        var exportData = [];
+                        exportData.push(["系級", "姓名", "學號"]); // 第一列為標題
+
+                        // 2. 將後端查出來的 JSON 資料寫入陣列
+                        list.forEach(function (item) {
+                            exportData.push([item.department, item.name, item.sno]);
+                        });
+
+                        // 3. 使用 SheetJS 將二維陣列轉成工作表 (Worksheet)
+                        var ws = XLSX.utils.aoa_to_sheet(exportData);
+                        var wb = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(wb, ws, "獲獎名冊");
+
+                        // 4. 自動動態命名檔名
+                        var clubId = $('#@Html.IdFor(m => m.EditModel.ClubID)').val() || "社團";
+                        var actName = $('#@Html.IdFor(m => m.EditModel.AwdActName)').val() || "獲獎活動";
+                        var filename = clubId + "_" + actName + "_獲獎名冊.xlsx";
+
+                        // 5. 執行下載
+                        XLSX.writeFile(wb, filename);
+                    } else {
+                        $.alert("讀取名冊失敗：" + result.errorMsg);
+                    }
+                },
+                error: function () {
+                    $.alert("系統發生錯誤，無法連線至伺服器");
+                }
+            });
+        });
+
+        // 修正：將原先的 NameFor 改成 IdFor，避免帶點(.)的名稱變成 jQuery 類別選取器錯誤
+        $('#@Html.IdFor(m => m.EditModel.Attachment)').change(function (e) {
+            var geekss = e.target.files[0].name;
+            $('#filename').text(geekss);
+        });
+
+        $('#updFile').change(function (e) {
+            var geekss = e.target.files[0].name;
+            $('#filename2').text(geekss);
+        });
+
+        $(".fa-regular").tooltip({ title: "僅接受.xlsx檔案" });
+
+    }); // <-- 這裡把 $(document).ready 的括號閉合起來
+
+    // 建議：將全域 Button 呼叫的 function 移出 ready 外面，否則 HTML 上的 onclick="SaveData()" 會找不到
     function SaveData() {
-
-        var data = new FormData()
+        var data = new FormData();
         var AwdID = $('#@Html.IdFor(m => m.EditModel.AwdID)').val();
         var ClubID = $('#@Html.IdFor(m => m.EditModel.ClubID)').val();
         var SchoolYear = $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val();
@@ -340,7 +401,4 @@
         $('#@Html.IdFor(m => m.EditModel.Memo)').val("");
         $('#@Html.IdFor(m => m.EditModel.strGetAwd)').val("");
     }
-
-    $(".fa-regular").tooltip({ title: "僅接受.xlsx檔案" });
-    
 </script>

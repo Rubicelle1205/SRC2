@@ -31,6 +31,13 @@ namespace WebPccuClub.Models
             this.TotalCount = 0;
         }
 
+        public List<ColumnDataModel> LstColumnDataModel = new List<ColumnDataModel>();
+
+        /// <summary> 選擇欄位 </summary>
+        public string SelectedColumns { get; set; }
+
+        public string SafeSqlColumns { get; set; }
+
         /// <summary> 目前頁數 </summary>
         public int Page { get; set; }
 
@@ -136,9 +143,17 @@ namespace WebPccuClub.Models
         [DisplayName("校內/校外獲獎")]
         public string? AwardInOrOutText { get; set; }
 
+        /// <summary>附件</summary>
+        [DisplayName("附件")]
+        public string? Attachment { get; set; }
+
         /// <summary>審核狀態</summary>
         [DisplayName("審核狀態")]
         public string? ActVerifyText { get; set; }
+
+        /// <summary>Memo</summary>
+        [DisplayName("Memo")]
+        public string? Memo { get; set; }
 
         [DisplayName("建立時間")]
         public DateTime? Created { get; set; }
@@ -180,7 +195,27 @@ namespace WebPccuClub.Models
 
         /// <summary>審核狀態</summary>
         [DisplayName("審核狀態")]
+        public string? ActVerify { get; set; }
+
+        /// <summary>校內/校外獲獎</summary>
+        [DisplayName("校內/校外獲獎")]
+        public string? AwardInOrOut { get; set; }
+
+        /// <summary>校內/校外獲獎</summary>
+        [DisplayName("校內/校外獲獎")]
+        public string? AwardInOrOutText { get; set; }
+
+        /// <summary>附件</summary>
+        [DisplayName("附件")]
+        public string? Attachment { get; set; }
+
+        /// <summary>審核狀態</summary>
+        [DisplayName("審核狀態")]
         public string? ActVerifyText { get; set; }
+
+        /// <summary>Memo</summary>
+        [DisplayName("Memo")]
+        public string? Memo { get; set; }
 
         [DisplayName("建立時間")]
         public DateTime? Created { get; set; }

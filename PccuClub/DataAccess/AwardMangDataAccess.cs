@@ -14,6 +14,42 @@ namespace WebPccuClub.DataAccess
     
     public class AwardMangDataAccess : BaseAccess
     {
+        public List<ColumnDataModel> GetDefaultColumnData()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT T.ColumnValue, T.ColumnName, T.IsDefault
+                               FROM (VALUES
+('AwdID', 'AwdID', 0),
+('ClubID', '社團代號', 1),
+('SchoolYear', '學年度', 1),
+('AwdActName', '社團名稱', 1),
+('AwdDate', '獲獎日期', 1),
+('AwdType', '獲獎類別', 1),
+('AwdName', '獎項名稱', 1),
+('Organizer', '主辦單位', 1),
+('AwardInOrOutText', '校內/校外', 1),
+('ActVerifyText', '審核狀態', 1),
+('Attachment', '附件', 0),
+('Memo', 'Memo', 0),
+('Created', '建立時間', 1)
+                                    ) AS T(ColumnValue, ColumnName, IsDefault);
+";
+
+
+            (DbExecuteInfo info, IEnumerable<ColumnDataModel> entitys) dbResult = DbaExecuteQuery<ColumnDataModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ColumnDataModel>();
+        }
 
         /// <summary> 查詢結果 </summary>
 
@@ -44,7 +80,7 @@ namespace WebPccuClub.DataAccess
 
             #endregion
 
-            CommandText = $@"SELECT A.AwdID, A.ClubID, B.ClubCName, A.SchoolYear, A.AwdDate, A.AwdActName, A.AwdType, A.AwdName, 
+            CommandText = $@"SELECT A.AwdID, A.ClubID, B.ClubCName, A.SchoolYear, A.AwdDate, A.AwdActName, A.AwdType, A.AwdName, A.Attachment, A.Memo,
                                     A.Organizer, A.AwardInOrOut, D.Text AS AwardInOrOutText, A.ActVerify, C.Text AS ActVerifyText, A.Created
                                FROM AwardMang A
                           LEFT JOIN ClubMang B ON B.ClubID = A.ClubID
