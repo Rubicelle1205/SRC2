@@ -142,6 +142,12 @@ namespace WebPccuClub.DataAccess
             if (!string.IsNullOrEmpty(vm.MyClubEditModel.ActImgPath))
                 CommendText = CommendText.Replace("%ActImgPath%", "ActImgPath = @ActImgPath,");
 
+            if(vm.MyClubEditModel.IsDeleteLogo)
+                CommendText = CommendText.Replace("%LogoPath%", "LogoPath = '',");
+
+            if (vm.MyClubEditModel.isDeleteActImg)
+                CommendText = CommendText.Replace("%ActImgPath%", "ActImgPath = '',");
+
             CommendText = CommendText.Replace("%LogoPath%", "");
             CommendText = CommendText.Replace("%ActImgPath%", "");
 

@@ -279,6 +279,12 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
             if (!string.IsNullOrEmpty(vm.EditModel.ActImgPath))
                 CommendText = CommendText.Replace("%ActImgPath%", "ActImgPath = @ActImgPath,");
 
+            if (vm.EditModel.IsDeleteLogo)
+                CommendText = CommendText.Replace("%LogoPath%", "LogoPath = '',");
+
+            if (vm.EditModel.isDeleteActImg)
+                CommendText = CommendText.Replace("%ActImgPath%", "ActImgPath = '',");
+
             CommendText = CommendText.Replace("%Password%", "");
             CommendText = CommendText.Replace("%LogoPath%", "");
             CommendText = CommendText.Replace("%ActImgPath%", "");

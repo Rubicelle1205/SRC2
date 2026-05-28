@@ -159,11 +159,15 @@
                                                 </label>
                                                 <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
                                             </div>
-                                            @if (LogoPath != null)
+                                            @if (!string.IsNullOrEmpty(LogoPath))
                                             {
-                                                <label class="upload_cover img-thumbnail" name="file1_prev">
-                                                    <img src="@Model.EditModel.LogoPath" style="width:100%;" />
-                                                </label>
+                                                <div id="LogoPreviewBlock" class="d-flex flex-column align-items-center" style="max-width: 150px;">
+                                                    <div class="text-xs text-muted mb-1">目前圖片：</div>
+                                                    <label class="upload_cover img-thumbnail mb-2" style="width: 120px; height: 120px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                                                        <img src="@Url.Content(Model.EditModel.LogoPath)" style="width: 100%; height: 100%; object-fit: cover;" />
+                                                    </label>
+                                                    <button type="button" class="btn btn-sm btn-danger w-100" onclick="DeleteLogoImg()">刪除Logo圖</button>
+                                                </div>
                                             }
                                         </td>
                                     </tr>
@@ -180,11 +184,15 @@
                                                 <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
                                             </div>
 
-                                            @if (ActImgPath != null)
+                                            @if (!string.IsNullOrEmpty(ActImgPath))
                                             {
-                                                <label class="upload_cover img-thumbnail" name="file1_prev">
-                                                    <img src="@Model.EditModel.ActImgPath" style="width:100%;" />
-                                                </label>
+                                                <div id="LogoPreviewBlock" class="d-flex flex-column align-items-center" style="max-width: 150px;">
+                                                    <div class="text-xs text-muted mb-1">目前圖片：</div>
+                                                    <label class="upload_cover img-thumbnail mb-2" style="width: 120px; height: 120px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                                                        <img src="@Url.Content(Model.EditModel.ActImgPath)" style="width: 100%; height: 100%; object-fit: cover;" />
+                                                    </label>
+                                                    <button type="button" class="btn btn-sm btn-danger w-100" onclick="DeleteActImg()">刪除活動簡圖</button>
+                                                </div>
                                             }
                                         </td>
                                     </tr>
@@ -220,6 +228,19 @@
 <!-- /.content -->
 
 <script>
+
+    var isDeleteLogo = false;
+    var isDeleteActImg = false;
+
+    function DeleteLogoImg() {
+        isDeleteLogo = true;
+        $('#LogoPreviewBlock').remove(); // 從畫面上移除預覽圖與按鈕
+    }
+
+    function DeleteActImg() {
+        isDeleteActImg = true;
+        $('#ActImgPreviewBlock').remove(); // 從畫面上移除預覽圖與按鈕
+    }
 
     function SaveEditData() {
 
@@ -305,6 +326,8 @@
             data.append('@Html.NameFor(m => m.EditModel.ActImgPath)', ActImg);
         }
         
+        data.append('@Html.NameFor(m => m.EditModel.IsDeleteLogo)', isDeleteLogo);
+        data.append('@Html.NameFor(m => m.EditModel.isDeleteActImg)', isDeleteActImg);
         data.append('@Html.NameFor(m => m.EditModel.ClubId)', ClubId);
         data.append('@Html.NameFor(m => m.EditModel.Pwd)', pw);
         data.append('@Html.NameFor(m => m.EditModel.ConformPwd)', cpw);
