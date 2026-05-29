@@ -61,7 +61,7 @@ namespace WebPccuClub.DataAccess
         /// <param name="submitBtn"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public ClubActReportEditModel GetEditData(string Ser)
+        public T GetEditData<T>(string Ser) where T : class
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -73,7 +73,7 @@ namespace WebPccuClub.DataAccess
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT A.ActID, B.ActDetailId, B.ActName, B.SchoolYear, B.BrrowUnit, A.ActVerifyMemo, 
+            CommandText = $@"SELECT A.ActID, B.ActDetailID, B.ActName, B.SchoolYear, B.BrrowUnit, A.ActVerifyMemo, 
                                     B.StaticOrDynamic, D.Text AS StaticOrDynamicText, B.ActInOrOut, E.Text AS ActInOrOutText,
                                     B.Capacity, B.ActType, F.ActTypeName AS ActTypeText, B.UseITEquip, G.Text AS UseITEquipText,
                                     B.ShortDesc, B.SDGs, B.PassPort, H.Text AS PassPortText,
@@ -92,7 +92,8 @@ namespace WebPccuClub.DataAccess
                                 AND (A.ActID = @ActID) ";
 
 
-            (DbExecuteInfo info, IEnumerable<ClubActReportEditModel> entitys) dbResult = DbaExecuteQuery<ClubActReportEditModel>(CommandText, parameters, true, DBAccessException);
+            //(DbExecuteInfo info, IEnumerable<ClubActReportEditModel> entitys) dbResult = DbaExecuteQuery<ClubActReportEditModel>(CommandText, parameters, true, DBAccessException);
+            (DbExecuteInfo info, IEnumerable<T> entitys) dbResult = DbaExecuteQuery<T>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList().FirstOrDefault();
@@ -583,11 +584,485 @@ namespace WebPccuClub.DataAccess
 
             return ExecuteResult;
         }
-        #endregion
+		#endregion
 
-        #region 編輯
+		#region 原單退回
 
-        public DbExecuteInfo UpdateActDetailData(ClubActReportViewModel vm, UserInfo LoginUser)
+		public DbExecuteInfo UpdReturnActMainData(ClubActReportViewModel vm, UserInfo LoginUser)
+		{
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			parameters.Add("@ActID", vm.ReturnModel.ActDate);
+			parameters.Add("@LoginId", LoginUser.LoginId);
+			#endregion 參數設定
+
+			string CommendText = $@"UPDATE ActMain SET 
+ActVerify = '01', 
+Creator = @LoginId, 
+Created = GETDATE(), 
+LastModifier = @LoginId, 
+LastModified = GETDATE() 
+
+WHERE ActID = @ActID
+
+";
+
+			ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+			return ExecuteResult;
+		}
+
+		public DbExecuteInfo UpdReturnActDetailData(ClubActReportViewModel vm, UserInfo LoginUser)
+		{
+			DataSet ds = new DataSet();
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			parameters.Add("@ActID", vm.ReturnModel.ActID);
+			parameters.Add("@BrrowUnit", LoginUser.LoginId);
+			parameters.Add("@SchoolYear", vm.ReturnModel.SchoolYear);
+			parameters.Add("@ActName", vm.ReturnModel.ActName);
+			parameters.Add("@Buildid", vm.ReturnModel.Buildid);
+			parameters.Add("@PlaceID", vm.ReturnModel.PlaceId);
+			parameters.Add("@BorrowType", "01"); // 借用:01 關閉:02
+			parameters.Add("@Capacity", vm.ReturnModel.Capacity);
+			parameters.Add("@ActType", vm.ReturnModel.ActType);
+			parameters.Add("@SDGs", vm.ReturnModel.SDGs);
+			parameters.Add("@StaticOrDynamic", vm.ReturnModel.StaticOrDynamic);
+			parameters.Add("@ActInOrOut", vm.ReturnModel.ActInOrOut);
+			parameters.Add("@UseITEquip", vm.ReturnModel.UseITEquip);
+			parameters.Add("@PassPort", vm.ReturnModel.PassPort);
+
+			parameters.Add("@CreateSource", "02"); // 後台:01 前台:02
+			parameters.Add("@ShortDesc", vm.ReturnModel.ShortDesc);
+
+
+			parameters.Add("@LoginId", LoginUser.LoginId);
+			#endregion 參數設定
+
+			string CommendText = $@"UPDATE ActDetail SET
+BrrowUnit = @BrrowUnit,
+SchoolYear = @SchoolYear,
+ActName = @ActName,
+Buildid = @Buildid,
+PlaceID = @PlaceID,
+BorrowType = @BorrowType,
+Capacity = @Capacity,
+ActType = @ActType,
+SDGs = @SDGs,
+StaticOrDynamic = @StaticOrDynamic,
+ActInOrOut = @ActInOrOut,
+UseITEquip = @UseITEquip,
+PassPort = @PassPort,
+CreateSource = @CreateSource,
+ShortDesc = @ShortDesc,
+Creator = @LoginId,
+Created = GETDATE(),
+LastModifier = @LoginId,
+LastModified = GETDATE()
+
+WHERE ActID = @ActID
+";
+
+			ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+		}
+
+		public DbExecuteInfo UpdReturnActSectionData(ClubActReportViewModel vm, DateTime date, UserInfo LoginUser)
+		{
+			DataSet ds = new DataSet();
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+
+			#region 參數設定
+			parameters.Add("@ActID", vm.ReturnModel.ActID);
+			parameters.Add("@ActDetailId", vm.ReturnModel.ActDetailId);
+            parameters.Add("@ActSectionID", vm.ReturnModel.ActSectionID);
+			parameters.Add("@Date", date.ToString("yyyy-MM-dd"));
+			parameters.Add("@Week", date.ToString("dddd"));
+			parameters.Add("@Status", "01");
+			parameters.Add("@LoginId", LoginUser.LoginId);
+			#endregion 參數設定
+
+			string CommendText = $@"
+                BEGIN TRANSACTION;
+
+                DELETE FROM ActSection 
+                WHERE ActID = @ActID 
+                  AND ActDetailId = @ActDetailId;
+
+                INSERT INTO ActSection
+                (
+                    ActID, 
+                    ActDetailId, 
+                    Date, 
+                    Creator, 
+                    Created, 
+                    LastModifier, 
+                    LastModified
+                )
+                VALUES
+                (
+                    @ActID, 
+                    @ActDetailId, 
+                    @Date, 
+                    @LoginId, 
+                    GETDATE(), 
+                    @LoginId, 
+                    GETDATE()
+                );
+
+                COMMIT TRANSACTION;";
+
+			ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+			return ExecuteResult;
+		}
+
+		/// <summary> 新增批次行程資料</summary>
+		public DbExecuteInfo UpdReturnActRundownData(ClubActReportViewModel vm, ActListMangRundownModel RundownModel, UserInfo LoginUser)
+		{
+			DataSet ds = new DataSet();
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+			string CommendText = string.Empty;
+
+			string PlaceSource = RundownModel.PlaceSource;
+			string PlaceID = RundownModel.PlaceID;
+			string PlaceText = RundownModel.PlaceText;
+
+			if (PlaceSource == "01")
+			{
+				for (int i = 0; i <= RundownModel.LstStime.Count - 1; i++)
+				{
+					int hour = RundownModel.LstStime[i];
+
+					#region 參數設定
+					parameters.Add("@ActID", vm.ReturnModel.ActID);
+					parameters.Add("@ActDetailId", vm.ReturnModel.ActDetailId);
+					parameters.Add("@ActSectionId", vm.ReturnModel.ActSectionID);
+					parameters.Add("@ActPlaceID", PlaceID);
+					parameters.Add("@ActPlaceText", PlaceText);
+					parameters.Add("@PlaceSource", PlaceSource);
+					parameters.Add("@Date", DateTime.Parse(RundownModel.Date).ToString("yyyy-MM-dd"));
+					parameters.Add("@Stime", hour.ToString().PadLeft(2, '0'));
+					parameters.Add("@ETime", (hour + 1).ToString().PadLeft(2, '0'));
+					parameters.Add("@Week", DateTime.Parse(RundownModel.Date).ToString("dddd"));
+					parameters.Add("@Status", "01");
+					parameters.Add("@LoginId", LoginUser.LoginId);
+					#endregion 參數設定
+
+					CommendText = $@"
+                BEGIN TRANSACTION;
+
+                DELETE FROM ActRundown 
+                WHERE ActID = @ActID 
+                  AND ActDetailId = @ActDetailId;
+
+                INSERT INTO ActRundown
+                (
+                    ActID, 
+                    ActDetailId, 
+                    ActSectionId, 
+                    ActPlaceID, 
+                    ActPlaceText, 
+                    PlaceSource, 
+                    Date, 
+                    STime, 
+                    ETime, 
+                    Week, 
+                    RundownStatus, 
+                    Creator, 
+                    Created, 
+                    LastModifier, 
+                    LastModified
+                )
+                VALUES
+                (
+                    @ActID, 
+                    @ActDetailId, 
+                    @ActSectionId, 
+                    @ActPlaceID, 
+                    @ActPlaceText, 
+                    @PlaceSource,  
+                    @Date, 
+                    @STime, 
+                    @ETime, 
+                    @Week, 
+                    '01', 
+                    @LoginId, 
+                    GETDATE(), 
+                    @LoginId, 
+                    GETDATE()
+                );
+
+                COMMIT TRANSACTION;";
+
+					ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+					if (!ExecuteResult.isSuccess) { return ExecuteResult; }
+				}
+			}
+			else
+			{
+				for (int i = 0; i <= RundownModel.LstStime.Count - 1; i++)
+				{
+					int hour = RundownModel.LstStime[i];
+
+					#region 參數設定
+					parameters.Add("@ActID", vm.ReturnModel.ActID);
+					parameters.Add("@ActDetailId", vm.ReturnModel.ActDetailId);
+					parameters.Add("@ActSectionId", vm.ReturnModel.ActSectionID);
+					parameters.Add("@ActPlaceID", PlaceID);
+					parameters.Add("@ActPlaceText", PlaceText);
+					parameters.Add("@PlaceSource", PlaceSource);
+					parameters.Add("@Date", DateTime.Parse(RundownModel.Date).ToString("yyyy-MM-dd"));
+					parameters.Add("@Stime", hour.ToString().PadLeft(2, '0'));
+					parameters.Add("@ETime", (hour + 1).ToString().PadLeft(2, '0'));
+					parameters.Add("@Week", DateTime.Parse(RundownModel.Date).ToString("dddd"));
+					parameters.Add("@Status", "01");
+					parameters.Add("@LoginId", LoginUser.LoginId);
+					#endregion 參數設定
+
+					CommendText = $@"
+                BEGIN TRANSACTION;
+
+                DELETE FROM ActRundownElse 
+                WHERE ActID = @ActID 
+                  AND ActDetailId = @ActDetailId;
+
+                INSERT INTO ActRundownElse
+                (
+                    ActID, 
+                    ActDetailId, 
+                    ActSectionId, 
+                    ActPlaceID, 
+                    ActPlaceText, 
+                    PlaceSource, 
+                    Date, 
+                    STime, 
+                    ETime, 
+                    Week, 
+                    RundownStatus, 
+                    Creator, 
+                    Created, 
+                    LastModifier, 
+                    LastModified
+                )
+                VALUES
+                (
+                    @ActID, 
+                    @ActDetailId, 
+                    @ActSectionId, 
+                    @ActPlaceID, 
+                    @ActPlaceText, 
+                    @PlaceSource,  
+                    @Date, 
+                    @STime, 
+                    @ETime, 
+                    @Week, 
+                    '01', 
+                    @LoginId, 
+                    GETDATE(), 
+                    @LoginId, 
+                    GETDATE()
+                );
+
+                COMMIT TRANSACTION;";
+
+					ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+					if (!ExecuteResult.isSuccess) { return ExecuteResult; }
+				}
+			}
+
+
+			return ExecuteResult;
+
+		}
+
+		public DbExecuteInfo UpdRetrunActProposalData(ClubActReportViewModel vm, UserInfo LoginUser)
+		{
+			DataSet ds = new DataSet();
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+			string CommendText = string.Empty;
+
+			List<ActListFilesModel> dataList = new List<ActListFilesModel>();
+
+			dataList = vm.ReturnModel.LstProposal;
+
+
+			#region 參數設定
+
+			#endregion 參數設定
+
+			CommendText = $@"
+                BEGIN TRANSACTION;
+
+                DELETE FROM ActProposal 
+                WHERE ActID = '{vm.ReturnModel.ActID}' 
+                  AND ActDetailId = '{vm.ReturnModel.ActDetailId}';
+
+                INSERT INTO ActProposal 
+                (
+                    ActID, 
+                    ActDetailId, 
+                    FileName, 
+                    FilePath, 
+                    Creator, 
+                    Created, 
+                    LastModifier, 
+                    LastModified
+                )
+                VALUES
+                (
+                    '{vm.ReturnModel.ActID}', 
+                    '{vm.ReturnModel.ActDetailId}', 
+                    @FileName, 
+                    @FilePath, 
+                    '{LoginUser.LoginId}', 
+                    GETDATE(), 
+                    '{LoginUser.LoginId}', 
+                    GETDATE()
+                );
+
+                COMMIT TRANSACTION;";
+
+			ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+			return ExecuteResult;
+		}
+
+		public DbExecuteInfo UpdReturnOutSideData(ClubActReportViewModel vm, UserInfo LoginUser)
+		{
+			DataSet ds = new DataSet();
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+			string CommendText = string.Empty;
+
+			#region 參數設定
+			parameters.Add("@ActID", vm.ReturnModel.ActID);
+			parameters.Add("@ActDetailId", vm.ReturnModel.ActDetailId);
+
+			parameters.Add("@LeaderName", vm.CreateModel.LeaderName);
+			parameters.Add("@LeaderTel", vm.CreateModel.LeaderTel);
+			parameters.Add("@LeaderPhone", vm.CreateModel.LeaderPhone);
+			parameters.Add("@ManagerName", vm.CreateModel.ManagerName);
+			parameters.Add("@ManagerTel", vm.CreateModel.ManagerTel);
+			parameters.Add("@ManagerPhone", vm.CreateModel.ManagerPhone);
+
+			parameters.Add("@LoginId", LoginUser.LoginId);
+			#endregion 參數設定
+
+			// 融合 DELETE 與 INSERT，並全部改用安全的 SQL 參數
+			CommendText = $@"
+                    BEGIN TRANSACTION;
+
+                    DELETE FROM ActOutSideInfo 
+                    WHERE ActID = @ActID 
+                      AND ActDetailId = @ActDetailId;
+
+                    INSERT INTO ActOutSideInfo 
+                    (
+                        ActID, 
+                        ActDetailId, 
+                        LeaderName, 
+                        LeaderTel, 
+                        LeaderPhone, 
+                        ManagerName, 
+                        ManagerTel, 
+                        ManagerPhone, 
+                        Creator, 
+                        Created, 
+                        LastModifier, 
+                        LastModified
+                    )
+                    VALUES
+                    (
+                        @ActID, 
+                        @ActDetailId, 
+                        @LeaderName, 
+                        @LeaderTel, 
+                        @LeaderPhone, 
+                        @ManagerName, 
+                        @ManagerTel, 
+                        @ManagerPhone,  
+                        @LoginId, 
+                        GETDATE(), 
+                        @LoginId, 
+                        GETDATE()
+                    );
+
+                    COMMIT TRANSACTION;";
+
+			ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+			return ExecuteResult;
+		}
+
+		public DbExecuteInfo UpdReturnOutSideFileData(ClubActReportViewModel vm, UserInfo LoginUser)
+		{
+			DataSet ds = new DataSet();
+			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+			DBAParameter parameters = new DBAParameter();
+			string CommendText = string.Empty;
+
+			List<ActListFilesModel> dataList = new List<ActListFilesModel>();
+
+			dataList = vm.ReturnModel.LstOutSideFile;
+
+
+			#region 參數設定
+			#endregion 參數設定
+
+			CommendText = $@"
+                    BEGIN TRANSACTION;
+
+                    DELETE FROM ActOutSideInfoFile 
+                    WHERE ActID = '{vm.ReturnModel.ActID}' 
+                      AND ActDetailId = '{vm.ReturnModel.ActDetailId}';
+
+                    INSERT INTO ActOutSideInfoFile 
+                    (
+                        ActID, 
+                        ActDetailId, 
+                        FileName, 
+                        FilePath, 
+                        Creator, 
+                        Created, 
+                        LastModifier, 
+                        LastModified
+                    )
+                    VALUES
+                    (
+                        '{vm.ReturnModel.ActID}', 
+                        '{vm.ReturnModel.ActDetailId}', 
+                        @FileName, 
+                        @FilePath, 
+                        '{LoginUser.LoginId}', 
+                        GETDATE(), 
+                        '{LoginUser.LoginId}', 
+                        GETDATE()
+                    );
+
+                    COMMIT TRANSACTION;";
+
+			ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+			return ExecuteResult;
+		}
+
+
+		#endregion
+
+		#region 編輯
+
+		public DbExecuteInfo UpdateActDetailData(ClubActReportViewModel vm, UserInfo LoginUser)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
@@ -692,20 +1167,6 @@ namespace WebPccuClub.DataAccess
         }
         #endregion
 
-
-        //public List<SelectListItem> GetSchoolYear()
-        //{
-        //    List<SelectListItem> LstItem = new List<SelectListItem>();
-
-        //    int NowSchoolYear = int.Parse(PublicFun.GetNowSchoolYear());
-
-        //    for (int i = NowSchoolYear - 2; i <= NowSchoolYear + 2; i++)
-        //    {
-        //        LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
-        //    }
-
-        //    return LstItem;
-        //}
 
         public string? GetDefaultActName(UserInfo LoginUser)
         {
