@@ -47,25 +47,37 @@ namespace WebPccuClub.DataAccess
             #endregion
 
             CommandText = $@"SELECT A.ActID, A.SchoolYear, A.ActName, B.ActVerify, C.Text AS ActVerifyText, A.BrrowUnit, A.PassPort, G.Text AS PassPortText,  
-                                    CASE WHEN B.ActVerify = '05' THEN C.Text + '(' + ISNULL(B.Creator, '') + ')' ELSE D.ClubCName END AS ClubName, 
-                                    F.MinDate AS SDate, F.MaxDate AS EDate, A.Created
+    CASE 
+        WHEN B.ActVerify = '05' THEN C.Text + '(' + ISNULL(B.Creator, '') + ')' 
+        ELSE D.ClubCName 
+    END AS ClubName, 
+    F.SDate, F.EDate, A.Created
 FROM ActDetail A
 LEFT JOIN ActMain B ON B.ActID = A.ActID
 LEFT JOIN Code C ON C.Code = B.ActVerify AND C.Type = 'ActVerify'
 LEFT JOIN ClubMang D ON D.ClubId = A.BrrowUnit
-LEFT JOIN (SELECT ActID, MIN(Date) AS MinDate, MAX(Date) AS MaxDate FROM ActSection GROUP BY ActID) F ON F.ActID = A.ActID
 LEFT JOIN Code G ON G.Code = A.PassPort AND G.Type = 'PassPort'
+OUTER APPLY (
+    SELECT MIN(Date) AS SDate, MAX(Date) AS EDate 
+    FROM ActSection 
+    WHERE ActSection.ActID = A.ActID
+      AND (@DuringDate IS NULL OR @DuringDate <= Date)
+) F
+WHERE 1 = 1
 
-                              WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created >= @FromDate AND A.Created < @ToDatePlusOne" : "")}
+
 AND (@ActId IS NULL OR A.ActId = @ActId)
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 AND (@ActVerify IS NULL OR B.ActVerify = @ActVerify)
+
 AND (@LifeClass IS NULL OR D.LifeClass LIKE '%' + @LifeClass + '%') 
 AND (@PassPort IS NULL OR A.PassPort LIKE '%' + @PassPort + '%')
 AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%') 
 AND (@ClubName IS NULL OR D.ClubCName LIKE '%' + @ClubName + '%')
-AND (@DuringDate IS NULL OR (@DuringDate BETWEEN F.MinDate AND F.MaxDate))
+
+AND (@DuringDate IS NULL OR (@DuringDate BETWEEN F.SDate AND F.EDate))
+
 ORDER BY A.ActID DESC
 ";
 
@@ -588,6 +600,26 @@ ORDER BY A.ActID DESC
 
             string CommendText = $@"UPDATE ActDetail 
                                        SET SDGs = @SDGs, LastModifier = @LoginId, LastModified = GETDATE()
+                                     WHERE ActID = @ActID";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        /// <summary> 修改行程資料 </summary>
+        public DbExecuteInfo UpdateActRundownData(ActListMangViewModel vm, UserInfo LoginUser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ActID", vm.EditModel.ActID);
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"UPDATE ActRundown 
+                                       SET RundownStatus = '02', LastModifier = @LoginId, LastModified = GETDATE()
                                      WHERE ActID = @ActID";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);

@@ -141,6 +141,7 @@
         諮商前台MenuBoard維護 = 126,
         社團社長解除綁定 = 127,
         社團選擇頁面 = 128,
+        原單退回 = 129,
     }
 
 	public enum DBActionChineseName

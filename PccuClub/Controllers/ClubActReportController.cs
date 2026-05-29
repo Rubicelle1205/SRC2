@@ -201,7 +201,6 @@ namespace WebPccuClub.Controllers
 			
         }
 
-
 		[Log(LogActionChineseName.新增)]
 		public async Task<IActionResult> ActCheck(ClubActReportViewModel vm)
 		{
@@ -283,9 +282,243 @@ namespace WebPccuClub.Controllers
 
             return View();
 		}
-		#endregion
+        #endregion
 
-		[Log(LogActionChineseName.編輯)]
+
+        #region 原單退回編輯
+
+        [Log(LogActionChineseName.原單退回)]
+        public IActionResult Return()
+        {
+            string controllerName = this.ControllerContext.RouteData.Values["controller"].ToString();
+            DataTable dt = dbAccess.GetFunctionEnable(controllerName);
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                string Enable = dt.Rows[0]["Enable"].ToString();
+                string OpenDate = dt.Rows[0]["OpenDate"].ToString();
+                string CloseDate = dt.Rows[0]["CloseDate"].ToString();
+                int dbMask = (int)dt.Rows[0]["HourMask"];
+
+                if (Enable == "True")
+                {
+                    if (DateTime.Parse(OpenDate).Date > DateTime.Now || DateTime.Parse(CloseDate).Date.AddDays(1).AddSeconds(-1) < DateTime.Now)
+                    {
+
+                        TempData["WEBSOL_ALERT_MESSAGE"] = new List<string> { "目前非開放申請時段" };
+                        return RedirectToAction("Index");
+                    }
+
+                    if (!((dbMask & (1 << DateTime.Now.Hour)) != 0))
+                    {
+                        TempData["WEBSOL_ALERT_MESSAGE"] = new List<string> { "目前非開放申請時段" };
+                        return RedirectToAction("Index");
+                    }
+                }
+            }
+
+            ViewBag.ddlStaticOrDynamic = dbAccess.GetStaticOrDynamic();
+            ViewBag.ddlActInOrOut = dbAccess.GetActInOrOut();
+            ViewBag.ddlActType = dbAccess.GetActType();
+            ViewBag.ddlUseITEquip = dbAccess.GetUseITEquip();
+            ViewBag.ddlPassport = dbAccess.GetPassport();
+            ViewBag.ddlAllSDGs = dbAccess.GetSDGs();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(3);
+
+            ClubActReportViewModel vm = new ClubActReportViewModel();
+            vm.CreateModel = new ClubActReportCreateModel();
+            vm.CreateModel.SchoolYear = PublicFun.GetNowSchoolYear();
+            vm.CreateModel.ActName = dbAccess.GetDefaultActName(LoginUser);
+
+            if (HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel") != null)
+            {
+                vm = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
+            }
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.原單退回)]
+        public IActionResult Return2(ClubActReportViewModel vm)
+        {
+            if (vm.CreateModel != null)
+            {
+                HttpContext.Session.SetObject("MyModel", vm);
+            }
+            else
+            {
+                vm = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
+            }
+
+
+            ViewBag.ddlPlaceSource = dbAccess.GetPlaceSource();
+            ViewBag.ddlHour = dbAccess.GetAllHour();
+
+            return View(vm);
+        }
+
+        [Log(LogActionChineseName.原單退回)]
+        public IActionResult Return3(ClubActReportViewModel vm)
+        {
+            ClubActReportViewModel vm2 = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
+
+            if (vm.CreateModel != null)
+            {
+                vm2.CreateModel.strRundown = vm.CreateModel.strRundown;
+                HttpContext.Session.SetObject("MyModel", vm2);
+            }
+
+            return View(vm2);
+        }
+
+        [Log(LogActionChineseName.原單退回)]
+        public async Task<IActionResult> Return4(ClubActReportViewModel vm)
+        {
+            ClubActReportViewModel vm3 = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
+
+            if (Request.Form != null)
+            {
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("Proposal"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("ActProposal", file);
+
+                            ActListFilesModel model = new ActListFilesModel();
+                            model.FileName = file.FileName;
+                            model.FilePath = strFilePath;
+
+                            vm3.CreateModel.LstProposal.Add(model);
+                        }
+                    }
+                }
+            }
+
+
+            HttpContext.Session.SetObject("MyModel", vm3);
+
+            vm = vm3;
+            string[] arr = vm3.CreateModel.strRundown.Split("|");
+
+            foreach (string item in arr)
+            {
+                string[] parts = item.Split(',');
+
+                if (parts[0] == "03")
+                {
+                    return View(vm);
+                }
+            }
+
+            return RedirectToAction("ActCheck", vm3);
+
+        }
+
+        [Log(LogActionChineseName.原單退回)]
+        public async Task<IActionResult> ActReturnCheck(ClubActReportViewModel vm)
+        {
+            ClubActReportViewModel vm4 = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
+
+            bool NeedUpload = false;
+            vm4.CreateModel.HasOutSide = "0";
+            string[] arr = vm4.CreateModel.strRundown.Split("|");
+
+            foreach (string item in arr)
+            {
+                string[] parts = item.Split(',');
+
+                if (parts[0] == "03")
+                {
+                    NeedUpload = true;
+                }
+            }
+
+            if (NeedUpload)
+            {
+                if (Request.Form.Files.Count > 0)
+                {
+                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
+                    {
+                        if (Request.Form.Files[i].Name.Contains("OutSide"))
+                        {
+                            var file = Request.Form.Files[i];
+
+                            string strFilePath = await upload.UploadFileAsync("ActOutSide", file);
+
+                            ActListFilesModel model = new ActListFilesModel();
+                            model.FileName = file.FileName;
+                            model.FilePath = strFilePath;
+
+                            vm4.CreateModel.LstOutSideFile.Add(model);
+                        }
+                    }
+                }
+
+                vm4.CreateModel.LeaderName = vm.CreateModel.LeaderName;
+                vm4.CreateModel.LeaderTel = vm.CreateModel.LeaderTel;
+                vm4.CreateModel.LeaderPhone = vm.CreateModel.LeaderPhone;
+                vm4.CreateModel.ManagerName = vm.CreateModel.ManagerName;
+                vm4.CreateModel.ManagerTel = vm.CreateModel.ManagerTel;
+                vm4.CreateModel.ManagerPhone = vm.CreateModel.ManagerPhone;
+                vm4.CreateModel.HasOutSide = "1";
+
+            }
+
+            HttpContext.Session.SetObject("MyModel", vm4);
+
+            ViewBag.ddlStaticOrDynamic = dbAccess.GetStaticOrDynamic();
+            ViewBag.ddlActInOrOut = dbAccess.GetActInOrOut();
+            ViewBag.ddlActType = dbAccess.GetActType();
+            ViewBag.ddlUseITEquip = dbAccess.GetUseITEquip();
+            ViewBag.ddlSDGs = dbAccess.GetSDGs();
+            ViewBag.ddlPassport = dbAccess.GetPassport();
+            ViewBag.ddlPlaceSource = dbAccess.GetPlaceSource();
+            ViewBag.ddlHour = dbAccess.GetAllHour();
+            ViewBag.ddlActVerify = dbAccess.GetAllActVerify("1");
+            ViewBag.ddlAllClub = dbAccess.GetAllClub();
+
+            return View(vm4);
+        }
+
+        [Log(LogActionChineseName.原單退回)]
+        public async Task<IActionResult> ActReturnFinish()
+        {
+            HttpContext.Session.Remove("MyModel");
+
+            return View();
+        }
+
+        [Log(LogActionChineseName.原單退回)]
+        public async Task<IActionResult> ActReturnFail()
+        {
+            HttpContext.Session.Remove("MyModel");
+
+            return View();
+        }
+        #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        [Log(LogActionChineseName.編輯)]
         public IActionResult Edit(string id, ClubActReportViewModel vm)
         {
 

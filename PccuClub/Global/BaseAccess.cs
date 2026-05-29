@@ -446,9 +446,10 @@ namespace WebPccuClub.Global
             //06  取消
             //07  前台不顯示
             //08  隱藏
+            //09  移除場地(保留原單)
             //type = 1 => 顯示01~04，其他頁面
             //type = 2 => 顯示01~05，活動報備(新增)
-            //type = 3 => 顯示01~07，活動報備(首頁、編輯)
+            //type = 3 => 顯示01~09，活動報備(首頁、編輯)
             //type = 4 => 顯示01~07，沒有05，活動報備前台(首頁)
             switch (type)
             {
@@ -465,7 +466,7 @@ namespace WebPccuClub.Global
                 case "3":
                     CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code 
 									 WHERE Type = 'ActVerify' 
-									   AND Code IN ('01', '02', '03', '04', '05', '06', '07')";
+									   AND Code IN ('01', '02', '03', '04', '05', '06', '07', '08', '09')";
                     break;
                 case "4":
                     CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code 
@@ -611,14 +612,14 @@ namespace WebPccuClub.Global
                                          LEFT JOIN PlaceSchoolMang B ON B.PlaceID = A.PlaceID
                                          LEFT JOIN ActRundown C ON C.ActID = A.ActID AND C.ActDetailId = A.ActDetailId
                                          LEFT JOIN Code D ON D.Code = C.RundownStatus AND D.Type = 'RundownStatus'
-                                             WHERE 1 = 1 AND A.ActID = @ActId 
+                                             WHERE 1 = 1 AND A.ActID = @ActId AND C.ActRundownID IS NOT NULL
                                      UNION
                                             SELECT C.ActRundownID, C.PlaceSource, C.Date, C.STime, C.ETime, C.ActPlaceID, C.ActPlaceText AS PlaceText, C.RundownStatus, D.Text AS RundownStatusText
                                               FROM ActDetail A
                                          LEFT JOIN PlaceSchoolMang B ON B.PlaceID = A.PlaceID
                                          LEFT JOIN ActRundownELSE C ON C.ActID = A.ActID AND C.ActDetailId = A.ActDetailId
                                          LEFT JOIN Code D ON D.Code = C.RundownStatus AND D.Type = 'RundownStatus'
-                                             WHERE 1 = 1 AND A.ActID = @ActId 
+                                             WHERE 1 = 1 AND A.ActID = @ActId AND C.ActRundownID IS NOT NULL
                                             ) T ORDER BY PlaceSource";
 
 			(DbExecuteInfo info, IEnumerable<ActListMangEditRundownModel> entitys) dbResult = DbaExecuteQuery<ActListMangEditRundownModel>(CommandText, parameters, true, DBAccessException);
@@ -798,7 +799,7 @@ namespace WebPccuClub.Global
                           LEFT JOIN PlaceSchoolMang B ON B.PlaceID = A.ActPlaceID
 						  LEFT JOIN ActDetail C ON C.ActDetailId = A.ActDetailId
 						  LEFT JOIN ClubMang D ON D.ClubId = C.BrrowUnit
-                              WHERE A.Date = @Date AND A.ActPlaceID = @PlaceId ";
+                              WHERE A.Date = @Date AND A.ActPlaceID = @PlaceId AND A.RundownStatus = '01' ";
 
 
 			(DbExecuteInfo info, IEnumerable<ActListMangTodayActModel1> entitys) dbResult = DbaExecuteQuery<ActListMangTodayActModel1>(CommandText, parameters, true, DBAccessException);

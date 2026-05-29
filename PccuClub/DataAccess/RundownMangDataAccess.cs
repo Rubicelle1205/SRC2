@@ -39,8 +39,9 @@ namespace WebPccuClub.DataAccess
 
             parameters.Add("@ClubID", model?.ClubID);
             parameters.Add("@ClubCName", model?.ClubCName);
-            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
-            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
+
+            parameters.Add("@FromDate", model?.From_ReleaseDate?.Date);
+            parameters.Add("@ToDate", model?.To_ReleaseDate?.Date.AddDays(1).AddTicks(-1));
 
             #endregion
 
@@ -58,7 +59,8 @@ namespace WebPccuClub.DataAccess
                           LEFT JOIN Code G ON G.Code = B.ActVerify AND G.Type = 'ActVerify'
                           LEFT JOIN Code H ON H.Code = D.LifeClass AND H.Type = 'LifeClass'
                               WHERE 1 = 1
-{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? "AND A.Created >= @FromDate AND A.Created < @ToDate" : "")}
+
 AND (@SchoolYear IS NULL OR C.SchoolYear = @SchoolYear)
 AND (@ActVerify IS NULL OR B.ActVerify = @ActVerify)
 AND (@ActType IS NULL OR C.ActType = @ActType)
@@ -67,7 +69,7 @@ AND (@LifeClass IS NULL OR D.LifeClass = @LifeClass)
 AND (@RundownStatus IS NULL OR A.RundownStatus = @RundownStatus)
 
 AND (@SDGs IS NULL OR C.SDGs LIKE '%' + @SDGs + '%') 
-AND (@ClubID IS NULL OR C.BrrowUnit LIKE '%' + @ClubID + '%') 
+AND (@ClubID IS NULL OR C.BrrowUnit LIKE '%' + @ClubID + '%')
 AND (@ClubCName IS NULL OR D.ClubCName LIKE '%' + @ClubCName + '%') 
 AND(@ActName IS NULL OR C.ActName LIKE '%' + @ActName + '%') ";
 
