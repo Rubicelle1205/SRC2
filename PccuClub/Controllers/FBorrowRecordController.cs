@@ -200,6 +200,28 @@ namespace WebPccuClub.Controllers
                 }
 
                 dbAccess.DbaCommit();
+
+                //確認該類別是否需要寄信
+                DataTable dt2 = new DataTable();
+                dt2 = dbAccess.CheckNeedSendMail(vm.CreateModel.MainClassID);
+
+                bool IsEnable = false;
+                IsEnable = bool.TryParse(dt2.QueryFieldByDT("IsEnable"), out IsEnable); //是否啟用寄信功能
+
+                if (IsEnable)
+                {
+                    //抓取寄信內容
+                    string BodyTemplate = dt2.QueryFieldByDT("BodyTemplate");
+                    string SubjectTemplate = dt2.QueryFieldByDT("SubjectTemplate");
+
+                    //發送給借用人的借用通知信
+                    MailUtil mail = new MailUtil();
+                    bool ok = mail.ExecuteSendMail(
+                        vm.CreateModel.ApplyEmail,
+                        SubjectTemplate, 
+                        BodyTemplate, 
+                        System.Net.Mail.MailPriority.High, null);
+                }
             }
             catch (Exception ex)
             {

@@ -451,5 +451,25 @@ AND BorrowMainID = @BorrowMainID";
             return ds.Tables[0];
         }
 
+        public DataTable CheckNeedSendMail(string MainClassID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@BorrowMainClassID", MainClassID);
+            #endregion
+
+            CommandText = @"SELECT TemplateId, TemplateName, BorrowMainClassID, SubjectTemplate, BodyTemplate, IsEnable
+                              FROM BorrowMailTemplate
+                             WHERE 1 = 1
+                               AND BorrowMainClassID = @BorrowMainClassID ";
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            return ds.Tables[0];
+        }
     }
 }

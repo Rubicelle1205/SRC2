@@ -150,7 +150,7 @@ GETDATE()
             parameters.Add("@TemplateName", vm.EditModel.TemplateName);
             parameters.Add("@BorrowMainClassID", vm.EditModel.BorrowMainClassID);
             parameters.Add("@SubjectTemplate", vm.EditModel.SubjectTemplate);
-            parameters.Add("@BodyTemplate", vm.EditModel.SubjectTemplate);
+            parameters.Add("@BodyTemplate", vm.EditModel.BodyTemplate);
             parameters.Add("@IsEnable", vm.EditModel.IsEnable);
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
