@@ -142,6 +142,7 @@
         社團社長解除綁定 = 127,
         社團選擇頁面 = 128,
         原單退回 = 129,
+        郵件範本管理 = 130,
     }
 
 	public enum DBActionChineseName
