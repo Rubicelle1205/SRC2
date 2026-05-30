@@ -31,6 +31,13 @@ namespace WebPccuClub.Models
             this.TotalCount = 0;
         }
 
+        public List<ColumnDataModel> LstColumnDataModel = new List<ColumnDataModel>();
+
+        /// <summary> 選擇欄位 </summary>
+        public string SelectedColumns { get; set; }
+
+        public string SafeSqlColumns { get; set; }
+
         /// <summary> 目前頁數 </summary>
         public int Page { get; set; }
 
@@ -59,7 +66,7 @@ namespace WebPccuClub.Models
         /// <summary>Mail或Tel</summary>
         [DisplayName("Mail或Tel")]
         public string? MailOrTel { get; set; }
-        
+
         /// <summary>社團分類	</summary>
         [DisplayName("社團分類")]
         public string? ClubClass { get; set; }
@@ -97,6 +104,14 @@ namespace WebPccuClub.Models
         [DisplayName("學年度")]
         public string? SchoolYear { get; set; }
 
+        /// <summary>角色</summary>
+        [DisplayName("角色")]
+        public string? RoleName { get; set; }
+
+        /// <summary>前台顯示</summary>
+        [DisplayName("前台顯示")]
+        public string? FrontShowText { get; set; }
+
         /// <summary>社團組別</summary>
         [DisplayName("社團組別")]
         public string? LifeClassText { get; set; }
@@ -121,9 +136,34 @@ namespace WebPccuClub.Models
         [DisplayName("聯絡電話")]
         public string? Tel { get; set; }
 
+        /// <summary>社辦地址</summary>
+        [DisplayName("社辦地址")]
+        public string? Address { get; set; }
+
+
+        /// <summary>社群連結一	</summary>
+        [DisplayName("社群連結一")]
+        public string? Social1 { get; set; }
+
+        /// <summary>社群連結二</summary>
+        [DisplayName("社群連結二")]
+        public string? Social2 { get; set; }
+
+        /// <summary>社群連結三</summary>
+        [DisplayName("社群連結三")]
+        public string? Social3 { get; set; }
+
+        /// <summary>建立時間</summary>
         [DisplayName("建立時間")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm:ss}")]
         public DateTime? Created { get; set; }
+
+        /// <summary>簡介</summary>
+        [DisplayName("簡介")]
+        public string? ShortInfo { get; set; }
+
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
+        public string? Memo { get; set; }
     }
 
     public class ClubMangCreateModel
@@ -303,4 +343,5 @@ namespace WebPccuClub.Models
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm:ss}")]
         public DateTime? Created { get; set; }
     }
+
 }
