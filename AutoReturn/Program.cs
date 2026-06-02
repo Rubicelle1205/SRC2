@@ -132,7 +132,7 @@ FROM BorrowDevice A
 INNER JOIN BorrowMain B ON A.BorrowMainID = B.BorrowMainID 
 INNER JOIN BorrowMainResourceMang C ON A.MainResourceID = C.MainResourceID
 WHERE B.TakeEDate < @TargetDate
-  AND C.IsAutoReturn = '01'
+  AND C.AutoReturn = '01'
   AND A.BorrowStatus = '02'
   AND A.ReturnRealAmt IS NULL
 
