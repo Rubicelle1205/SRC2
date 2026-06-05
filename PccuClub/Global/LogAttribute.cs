@@ -143,6 +143,7 @@
         社團選擇頁面 = 128,
         原單退回 = 129,
         郵件範本管理 = 130,
+        Log維護 = 131,
     }
 
 	public enum DBActionChineseName
