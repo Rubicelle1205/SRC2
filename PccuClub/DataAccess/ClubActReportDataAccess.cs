@@ -41,6 +41,7 @@ namespace WebPccuClub.DataAccess
                           LEFT JOIN Code C ON C.Code = A.ActVerify AND C.Type = 'ActVerify'
 						  LEFT JOIN ActFinish D ON D.ActID = A.ActID AND D.ActDetailId = B.ActDetailId
                               WHERE 1 = 1
+                                AND A.ActVerify <> '07' 
                                 AND (@SchoolYear IS NULL OR B.SchoolYear = @SchoolYear)
                                 AND (@ActVerify IS NULL OR A.ActVerify = @ActVerify)
                                 AND (@LoginId IS NULL OR B.BrrowUnit = @LoginId)
