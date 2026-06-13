@@ -14,6 +14,52 @@ namespace WebPccuClub.DataAccess
     
     public class BorrowRecordMangDataAccess : BaseAccess
     {
+        public List<ColumnDataModel> GetDefaultColumnData()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT T.ColumnValue, T.ColumnName, T.IsDefault
+                               FROM (VALUES
+('BorrowMainID', '申請單號', 1),
+('MainClassIDText', '業務分類', 1),
+('ApplyUnitName', '申請單位', 1),
+('ApplyMan', '申請人', 1),
+('ApplyTitle', '申請人職稱', 1),
+('ApplyEmail', '申請人Email', 1),
+('ApplyTel', '申請人電話/分機', 1),
+('ApplyPurpose', '申請目的', 0),
+('ActName', '活動名稱', 1),
+('UseLocation', '使用地點', 0),
+('UseDesc', '用途及特殊需求說明', 1),
+('UseSDate', '實際使用起日', 1),
+('UseEDate', '實際使用訖日', 1),
+('TakeSDate', '約定領取起日', 1),
+('TakeEDate', '約定領取訖日', 1),
+('BorrowMemo', '備註', 0),
+('TeacherMark', '輔導老師或承辦人註記', 0),
+('DeviceMark', '器材專業人員註記', 0),
+('TakeMark', '器材領取註記', 0),
+('ReturnMark', '器材歸還註記', 0),
+('Memo', '其它備註', 0),
+('ActVerifyText', '審核狀態', 1),
+('Created', '建立時間', 1)
+                                    ) AS T(ColumnValue, ColumnName, IsDefault);
+";
+
+
+            (DbExecuteInfo info, IEnumerable<ColumnDataModel> entitys) dbResult = DbaExecuteQuery<ColumnDataModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ColumnDataModel>();
+        }
 
         /// <summary> 查詢結果 </summary>
 
@@ -29,22 +75,27 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@ApplyUnitName", model?.ApplyUnitName);
             parameters.Add("@ApplyMan", model?.ApplyMan);
             parameters.Add("@ApplyEmail", model?.ApplyEmail);
-            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy-MM-dd 00:00:00") : null);
-            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy-MM-dd 23:59:59") : null);
+
+            parameters.Add("@FromDate", model.From_ReleaseDate?.Date);                    // 00:00:00.000
+            parameters.Add("@ToDate", model.To_ReleaseDate?.Date.AddDays(1).AddTicks(-1)); // 23:59:59.999
+
 
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT A.BorrowMainID, A.MainClassID, B.Text AS MainClassIDText, 
-                                    A.ApplyUnitType, A.ApplyUnitName, A.ApplyMan, A.ApplyTitle, A.TakeSDate, A.TakeEDate, 
-                                    A.ActVerify, C.Text AS ActVerifyText, A.Created
+            CommandText = $@"SELECT A.BorrowMainID, A.MainClassID, B.Text AS MainClassIDText, A.ApplyUnitType, A.ApplyUnitName, A.ApplyMan, A.ApplyTitle, A.ApplyEmail, A.ApplyTel, 
+                                    A.ApplyPurpose, A.ActName, A.UseLocation, A.UseDesc, A.UseSDate, A.UseEDate, A.TakeSDate, A.TakeEDate, A.BorrowMemo, 
+                                    A.TeacherMark, A.DeviceMark, A.TakeMark, A.ReturnMark, A.Memo, A.ActVerify, C.Text AS ActVerifyText, A.Creator, A.Created, A.LastModifier, A.LastModified
+
                                FROM BorrowMain A
                           LEFT JOIN BorrowMainClassMang B ON B.ID = A.MainClassID
                           LEFT JOIN Code C ON C.Code = A.ActVerify AND C.Type = 'BorrowActVerify'
 WHERE 1 = 1
-{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : "")}
+
 AND (@MainClassID IS NULL OR A.MainClassID = @MainClassID) 
 AND (@ActVerify IS NULL OR A.ActVerify = @ActVerify) 
+
 AND (@ApplyUnitName IS NULL OR A.ApplyUnitName LIKE '%' + @ApplyUnitName + '%') 
 AND (@ApplyMan IS NULL OR A.ApplyMan LIKE '%' + @ApplyMan + '%') 
 AND (@ApplyEmail IS NULL OR A.ApplyEmail LIKE '%' + @ApplyEmail + '%') ";
@@ -468,6 +519,7 @@ AND BorrowMainID = @BorrowMainID";
                                             BorrowMemo = @BorrowMemo, 
                                             ActVerify = @ActVerify, 
                                             TeacherMark = @TeacherMark, 
+                                            DeviceMark = @DeviceMark, 
                                             TakeMark = @TakeMark, 
                                             ReturnMark = @ReturnMark, 
                                             Memo = @Memo, 
