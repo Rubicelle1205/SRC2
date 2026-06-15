@@ -77,9 +77,17 @@ namespace WebPccuClub.Models
 
     public class BorrowInventoryMangExcelModel
     {
+        /// <summary>序號</summary>
+        [DisplayName("序號")]
+        public string? ID { get; set; }
+
         /// <summary>資產號碼</summary>
         [DisplayName("資產號碼")]
         public string? SecondResourceNo { get; set; }
+
+        /// <summary>主資源名稱</summary>
+        [DisplayName("主資源名稱")]
+        public string? MainResourceIDText { get; set; }
 
         /// <summary>子資源名稱</summary>
         [DisplayName("子資源名稱")]
@@ -88,6 +96,18 @@ namespace WebPccuClub.Models
         /// <summary>上下架狀態</summary>
         [DisplayName("上下架狀態")]
         public string? ShelvesStatusText { get; set; }
+
+        /// <summary>庫存數</summary>
+        [DisplayName("庫存數")]
+        public string? AmtReal { get; set; }
+
+        /// <summary>實際盤點數量</summary>
+        [DisplayName("實際盤點數量")]
+        public string? AmtInventory { get; set; }
+
+        /// <summary>物品類型</summary>
+        [DisplayName("物品類型")]
+        public string? BorrowTypeText { get; set; }
 
         /// <summary>借用狀態</summary>
         [DisplayName("借用狀態")]

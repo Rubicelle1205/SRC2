@@ -62,13 +62,18 @@ AND (@Text IS NULL OR Text LIKE '%' + @Text + '%') ";
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT A.SecondResourceNo, A.SecondResourceName, A.ShelvesStatus, B.Text AS ShelvesStatusText, 
-		                            A.BorrowStatus, C.Text AS BorrowStatusText, A.ResourceInventoryStatus, D.Text AS ResourceInventoryStatusText
+            CommandText = $@"SELECT A.ID, F.MainResourceName AS MainResourceIDText, E.AmtReal, E.AmtInventory, E.BorrowType, G.Text AS BorrowTypeText,
+A.InventoryRecordID, A.SecondResourceNo, A.SecondResourceName, A.ShelvesStatus, B.Text AS ShelvesStatusText, 
+A.BorrowStatus, C.Text AS BorrowStatusText, A.ResourceInventoryStatus, D.Text AS ResourceInventoryStatusText
+
                                FROM InventoryDetail A
                           LEFT JOIN Code B ON B.Code = A.ShelvesStatus AND B.Type = 'ShelvesStatus'
                           LEFT JOIN Code C ON C.Code = A.BorrowStatus AND C.Type = 'BorrowStatus'
                           LEFT JOIN Code D ON D.Code = A.ResourceInventoryStatus AND D.Type = 'InventoryStatus'
-                              WHERE InventoryRecordID = @InventoryRecordID";
+						  LEFT JOIN InventoryRecord E ON E.ID = A.InventoryRecordID
+						  LEFT JOIN BorrowMainResourceMang F ON F.MainResourceID = E.MainResourceID
+						  LEFT JOIN Code G ON G.Code = E.BorrowType AND G.Type = 'BorrowMultType'
+                              WHERE A.InventoryRecordID = @InventoryRecordID";
 
 
             (DbExecuteInfo info, IEnumerable<BorrowInventoryMangExcelModel> entitys) dbResult = DbaExecuteQuery<BorrowInventoryMangExcelModel>(CommandText, parameters, true, DBAccessException);
