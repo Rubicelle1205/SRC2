@@ -144,6 +144,7 @@
         原單退回 = 129,
         郵件範本管理 = 130,
         Log維護 = 131,
+        資源借用一覽表 = 64,
     }
 
 	public enum DBActionChineseName

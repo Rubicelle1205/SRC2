@@ -1,0 +1,58 @@
+﻿@model WebPccuClub.Models.BorrowBorrowingListMangViewModel
+
+@if (Model.ResultModel.Count > 0)
+{
+
+    <div class="timetableInner d-flex">
+        <div class="days-wrap d-flex">
+            @foreach (var item in Model.ResultModel)
+            {
+                <div class="dayItem d-flex">
+                    <div class="date">@DateTime.Parse(item.Date).ToString("yyyy/MM/dd")</div>
+
+                    @foreach (var item2 in item.LstPlaceData)
+                    {
+                        <div class="classItem d-flex">
+                            <div class="classroom">@item2.PlaceName</div>
+
+                            @if (item2.LstActClubData.Count > 0)
+                            {
+                                @for (int i = 0; i <= item2.LstActClubData.Count - 1; i++)
+                                {
+                                    <div class="classInfo">
+                                        <div class="time">@string.Format("{0}:00", item2.LstActClubData[i].STime) ~ @string.Format("{0}:00", item2.LstActClubData[i].ETime)</div>
+                                        <div class="title">@item2.LstActClubData[i].ActName</div>
+                                        <div class="club">@item2.LstActClubData[i].ClubCName</div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="classInfo">無</div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<!-- /.card-body -->
+
+<script>
+
+    function timetableHeight() {
+        if ($(window).width() > 575) {
+            var maxHeight = 0;
+
+            $(".timetableWrapper .classItem").each(function () {
+                var thisH = $(this).height();
+                if (thisH > maxHeight) { maxHeight = thisH; }
+            });
+
+            $(".timetableWrapper .classItem").height(maxHeight);
+        }
+    }
+
+</script>
