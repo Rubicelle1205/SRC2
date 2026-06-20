@@ -36,9 +36,9 @@ namespace WebPccuClub.Models
         /// <summary> 總筆數 </summary>
         public int TotalCount { get; set; }
 
-        /// <summary>場域</summary>
-        [DisplayName("場域")]
-        public string? BuildID { get; set; }
+        /// <summary>全部資源</summary>
+        [DisplayName("全部資源")]
+        public string? BorrowMainClassID { get; set; }
 
         /// <summary>SDate</summary>
         [DisplayName("SDate")]
@@ -52,8 +52,41 @@ namespace WebPccuClub.Models
         [DisplayName("日期")]
         public string? Date { get; set; }
 
-        public List<PlaceData> LstPlaceData = new List<PlaceData>();
+        public List<BorrowBorrowingUnitData> LstPlaceData = new List<BorrowBorrowingUnitData>();
     }
 
+    public class BorrowBorrowingUnitData
+    {
+        /// <summary>子資源ID</summary>
+        [DisplayName("子資源ID")]
+        public string? MainResourceID { get; set; }
 
+        /// <summary>子資源名稱</summary>
+        [DisplayName("子資源名稱")]
+        public string? SecondResourceName { get; set; }
+
+        public List<BorrowUnitData> LstBorrowUnitData = new List<BorrowUnitData>();
+    }
+
+    public class BorrowUnitData
+    {
+        public string? MainResourceID { get; set; }
+
+        /// <summary>日期</summary>
+        [DisplayName("日期")]
+        public DateTime? Date { get; set; }
+
+        /// <summary>活動名稱</summary>
+        [DisplayName("活動名稱")]
+        public string? ActName { get; set; }
+
+        /// <summary>借用資源</summary>
+        [DisplayName("借用資源")]
+        public string? MainResourceName { get; set; }
+
+        /// <summary>借用單位</summary>
+        [DisplayName("借用單位")]
+        public string? ApplyUnitName { get; set; }
+
+    }
 }

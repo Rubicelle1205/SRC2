@@ -22,7 +22,7 @@ namespace WebPccuClub.Controllers
 
         public IActionResult Index()
         {
-            ViewBag.ddlAllBuild = dbAccess.GetAllBuild();
+            ViewBag.ddlAllSecondClassID = dbAccess.GetAllMainResourceID();
 
             BorrowBorrowingListMangViewModel vm = new BorrowBorrowingListMangViewModel();
             vm.ConditionModel = new BorrowBorrowingListMangConditionModel();
@@ -42,11 +42,11 @@ namespace WebPccuClub.Controllers
                 LstDate.Add(i);
             }
 
-            List<PlaceData> LstBasePlaceData = dbAccess.GetPlaceData(vm.ConditionModel.BuildID);
+            List<BorrowBorrowingUnitData> LstBasePlaceData = dbAccess.GetResurceData(vm.ConditionModel.BorrowMainClassID);
 
             
 
-            List<WeekActClubData> LstActClubData = dbAccess.GetSearchResult(vm.ConditionModel).ToList();
+            List<BorrowUnitData> LstActClubData = dbAccess.GetSearchResult(vm.ConditionModel).ToList();
 
             vm.ResultModel = new List<BorrowBorrowingListMangResultModel>();
 
@@ -55,14 +55,14 @@ namespace WebPccuClub.Controllers
                 BorrowBorrowingListMangResultModel result = new BorrowBorrowingListMangResultModel();
                 result.Date = LstDate[i].ToString("yyyy-MM-dd");
 
-                var LstItemActClubData = LstActClubData.Where(x => x.Date == result.Date).ToList();
+                var LstItemActClubData = LstActClubData.Where(x => x.Date.Value.ToString("yyyy-MM-dd") == result.Date).ToList();
 
                 foreach (var item in LstBasePlaceData)
                 {
-                    PlaceData p = new PlaceData();
-                    p.PlaceID = item.PlaceID;
-                    p.PlaceName = item.PlaceName;
-                    p.LstActClubData = LstItemActClubData.Where(x => x.ActPlaceID == item.PlaceID).ToList();
+                    BorrowBorrowingUnitData p = new BorrowBorrowingUnitData();
+                    p.MainResourceID = item.MainResourceID;
+                    p.SecondResourceName = item.SecondResourceName;
+                    p.LstBorrowUnitData = LstItemActClubData.Where(x => x.MainResourceID == item.MainResourceID).ToList();
 
                     result.LstPlaceData.Add(p);
                 }

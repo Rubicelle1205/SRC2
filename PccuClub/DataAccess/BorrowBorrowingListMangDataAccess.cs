@@ -17,7 +17,7 @@ namespace WebPccuClub.DataAccess
     public class BorrowBorrowingListMangDataAccess : BaseAccess
     {
 
-        public List<PlaceData> GetPlaceData(string? buildID)
+        public List<BorrowBorrowingUnitData> GetResurceData(string? MainResourceID)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -25,25 +25,25 @@ namespace WebPccuClub.DataAccess
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@Buildid", buildID);
+            parameters.Add("@MainResourceID", MainResourceID);
 
             #endregion
 
-            CommandText = $@"SELECT PlaceID, PlaceName
-                               FROM PlaceSchoolMang
-                              WHERE (@Buildid IS NULL OR Buildid = @Buildid)";
+            CommandText = $@"SELECT A.MainResourceID, A.ID, A.SecondResourceName 
+                               FROM BorrowSecondResourceMang A
+                              WHERE (@MainResourceID IS NULL OR A.MainResourceID = @MainResourceID)";
 
-            (DbExecuteInfo info, IEnumerable<PlaceData> entitys) dbResult = DbaExecuteQuery<PlaceData>(CommandText, parameters, true, DBAccessException);
+            (DbExecuteInfo info, IEnumerable<BorrowBorrowingUnitData> entitys) dbResult = DbaExecuteQuery<BorrowBorrowingUnitData>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList();
 
-            return new List<PlaceData>();
+            return new List<BorrowBorrowingUnitData>();
         }
 
         /// <summary> 查詢結果 </summary>
 
-        public List<WeekActClubData> GetSearchResult(BorrowBorrowingListMangConditionModel model)
+        public List<BorrowUnitData> GetSearchResult(BorrowBorrowingListMangConditionModel model)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -56,25 +56,38 @@ namespace WebPccuClub.DataAccess
 
             #endregion
 
-            CommandText = $@"SELECT A.ActID, MIN(A.STime) AS STime, MAX(A.ETime) AS ETime,
-                                    A.ActPlaceID, A.ActPlaceText, A.[Date], C.ActName, C.BrrowUnit AS ClubID, D.ClubCName AS ClubCName
-                               FROM ActRundown A
-                          LEFT JOIN PlaceSchoolMang B on B.PlaceID = A.ActPlaceID
-                          LEFT JOIN ActDetail C ON C.ActDetailId = A.ActDetailId
-                          LEFT JOIN ClubMang D ON D.ClubId = C.BrrowUnit
-                              WHERE [date] between @SDate AND @EDate AND A.RundownStatus <> '02'
-                           GROUP BY A.ActID,A.ActPlaceID, A.ActPlaceText, A.[Date], C.ActName, C.BrrowUnit, D.ClubCName";
+            CommandText = $@"
+WITH DateGenerator AS (
+    SELECT A.ID, A.BorrowMainID, A.MainClassID, B.ActName, A.MainResourceID, C.MainResourceName, B.TakeSDate, B.TakeEDate, B.ApplyUnitName,
+           CAST(B.TakeSDate AS DATE) AS BorrowDate
+    FROM BorrowDevice A
+    LEFT JOIN BorrowMain B ON B.BorrowMainID = A.BorrowMainID
+	LEFT JOIN BorrowMainResourceMang C ON C.MainResourceID = A.MainResourceID
+    WHERE B.TakeSDate IS NOT NULL 
+    
+    UNION ALL
+    
+    SELECT ID, BorrowMainID, MainClassID, ActName, MainResourceID, MainResourceName, TakeSDate, TakeEDate, ApplyUnitName,
+           CAST(DATEADD(day, 1, BorrowDate) AS DATE)
+    FROM DateGenerator
+    WHERE DATEADD(day, 1, BorrowDate) <= CAST(TakeEDate AS DATE)
+)
+SELECT ID, BorrowMainID, MainClassID, ActName, MainResourceID, MainResourceName, TakeSDate, TakeEDate, ApplyUnitName, BorrowDate AS Date
+FROM DateGenerator
+ORDER BY ID, Date
+OPTION (MAXRECURSION 0);
+";
 
-            (DbExecuteInfo info, IEnumerable<WeekActClubData> entitys) dbResult = DbaExecuteQuery<WeekActClubData>(CommandText, parameters, true, DBAccessException);
+            (DbExecuteInfo info, IEnumerable<BorrowUnitData> entitys) dbResult = DbaExecuteQuery<BorrowUnitData>(CommandText, parameters, true, DBAccessException);
 
             if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
                 return dbResult.entitys.ToList();
 
-            return new List<WeekActClubData>();
+            return new List<BorrowUnitData>();
         }
 
 
-        public List<SelectListItem> GetAllBuild()
+        public List<SelectListItem> GetAllMainResourceID()
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -84,7 +97,8 @@ namespace WebPccuClub.DataAccess
             #region 參數設定
             #endregion
 
-            CommandText = @"SELECT BuildID AS VALUE, BuildName AS TEXT FROM BuildMang ";
+            CommandText = @"SELECT MainResourceID AS VALUE, MainResourceName AS TEXT
+                              FROM BorrowMainResourceMang ";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
 

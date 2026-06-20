@@ -13,16 +13,15 @@
                     @foreach (var item2 in item.LstPlaceData)
                     {
                         <div class="classItem d-flex">
-                            <div class="classroom">@item2.PlaceName</div>
+                            <div class="classroom">@item2.SecondResourceName</div>
 
-                            @if (item2.LstActClubData.Count > 0)
+                            @if (item2.LstBorrowUnitData.Count > 0)
                             {
-                                @for (int i = 0; i <= item2.LstActClubData.Count - 1; i++)
+                                @for (int i = 0; i <= item2.LstBorrowUnitData.Count - 1; i++)
                                 {
                                     <div class="classInfo">
-                                        <div class="time">@string.Format("{0}:00", item2.LstActClubData[i].STime) ~ @string.Format("{0}:00", item2.LstActClubData[i].ETime)</div>
-                                        <div class="title">@item2.LstActClubData[i].ActName</div>
-                                        <div class="club">@item2.LstActClubData[i].ClubCName</div>
+                                        <div class="title">@item2.LstBorrowUnitData[i].ActName</div>
+                                        <div class="club">@item2.LstBorrowUnitData[i].ApplyUnitName</div>
                                     </div>
                                 }
                             }
