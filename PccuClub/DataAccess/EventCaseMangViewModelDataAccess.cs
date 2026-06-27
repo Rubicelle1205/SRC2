@@ -35,14 +35,14 @@ namespace WebPccuClub.DataAccess
 ('KnowTime', '知悉時間', 1),
 ('MediaKnow', '媒體是否得知', 0),
 ('ReferCode', '轉介單位', 0),
-('CaseStatusText', '結案狀態', 1),
-('CaseFinishDateTime', '結案時間', 1),
-('DeathAmt', '死亡人數', 1),
-('HurtAmt', '受傷人數', 1),
-('SickAmt', '患病人數', 1),
-('ElseAmt', '其他人數', 1),
+('CaseStatusText', '結案狀態', 0),
+('CaseFinishDateTime', '結案時間', 0),
+('DeathAmt', '死亡人數', 0),
+('HurtAmt', '受傷人數', 0),
+('SickAmt', '患病人數', 0),
+('ElseAmt', '其他人數', 0),
 ('Memo', '備註', 0),
-('Created', '建立時間', 1)
+('Created', '建立時間', 0)
 
                                     ) AS T(ColumnValue, ColumnName, IsDefault);
 ";
