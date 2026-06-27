@@ -39,6 +39,8 @@ namespace WebPccuClub.Controllers
 
             EventGenderMangViewModel vm = new EventGenderMangViewModel();
             vm.ConditionModel = new EventGenderMangConditionModel();
+            vm.ConditionModel.LstColumnDataModel = dbAccess.GetDefaultColumnData().ToList();
+
             return View(vm);
         }
 
@@ -70,6 +72,36 @@ namespace WebPccuClub.Controllers
         [LogAttribute(LogActionChineseName.查詢)]
         public IActionResult GetSearchResult(EventGenderMangViewModel vm)
         {
+            var allLegalColumns = dbAccess.GetDefaultColumnData().ToList();
+            vm.ConditionModel.LstColumnDataModel = allLegalColumns;
+
+            if (!string.IsNullOrEmpty(vm.ConditionModel.SelectedColumns))
+            {
+                var rawSelected = vm.ConditionModel.SelectedColumns.Split(',');
+
+                // 只保留「確實存在於資料庫定義中」的欄位名稱 (白名單比對)
+                var activeColumns = allLegalColumns.Where(x => rawSelected.Contains(x.ColumnValue)).ToList();
+
+                // 3. 【產生安全字串】用於 SQL 查詢
+                // 加上 [] 可以防止欄位名稱與 SQL 關鍵字衝突
+                var safeFieldsForSql = string.Join(", ", activeColumns.Select(x => $"[{x.ColumnValue}]"));
+
+                var orderedColumns = rawSelected.Select(val => allLegalColumns
+                    .FirstOrDefault(x => x.ColumnValue == val))
+                    .Where(x => x != null)
+                    .ToList();
+
+                // 將過濾後的合法清單傳給 View 渲染標頭
+                ViewBag.ActiveColumns = orderedColumns;
+
+                // 將安全字串存入 ConditionModel，供 dbAccess 內部組 SQL 使用
+                vm.ConditionModel.SafeSqlColumns = safeFieldsForSql;
+            }
+            else
+            {
+                // 如果完全沒選，可以給予預設必選欄位
+                ViewBag.ActiveColumns = allLegalColumns.Where(x => x.IsDefault).ToList();
+            }
             vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel).ToList();
 
             #region 分頁
@@ -402,55 +434,82 @@ namespace WebPccuClub.Controllers
         public IActionResult ExportSearchResult(EventGenderMangViewModel vm)
         {
             string FileName = string.Format("{0}_{1}", LogActionChineseName.性平事件管理, DateTime.Now.ToString("yyyyMMdd"));
-            vm.ResultModel = dbAccess.GetExportResult(vm.ConditionModel);
+            vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel);
 
             if (vm.ResultModel != null && vm.ResultModel.Count > 0)
             {
-                IWorkbook workbook = new XSSFWorkbook();
-                List<int> LstWidth = new List<int> { 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20};
+                // 1. 取得欄位定義白名單 (確保能從 ColumnValue 對應到中文名稱)
+                var allLegalColumns = dbAccess.GetDefaultColumnData().ToList();
 
-                ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
-
-                var properties = typeof(EventGenderMangExcelHeaderModel).GetProperties();
-
-                //設定欄位
-                IRow headerRow = sheet.CreateRow(0);
-
-                XSSFCellStyle headStyle = ExcelUtil.GetDefaultHeaderStyle(workbook);
-
-                for (int i = 0; i <= properties.Length - 1; i++)
+                if (string.IsNullOrEmpty(vm.ConditionModel.SelectedColumns))
                 {
-                    var displayAttribute = (DisplayNameAttribute)properties[i].GetCustomAttribute(typeof(DisplayNameAttribute));
-                    var displayName = displayAttribute?.DisplayName ?? properties[i].Name;
+                    // 將 IsDefault 的欄位用逗號串接回字串
+                    var defaultCols = allLegalColumns
+                                        .Where(x => x.IsDefault)
+                                        .Select(x => x.ColumnValue);
 
-                    headerRow.CreateCell(i).SetCellValue(displayName);
-
-                    foreach (ICell cell in headerRow.Cells)
-                        cell.CellStyle = headStyle;
-
+                    vm.ConditionModel.SelectedColumns = string.Join(",", defaultCols);
                 }
 
-                XSSFCellStyle contentStyle = ExcelUtil.GetDefaultContentStyle(workbook);
+                // 2. 解析順序字串 (由前端傳回的 "ActName,ClubID...")
+                var rawSelected = (vm.ConditionModel.SelectedColumns ?? "").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-                //設定資料
-                for (int i = 0; i <= vm.ResultModel.Count - 1; i++)
+                // 3. 依照順序重組欄位物件清單
+                var activeColumns = rawSelected
+                    .Select(val => allLegalColumns.FirstOrDefault(x => x.ColumnValue == val))
+                    .Where(x => x != null)
+                    .ToList();
+
+                IWorkbook workbook = new XSSFWorkbook();
+
+                // 動態設定寬度 (這裡可以根據 activeColumns 的數量給予預設值)
+                List<int> LstWidth = activeColumns.Select(x => 25).ToList();
+                ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
+
+                // --- 設定標頭 (Header Row) ---
+                IRow headerRow = sheet.CreateRow(0);
+                XSSFCellStyle headStyle = ExcelUtil.GetDefaultHeaderStyle(workbook);
+
+                for (int i = 0; i < activeColumns.Count; i++)
+                {
+                    // 直接使用白名單定義的 ColumnName
+                    headerRow.CreateCell(i).SetCellValue(activeColumns[i].ColumnName);
+                    headerRow.GetCell(i).CellStyle = headStyle;
+                }
+
+                // --- 設定資料 (Content Rows) ---
+                XSSFCellStyle contentStyle = ExcelUtil.GetDefaultContentStyle(workbook);
+                var itemType = typeof(EventCaseMangResultModel); // 你的資料模型類別
+
+                for (int i = 0; i < vm.ResultModel.Count; i++)
                 {
                     IRow dataRow = sheet.CreateRow(i + 1);
+                    var rowData = vm.ResultModel[i];
 
-                    dataRow.CreateCell(0).SetCellValue(vm.ResultModel[i].CaseID);
-                    dataRow.CreateCell(1).SetCellValue(vm.ResultModel[i].SubCaseID);
-                    dataRow.CreateCell(2).SetCellValue(vm.ResultModel[i].OccurTime != null ? vm.ResultModel[i].OccurTime.Value.ToString("yyyy/MM/dd HH:mm") : "");
-                    dataRow.CreateCell(3).SetCellValue(vm.ResultModel[i].KnowTime != null ? vm.ResultModel[i].KnowTime.Value.ToString("yyyy/MM/dd HH:mm") : "");
-                    dataRow.CreateCell(4).SetCellValue(vm.ResultModel[i].GenderMainClassText);
-                    dataRow.CreateCell(5).SetCellValue(vm.ResultModel[i].GenderSecondClassText);
-                    dataRow.CreateCell(6).SetCellValue(vm.ResultModel[i].AcceptStatusText);
-                    dataRow.CreateCell(7).SetCellValue(vm.ResultModel[i].AcceptTime != null ? vm.ResultModel[i].AcceptTime.Value.ToString("yyyy/MM/dd HH:mm") : "");
-                    dataRow.CreateCell(8).SetCellValue(vm.ResultModel[i].CaseStatusText);
-                    dataRow.CreateCell(9).SetCellValue(vm.ResultModel[i].CaseFinishDateTime != null ? vm.ResultModel[i].CaseFinishDateTime.Value.ToString("yyyy/MM/dd HH:mm") : "");
-                    dataRow.CreateCell(10).SetCellValue(vm.ResultModel[i].Created != null ? vm.ResultModel[i].Created.Value.ToString("yyyy/MM/dd HH:mm") : "");
+                    for (int j = 0; j < activeColumns.Count; j++)
+                    {
+                        var colValue = activeColumns[j].ColumnValue;
+                        var cell = dataRow.CreateCell(j);
 
-                    foreach (ICell cell in dataRow.Cells)
+                        if (colValue == "ActVerify")
+                            colValue = "ActVerifyText";
+
+                        // 使用 Reflection (反射) 依照 ColumnValue 動態抓取屬性值
+                        var prop = itemType.GetProperty(colValue);
+                        object val = prop?.GetValue(rowData, null);
+
+                        // 針對特定欄位或型別做處理 (例如日期)
+                        if (val is DateTime dateVal)
+                        {
+                            cell.SetCellValue(dateVal.ToString("yyyy/MM/dd HH:mm"));
+                        }
+                        else
+                        {
+                            cell.SetCellValue(val?.ToString() ?? "");
+                        }
+
                         cell.CellStyle = contentStyle;
+                    }
                 }
 
                 MemoryStream ms = new MemoryStream();
@@ -461,8 +520,8 @@ namespace WebPccuClub.Controllers
                 return File(ms, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName + ".xlsx");
             }
 
-            return View("Index", vm);
-
+            AlertMsg.Add("無資料已供匯出");
+            return Redirect("Index");
         }
 
         [ValidateInput(false)]
