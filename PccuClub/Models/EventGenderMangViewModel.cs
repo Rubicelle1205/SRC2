@@ -125,34 +125,6 @@ namespace WebPccuClub.Models
         [DisplayName("知悉時間")]
         public DateTime? KnowTime { get; set; }
 
-        /// <summary>轉介單位</summary>
-        [DisplayName("轉介單位")]
-        public string? ReferCode { get; set; }
-
-        /// <summary>事件發生地點</summary>
-        [DisplayName("事件發生地點")]
-        public string? Location { get; set; }
-
-        /// <summary>媒體是否得知</summary>
-        [DisplayName("媒體是否得知")]
-        public string? MediaKnow { get; set; }
-
-        /// <summary>死亡人數</summary>
-        [DisplayName("死亡人數")]
-        public string? DeathAmt { get; set; }
-
-        /// <summary>受傷人數</summary>
-        [DisplayName("受傷人數")]
-        public string? HurtAmt { get; set; }
-
-        /// <summary>患病人數</summary>
-        [DisplayName("患病人數")]
-        public string? SickAmt { get; set; }
-
-        /// <summary>其他人數</summary>
-        [DisplayName("其他人數")]
-        public string? ElseAmt { get; set; }
-
         /// <summary>建立時間</summary>
         [DisplayName("建立時間")]
         public DateTime? Created { get; set; }
@@ -163,7 +135,7 @@ namespace WebPccuClub.Models
 
         /// <summary>受理狀態</summary>
         [DisplayName("受理狀態")]
-        public string? AcceptStatus { get; set; }
+        public string? AcceptStatusText { get; set; }
 
         /// <summary>受理時間</summary>
         [DisplayName("受理時間")]

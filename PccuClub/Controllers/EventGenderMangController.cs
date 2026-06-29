@@ -479,7 +479,7 @@ namespace WebPccuClub.Controllers
 
                 // --- 設定資料 (Content Rows) ---
                 XSSFCellStyle contentStyle = ExcelUtil.GetDefaultContentStyle(workbook);
-                var itemType = typeof(EventCaseMangResultModel); // 你的資料模型類別
+                var itemType = typeof(EventGenderMangResultModel); // 你的資料模型類別
 
                 for (int i = 0; i < vm.ResultModel.Count; i++)
                 {
