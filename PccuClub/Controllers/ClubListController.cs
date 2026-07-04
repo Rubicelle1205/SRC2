@@ -4,6 +4,8 @@ using System.Diagnostics;
 using WebPccuClub.Global;
 using WebPccuClub.DataAccess;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+using PccuClub.WebAuth;
+using WebPccuClub.Global.Extension;
 
 namespace WebPccuClub.Controllers
 {
@@ -20,8 +22,20 @@ namespace WebPccuClub.Controllers
             hostingEnvironment = _hostingEnvironment;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string ClubId)
         {
+            List<UserInfo> LstUserInfo = HttpContext.Session.GetObject<List<UserInfo>>("FLoginUser_MultipleClub");
+
+            if(LstUserInfo != null && string.IsNullOrEmpty(ClubId))
+                return RedirectToAction("Index", "ClubSelect");
+
+            if (!string.IsNullOrEmpty(ClubId))
+            {
+                LoginUser = LstUserInfo.Where(x => x.ClubId == ClubId).FirstOrDefault();
+                HttpContext.Session.SetObject("FLoginUser", LoginUser);
+            }
+                
+
             ViewBag.ddlClubClass = dbAccess.GetAllClubClass();
 
             ClubListViewModel vm = new ClubListViewModel();

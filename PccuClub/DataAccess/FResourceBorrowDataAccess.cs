@@ -150,7 +150,6 @@ AND (A.BorrowMainID = @ID) ";
                           LEFT JOIN BorrowDevice B on B.BorrowMainID = A.BorrowMainID
                               WHERE 1 = 1
                                 AND A.ActVerify IN ('02','04')
-                                --AND (@MainResourceID IS NULL OR B.MainResourceID = @MainResourceID) 
                                 AND @SDate BETWEEN A.TakeSDate AND A.TakeEDate 
 ";
 

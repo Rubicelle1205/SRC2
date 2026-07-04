@@ -22,7 +22,7 @@ namespace WebPccuClub.DataAccess
 
             #endregion
 
-            CommandText = $@"SELECT ID, Text, CoverPath 
+            CommandText = $@"SELECT ID, Text, CoverPath, BorrowSDate, BorrowEDate
                                FROM BorrowMainClassMang
 ";
 

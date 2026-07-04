@@ -4,6 +4,7 @@ using NPOI.POIFS.Crypt;
 using NPOI.SS.Formula.Functions;
 using PccuClub.WebAuth;
 using System.Data;
+using System.Runtime.ConstrainedExecution;
 using System.Text.Encodings.Web;
 using WebPccuClub.Global;
 using WebPccuClub.Global.Extension;
@@ -80,8 +81,35 @@ AND (FrontOpeningId = @FrontOpeningId) ";
             return null;
         }
 
-        /// <summary> 修改資料 </summary>
-        public DbExecuteInfo UpdateData(FrontOpeningMangViewModel vm, UserInfo LoginUser)
+        /// <summary>取得時段資料</summary>
+        public List<HourTimeFrame> GetTimeFrameData(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            parameters.Add("@FrontOpeningId", Ser);
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT FrontOpeningDetailId, FrontOpeningId, DayOfWeek, HourMask
+                               FROM FrontOpeningDetailMang
+                              WHERE 1 = 1
+AND (FrontOpeningId = @FrontOpeningId) ";
+
+
+            (DbExecuteInfo info, IEnumerable<HourTimeFrame> entitys) dbResult = DbaExecuteQuery<HourTimeFrame>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<HourTimeFrame>();
+        }
+
+        /// <summary> 修改資料1  </summary>
+        public DbExecuteInfo UpdateFrontOpeningMangData(FrontOpeningMangViewModel vm, UserInfo LoginUser)
         {
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
@@ -103,6 +131,61 @@ AND (FrontOpeningId = @FrontOpeningId) ";
 
             return ExecuteResult;
         }
+
+        /// <summary>
+        /// 刪除資料
+        /// </summary>
+        public DbExecuteInfo DeleteFrontOpeningDetailMangData(FrontOpeningMangViewModel vm)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@FrontOpeningId", vm.EditModel.FrontOpeningId);
+            #endregion 參數設定
+
+            string CommendText = $@"DELETE FROM FrontOpeningDetailMang WHERE FrontOpeningId = @FrontOpeningId ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+
+        /// <summary> 修改資料2 </summary>
+        public DbExecuteInfo InsertFrontOpeningDetailMangData(FrontOpeningMangViewModel vm, HourTimeFrame timeFrame, UserInfo LoginUser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@FrontOpeningId", vm.EditModel.FrontOpeningId);
+            parameters.Add("@DayOfWeek", timeFrame.DayOfWeek);
+            parameters.Add("@HourMask", timeFrame.HourMask);
+            parameters.Add("@LoginId", LoginUser.LoginId);
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO FrontOpeningDetailMang
+                                               (FrontOpeningId
+                                              ,DayOfWeek
+                                              ,HourMask
+                                              ,Creator
+                                              ,Created
+                                              ,LastModifier
+                                              ,LastModified)
+                                         VALUES
+                                               (@FrontOpeningId
+                                               ,@DayOfWeek
+                                               ,@HourMask
+                                               ,@LoginId
+                                               ,GETDATE()
+                                               ,@LoginId
+                                               ,GETDATE())";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+        
 
     }
 }

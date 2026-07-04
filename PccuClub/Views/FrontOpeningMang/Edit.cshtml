@@ -42,9 +42,42 @@
                                             @Html.TextBoxFor(m => m.EditModel.CloseDate, new { @class = "form-control", @type = "date", @placeholder = "請輸入開放時間(迄)" })
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <th width="15%">開放時段設定<br /><span style="color:#c2c7d0;font-size: 0.8rem;">(拖曳選取/取消)</span></th>
+                                        <td>
+                                            <div class="schedule-container">
+
+                                                <div class="text-end mb-2">
+                                                    <button type="button" id="btnClearAll" class="btn btn-outline-secondary btn-sm">
+                                                        <i class="fa fa-eraser"></i> 清除全部選取
+                                                    </button>
+                                                </div>
+
+                                                <table class="schedule-table" id="periodScheduler">
+                                                    <thead>
+                                                        <tr class="bg-light">
+                                                            <th class="time-label">時間</th>
+                                                            <th class="text-center">日</th>
+                                                            <th class="text-center">一</th>
+                                                            <th class="text-center">二</th>
+                                                            <th class="text-center">三</th>
+                                                            <th class="text-center">四</th>
+                                                            <th class="text-center">五</th>
+                                                            <th class="text-center">六</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+
+                                                @Html.HiddenFor(m => m.EditModel.ScheduleJson)
+
+                                            </div>
+
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
-
                         </div>
 
                         <div class="card-footer d-flex justify-content-end">
@@ -54,12 +87,11 @@
                     </div>
                     <!-- /.card -->
                     @Html.HiddenFor(m => m.EditModel.FrontOpeningId)
-                </form> 
+                </form>
                 <!-- /.form -->
             </div>
         </div>
         <!-- /.row -->
-
 
     </div><!-- /.container-fluid -->
 </section>
@@ -75,10 +107,16 @@
         var Enable = $('#@Html.IdFor(m => m.EditModel.Enable)').val();
         var OpenDate = $('#@Html.IdFor(m => m.EditModel.OpenDate)').val();
         var CloseDate = $('#@Html.IdFor(m => m.EditModel.CloseDate)').val();
+        var ScheduleJson = $('#@Html.IdFor(m => m.EditModel.ScheduleJson)').val();
 
         if (Enable == "") { $.alert("是否啟用 需填寫"); return; }
         if (OpenDate == "") { $.alert("開放時間(起) 需填寫"); return; }
         if (CloseDate == "") { $.alert("開放時間(迄) 需填寫"); return; }
+        
+        // 1. 檢查是否有任何格子被選取
+        const selectedCount = $('.grid-cell.selected').length;
+
+        if (selectedCount === 0) { $.alert("開放時段 需設定"); return; }
 
         if (OpenDate > CloseDate) {
             $.alert("開放時間(起) 需小於 開放時間(迄)");
@@ -89,6 +127,7 @@
         data.append('@Html.NameFor(m => m.EditModel.Enable)', Enable);
         data.append('@Html.NameFor(m => m.EditModel.OpenDate)', OpenDate);
         data.append('@Html.NameFor(m => m.EditModel.CloseDate)', CloseDate);
+        data.append('@Html.NameFor(m => m.EditModel.ScheduleJson)', ScheduleJson);
 
         SendAjax({
             url: '@Url.Action("EditOldData")',
@@ -117,4 +156,189 @@
         $('#@Html.IdFor(m => m.EditModel.OpenDate)').val("");
         $('#@Html.IdFor(m => m.EditModel.CloseDate)').val("");
     }
+
+    $(document).ready(function () {
+        const $tbody = $('#periodScheduler tbody');
+        const $hiddenInput = $('#@Html.IdFor(m => m.EditModel.ScheduleJson)')
+        let isMouseDown = false;
+        let isEraserMode = false;
+        let startCell = null;
+
+        // --- A. 動態產生 24 小時列 ---
+        for (let h = 0; h < 24; h++) {
+            let row = `<tr><td class="time-label">${h}:00</td>`;
+            for (let d = 0; d < 7; d++) {
+                row += `<td class="grid-cell" data-day="${d}" data-hour="${h}"></td>`;
+            }
+            row += `</tr>`;
+            $tbody.append(row);
+        }
+
+        // --- B. 初始化還原 (從 Hidden Input 讀取) ---
+        function initGridFromDatabase() {
+            const jsonVal = $hiddenInput.val();
+            if (!jsonVal || jsonVal === "" || jsonVal === "[]") return;
+
+            try {
+                const data = JSON.parse(jsonVal);
+                data.forEach(item => {
+                    // 修正：如果你的 JSON 格式是 {"DayOfWeek":1, "Hour":8}
+                    // 直接點亮對應的格子即可，不需要跑 0~23 的迴圈
+                    if (item.DayOfWeek !== undefined && item.Hour !== undefined) {
+                        $(`.grid-cell[data-day="${item.DayOfWeek}"][data-hour="${item.Hour}"]`).addClass('selected');
+                    }
+                    // 修正：如果你的 JSON 格式是 {"DayOfWeek":1, "HourMask":768}
+                    else if (item.HourMask !== undefined) {
+                        for (let h = 0; h < 24; h++) {
+                            if ((item.HourMask & (1 << h)) !== 0) {
+                                $(`.grid-cell[data-day="${item.DayOfWeek}"][data-hour="${h}"]`).addClass('selected');
+                            }
+                        }
+                    }
+                });
+            } catch (e) {
+                console.error("解析初始資料失敗", e);
+            }
+        }
+        initGridFromDatabase();
+
+        // --- C. 拖曳與選取交互邏輯 ---
+        $tbody.on('mousedown', '.grid-cell', function (e) {
+            if (e.which !== 1) return;
+            isMouseDown = true;
+            startCell = $(this);
+            isEraserMode = $(this).hasClass('selected');
+
+            $(this).addClass('drag-target');
+            if (isEraserMode) $(this).addClass('eraser');
+            e.preventDefault();
+        });
+
+        $(document).on('mouseover', '.grid-cell', function () {
+            if (!isMouseDown) return;
+            const endCell = $(this);
+
+            $('.grid-cell').removeClass('drag-target eraser');
+
+            const range = getRange(startCell, endCell);
+            $(range).addClass('drag-target');
+            if (isEraserMode) $(range).addClass('eraser');
+        });
+
+        $(document).on('mouseup', function () {
+            if (!isMouseDown) return;
+            isMouseDown = false;
+
+            $('.grid-cell.drag-target').each(function () {
+                if (isEraserMode) {
+                    $(this).removeClass('selected');
+                } else {
+                    $(this).addClass('selected');
+                }
+            });
+
+            $('.grid-cell').removeClass('drag-target eraser');
+            updateHiddenInput();
+        });
+
+        // --- D. 新增：清除全部選取事件 ---
+        $('#btnClearAll').click(function () {
+            if (confirm('確定要清除所有已選取的時段嗎？')) {
+                // 1. 移除畫面上所有 selected 類別
+                $('.grid-cell').removeClass('selected drag-target eraser');
+                // 2. 將隱藏欄位設為空陣列
+                $hiddenInput.val('[]');
+            }
+        });
+
+        // --- E. 輔助函數 ---
+        function getRange(start, end) {
+            const sDay = parseInt(start.data('day'));
+            const sHour = parseInt(start.data('hour'));
+            const eDay = parseInt(end.data('day'));
+            const eHour = parseInt(end.data('hour'));
+
+            const minDay = Math.min(sDay, eDay);
+            const maxDay = Math.max(sDay, eDay);
+            const minHour = Math.min(sHour, eHour);
+            const maxHour = Math.max(sHour, eHour);
+
+            let range = [];
+            for (let d = minDay; d <= maxDay; d++) {
+                for (let h = minHour; h <= maxHour; h++) {
+                    range.push($(`.grid-cell[data-day="${d}"][data-hour="${h}"]`)[0]);
+                }
+            }
+            return range;
+        }
+
+        function updateHiddenInput() {
+            let schedules = [];
+            for (let d = 0; d < 7; d++) {
+                let mask = 0;
+                $(`.grid-cell.selected[data-day="${d}"]`).each(function () {
+                    const h = $(this).data('hour');
+                    mask |= (1 << h);
+                });
+                if (mask > 0) {
+                    schedules.push({ DayOfWeek: d, HourMask: mask });
+                }
+            }
+            $hiddenInput.val(JSON.stringify(schedules));
+        }
+    });
 </script>
+
+<style>
+    /* 1. 基礎表格規範 */
+    .schedule-table {
+        table-layout: fixed; /* 強制平分 7 天的寬度 */
+        width: 100%;
+        border-collapse: collapse;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none; /* 防止拖曳時選取到文字 */
+    }
+
+        .schedule-table th, .schedule-table td {
+            border: 1px solid #dee2e6 !important;
+            padding: 0 !important;
+            height: 30px;
+            vertical-align: middle;
+        }
+
+        .schedule-table .time-label {
+            background-color: #f8f9fa;
+            font-size: 12px;
+            text-align: center;
+            width: 70px;
+        }
+
+    /* 2. 格子狀態 */
+    .grid-cell {
+        cursor: pointer;
+        transition: background-color 0.1s;
+    }
+
+        .grid-cell.selected {
+            background-color: #007bff !important; /* 選中時的藍色 */
+        }
+
+        /* 3. 拖曳預覽 (紅框效果) */
+        .grid-cell.drag-target {
+            outline: 2px solid #ff4d4d !important; /* 拖曳時顯示紅框 */
+            outline-offset: -2px;
+            z-index: 10;
+            position: relative;
+        }
+
+            /* 4. 擦除模式 (反向選取時的視覺) */
+            .grid-cell.drag-target.eraser {
+                outline: 2px solid #6c757d !important; /* 擦除時改為灰色框 */
+            }
+
+        .grid-cell:hover:not(.selected) {
+            background-color: #f1f1f1;
+        }
+</style>

@@ -15,6 +15,46 @@ namespace WebPccuClub.DataAccess
     
     public class EventCaseMangDataAccess : BaseAccess
     {
+        public List<ColumnDataModel> GetDefaultColumnData()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT T.ColumnValue, T.ColumnName, T.IsDefault
+                               FROM (VALUES
+('CaseID', '事件編號', 1),
+('MainClassText', '校安事件主類別', 1),
+('SecondClassText', '校安事件次類別', 1),
+('Location', '事件發生地點', 1),
+('OccurTime', '發生時間', 1),
+('KnowTime', '知悉時間', 1),
+('MediaKnow', '媒體是否得知', 0),
+('ReferCode', '轉介單位', 0),
+('CaseStatusText', '結案狀態', 0),
+('CaseFinishDateTime', '結案時間', 0),
+('DeathAmt', '死亡人數', 0),
+('HurtAmt', '受傷人數', 0),
+('SickAmt', '患病人數', 0),
+('ElseAmt', '其他人數', 0),
+('Memo', '備註', 0),
+('Created', '建立時間', 0)
+
+                                    ) AS T(ColumnValue, ColumnName, IsDefault);
+";
+
+
+            (DbExecuteInfo info, IEnumerable<ColumnDataModel> entitys) dbResult = DbaExecuteQuery<ColumnDataModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ColumnDataModel>();
+        }
 
         /// <summary> 查詢結果 </summary>
         public List<EventCaseMangResultModel> GetSearchResult(EventCaseMangConditionModel model)
@@ -28,19 +68,28 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@SecondClass", model.SecondClass);
             parameters.Add("@CaseID", model.CaseID);
             parameters.Add("@CaseStatus", model.CaseStatus);
-            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
-            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
+
+            parameters.Add("@FromDate", model?.From_ReleaseDate?.Date);
+            parameters.Add("@ToDatePlusOne", model?.To_ReleaseDate?.Date.AddDays(1));
 
             #region 參數設定
             #endregion
 
-            CommandText = $@"SELECT A.CaseID, A.MainClass, B.Text AS MainClassText, A.SecondClass, C.Text AS SecondClassText, A.CaseStatus, D.Text AS CaseStatusText, A.CaseFinishDateTime, A.OccurTime, A.KnowTime, A.Created
-                               FROM hq_PccuCase.dbo.CaseMainMang A
-                          LEFT JOIN hq_PccuClub.dbo.EventMainClassMang B ON B.ID = A.MainClass
-                          LEFT JOIN hq_PccuClub.dbo.EventSecondClassMang C ON C.ID = A.SecondClass
-                          LEFT JOIN hq_PccuClub.dbo.Code D ON D.Code = A.CaseStatus AND D.Type = 'CaseFinish'
+            CommandText = $@"SELECT 
+A.CaseID, A.MainClass, B.Text AS MainClassText, A.SecondClass, C.Text AS SecondClassText,
+A.Location, A.OccurTime, A.KnowTime, A.MediaKnow, 
+A.ReferCode, A.CaseStatus, D.Text AS CaseStatusText, A.CaseFinishDateTime, 
+A.DeathAmt, A.HurtAmt, A.SickAmt, A.ElseAmt, A.Memo, A.Created
+                               
+FROM hq_PccuCase.dbo.CaseMainMang A
+LEFT JOIN hq_PccuClub.dbo.EventMainClassMang B ON B.ID = A.MainClass
+LEFT JOIN hq_PccuClub.dbo.EventSecondClassMang C ON C.ID = A.SecondClass
+LEFT JOIN hq_PccuClub.dbo.Code D ON D.Code = A.CaseStatus AND D.Type = 'CaseFinish'
+
 WHERE 1 = 1
-{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
+
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created >= @FromDate AND A.Created < @ToDatePlusOne" : "")}
+
 AND (@MainClass IS NULL OR A.MainClass = @MainClass)
 AND (@SecondClass IS NULL OR A.SecondClass = @SecondClass)
 AND (@CaseStatus IS NULL OR A.CaseStatus = @CaseStatus)
@@ -501,49 +550,6 @@ AND (A.CaseID = @ID) ";
         }
 
         /// <summary> 查詢結果 </summary>
-        public List<EventCaseMangResultModel> GetExportResult(EventCaseMangConditionModel model)
-        {
-            string CommandText = string.Empty;
-            DataSet ds = new DataSet();
-
-            DBAParameter parameters = new DBAParameter();
-
-            parameters.Add("@MainClass", model.MainClass);
-            parameters.Add("@SecondClass", model.SecondClass);
-            parameters.Add("@CaseID", model.CaseID);
-            parameters.Add("@CaseStatus", model.CaseStatus);
-            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
-            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
-
-            #region 參數設定
-            #endregion
-
-            CommandText = $@"SELECT A.CaseID, A.MainClass, B.Text AS MainClassText, A.SecondClass, C.Text AS SecondClassText, A.CaseStatus, D.Text AS CaseStatusText, A.CaseFinishDateTime, A.OccurTime, A.KnowTime, A.Created
-                               FROM hq_PccuCase.dbo.CaseMainMang A
-                          LEFT JOIN hq_PccuClub.dbo.EventMainClassMang B ON B.ID = A.MainClass
-                          LEFT JOIN hq_PccuClub.dbo.EventSecondClassMang C ON C.ID = A.SecondClass
-                          LEFT JOIN hq_PccuClub.dbo.Code D ON D.Code = A.CaseStatus AND D.Type = 'CaseFinish'
-WHERE 1 = 1
-{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created BETWEEN @FromDate AND @ToDate" : " ")}
-AND (@MainClass IS NULL OR A.MainClass = @MainClass)
-AND (@SecondClass IS NULL OR A.SecondClass = @SecondClass)
-AND (@CaseStatus IS NULL OR A.CaseStatus = @CaseStatus)
-AND (@CaseID IS NULL OR A.CaseID LIKE '%' + @CaseID + '%')  ";
-
-
-            (DbExecuteInfo info, IEnumerable<EventCaseMangResultModel> entitys) dbResult = DbaExecuteQuery<EventCaseMangResultModel>(CommandText, parameters, true, DBAccessException);
-
-            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
-                return dbResult.entitys.ToList();
-
-            return new List<EventCaseMangResultModel>();
-        }
-
-
-
-
-        /// <summary> 查詢結果 </summary>
-
         public List<EventCaseReferDataMangResultModel> GetReferDataSearchResult(EventCaseReferDataMangConditionModel model)
         {
             string CommandText = string.Empty;

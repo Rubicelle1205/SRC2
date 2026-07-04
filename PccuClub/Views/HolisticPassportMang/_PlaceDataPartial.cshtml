@@ -4,18 +4,18 @@
 
 }
 
-@if (Model.CreateModel.PlaceSource == "01")
+@if (Model.BuildSelectModel.PlaceSource == "01")
 {
     @if (ViewBag.ddlBuild != null)
     {
         <div>
             <div class="row pt-2">
                 <div class="col-lg-6">
-                    @Html.DropDownListFor(m => m.CreateModel.BuildID,(List<SelectListItem>)ViewBag.ddlBuild,"請選擇樓館", new {@class = "form-control mb-1 classroom1_select class_info_req"} )
+                    @Html.DropDownListFor(m => m.BuildSelectModel.BuildID,(List<SelectListItem>)ViewBag.ddlBuild,"請選擇樓館", new {@class = "form-control mb-1 classroom1_select class_info_req"} )
 
                     @if (ViewBag.ddlPlace != null)
                     {
-                        @Html.DropDownListFor(m => m.CreateModel.PlaceID,(List<SelectListItem>)ViewBag.ddlPlace,"請選擇場地", new {@class = "form-control classroom2_select class_info_req"} )
+                        @Html.DropDownListFor(m => m.BuildSelectModel.PlaceID,(List<SelectListItem>)ViewBag.ddlPlace,"請選擇場地", new {@class = "form-control classroom2_select class_info_req"} )
                     }
                 </div>
             </div>
@@ -31,7 +31,7 @@ else
                     <label class="flex-shrink-0 me-2"
                            for="">場地名稱：</label>
                     <div class="jq_box2 position-relative w-100">
-                        <td>@Html.TextBoxFor(m => m.CreateModel.PlaceName, new {@class = "form-control class_info_req", placeholder="請輸入場地名稱"})</td>
+                        <td>@Html.TextBoxFor(m => m.BuildSelectModel.PlaceName, new {@class = "form-control class_info_req", placeholder="請輸入場地名稱"})</td>
                     </div>
                 </div>
             </div>
@@ -39,11 +39,14 @@ else
     </div>
 }
 
+@Html.HiddenFor(m => m.BuildSelectModel.BuildID)
+@Html.HiddenFor(m => m.BuildSelectModel.PlaceID)
+@Html.HiddenFor(m => m.BuildSelectModel.PlaceName)
 
 <script>
 
     $(function () {
-        $('#@Html.IdFor(m => m.CreateModel.PlaceName)').autocomplete({
+        $('#@Html.IdFor(m => m.BuildSelectModel.PlaceName)').autocomplete({
             source: function (request, response) {
                 $.ajax({
                     url: '@Url.Action("GetSuggestPlace")',
@@ -58,16 +61,20 @@ else
         });
     });
 
-    $('#@Html.IdFor(m => m.CreateModel.BuildID)').on('change', function () {
+    $('#@Html.IdFor(m => m.BuildSelectModel.BuildID)').on('change', function () {
         InitPlaceSelect($("[id ^= 'PlaceSource_']:checked").val(), $(this).val());
     });
 
 
     function InitPlaceSelect(PlaceSource, Buildid) {
 
+        var BuildID = $('#@Html.IdFor(m => m.BuildSelectModel.BuildID)').val();
+        var PlaceID = $('#@Html.IdFor(m => m.BuildSelectModel.PlaceID)').val();
+        var PlaceName = $('#@Html.IdFor(m => m.BuildSelectModel.PlaceName)').val();
+
         SendAjax({
             url: '@Url.Action("InitPlaceSelect")',
-            data: { 'PlaceSource': PlaceSource, 'Buildid': Buildid },
+            data: { 'PlaceSource': PlaceSource, 'Buildid': Buildid, 'PlaceID': PlaceID, 'PlaceName': PlaceName },
             success: function (result) {
                 $('#class_input_box').html(result);
             }

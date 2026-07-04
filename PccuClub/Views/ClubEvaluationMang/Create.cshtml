@@ -23,7 +23,16 @@
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.CreateModel.SchoolYear)<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.CreateModel.SchoolYear, (List<SelectListItem>)ViewBag.ddlSchoolYear, "請選擇學年度", new { @class = "form-control" })
+                                            @Html.EditorFor(m => m.CreateModel.SchoolYear, new
+                                                {
+                                                    htmlAttributes = new
+                                                    {
+                                                        @class = "form-control",
+                                                        type = "number",
+                                                        placeholder = "請輸入學年度",
+                                                        onkeydown = "return ['e', 'E', '+', '-'].includes(event.key) ? false : true;"
+                                                    }
+                                                })
                                         </td>
                                     </tr>
                                     <tr>
@@ -41,7 +50,7 @@
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.CreateModel.ClubEvaluationItemId)<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.CreateModel.ClubEvaluationItemId, (List<SelectListItem>)ViewBag.ddlItemId, "請選擇項目", new { @class = "form-control" })
+                                            @Html.DropDownListFor(m => m.CreateModel.ClubEvaluationItemId, new List<SelectListItem>(), "請先選擇類別", new { @class = "form-control", @disabled = "disabled" })
                                         </td>
                                     </tr>
                                     <tr>
@@ -76,6 +85,46 @@
 
 <script>
 
+    $(document).ready(function () {
+        // 監聽「類別」下拉選單的變更事件
+        $('#@Html.IdFor(m => m.CreateModel.ClubEvaluationClassId)').change(function () {
+            var classId = $(this).val();
+            var itemSelect = $('#@Html.IdFor(m => m.CreateModel.ClubEvaluationItemId)');
+
+            // 清空目前的選項
+            itemSelect.empty();
+
+            if (classId === "") {
+                itemSelect.append($('<option>', { value: '', text: '請先選擇類別' }));
+                itemSelect.prop('disabled', true);
+                return;
+            }
+
+            // 發送 Ajax 取得該類別下的所有項目
+            SendAjax({
+                url: '@Url.Action("GetItemsByClassId")', // 請確認後端有此 Action
+                data: { classId: classId },
+                success: function (result) {
+                    if (result && result.length > 0) {
+                        itemSelect.append($('<option>', { value: '', text: '請選擇項目' }));
+                        $.each(result, function (index, item) {
+                            itemSelect.append($('<option>', {
+                                value: item.value,
+                                text: item.text
+                            }));
+                        });
+                        itemSelect.prop('disabled', false); // 啟用下拉選單
+                    } else {
+                        itemSelect.append($('<option>', { value: '', text: '此類別下無項目' }));
+                        itemSelect.prop('disabled', true);
+                    }
+                },
+                error: function () {
+                    $.alert("取得項目資料失敗");
+                }
+            });
+        });
+    });
 
     function SaveData() {
 

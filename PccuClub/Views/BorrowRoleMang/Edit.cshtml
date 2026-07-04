@@ -133,11 +133,6 @@
             return;
         }
 
-        if (SystemRoleCode == "") {
-            $.alert("角色種類不可為空");
-            return;
-        }
-
         data.append('@Html.NameFor(m => m.EditModel.RoleId)', RoleId);
         data.append('@Html.NameFor(m => m.EditModel.RoleName)', RoleName);
         data.append('@Html.NameFor(m => m.EditModel.Comment)', Comment);

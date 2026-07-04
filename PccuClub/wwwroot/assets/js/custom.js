@@ -128,7 +128,7 @@ $(document).ready(function(){
         }) 
     }
 
-    if ((location.pathname).indexOf("act.") >= 0|| (location.pathname).indexOf("WeekActivity") >= 0) {
+    if ((location.pathname).indexOf("act.") >= 0 || (location.pathname).indexOf("WeekActivity") >= 0 || (location.pathname).indexOf("BorrowBorrowingListMang") >= 0) {
         var calendar = new VanillaCalendar('#calendar',{
             settings: {
                 lang: 'define',

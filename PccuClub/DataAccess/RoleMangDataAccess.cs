@@ -388,7 +388,7 @@ AND (@Note IS NULL OR Note LIKE '%' + @Note + '%') ";
             #region 參數設定
             #endregion
 
-            CommandText = @"SELECT A.MenuNode AS VALIE, A.MenuName AS TEXT
+            CommandText = @"SELECT A.MenuNode AS VALUE, A.MenuName AS TEXT
                               FROM SystemMenu A
                          LEFT JOIN Code B ON B.Code = A.SystemCode AND B.Type = 'SystemCode'
                          LEFT JOIN SystemFun C ON C.FunId = A.FunId

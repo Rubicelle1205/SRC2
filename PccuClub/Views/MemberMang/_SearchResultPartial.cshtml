@@ -11,14 +11,18 @@
                     <span class="text-sm text-secondary">學年度</span>
                 </th>
                 <th width="20%">社團名稱</th>
-                <th width="20%">任職期間</th>
+                <th width="20%">參與期間</th>
                 <th width="20%">
                     姓名
                     <br/>
                     <span class="text-sm text-secondary">系級</span>
                 </th>
-                <th width="20%">建立時間	</th>
-                    <th width="20%">功能</th>
+                <th width="20%">學號</th>
+                <th width="20%">性別</th>
+                <th width="20%">連絡電話</th>
+                <th width="20%">Email</th>
+                <th width="20%">建立時間</th>
+                <th width="20%">功能</th>
                 </tr>
             </thead>
             <tbody>
@@ -51,7 +55,18 @@
                                 @item.Department
                                 </span>
                         </td>
-
+                        <td class="text-center text-sm">
+                            @item.SNo
+                        </td>
+                        <td class="text-center text-sm">
+                            @item.SexText
+                        </td>
+                        <td class="text-center text-sm">
+                            @item.CellPhone
+                        </td>
+                        <td class="text-center text-sm">
+                            @item.EMail
+                        </td>
                         @if (item.Created.HasValue)
                         {
                             <td class="text-center text-sm">

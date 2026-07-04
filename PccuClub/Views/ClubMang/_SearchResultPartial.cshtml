@@ -1,18 +1,22 @@
 ﻿@model WebPccuClub.Models.ClubMangViewModel
-
+@{
+    List<ColumnDataModel> LstColumnDataModel = ViewBag.ActiveColumns;
+}
 
 <!-- /.card-header -->
 <div class="card-body table-responsive p-0">
     <table class="table table-bordered table-hover text-nowrap">
         <thead>
             <tr class="text-center">
-                <th width="10%">社團代號<br><span class="text-xs text-secondary">學年度</span></th>
-                <th width="10%">社團組別<br><span class="text-xs text-secondary">社團分類</span></th>
-                <th width="10%">中文名稱<br><span class="text-xs text-secondary">英文名稱</span></th>
-                <th width="10%">負責人姓名<br><span class="text-xs text-secondary">系級</span></th>
-                <th width="10%">聯絡電話<br><span class="text-xs text-secondary">E-mail</span></th>
-                <th width="10%">建立時間</th>
-                <th width="5%">功能</th>
+                @foreach (var col in LstColumnDataModel)
+                {
+                    if (col.ColumnName != "AwdID")
+                    {
+                        <th style="min-width:120px;">@col.ColumnName</th>
+                    }
+
+                }
+                <th width="10%">功能</th>
             </tr>
         </thead>
         <tbody>
@@ -21,18 +25,25 @@
                 foreach (var item in Model.ResultModel)
                 {
                     <tr>
-                        <td class="text-center text-sm">@item.ClubId<br /><span class="text-muted">@item.SchoolYear</span></td>
-                        <td class="text-center text-sm">@item.LifeClassText<br /><span class="text-muted">@item.ClubClassText</span></td>
-                        <td class="text-center text-sm">@item.ClubCName<br /><span class="text-muted">@item.ClubEName</span></td>
-                        <td class="text-center text-sm">@item.ClubLeader<br /><span class="text-muted">@item.Department</span></td>
-                        <td class="text-center text-sm">@item.Tel<br /><span class="text-muted">@item.EMail</span></td>
-                        @if (item.Created.HasValue)
+                        @foreach (var col in LstColumnDataModel)
                         {
-                            <td class="text-center text-sm">@item.Created.Value.ToString("yyyy/MM/dd HH:mm:ss")</td>
-                        }
-                        else
-                        {
-                            <td class="text-center text-sm"></td>
+                            if (col.ColumnName != "AwdID")
+                            {
+                                <td class="text-center text-sm">
+                                    @{
+                                        var propValue = item.GetType().GetProperty(col.ColumnValue)?.GetValue(item, null);
+
+                                        if (propValue is DateTime dateValue)
+                                        {
+                                            @dateValue.ToString("yyyy/MM/dd HH:mm")
+                                        }
+                                        else
+                                        {
+                                            @propValue?.ToString()
+                                        }
+                                    }
+                                </td>
+                            }
                         }
                         <td class="text-center text-sm">
                             @using (Html.BeginForm("Edit", "ClubMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
@@ -48,7 +59,7 @@
             }
             else
             {
-            <td colspan="10">查無資料</td>
+            <td colspan="@(LstColumnDataModel.Count + 1)">查無資料</td>
             }
         </tbody>
     </table>

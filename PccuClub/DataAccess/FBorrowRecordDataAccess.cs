@@ -379,7 +379,7 @@ AND BorrowMainID = @BorrowMainID";
             return new List<SelectListItem>();
         }
 
-        public List<SelectListItem> GetddlSecondResurce()
+        public List<SelectListItem> GetddlSecondResurce(string MainClassID = null)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -387,13 +387,16 @@ AND BorrowMainID = @BorrowMainID";
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
+            parameters.Add("@MainClassID", MainClassID);
+
             #endregion
 
-            CommandText = @"SELECT A.MainResourceID AS VALUE, '(' + B.Text + ')' + A.MainResourceName AS TEXT
+            CommandText = @"SELECT A.MainResourceID AS VALUE, A.MainResourceName AS TEXT
                               FROM BorrowMainResourceMang A
                          LEFT JOIN BorrowMainClassMang B ON B.ID = A.MainClass
                              WHERE 1 = 1
                                AND A.Enable = 1 
+                               AND (@MainClassID IS NULL OR A.MainClass = @MainClassID)
                                AND A.InventoryStatus = '01' ";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
@@ -448,5 +451,25 @@ AND BorrowMainID = @BorrowMainID";
             return ds.Tables[0];
         }
 
+        public DataTable CheckNeedSendMail(string MainClassID)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@BorrowMainClassID", MainClassID);
+            #endregion
+
+            CommandText = @"SELECT TemplateId, TemplateName, BorrowMainClassID, SubjectTemplate, BodyTemplate, IsEnable
+                              FROM BorrowMailTemplate
+                             WHERE 1 = 1
+                               AND BorrowMainClassID = @BorrowMainClassID ";
+
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
+
+            return ds.Tables[0];
+        }
     }
 }

@@ -29,7 +29,9 @@
                                     <span class="input-group-text">至</span>
                                     <input type="date" class="form-control" id="@Html.IdFor(m => m.ConditionModel.To_ReleaseDate)" name="@Html.NameFor(m => m.ConditionModel.To_ReleaseDate)">
                                 </div>
-
+                                <div class="col-md-3 col-sm-6 mt-2">
+                                    <input type="date" class="form-control" id="@Html.IdFor(m => m.ConditionModel.ActDate)" name="@Html.NameFor(m => m.ConditionModel.ActDate)">
+                                </div>
                                 <div class="col-md-3 col-sm-6 mt-2">
                                     @Html.DropDownListFor(m => m.ConditionModel.SchoolYear,(List<SelectListItem>)ViewBag.ddlSchoolYear,"全部學年度", new {@class = "form-control"})
                                 </div>
@@ -126,6 +128,7 @@
     $('#@Html.IdFor(m => m.ConditionModel.ClubId)').tooltip({ title: "社團代號" });
     $('#@Html.IdFor(m => m.ConditionModel.ClubCName)').tooltip({ title: "主辦單位名稱" });
     $('#@Html.IdFor(m => m.ConditionModel.ActID)').tooltip({ title: "活動報備編號" });
+    $('#@Html.IdFor(m => m.ConditionModel.ActDate)').tooltip({ title: "活動日期" });
     $('#@Html.IdFor(m => m.ConditionModel.ActName)').tooltip({ title: "活動名稱" });
 
 </script>

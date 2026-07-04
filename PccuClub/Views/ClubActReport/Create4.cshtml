@@ -99,12 +99,10 @@
 			</div>
 			<div class="row justify-content-center mb-5">
 				<div class="col-lg-3">
-					<a href="@Url.Action("Create3")" class="btn btn-primary btn-outline btn-modern w-100 mb-2"><i class="icon-arrow-left"></i> 上一步</a>
+					<a href="@Url.Action("Return3", "ClubActReport", new { id = Model.ReturnModel.ActID })" class="btn btn-primary btn-outline btn-modern w-100 mb-2"><i class="icon-arrow-left"></i> 上一步</a>
 				</div>
 				<div class="col-lg-3">
 					<button class="submit-btn btn btn-primary btn-modern w-100 mb-2" type="submit" onclick="return SaveData()">下一步 <i class="icon-arrow-right"></i></button>
-					@*<button class="submit-btn btn btn-primary btn-modern w-100 mb-2" type="submit">下一步 <i class="icon-arrow-right"></i></button>*@
-
 				</div>
 			</div>
 		</form>

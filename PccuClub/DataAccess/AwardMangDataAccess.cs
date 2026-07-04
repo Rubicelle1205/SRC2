@@ -14,6 +14,42 @@ namespace WebPccuClub.DataAccess
     
     public class AwardMangDataAccess : BaseAccess
     {
+        public List<ColumnDataModel> GetDefaultColumnData()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT T.ColumnValue, T.ColumnName, T.IsDefault
+                               FROM (VALUES
+('AwdID', 'AwdID', 0),
+('ClubID', '社團代號', 1),
+('SchoolYear', '學年度', 1),
+('AwdActName', '社團名稱', 1),
+('AwdDate', '獲獎日期', 1),
+('AwdType', '獲獎類別', 1),
+('AwdName', '獎項名稱', 1),
+('Organizer', '主辦單位', 1),
+('AwardInOrOutText', '校內/校外', 1),
+('ActVerifyText', '審核狀態', 1),
+('Attachment', '附件', 0),
+('Memo', 'Memo', 0),
+('Created', '建立時間', 1)
+                                    ) AS T(ColumnValue, ColumnName, IsDefault);
+";
+
+
+            (DbExecuteInfo info, IEnumerable<ColumnDataModel> entitys) dbResult = DbaExecuteQuery<ColumnDataModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ColumnDataModel>();
+        }
 
         /// <summary> 查詢結果 </summary>
 
@@ -35,22 +71,27 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@AwdActName", model?.AwdActName);
             parameters.Add("@AwdType", model?.AwdType);
             parameters.Add("@AwdName", model?.AwdName);
-            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy-MM-dd 00:00:00") : null);
-            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy-MM-dd 23:59:59") : null);
+
+            string duringDateStr = model.DuringDate?.ToString("yyyy-MM-dd");
+            parameters.Add("@DuringDate", string.IsNullOrWhiteSpace(duringDateStr) ? null : duringDateStr);
+
+            parameters.Add("@FromDate", model?.From_ReleaseDate?.Date);
+            parameters.Add("@ToDatePlusOne", model?.To_ReleaseDate?.Date.AddDays(1));
 
             #endregion
 
-            CommandText = $@"SELECT A.AwdID, A.ClubID, B.ClubCName, A.SchoolYear, A.AwdDate, A.AwdActName, A.AwdType, A.AwdName, 
+            CommandText = $@"SELECT A.AwdID, A.ClubID, B.ClubCName, A.SchoolYear, A.AwdDate, A.AwdActName, A.AwdType, A.AwdName, A.Attachment, A.Memo,
                                     A.Organizer, A.AwardInOrOut, D.Text AS AwardInOrOutText, A.ActVerify, C.Text AS ActVerifyText, A.Created
                                FROM AwardMang A
                           LEFT JOIN ClubMang B ON B.ClubID = A.ClubID
                           LEFT JOIN Code C ON C.Code = A.ActVerify AND C.Type = 'ActVerify'
                           LEFT JOIN Code D ON D.Code = A.AwardInOrOut AND D.Type = 'AwardInOrOut'
                               WHERE 1 = 1
-{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.AwdDate BETWEEN @FromDate AND @ToDate" : " ")}
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created >= @FromDate AND A.Created < @ToDatePlusOne" : "")}
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 AND (@ActVerify IS NULL OR A.ActVerify = @ActVerify)
 AND (@AwardInOrOut IS NULL OR A.AwardInOrOut = @AwardInOrOut)
+AND (@DuringDate IS NULL OR A.AwdDate = @DuringDate) 
 AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') 
 AND (@ClubCName IS NULL OR B.ClubCName LIKE '%' + @ClubCName + '%') 
 AND (@Organizer IS NULL OR A.Organizer LIKE '%' + @Organizer + '%') 

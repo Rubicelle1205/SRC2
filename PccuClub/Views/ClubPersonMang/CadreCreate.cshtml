@@ -30,7 +30,7 @@
                             <div class="col-lg-3 col-md-3">
                                 <div class="form-item">
                                     <label for="">學年度<span class="req-star">*</span></label>
-                                    @Html.TextBoxFor(m => m.CadreMangCreateModel.SchoolYear, new {@class = "form-control", @readonly="readonly", disabled="disabled"})
+                                    @Html.DropDownListFor(m => m.CadreMangCreateModel.SchoolYear, (List<SelectListItem>)ViewBag.ddlSchoolYear, "請選擇", new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="col-lg-9 col-md-9">
@@ -87,8 +87,8 @@
                             </div>
                             <div class="col-lg-12 col-md-12">
                                 <div class="form-item">
-                                    <label for="">其他</label>
-                                    @Html.TextBoxFor(m => m.CadreMangCreateModel.Memo, new {@class = "form-control", placeholder="其他"})
+                                    <label for="">備註</label>
+                                    @Html.TextBoxFor(m => m.CadreMangCreateModel.Memo, new { @class = "form-control", placeholder = "備註" })
                                 </div>
                             </div>
                         </div>
@@ -165,18 +165,47 @@
             contentType: false,
             success: function (result) {
                 if (result.errorCode == 0) {
-                    $.confirm({
-                        title: "",
-                        content: "新增成功",
-                        buttons: {
-                            確定: function () {
-                                window.location = $("#Back").attr("href");
-                            },
-                        }
-                    });
+
+                    if (result.errorMsg.length > 0) {
+                        let displayHtml = '<div style="font-weight: bold; font-size: 1.1em; margin-bottom: 8px;">新增成功</div>';
+
+                        displayHtml += `
+                            <div style="background-color: #fff2f0; border: 1px solid #ffccc7; padding: 10px; border-radius: 4px;">
+                                <div style="color: #cf1322; font-weight: bold; margin-bottom: 5px;">
+                                        <i class="fa fa-exclamation-circle"></i> 以下學號學籍可能有些問題：
+                                </div>
+                                        <div style="color: #be992c; font-size: 0.95em; line-height: 1.6;">
+                                    ${result.errorMsg}
+                                </div>
+                            </div>`;
+
+                        $.confirm({
+                            title: "",
+                            content: displayHtml,
+                            buttons: {
+                                確定: function () {
+                                    window.location = $("#Back").attr("href");
+                                },
+                            }
+                        });
+                    }
+                    else {
+                        $.confirm({
+                            title: "",
+                            content: "新增成功",
+                            buttons: {
+                                確定: function () {
+                                    window.location = $("#Back").attr("href");
+                                },
+                            }
+                        });
+                    }
                 }
                 else { $.alert(result.errorMsg); }
             },
+            error: function () {
+                $.alert(result.errorMsg);
+            }
         });
     }
 

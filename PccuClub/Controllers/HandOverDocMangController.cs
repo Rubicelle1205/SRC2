@@ -127,7 +127,7 @@ namespace WebPccuClub.Controllers
         public IActionResult HandOver0101(string id)
         {
             ViewBag.ddlAgree = dbAccess.getAllAgree();
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
 
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0101Model = new ClubHandover0101ViewModel();
@@ -176,7 +176,7 @@ namespace WebPccuClub.Controllers
         public IActionResult HandOver0102(string id)
         {
             ViewBag.ddlElectionType = dbAccess.getAllElectionType();
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
 
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0102Model = new ClubHandover0102ViewModel();
@@ -251,7 +251,7 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlSex = dbAccess.GetAllSex();
             ViewBag.ddldentityType = dbAccess.GetAllIdentityType();
             ViewBag.ddlConform = dbAccess.GetAllConform();
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
 
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0103Model = new ClubHandover0103ViewModel();
@@ -314,7 +314,7 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.社團負責人改選管理)]
         public IActionResult HandOver0204(string id)
         {
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
 
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0204Model = new ClubHandover0204ViewModel();
@@ -364,7 +364,7 @@ namespace WebPccuClub.Controllers
         public IActionResult HandOver0205(string id)
         {
             ViewBag.ddlYesOrNo = dbAccess.GetYesOrNo();
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
 
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0205Model = new ClubHandover0205ViewModel();
@@ -443,7 +443,7 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.社團負責人改選管理)]
         public IActionResult HandOver0206(string id)
         {
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
 
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0206Model = new ClubHandover0206ViewModel();
@@ -515,7 +515,7 @@ namespace WebPccuClub.Controllers
         public IActionResult HandOver0307(string id)
         {
             ViewBag.ddlSex = dbAccess.GetAllSex();
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
 
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0307Model = new ClubHandover0307ViewModel();
@@ -565,7 +565,7 @@ namespace WebPccuClub.Controllers
         public IActionResult HandOver0308(string id)
         {
             ViewBag.ddlSex = dbAccess.GetAllSex();
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
 
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0308Model = new ClubHandover0308ViewModel();
@@ -615,7 +615,7 @@ namespace WebPccuClub.Controllers
         public IActionResult HandOver0309(string id)
         {
             ViewBag.ddlSex = dbAccess.GetAllSex();
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
 
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0309Model = new ClubHandover0309ViewModel();

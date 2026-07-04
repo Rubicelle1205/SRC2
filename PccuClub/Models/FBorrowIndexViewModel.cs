@@ -18,6 +18,14 @@ namespace WebPccuClub.Models
 		[DisplayName("分類名稱")]
         public string? Text { get; set; }
 
+        /// <summary>可借用日期</summary>
+        [DisplayName("可借用日期")]
+        public DateTime? BorrowSDate { get; set; }
+
+        /// <summary>可借用日期</summary>
+        [DisplayName("可借用日期")]
+        public DateTime? BorrowEDate { get; set; }
+
         [DisplayName("封面圖片")]
         public string? CoverPath { get; set; }
 

@@ -88,5 +88,17 @@ namespace WebPccuClub.Models
         /// <summary>開放時間[迄]</summary>
         [DisplayName("開放時間[迄]")]
         public string? CloseDate { get; set; }
+
+        public List<HourTimeFrame> LstHourTimeFrame = new List<HourTimeFrame>();
+
+        /// <summary>選擇時段Json</summary>
+        public string ScheduleJson { get;  set; }
+    }
+
+    public class HourTimeFrame
+    {
+        public int DayOfWeek { get; set; }
+
+        public int HourMask { get; set; }
     }
 }

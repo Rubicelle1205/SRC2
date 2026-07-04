@@ -14,7 +14,7 @@ namespace WebPccuClub.Controllers
     public class MenuFrontController : Controller
     {
         ReturnViewModel vmRtn = new ReturnViewModel();
-        SDGsMangDataAccess dbAccess = new SDGsMangDataAccess();
+        MenuFrontDataAccess dbAccess = new MenuFrontDataAccess();
 
         private readonly IHostingEnvironment hostingEnvironment;
 
@@ -30,7 +30,10 @@ namespace WebPccuClub.Controllers
             UserInfo LoginUser = HttpContext.Session.GetObject<UserInfo>("FLoginUser");
             ViewBag.LoginUser = LoginUser;
 
-            return View();
+            MenuFrontViewModel vm = new MenuFrontViewModel();
+            vm.ResultModel = dbAccess.GetSearchResult().ToList();
+
+            return View(vm);
         }
     }
 }

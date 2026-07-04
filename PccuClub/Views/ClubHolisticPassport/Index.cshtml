@@ -35,6 +35,8 @@
 </div>
 
 <script>
+    let searchTimer = null;
+
     $(document).ready(function () {
         GoSearch();
     });
@@ -54,6 +56,17 @@
     });
 
     $('#@Html.IdFor(m => m.ConditionModel.ActVerify)').change(function (e) {
+        GoSearch();
+    });
+
+    $('#@Html.IdFor(m => m.ConditionModel.ActName)').on('input', function (e) {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(function () {
+            GoSearch();
+        }, 300);
+    });
+
+    $('#@Html.IdFor(m => m.ConditionModel.OrderBy)').change(function (e) {
         GoSearch();
     });
 

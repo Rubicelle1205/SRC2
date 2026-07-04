@@ -49,7 +49,7 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public IActionResult Create()
         {
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlStaticOrDynamic = dbAccess.GetStaticOrDynamic();
             ViewBag.ddlActInOrOut = dbAccess.GetActInOrOut();
             ViewBag.ddlActType = dbAccess.GetActType();
@@ -88,8 +88,6 @@ namespace WebPccuClub.Controllers
 
             return View(vm);
         }
-
-
 
         [LogAttribute(LogActionChineseName.查詢)]
         public IActionResult GetSearchResult(ActListMangViewModel vm)
@@ -451,6 +449,19 @@ namespace WebPccuClub.Controllers
                     return Json(vmRtn);
                 }
 
+                //若審核狀態為"09-原單退回"，則取消所有行程資料
+                if (vm.EditModel.ActVerify == "09")
+                {
+                    dbResult = dbAccess.UpdateActRundownData(vm, LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "修改失敗";
+                        return Json(vmRtn);
+                    }
+                }
 
                 dbAccess.DbaCommit();
             }

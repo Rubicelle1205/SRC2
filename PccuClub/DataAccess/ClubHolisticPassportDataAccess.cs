@@ -17,13 +17,13 @@ namespace WebPccuClub.DataAccess
 
         /// <summary> 查詢結果 </summary>
 
-        public List<ClubHolisticPassportResultModel> GetSearchResult(ClubHolisticPassportConditionModel model)
+        public List<ClubHolisticPassportResultModel> GetSearchResult(ClubHolisticPassportConditionModel model, UserInfo LoginUser)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
 
             DBAParameter parameters = new DBAParameter();
-
+            parameters.Add("@ClubID", LoginUser.ClubId);
             parameters.Add("@SchoolYear", model?.SchoolYear);
             parameters.Add("@ActVerify", model?.ActVerify);
             parameters.Add("@ActName", model?.ActName);
@@ -35,10 +35,11 @@ namespace WebPccuClub.DataAccess
                                FROM HolisticPassportMang A
                           LEFT JOIN Code B ON B.Code = A.ActVerify AND B.Type = 'ActVerify'
 WHERE 1 = 1
+AND (A.ClubID = @ClubID)
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear) 
 AND (@ActVerify IS NULL OR ActVerify = @ActVerify) 
 AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%') 
-{(!string.IsNullOrEmpty(model.OrderBy) ? " ORDER BY A.ActID " + model.OrderBy : " ORDER BY A.ActID DESC")}";
+{(!string.IsNullOrEmpty(model.OrderBy) ? " ORDER BY A.ID " + model.OrderBy : " ORDER BY A.ID DESC")}";
 
 
             (DbExecuteInfo info, IEnumerable<ClubHolisticPassportResultModel> entitys) dbResult = DbaExecuteQuery<ClubHolisticPassportResultModel>(CommandText, parameters, true, DBAccessException);

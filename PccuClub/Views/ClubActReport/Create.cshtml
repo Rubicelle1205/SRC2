@@ -24,7 +24,9 @@
                 <div class="infoItem">
                     <div class="tag">學年度</div>
                     <div class="content">
-                        <input asp-for="CreateModel.SchoolYear" class="form-control" readonly="readonly" />
+                        <select asp-for="CreateModel.SchoolYear" asp-items="@ViewBag.ddlSchoolYear" class="form-control">
+                            <option value="">請選擇學年度</option>
+                        </select>
                     </div>
                 </div>
                 <div class="infoItem">

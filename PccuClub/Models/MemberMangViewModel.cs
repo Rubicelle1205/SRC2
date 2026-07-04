@@ -70,6 +70,10 @@ namespace WebPccuClub.Models
 
         [DisplayName("結束日期")]
         public DateTime? To_ReleaseDate { get; set; }
+
+        [DisplayName("參與期間")]
+        public DateTime? DuringDate { get; set; }
+        
     }
 
     public class MemberMangResultModel
@@ -98,6 +102,22 @@ namespace WebPccuClub.Models
         [DisplayName("系級")]
         public string? Department { get; set; }
 
+        /// <summary>學號</summary>
+        [DisplayName("學號")]
+        public string? SNo { get; set; }
+
+        /// <summary>性別</summary>
+        [DisplayName("性別")]
+        public string? SexText { get; set; }
+
+        /// <summary>Email</summary>
+        [DisplayName("Email")]
+        public string? EMail { get; set; }
+
+        /// <summary>連絡電話</summary>
+        [DisplayName("連絡電話")]
+        public string? CellPhone { get; set; }
+
         /// <summary>參與期間</summary>
         [DisplayName("參與期間")]
         public DateTime? SDuring { get; set; }
@@ -116,6 +136,10 @@ namespace WebPccuClub.Models
         [DisplayName("學年度")]
         public string? SchoolYear { get; set; }
 
+        /// <summary>社團代號</summary>
+        [DisplayName("社團代號")]
+        public string? ClubID { get; set; }
+
         /// <summary>社團名稱</summary>
         [DisplayName("社團名稱")]
         public string? ClubName { get; set; }
@@ -128,13 +152,29 @@ namespace WebPccuClub.Models
         [DisplayName("系級")]
         public string? Department { get; set; }
 
-        /// <summary>任職開始期間</summary>
-        [DisplayName("參與期間")]
-        public string? SDuring { get; set; }
+        /// <summary>學號</summary>
+        [DisplayName("學號")]
+        public string? SNo { get; set; }
 
-        /// <summary>任職結束期間</summary>
+        /// <summary>性別</summary>
+        [DisplayName("性別")]
+        public string? SexText { get; set; }
+
+        /// <summary>Email</summary>
+        [DisplayName("Email")]
+        public string? EMail { get; set; }
+
+        /// <summary>連絡電話</summary>
+        [DisplayName("連絡電話")]
+        public string? CellPhone { get; set; }
+
+        /// <summary>參與期間</summary>
         [DisplayName("參與期間")]
-        public string? EDuring { get; set; }
+        public DateTime? SDuring { get; set; }
+
+        /// <summary>參與期間</summary>
+        [DisplayName("參與期間")]
+        public DateTime? EDuring { get; set; }
 
         [DisplayName("建立時間")]
         public DateTime? Created { get; set; }

@@ -1,117 +1,74 @@
 ﻿@model WebPccuClub.Models.EventCaseMangViewModel
+@{
+    List<ColumnDataModel> LstColumnDataModel = ViewBag.ActiveColumns;
+}
 
-
-    <!-- /.card-header -->
-    <div class="card-body table-responsive p-0">
-        <table class="table table-bordered table-hover text-nowrap">
-            <thead>
-                <tr class="text-center">
-                <th width="10%">事件編號</th>
-                <th width="10%">校安事件主類別
-                    <br />
-                    <span class="text-sm text-secondary">校安事件次類別</span>
-                </th>
-                <th width="10%">
-                    發生時間
-                    <br />
-                    <span class="text-sm text-secondary">知悉時間</span>
-                </th>
-                <th width="10%">
-                    是否結案
-                    <br />
-                    <span class="text-sm text-secondary">結案時間</span>
-                </th>
-                <th width="10%">建立時間</th>
-                    <th width="5%">功能</th>
-                <th width="5%">轉介紀錄</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.ResultModel.Count > 0)
-                { 
-                    foreach (var item in Model.ResultModel)
-                    {
+<!-- /.card-header -->
+<div class="card-body table-responsive p-0">
+    <table class="table table-bordered table-hover text-nowrap">
+        <thead>
+            <tr class="text-center">
+                @foreach (var col in LstColumnDataModel)
+                {
+                    <th style="min-width:120px;">@col.ColumnName</th>
+                }
+                <th width="10%">功能</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.ResultModel.Count > 0)
+            {
+                foreach (var item in Model.ResultModel)
+                {
                     <tr>
-                        <td class="text-center text-sm">@item.CaseID</td>
-                        <td class="text-center text-sm">@item.MainClassText
-                        <br/>
-                            <span class="text-muted">
-                                @item.SecondClassText
-                                </span>
-                        </td>
-                        <td class="text-center text-sm">
-                            @if (item.OccurTime.HasValue)
-                            {
-                                @item.OccurTime.Value.ToString("yyyy/MM/dd  HH:mm:ss")
-                            }
-                            
-                            <br />
-                            <span class="text-muted">
-                                @if (item.KnowTime.HasValue)
-                                {
-                                    @item.KnowTime.Value.ToString("yyyy/MM/dd  HH:mm:ss")
-                                }
-                            </span>
-                        </td>
-                        <td class="text-center text-sm">
-                            @if (item.CaseStatus == "01")
-                            {
-                                <span class="text-success">@item.CaseStatusText</span>
-                            }
-                            else if (item.CaseStatus == "02")
-                            {
-                                <span class="text-danger">@item.CaseStatusText</span>
-                            }
-                            <br />
-                            <span class="text-muted">
-                                @if (item.CaseFinishDateTime.HasValue)
-                                {
-                                    @item.CaseFinishDateTime.Value.ToString("yyyy/MM/dd  HH:mm:ss")
-                                }
-                            </span>
-                        </td>
-                        
+                        @foreach (var col in LstColumnDataModel)
+                        {
                             <td class="text-center text-sm">
-                            @if (item.Created.HasValue)
-                            {
-                                @item.Created.Value.ToString("yyyy/MM/dd  HH:mm:ss")
-                            }
+                                @{
+                                    var propValue = item.GetType().GetProperty(col.ColumnValue)?.GetValue(item, null);
+
+                                    if (propValue is DateTime dateValue)
+                                    {
+                                        if (col.ColumnValue == "CaseFinishDateTime")
+                                        {
+                                            @dateValue.ToString("yyyy/MM/dd")
+                                        }
+                                        else
+                                        {
+                                            @dateValue.ToString("yyyy/MM/dd HH:mm")
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @propValue?.ToString()
+                                    }
+                                }
                             </td>
-                        
+                        }
                         <td class="text-center text-sm">
                             @using (Html.BeginForm("Edit", "EventCaseMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
                             {
-                                <button type="submit" value="@item.CaseID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">編輯</button>
+                                <button type="submit" value="@item.CaseID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
                             }
 
                             <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel('@item.CaseID');">刪除</a>
-                        </td>
-                        <td class="text-center text-sm">
-                            @using (Html.BeginForm("ExportReferDataSearchResultByIndex", "EventCaseMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
-                            {
-                                <button type="submit" value="@item.CaseID" name="submitBtn" class="ml-1 btn btn-sm btn-outline-dark">下載轉介單位Excel</button>
-                            }
-
-                            @using (Html.BeginForm("ReferDataIndex", "EventCaseMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
-                            {
-                                <button type="submit" value="@item.CaseID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看轉介內容</button>
-                            }
+                            <br><span class="text-sm text-secondary"> </span>
                         </td>
                     </tr>
-                    }
                 }
-                else
-                {
-                    <td colspan="10">查無資料</td>
-                }
-            </tbody>
-        </table>
-    </div>
+            }
+            else
+            {
+            <td colspan="@(LstColumnDataModel.Count + 1)">查無資料</td>
+            }
+        </tbody>
+    </table>
+</div>
 
 <div class="card-footer clearfix">
     <div class="pagination justify-content-end" id="SearchResultListPagination"></div>
 </div>
-    <!-- /.card-body -->
+<!-- /.card-body -->
 
 <script>
     $("#SearchResultListPagination").solventoPageBar(
@@ -166,6 +123,6 @@
             }
         });
     }
-    
+
 
 </script>

@@ -183,6 +183,10 @@ namespace WebPccuClub.Models
         [DisplayName("啟用狀態")]
         public string? Enable { get; set; }
 
+        /// <summary>歸還方式</summary>
+        [DisplayName("歸還方式")]
+        public string? AutoReturn { get; set; }
+
         /// <summary>備註</summary>
         [DisplayName("備註")]
         public string? Memo { get; set; }
@@ -257,6 +261,10 @@ namespace WebPccuClub.Models
         /// <summary>啟用狀態</summary>
         [DisplayName("啟用狀態")]
         public string? Enable { get; set; }
+
+        /// <summary>歸還方式</summary>
+        [DisplayName("歸還方式")]
+        public string? AutoReturn { get; set; }
 
         /// <summary>備註</summary>
         [DisplayName("備註")]

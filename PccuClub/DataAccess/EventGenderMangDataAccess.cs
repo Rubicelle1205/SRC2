@@ -14,6 +14,44 @@ namespace WebPccuClub.DataAccess
     
     public class EventGenderMangDataAccess : BaseAccess
     {
+        public List<ColumnDataModel> GetDefaultColumnData()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT T.ColumnValue, T.ColumnName, T.IsDefault
+                               FROM (VALUES
+('CaseID', '事件編號', 1),
+('SubCaseID', '子事件編號', 1),
+('CaseMainClassText', '校安事件主類別名稱', 1),
+('CaseSecondClassText', '校安事件次類別名稱', 1),
+('GenderMainClassText', '性平事件主類別名稱', 1),
+('GenderSecondClassText', '性平事件次類別名稱', 1),
+('CaseStatusText', '結案狀態', 1),
+('CaseFinishDateTime', '結案時間', 1),
+('AcceptStatusText', '受理狀態', 1),
+('AcceptTime', '受理時間', 1),
+('OccurTime', '發生時間', 1),
+('KnowTime', '知悉時間', 1),
+('Created', '建立時間', 0),
+('LastModified', '更新時間', 1),
+('Memo', '備註', 0)
+                                    ) AS T(ColumnValue, ColumnName, IsDefault);
+";
+
+
+            (DbExecuteInfo info, IEnumerable<ColumnDataModel> entitys) dbResult = DbaExecuteQuery<ColumnDataModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ColumnDataModel>();
+        }
 
         /// <summary> 查詢結果 </summary>
 
@@ -31,76 +69,40 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@CaseID", model?.CaseID);
             parameters.Add("@SubCaseID", model?.SubCaseID);
 
-            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
-            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
+            parameters.Add("@FromDate", model?.From_ReleaseDate?.Date);
+            parameters.Add("@ToDatePlusOne", model?.To_ReleaseDate?.Date.AddDays(1));
 
             #region 參數設定
             #endregion
 
             CommandText = $@"
-SELECT A.EventID, A.CaseID, A.SubCaseID, A.CaseSystemType, F.OccurTime, F.KnowTime,
-       A.MainClass AS GenderMainClass, B.Text AS GenderMainClassText, 
-       A.SecondClass AS GenderSecondClass, C.Text AS GenderSecondClassText, 
-       A.AcceptStatus, D.Text AS AcceptStatusText, A.AcceptTime, A.CaseStatus, E.Text AS CaseStatusText, A.CaseFinishDateTime, A.Memo, A.Creator, A.Created, A.LastModifier, A.LastModified
+SELECT A.EventID, A.CaseID, A.SubCaseID, A.CaseSystemType, B.OccurTime, B.KnowTime,
+       B.MainClass AS CaseMainClass, C.Text AS CaseMainClassText, 
+       B.SecondClass AS CaseSecondClass, D.Text AS CaseSecondClassText, 
+	   A.MainClass AS GenderMainClass, E.Text AS GenderMainClassText, 
+       A.SecondClass AS GenderSecondClass, F.Text AS GenderSecondClassText, 
+       A.AcceptStatus, G.Text AS AcceptStatusText,  
+	   A.CaseStatus, H.Text AS CaseStatusText, 
+	   A.AcceptTime, A.CaseFinishDateTime, 
+	   A.Memo, A.Creator, A.Created, A.LastModifier, A.LastModified
+
 FROM hq_PccuCase.dbo.EventMainMang A
-LEFT JOIN hq_PccuClub.dbo.EventMainClassMang B ON B.ID = A.MainClass AND B.CaseSystemType = '02'
-LEFT JOIN hq_PccuClub.dbo.EventSecondClassMang C ON C.ID = A.SecondClass AND C.CaseSystemType = '02'
-LEFT JOIN Code D ON D.Code = A.AcceptStatus AND D.Type = 'AcceptStatus' 
-LEFT JOIN Code E ON E.Code = A.CaseStatus AND E.Type = 'CaseFinish' 
-LEFT JOIN hq_PccuCase.dbo.CaseMainMang F ON F.CaseID = A.CaseID
+LEFT JOIN hq_PccuCase.dbo.CaseMainMang B ON B.CaseID = A.CaseID
+
+LEFT JOIN hq_PccuClub.dbo.EventMainClassMang C ON C.ID = B.MainClass AND C.CaseSystemType = '01'
+LEFT JOIN hq_PccuClub.dbo.EventSecondClassMang D ON D.ID = B.SecondClass AND D.CaseSystemType = '01'
+
+LEFT JOIN hq_PccuClub.dbo.EventMainClassMang E ON E.ID = A.MainClass AND E.CaseSystemType = '02'
+LEFT JOIN hq_PccuClub.dbo.EventSecondClassMang F ON F.ID = A.SecondClass AND F.CaseSystemType = '02'
+
+LEFT JOIN Code G ON G.Code = A.AcceptStatus AND G.Type = 'AcceptStatus' 
+LEFT JOIN Code H ON H.Code = A.CaseStatus AND H.Type = 'CaseFinish' 
+
 WHERE 1 = 1
 AND A.CaseSystemType = '02'
-{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND Created BETWEEN @FromDate AND @ToDate" : " ")}
-AND (@GenderMainClass IS NULL OR A.MainClass = @GenderMainClass)
-AND (@GenderSecondClass IS NULL OR A.SecondClass = @GenderSecondClass)
-AND (@CaseStatus IS NULL OR A.CaseStatus = @CaseStatus)
-AND (@AcceptStatus IS NULL OR A.AcceptStatus = @AcceptStatus)
-AND (@CaseID IS NULL OR A.CaseID LIKE '%' + @CaseID + '%')
-AND (@SubCaseID IS NULL OR A.SubCaseID LIKE '%' + @SubCaseID + '%')  ";
 
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created >= @FromDate AND A.Created < @ToDatePlusOne" : "")}
 
-            (DbExecuteInfo info, IEnumerable<EventGenderMangResultModel> entitys) dbResult = DbaExecuteQuery<EventGenderMangResultModel>(CommandText, parameters, true, DBAccessException);
-
-            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
-                return dbResult.entitys.ToList();
-
-            return new List<EventGenderMangResultModel>();
-        }
-
-        public List<EventGenderMangResultModel> GetExportResult(EventGenderMangConditionModel model)
-        {
-            string CommandText = string.Empty;
-            DataSet ds = new DataSet();
-
-            DBAParameter parameters = new DBAParameter();
-
-            parameters.Add("@GenderMainClass", model?.GenderMainClass);
-            parameters.Add("@GenderSecondClass", model?.GenderSecondClass);
-            parameters.Add("@CaseStatus", model?.CaseStatus);
-            parameters.Add("@AcceptStatus", model?.AcceptStatus);
-            parameters.Add("@CaseID", model?.CaseID);
-            parameters.Add("@SubCaseID", model?.SubCaseID);
-
-            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
-            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
-
-            #region 參數設定
-            #endregion
-
-            CommandText = $@"
-SELECT A.EventID, A.CaseID, A.SubCaseID, A.CaseSystemType, F.OccurTime, F.KnowTime,
-       A.MainClass AS GenderMainClass, B.Text AS GenderMainClassText, 
-       A.SecondClass AS GenderSecondClass, C.Text AS GenderSecondClassText, 
-       A.AcceptStatus, D.Text AS AcceptStatusText, A.AcceptTime, A.CaseStatus, E.Text AS CaseStatusText, A.CaseFinishDateTime, A.Memo, A.Creator, A.Created, A.LastModifier, A.LastModified
-FROM hq_PccuCase.dbo.EventMainMang A
-LEFT JOIN hq_PccuClub.dbo.EventMainClassMang B ON B.ID = A.MainClass AND B.CaseSystemType = '02'
-LEFT JOIN hq_PccuClub.dbo.EventSecondClassMang C ON C.ID = A.SecondClass AND C.CaseSystemType = '02'
-LEFT JOIN Code D ON D.Code = A.AcceptStatus AND D.Type = 'AcceptStatus' 
-LEFT JOIN Code E ON E.Code = A.CaseStatus AND E.Type = 'CaseFinish' 
-LEFT JOIN hq_PccuCase.dbo.CaseMainMang F ON F.CaseID = A.CaseID
-WHERE 1 = 1
-AND A.CaseSystemType = '02'
-{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND Created BETWEEN @FromDate AND @ToDate" : " ")}
 AND (@GenderMainClass IS NULL OR A.MainClass = @GenderMainClass)
 AND (@GenderSecondClass IS NULL OR A.SecondClass = @GenderSecondClass)
 AND (@CaseStatus IS NULL OR A.CaseStatus = @CaseStatus)

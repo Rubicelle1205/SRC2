@@ -34,6 +34,13 @@ namespace WebPccuClub.Models
             this.TotalCount = 0;
         }
 
+        public List<ColumnDataModel> LstColumnDataModel = new List<ColumnDataModel>();
+
+        /// <summary> 選擇欄位 </summary>
+        public string SelectedColumns { get; set; }
+
+        public string SafeSqlColumns { get; set; }
+
         /// <summary> 目前頁數 </summary>
         public int Page { get; set; }
 
@@ -88,6 +95,10 @@ namespace WebPccuClub.Models
         [DisplayName("校安事件次類別")]
         public string? SecondClassText { get; set; }
 
+        /// <summary>事件發生地點</summary>
+        [DisplayName("事件發生地點")]
+        public string? Location { get; set; }
+
         /// <summary>發生時間</summary>
         [DisplayName("發生時間")]
         public DateTime? OccurTime { get; set; }
@@ -95,6 +106,14 @@ namespace WebPccuClub.Models
         /// <summary>知悉時間</summary>
         [DisplayName("知悉時間")]
         public DateTime? KnowTime { get; set; }
+
+        /// <summary>媒體是否得知</summary>
+        [DisplayName("媒體是否得知")]
+        public string? MediaKnow { get; set; }
+
+        /// <summary>轉介單位</summary>
+        [DisplayName("轉介單位")]
+        public string? ReferCode { get; set; }
 
         /// <summary>是否結案</summary>
         [DisplayName("是否結案")]
@@ -107,6 +126,26 @@ namespace WebPccuClub.Models
         /// <summary>結案時間</summary>
         [DisplayName("結案時間")]
         public DateTime? CaseFinishDateTime { get; set; }
+
+        /// <summary>死亡人數</summary>
+        [DisplayName("死亡人數")]
+        public string? DeathAmt { get; set; }
+
+        /// <summary>受傷人數</summary>
+        [DisplayName("受傷人數")]
+        public string? HurtAmt { get; set; }
+
+        /// <summary>患病人數</summary>
+        [DisplayName("患病人數")]
+        public string? SickAmt { get; set; }
+
+        /// <summary>其他人數</summary>
+        [DisplayName("其他人數")]
+        public string? ElseAmt { get; set; }
+
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
+        public string? Memo { get; set; }
 
         /// <summary>建立時間</summary>
         [DisplayName("建立時間")]

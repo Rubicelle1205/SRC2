@@ -87,7 +87,7 @@ namespace WebPccuClub.DataAccess
 
 		#region 交接作業
 
-		public string GetNewLeader(string LoginId, string? schoolYear)
+		public string GetNewLeader(string LoginId, string? schoolYear, string HoId)
 		{
 			DataSet ds = new DataSet();
 			DbExecuteInfo ExecuteResult = new DbExecuteInfo();
@@ -95,12 +95,13 @@ namespace WebPccuClub.DataAccess
 
 			#region 參數設定
 			parameters.Add("@SchoolYear", schoolYear);
-			parameters.Add("@LoginId", LoginId);
+            parameters.Add("@HoId", HoId);
+            parameters.Add("@LoginId", LoginId);
 			#endregion 參數設定
 
 			string CommendText = $@"SELECT SNO
                                       FROM HandOverDoc03 
-                                     WHERE SchoolYear = @SchoolYear AND ClubID = @LoginId";
+                                     WHERE SchoolYear = @SchoolYear AND ClubID = @LoginId AND HoId = @HoId";
 
 			ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
 

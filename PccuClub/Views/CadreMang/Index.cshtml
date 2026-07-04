@@ -32,6 +32,10 @@
                                 </div>
 
                                 <div class="col-md-3 col-sm-6 mt-2">
+                                    <input type="date" class="form-control" id="@Html.IdFor(m => m.ConditionModel.DuringDate)" name="@Html.NameFor(m => m.ConditionModel.DuringDate)">
+                                </div>
+
+                                <div class="col-md-3 col-sm-6 mt-2">
                                     @Html.DropDownListFor(m => m.ConditionModel.SchoolYear,(List<SelectListItem>)ViewBag.ddlSchoolYear,"全部學年度", new {@class = "form-control"})
                                 </div>
                                 <div class="col-md-3 col-sm-6 mt-2">
@@ -132,6 +136,7 @@
     $('#@Html.IdFor(m => m.ConditionModel.ClubID)').tooltip({ title: "社團代號" });
     $('#@Html.IdFor(m => m.ConditionModel.ClubName)').tooltip({ title: "社團名稱" });
     $('#@Html.IdFor(m => m.ConditionModel.UserName)').tooltip({ title: "姓名" });
+    $('#@Html.IdFor(m => m.ConditionModel.DuringDate)').tooltip({ title: "任職期間" });
     $('#@Html.IdFor(m => m.ConditionModel.Department)').tooltip({ title: "系級" });
     $('#@Html.IdFor(m => m.ConditionModel.CadreName)').tooltip({ title: "職別" });
 

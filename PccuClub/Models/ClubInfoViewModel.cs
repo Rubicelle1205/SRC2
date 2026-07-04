@@ -29,8 +29,11 @@ namespace WebPccuClub.Models
 
 	public class MyClubEditModel
 	{
-		/// <summary>社團代號</summary>
-		[DisplayName("社團代號")]
+        public bool IsDeleteLogo { get; set; }
+        public bool isDeleteActImg { get; set; }
+
+        /// <summary>社團代號</summary>
+        [DisplayName("社團代號")]
 		public string? ClubId { get; set; }
 
 		/// <summary>社團中文名稱</summary>

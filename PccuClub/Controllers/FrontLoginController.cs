@@ -143,10 +143,12 @@ namespace WebPccuClub.Controllers
 
                 bool isAuth = false;
 
+                List<UserInfo> LstUserInfo = new List<UserInfo>();
+
                 if (sSOUserInfo.Role == "student")
-                    isAuth = auth.SSOLogin(sSOUserInfo.Account, out LoginUser, "F");
+                    isAuth = auth.SSOLogin(sSOUserInfo.Account, out LstUserInfo, "F");
                 else
-                    isAuth = auth.SSOLogin(sSOUserInfo.Account, out LoginUser, "B");
+                    isAuth = auth.SSOLogin(sSOUserInfo.Account, out LstUserInfo, "B");
 
                 if (!isAuth)
                 {
@@ -158,28 +160,37 @@ namespace WebPccuClub.Controllers
                 HttpContext.Session.Clear();
                 TempData.Clear();
 
-                LoginUser.LastLoginDate = DateTime.Now;
-                LoginUser.ErrorCount = 0;
-                LoginUser.LastLoginDate = DateTime.Now;
-                LoginUser.LastModified = DateTime.Now;
-                LoginUser.LastModifier = user.LoginId;
+                
 
-                LoginUser.SSOAccount = sSOUserInfo.Account;
-                LoginUser.SSOName = sSOUserInfo.Name;
-                LoginUser.SSORole = sSOUserInfo.Role;
-                LoginUser.SSODepartment = sSOUserInfo.Department;
+                foreach (UserInfo item in LstUserInfo)
+                {
+                    item.LastLoginDate = DateTime.Now;
+                    item.ErrorCount = 0;
+                    item.LastModified = DateTime.Now;
+                    item.LastModifier = user.LoginId;
 
-                loginEntity.Issuccess = true;
-                loginEntity.Loginid = LoginUser.SSOAccount;
-                LoginUser.IP = loginEntity.Ip;
+                    item.SSOAccount = sSOUserInfo.Account;
+                    item.SSOName = sSOUserInfo.Name;
+                    item.SSORole = sSOUserInfo.Role;
+                    item.SSODepartment = sSOUserInfo.Department;
 
-                HttpContext.Session.SetObject("FLoginUser", LoginUser);
+                    loginEntity.Issuccess = true;
+                    loginEntity.Loginid = item.SSOAccount;
+                    item.IP = loginEntity.Ip;
+                }
+
+                
+
+                if (sSOUserInfo.Role == "student" && LstUserInfo.Count > 1)
+                    HttpContext.Session.SetObject("FLoginUser_MultipleClub", LstUserInfo);
+                    
+                HttpContext.Session.SetObject("FLoginUser", LstUserInfo.FirstOrDefault());
 
                 UpdateLoginInfo(LoginUser);
                 InsertLoginLog(loginEntity);
-                InsertActionLog(loginEntity, LoginUser);
+                InsertActionLog(loginEntity, LstUserInfo.FirstOrDefault());
 
-                dbAccess.WriteLog($"[SSO登入] guid:{guid}", LoginUser, enumLogConst.Information);
+                dbAccess.WriteLog($"[SSO登入] guid:{guid}", LstUserInfo.FirstOrDefault(), enumLogConst.Information);
 
                 return RedirectToAction("Index", "MenuFront");
             }

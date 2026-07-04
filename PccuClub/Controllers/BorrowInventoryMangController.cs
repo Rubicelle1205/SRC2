@@ -89,11 +89,11 @@ namespace WebPccuClub.Controllers
             if (vm.ExcelModel != null && vm.ExcelModel.Count > 0)
             {
                 IWorkbook workbook = new XSSFWorkbook();
-                List<int> LstWidth = new List<int> { 20, 20, 20, 20, 20};
+                List<int> LstWidth = new List<int> { 20, 20, 20, 20, 20, 20, 20, 20, 20, 20 };
 
                 ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
 
-                var properties = typeof(BorrowInventoryMangExcelHeaderModel).GetProperties();
+                var properties = typeof(BorrowInventoryMangExcelModel).GetProperties();
 
                 //設定欄位
                 IRow headerRow = sheet.CreateRow(0);
@@ -119,11 +119,16 @@ namespace WebPccuClub.Controllers
                 {
                     IRow dataRow = sheet.CreateRow(i + 1);
 
-                    dataRow.CreateCell(0).SetCellValue(vm.ExcelModel[i].SecondResourceNo);
-                    dataRow.CreateCell(1).SetCellValue(vm.ExcelModel[i].SecondResourceName);
-                    dataRow.CreateCell(2).SetCellValue(vm.ExcelModel[i].ShelvesStatusText);
-                    dataRow.CreateCell(3).SetCellValue(vm.ExcelModel[i].BorrowStatusText);
-                    dataRow.CreateCell(4).SetCellValue(vm.ExcelModel[i].ResourceInventoryStatusText);
+                    dataRow.CreateCell(0).SetCellValue(vm.ExcelModel[i].ID);
+                    dataRow.CreateCell(1).SetCellValue(vm.ExcelModel[i].SecondResourceNo);
+                    dataRow.CreateCell(2).SetCellValue(vm.ExcelModel[i].MainResourceIDText);
+                    dataRow.CreateCell(3).SetCellValue(vm.ExcelModel[i].SecondResourceName);
+                    dataRow.CreateCell(4).SetCellValue(vm.ExcelModel[i].ShelvesStatusText);
+                    dataRow.CreateCell(5).SetCellValue(vm.ExcelModel[i].AmtReal);
+                    dataRow.CreateCell(6).SetCellValue(vm.ExcelModel[i].AmtInventory);
+                    dataRow.CreateCell(7).SetCellValue(vm.ExcelModel[i].BorrowTypeText);
+                    dataRow.CreateCell(8).SetCellValue(vm.ExcelModel[i].BorrowStatusText);
+                    dataRow.CreateCell(9).SetCellValue(vm.ExcelModel[i].ResourceInventoryStatusText);
 
                     foreach (ICell cell in dataRow.Cells)
                         cell.CellStyle = contentStyle;

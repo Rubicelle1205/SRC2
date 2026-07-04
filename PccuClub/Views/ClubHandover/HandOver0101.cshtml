@@ -64,7 +64,7 @@
                                 <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
                                 <div class="form-item">
                                     <label for="">學年度：<span class="req-star">*</span></label>
-                                    @Html.TextBoxFor(m => m.Handover0101Model.SchoolYear, new { @class="form-control", @readonly="readonly"})
+                                    @Html.DropDownListFor(m => m.Handover0101Model.SchoolYear, (List<SelectListItem>)ViewBag.ddlSchoolYear, "請選擇", new { @class = "form-control" })
                                 </div>
                                 <div class="form-item">
                                     <label for="">社團代碼：<span class="req-star">*</span></label>

@@ -79,6 +79,13 @@
             <div class="infoItem">
                 <div class="tag">Logo<span class="req-star">*</span></div>
                 <div class="content">
+                    @if (Model.MyClubEditModel != null && !string.IsNullOrEmpty(Model.MyClubEditModel.LogoPath))
+                    {
+                        <div id="LogoPreviewBlock" class="mb-2">
+                            <img src="@Url.Content(Model.MyClubEditModel.LogoPath)" alt="Logo" style="max-width: 200px; max-height: 200px; display: block; margin-bottom: 5px;" />
+                            <button type="button" class="btn btn-sm btn-danger" onclick="DeleteLogoImg()">刪除Logo圖</button>
+                        </div>
+                    }
                     <p class="hint mb-2">※僅接受以下格式：.jpg、.jpeg、.png</p>
                     @Html.TextBoxFor(m => m.MyClubEditModel.LogoPath, new { @type = "file", @class="form-control", accept = ".jpeg,.jpg,.png" })
                 </div>
@@ -86,6 +93,13 @@
             <div class="infoItem">
                 <div class="tag">活動簡圖<span class="req-star">*</span></div>
                 <div class="content">
+                    @if (Model.MyClubEditModel != null && !string.IsNullOrEmpty(Model.MyClubEditModel.ActImgPath))
+                    {
+                        <div id="ActImgPreviewBlock" class="mb-2">
+                            <img src="@Url.Content(Model.MyClubEditModel.ActImgPath)" alt="活動簡圖" style="max-width: 200px; max-height: 200px; display: block; margin-bottom: 5px;" />
+                            <button type="button" class="btn btn-sm btn-danger" onclick="DeleteActImg()">刪除活動簡圖</button>
+                        </div>
+                    }
                     <p class="hint mb-2">※僅接受以下格式：.jpg、.jpeg、.png</p>
                     @Html.TextBoxFor(m => m.MyClubEditModel.ActImgPath, new { @type = "file", @class="form-control", accept = ".jpeg,.jpg,.png" })
                 </div>
@@ -137,6 +151,18 @@
 
 
 <script>
+    var isDeleteLogo = false;
+    var isDeleteActImg = false;
+
+    function DeleteLogoImg() {
+        isDeleteLogo = true;
+        $('#LogoPreviewBlock').remove(); // 從畫面上移除預覽圖與按鈕
+    }
+
+    function DeleteActImg() {
+        isDeleteActImg = true;
+        $('#ActImgPreviewBlock').remove(); // 從畫面上移除預覽圖與按鈕
+    }
 
     function SaveEditData() {
 
@@ -182,6 +208,8 @@
         if (EMail == "") { $.alert("Email不可為空"); return; }
         if (ShortInfo == "") { $.alert("簡介不可為空"); return; }
 
+        data.append('@Html.NameFor(m => m.MyClubEditModel.IsDeleteLogo)', isDeleteLogo);
+        data.append('@Html.NameFor(m => m.MyClubEditModel.isDeleteActImg)', isDeleteActImg);
 
         data.append('@Html.NameFor(m => m.MyClubEditModel.ClubId)', ClubId);
         data.append('@Html.NameFor(m => m.MyClubEditModel.Address)', Address);

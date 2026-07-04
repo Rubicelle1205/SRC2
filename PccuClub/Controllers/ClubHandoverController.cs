@@ -116,12 +116,29 @@ namespace WebPccuClub.Controllers
 
 				vm.CheckModel = dbAccess.GetCheckData(LoginUser.LoginId, false);
 
+                if (null == vm.CheckModel)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "交接失敗，交接資料不完整";
+                    return Json(vmRtn);
+                }
+
+                if (string.IsNullOrEmpty(vm.CheckModel.SchoolYear) || string.IsNullOrEmpty(vm.CheckModel.HoID))
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "交接失敗，交接資料不完整";
+                    return Json(vmRtn);
+                }
+
 				if (vm.CheckModel != null)
 				{
 					string SchoolYear = vm.CheckModel.SchoolYear;
+                    string HoId = vm.CheckModel.HoID;
 
 					//先取得交接的學生學號
-					NewLeaderSNO = dbAccess.GetNewLeader(LoginUser.LoginId, SchoolYear);
+					NewLeaderSNO = dbAccess.GetNewLeader(LoginUser.LoginId, SchoolYear, HoId);
 
 					if (!string.IsNullOrEmpty(NewLeaderSNO))
 					{
@@ -326,15 +343,22 @@ namespace WebPccuClub.Controllers
 				string Enable = dt.Rows[0]["Enable"].ToString();
 				string OpenDate = dt.Rows[0]["OpenDate"].ToString();
 				string CloseDate = dt.Rows[0]["CloseDate"].ToString();
+                int dbMask = (int)dt.Rows[0]["HourMask"];
 
-				if (Enable == "True")
+                if (Enable == "True")
 				{
 					if (DateTime.Parse(OpenDate).Date > DateTime.Now || DateTime.Parse(CloseDate).Date.AddDays(1).AddSeconds(-1) < DateTime.Now)
 					{
 						TempData["WEBSOL_ALERT_MESSAGE"] = new List<string> { "目前非開放申請時段" };
 						return RedirectToAction("Index");
 					}
-				}
+
+                    if ((dbMask & (1 << DateTime.Now.Hour)) != 0)
+                    {
+                        TempData["WEBSOL_ALERT_MESSAGE"] = new List<string> { "目前非開放申請時段" };
+                        return RedirectToAction("Index");
+                    }
+                }
 			}
 
 			return View();
@@ -346,8 +370,9 @@ namespace WebPccuClub.Controllers
 		public IActionResult HandOver0101(string id)
 		{
 			ViewBag.ddlAgree = dbAccess.getAllAgree();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(3);
 
-			ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0101Model = new ClubHandover0101ViewModel();
 			vm.Handover0101Model.SchoolYear = PublicFun.GetNowSchoolYear();
             vm.Handover0101Model.ClubID = LoginUser.LoginId;
@@ -469,6 +494,7 @@ namespace WebPccuClub.Controllers
         public IActionResult HandOver0102(string id)
         {
             ViewBag.ddlElectionType = dbAccess.getAllElectionType();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(3);
 
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0102Model = new ClubHandover0102ViewModel();
@@ -619,6 +645,8 @@ namespace WebPccuClub.Controllers
 			ViewBag.ddlSex = dbAccess.GetAllSex();
 			ViewBag.ddldentityType = dbAccess.GetAllIdentityType();
 			ViewBag.ddlConform = dbAccess.GetAllConform();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(3);
+
 
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0103Model = new ClubHandover0103ViewModel();
@@ -770,15 +798,22 @@ namespace WebPccuClub.Controllers
 				string Enable = dt.Rows[0]["Enable"].ToString();
 				string OpenDate = dt.Rows[0]["OpenDate"].ToString();
 				string CloseDate = dt.Rows[0]["CloseDate"].ToString();
+                int dbMask = (int)dt.Rows[0]["HourMask"];
 
-				if (Enable == "True")
+                if (Enable == "True")
 				{
 					if (DateTime.Parse(OpenDate).Date > DateTime.Now || DateTime.Parse(CloseDate).Date.AddDays(1).AddSeconds(-1) < DateTime.Now)
 					{
 						TempData["WEBSOL_ALERT_MESSAGE"] = new List<string> { "目前非開放申請時段" };
 						return RedirectToAction("Index");
 					}
-				}
+
+                    if ((dbMask & (1 << DateTime.Now.Hour)) != 0)
+                    {
+                        TempData["WEBSOL_ALERT_MESSAGE"] = new List<string> { "目前非開放申請時段" };
+                        return RedirectToAction("Index");
+                    }
+                }
 			}
 
 			return View();
@@ -789,7 +824,9 @@ namespace WebPccuClub.Controllers
 		[Log(LogActionChineseName.交接準備)]
 		public IActionResult HandOver0204(string id)
 		{
-			ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(3);
+
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0204Model = new ClubHandover0204ViewModel();
 			vm.Handover0204Model.SchoolYear = PublicFun.GetNowSchoolYear();
             vm.Handover0204Model.ClubID = LoginUser.LoginId;
@@ -914,8 +951,9 @@ namespace WebPccuClub.Controllers
 		public IActionResult HandOver0205(string id)
 		{
 			ViewBag.ddlYesOrNo = dbAccess.GetYesOrNo();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(3);
 
-			ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0205Model = new ClubHandover0205ViewModel();
 			vm.Handover0205Model.SchoolYear = PublicFun.GetNowSchoolYear();
             vm.Handover0205Model.ClubID = LoginUser.LoginId;
@@ -1069,7 +1107,9 @@ namespace WebPccuClub.Controllers
 		[Log(LogActionChineseName.交接準備)]
 		public IActionResult HandOver0206(string id)
 		{
-			ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(3);
+
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0206Model = new ClubHandover0206ViewModel();
 			vm.Handover0206Model.SchoolYear = PublicFun.GetNowSchoolYear();
             vm.Handover0206Model.ClubID = LoginUser.LoginId;
@@ -1225,6 +1265,7 @@ namespace WebPccuClub.Controllers
 				string Enable = dt.Rows[0]["Enable"].ToString();
 				string OpenDate = dt.Rows[0]["OpenDate"].ToString();
 				string CloseDate = dt.Rows[0]["CloseDate"].ToString();
+				int dbMask = (int)dt.Rows[0]["HourMask"];
 
 				if (Enable == "True")
 				{
@@ -1233,7 +1274,13 @@ namespace WebPccuClub.Controllers
 						TempData["WEBSOL_ALERT_MESSAGE"] = new List<string> { "目前非開放申請時段" };
 						return RedirectToAction("Index");
 					}
-				}
+
+                    if ((dbMask & (1 << DateTime.Now.Hour)) != 0)
+                    {
+                        TempData["WEBSOL_ALERT_MESSAGE"] = new List<string> { "目前非開放申請時段" };
+                        return RedirectToAction("Index");
+                    }
+                }
 			}
 
 			return View();
@@ -1245,8 +1292,9 @@ namespace WebPccuClub.Controllers
 		public IActionResult HandOver0307(string id)
 		{
 			ViewBag.ddlSex = dbAccess.GetAllSex();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(3);
 
-			ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0307Model = new ClubHandover0307ViewModel();
 			vm.Handover0307Model.SchoolYear = PublicFun.GetNowSchoolYear();
             vm.Handover0307Model.ClubID = LoginUser.LoginId;
@@ -1371,6 +1419,7 @@ namespace WebPccuClub.Controllers
         public IActionResult HandOver0308(string id)
         {
             ViewBag.ddlSex = dbAccess.GetAllSex();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(3);
 
             ClubHandoverViewModel vm = new ClubHandoverViewModel();
             vm.Handover0308Model = new ClubHandover0308ViewModel();
@@ -1496,8 +1545,9 @@ namespace WebPccuClub.Controllers
 		public IActionResult HandOver0309(string id)
 		{
 			ViewBag.ddlSex = dbAccess.GetAllSex();
+            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear(3);
 
-			ClubHandoverViewModel vm = new ClubHandoverViewModel();
+            ClubHandoverViewModel vm = new ClubHandoverViewModel();
 			vm.Handover0309Model = new ClubHandover0309ViewModel();
 			vm.Handover0309Model.SchoolYear = PublicFun.GetNowSchoolYear();
             vm.Handover0309Model.ClubID = LoginUser.LoginId;

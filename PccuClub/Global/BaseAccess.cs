@@ -427,7 +427,7 @@ namespace WebPccuClub.Global
         /// <summary>
         /// 撈取ActVerify Code
         /// </summary>
-        /// <param name="type">1:顯示01~04；2 => 顯示01~05；3 => 顯示01~07; 4 => 顯示01~07，沒有05</param>
+        /// <param name="type">01 >> 尚未審核, 02 >> 審核完成, 03 >> 審核失敗, 04 >> 工讀生審核完成, 05 >> 批次單, 06 >> 取消, 07 >> 前台不顯示</param>
         /// <returns></returns>
         public List<SelectListItem> GetAllActVerify(string type = "")
         {
@@ -438,10 +438,19 @@ namespace WebPccuClub.Global
 
             #region 參數設定
             #endregion
+            //01  尚未審核
+            //02  審核完成
+            //03  審核失敗
+            //04  工讀生審核完成
+            //05  批次單
+            //06  取消
+            //07  前台不顯示
+            //08  隱藏
+            //09  移除場地(保留原單)
             //type = 1 => 顯示01~04，其他頁面
             //type = 2 => 顯示01~05，活動報備(新增)
-            //type = 3 => 顯示01~07，活動報備(首頁、編輯)
-            //type = 3 => 顯示01~07，沒有05，活動報備前台(首頁)
+            //type = 3 => 顯示01~09，活動報備(首頁、編輯)
+            //type = 4 => 顯示01~07，沒有05，活動報備前台(首頁)
             switch (type)
             {
                 case "1":
@@ -457,7 +466,7 @@ namespace WebPccuClub.Global
                 case "3":
                     CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code 
 									 WHERE Type = 'ActVerify' 
-									   AND Code IN ('01', '02', '03', '04', '05', '06', '07')";
+									   AND Code IN ('01', '02', '03', '04', '05', '06', '07', '08', '09')";
                     break;
                 case "4":
                     CommandText = @"SELECT Code AS VALUE, TEXT AS TEXT FROM Code 
@@ -548,27 +557,33 @@ namespace WebPccuClub.Global
 
             int NowSchoolYear = int.Parse(PublicFun.GetNowSchoolYear());
 
-			if (type == 0)  //取得本學年度資料 (-2 ~ +2)
-			{
-				for (int i = NowSchoolYear - 2; i <= NowSchoolYear + 2; i++)
-				{
-					LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
-				}
-			}
-			else if (type == 1)  //取得本學年度資料 (-2)
-			{
-				for (int i = NowSchoolYear - 2; i <= NowSchoolYear; i++)
-				{
-					LstItem.Add(new SelectListItem() { Value = string.Format("{0}1", i), Text = string.Format("{0}1", i) });
-					LstItem.Add(new SelectListItem() { Value = string.Format("{0}2", i), Text = string.Format("{0}2", i) });
-				}
-			}
-			else if (type == 2)
-			{
-                for (int i = NowSchoolYear - 10; i <= NowSchoolYear; i++)
-                {
-                    LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
-                }
+            switch (type)
+            {
+                case 0: //回饋本學年度 + 上 2 個學年度 + 下 2 個學年度，格式為YYY學年度，例如：110學年度、111學年度
+                    for (int i = NowSchoolYear - 2; i <= NowSchoolYear + 2; i++)
+                    {
+                        LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
+                    }
+                    break;
+                case 1: //回饋本學年度 + 上 2 個學年度，格式為YYYS，例如：1101、1102
+                    for (int i = NowSchoolYear - 2; i <= NowSchoolYear; i++)
+                    {
+                        LstItem.Add(new SelectListItem() { Value = string.Format("{0}1", i), Text = string.Format("{0}1", i) });
+                        LstItem.Add(new SelectListItem() { Value = string.Format("{0}2", i), Text = string.Format("{0}2", i) });
+                    }
+                    break;
+                case 2: //回饋本學年度 + 上 10 個學年度，格式為YYY學年度，例如：110學年度、111學年度
+                    for (int i = NowSchoolYear - 10; i <= NowSchoolYear; i++)
+                    {
+                        LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
+                    }
+                    break;
+                case 3: //回饋本學年度 + 上 1 個學年度 + 下 1 個學年度，格式為YYY學年度，例如：110學年度、111學年度
+                    for (int i = NowSchoolYear - 1; i <= NowSchoolYear + 1; i++)
+                    {
+                        LstItem.Add(new SelectListItem() { Value = i.ToString(), Text = string.Format("{0}學年度", i) });
+                    }
+                    break;
             }
 
             return LstItem;
@@ -597,14 +612,14 @@ namespace WebPccuClub.Global
                                          LEFT JOIN PlaceSchoolMang B ON B.PlaceID = A.PlaceID
                                          LEFT JOIN ActRundown C ON C.ActID = A.ActID AND C.ActDetailId = A.ActDetailId
                                          LEFT JOIN Code D ON D.Code = C.RundownStatus AND D.Type = 'RundownStatus'
-                                             WHERE 1 = 1 AND A.ActID = @ActId 
+                                             WHERE 1 = 1 AND A.ActID = @ActId AND C.ActRundownID IS NOT NULL
                                      UNION
                                             SELECT C.ActRundownID, C.PlaceSource, C.Date, C.STime, C.ETime, C.ActPlaceID, C.ActPlaceText AS PlaceText, C.RundownStatus, D.Text AS RundownStatusText
                                               FROM ActDetail A
                                          LEFT JOIN PlaceSchoolMang B ON B.PlaceID = A.PlaceID
                                          LEFT JOIN ActRundownELSE C ON C.ActID = A.ActID AND C.ActDetailId = A.ActDetailId
                                          LEFT JOIN Code D ON D.Code = C.RundownStatus AND D.Type = 'RundownStatus'
-                                             WHERE 1 = 1 AND A.ActID = @ActId 
+                                             WHERE 1 = 1 AND A.ActID = @ActId AND C.ActRundownID IS NOT NULL
                                             ) T ORDER BY PlaceSource";
 
 			(DbExecuteInfo info, IEnumerable<ActListMangEditRundownModel> entitys) dbResult = DbaExecuteQuery<ActListMangEditRundownModel>(CommandText, parameters, true, DBAccessException);
@@ -784,7 +799,7 @@ namespace WebPccuClub.Global
                           LEFT JOIN PlaceSchoolMang B ON B.PlaceID = A.ActPlaceID
 						  LEFT JOIN ActDetail C ON C.ActDetailId = A.ActDetailId
 						  LEFT JOIN ClubMang D ON D.ClubId = C.BrrowUnit
-                              WHERE A.Date = @Date AND A.ActPlaceID = @PlaceId ";
+                              WHERE A.Date = @Date AND A.ActPlaceID = @PlaceId AND A.RundownStatus = '01' ";
 
 
 			(DbExecuteInfo info, IEnumerable<ActListMangTodayActModel1> entitys) dbResult = DbaExecuteQuery<ActListMangTodayActModel1>(CommandText, parameters, true, DBAccessException);
@@ -1038,13 +1053,15 @@ namespace WebPccuClub.Global
 
             #region 參數設定
             parameters.Add("@Url", Url);
+            parameters.Add("@DayOfWeek", (int)DateTime.Now.DayOfWeek);
             #endregion
 
-            CommandText = @"SELECT A.Enable, A.OpenDate, A.CloseDate 
+            CommandText = @"SELECT A.Enable, A.OpenDate, A.CloseDate, D.HourMask
                               FROM FrontOpeningMang A 
                          LEFT JOIN SystemMenu B ON B.MenuNode = A.MenuNode
                          LEFT JOIN SystemFun C ON C.FunId = B.FunId
-                             WHERE C.Url = '/' + @Url ";
+                         LEFT JOIN FrontOpeningDetailMang D ON D.FrontOpeningId = A.FrontOpeningId
+                             WHERE C.Url = '/' + @Url AND D.DayOfWeek = @DayOfWeek";
 
             DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
 

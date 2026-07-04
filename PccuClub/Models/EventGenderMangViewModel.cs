@@ -32,6 +32,13 @@ namespace WebPccuClub.Models
             this.TotalCount = 0;
         }
 
+        public List<ColumnDataModel> LstColumnDataModel = new List<ColumnDataModel>();
+
+        /// <summary> 選擇欄位 </summary>
+        public string SelectedColumns { get; set; }
+
+        public string SafeSqlColumns { get; set; }
+
         /// <summary> 目前頁數 </summary>
         public int Page { get; set; }
 
@@ -74,6 +81,8 @@ namespace WebPccuClub.Models
 
     public class EventGenderMangResultModel
     {
+        /// <summary>事件ID</summary>
+        [DisplayName("事件ID")]
         public string? EventID { get; set; }
 
         /// <summary>校安事件編號</summary>
@@ -84,21 +93,29 @@ namespace WebPccuClub.Models
         [DisplayName("性平號")]
         public string? SubCaseID { get; set; }
 
-        /// <summary>性平事件主類別</summary>
-        [DisplayName("性平事件主類別")]
-        public string? GenderMainClass { get; set; }
+        /// <summary>校安事件主類別名稱</summary>
+        [DisplayName("校安事件主類別名稱")]
+        public string? CaseMainClassText { get; set; }
 
-        /// <summary>性平事件次類別</summary>
-        [DisplayName("性平事件次類別")]
-        public string? GenderSecondClass { get; set; }
+        /// <summary>校安事件次類別名稱</summary>
+        [DisplayName("校安事件次類別名稱")]
+        public string? CaseSecondClassText { get; set; }
 
-        /// <summary>性平事件主類別</summary>
-        [DisplayName("性平事件主類別")]
+        /// <summary>校安事件主類別名稱</summary>
+        [DisplayName("校安事件主類別名稱")]
         public string? GenderMainClassText { get; set; }
 
-        /// <summary>性平事件次類別</summary>
-        [DisplayName("性平事件次類別")]
+        /// <summary>校安事件次類別名稱</summary>
+        [DisplayName("校安事件次類別名稱")]
         public string? GenderSecondClassText { get; set; }
+
+        /// <summary>結案狀態</summary>
+        [DisplayName("結案狀態")]
+        public string? CaseStatusText { get; set; }
+
+        /// <summary>結案時間</summary>
+        [DisplayName("結案時間")]
+        public DateTime? CaseFinishDateTime { get; set; }
 
         /// <summary>發生時間</summary>
         [DisplayName("發生時間")]
@@ -108,33 +125,25 @@ namespace WebPccuClub.Models
         [DisplayName("知悉時間")]
         public DateTime? KnowTime { get; set; }
 
-        /// <summary>是否受理</summary>
-        [DisplayName("是否受理")]
-        public string? AcceptStatus { get; set; }
+        /// <summary>建立時間</summary>
+        [DisplayName("建立時間")]
+        public DateTime? Created { get; set; }
 
-        /// <summary>是否受理</summary>
-        [DisplayName("受理是否受理狀態")]
+        /// <summary>更新時間</summary>
+        [DisplayName("更新時間")]
+        public string? LastModified { get; set; }
+
+        /// <summary>受理狀態</summary>
+        [DisplayName("受理狀態")]
         public string? AcceptStatusText { get; set; }
 
         /// <summary>受理時間</summary>
         [DisplayName("受理時間")]
         public DateTime? AcceptTime { get; set; }
-        
-        /// <summary>是否結案</summary>
-        [DisplayName("是否結案")]
-        public string? CaseStatus { get; set; }
 
-        /// <summary>是否結案</summary>
-        [DisplayName("是否結案")]
-        public string? CaseStatusText { get; set; }
-
-        /// <summary>結案時間</summary>
-        [DisplayName("結案時間")]
-        public DateTime? CaseFinishDateTime { get; set; }
-
-        /// <summary>建立時間</summary>
-        [DisplayName("建立時間")]
-        public DateTime? Created { get; set; }
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
+        public string? Memo { get; set; }
     }
 
     public class EventGenderMangImportModel

@@ -16,6 +16,48 @@ namespace WebPccuClub.DataAccess
 
     public class ClubMangDataAccess : BaseAccess
     {
+        public List<ColumnDataModel> GetDefaultColumnData()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = $@"SELECT T.ColumnValue, T.ColumnName, T.IsDefault
+                               FROM (VALUES
+('ClubId', '社團代號', 1),
+('ClubCName', '中文名稱', 1),
+('ClubEName', '英文名稱', 1),
+('SchoolYear', '學年度', 1),
+('RoleName', '角色', 1),
+('FrontShowText', '前台顯示', 0),
+('LifeClassText', '社團組別', 1),
+('ClubClassText', '社團分類', 1),
+('ClubLeader', '負責人姓名', 1),
+('Department', '負責人系級', 1),
+('EMail', 'E-mail', 1),
+('Tel', '聯絡電話', 1),
+('Address', '社辦地址', 1),
+('Social1', '社群連結一', 0),
+('Social2', '社群連結二', 0),
+('Social3', '社群連結三', 0),
+('Created', '建立時間', 1),
+('ShortInfo', '簡介', 0),
+('Memo', '備註', 0)
+                                    ) AS T(ColumnValue, ColumnName, IsDefault);
+";
+
+
+            (DbExecuteInfo info, IEnumerable<ColumnDataModel> entitys) dbResult = DbaExecuteQuery<ColumnDataModel>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<ColumnDataModel>();
+        }
 
         /// <summary> 查詢結果 </summary>
 
@@ -28,38 +70,62 @@ namespace WebPccuClub.DataAccess
 
             #region 參數設定
 
-            parameters.Add("@ClubId", model.ClubId);
-            parameters.Add("@ClubName", model.ClubName);
-            parameters.Add("@ClubLeader", model.ClubLeader);//
-            parameters.Add("@Department", model.Department);//
-            parameters.Add("@MailOrTel", model.MailOrTel);
+            parameters.Add("@ClubId", string.IsNullOrEmpty(model.ClubId) ? null : $"%{model.ClubId}%");
+            parameters.Add("@ClubName", string.IsNullOrEmpty(model.ClubName) ? null : $"%{model.ClubName}%");
+            parameters.Add("@ClubLeader", string.IsNullOrEmpty(model.ClubLeader) ? null : $"%{model.ClubLeader}%");
+            parameters.Add("@Department", string.IsNullOrEmpty(model.Department) ? null : $"%{model.Department}%");
+            parameters.Add("@MailOrTel", string.IsNullOrEmpty(model.MailOrTel) ? null : $"%{model.MailOrTel}%");
+
             parameters.Add("@ClubClass", model.ClubClass);
             parameters.Add("@LifeClass", model.LifeClass);
             parameters.Add("@SchoolYear", model.SchoolYear);
-            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy/MM/dd 00:00:00") : null);
-            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy/MM/dd 23:59:59") : null);
 
-         
+            parameters.Add("@FromDate", model.From_ReleaseDate?.Date);                    // 00:00:00.000
+            parameters.Add("@ToDate", model.To_ReleaseDate?.Date.AddDays(1).AddTicks(-1)); // 23:59:59.999
+
             #endregion
 
-            CommandText = $@"SELECT A.ClubId, A.ClubCName, A.ClubEName, A.SchoolYear, E.UserName AS ClubLeader, E.Department,
-                                    A.LifeClass, C.Text AS LifeClassText, A.ClubClass, B.Text AS ClubClassText, A.EMail, A.Tel, A.Created
-                               FROM ClubMang A
-							   LEFT JOIN Code B ON B.Code = A.ClubClass AND B.Type = 'ClubClass'
-							   LEFT JOIN Code C ON C.Code = A.LifeClass AND C.Type = 'LifeClass'
-							   LEFT JOIN ClubUser D ON D.ClubId = A.ClubId
-							   LEFT JOIN FUserMain E ON E.FUserId = D.FUserId
-                              WHERE 1 = 1
-{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.LastModified BETWEEN @FromDate AND @ToDate" : " ")}
-{(model.ClubId != null ? " AND A.ClubId LIKE '%' + @ClubId + '%'" : " ")}
-{(model.ClubName != null ? " AND A.ClubCName LIKE '%' + @ClubName + '%'" : " ")}
-{(model.ClubLeader != null ? " AND E.UserName LIKE '%' + @ClubLeader + '%'" : " ")}
-{(model.Department != null ? " AND E.Department LIKE '%' + @Department + '%'" : " ")}
-{(model.MailOrTel != null ? " AND (A.EMail LIKE '%' + @MailOrTel + '%' OR A.Tel LIKE  '%' + @MailOrTel + '%') " : " ")}
-AND (@ClubClass IS NULL OR A.ClubClass = @ClubClass)
-AND (@LifeClass IS NULL OR A.LifeClass = @LifeClass)
-AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
+
+            #region 2. 動態 SQL 語法拼裝
+
+            CommandText = $@"
+SELECT 
+    A.ClubId, A.ClubCName, A.ClubEName, A.SchoolYear, E.ClubLeader, E.Department, G.RoleName, 
+    A.FrontShow, H.[Text] AS FrontShowText, A.Address, A.Social1, A.Social2, A.Social3, A.ShortInfo, A.Memo, 
+    A.LifeClass, C.[Text] AS LifeClassText, A.ClubClass, B.[Text] AS ClubClassText, A.EMail, A.Tel, A.Created
+FROM ClubMang A
+
+LEFT JOIN Code B ON B.Code = A.ClubClass AND B.[Type] = 'ClubClass'
+LEFT JOIN Code C ON C.Code = A.LifeClass AND C.[Type] = 'LifeClass'
+LEFT JOIN Code H ON H.Code = A.FrontShow AND H.[Type] = 'YesOrNo'
+
+OUTER APPLY (
+    SELECT TOP 1 FU.UserName AS ClubLeader, FU.Department
+    FROM ClubUser CU
+    INNER JOIN FUserMain FU ON FU.FUserId = CU.FUserId
+    WHERE CU.ClubId = A.ClubId
+) E
+
+OUTER APPLY (
+    SELECT TOP 1 SR.RoleName
+    FROM UserRole UR
+    INNER JOIN SystemRole SR ON SR.RoleId = UR.RoleId
+    WHERE UR.LoginId = A.ClubId
+) G
+
+WHERE 1 = 1
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.LastModified BETWEEN @FromDate AND @ToDate" : "")}
+{(!string.IsNullOrEmpty(model.ClubId) ? " AND A.ClubId LIKE @ClubId" : "")}
+{(!string.IsNullOrEmpty(model.ClubName) ? " AND A.ClubCName LIKE @ClubName" : "")}
+{(!string.IsNullOrEmpty(model.ClubLeader) ? " AND E.ClubLeader LIKE @ClubLeader" : "")}
+{(!string.IsNullOrEmpty(model.Department) ? " AND E.Department LIKE @Department" : "")}
+{(!string.IsNullOrEmpty(model.MailOrTel) ? " AND (A.EMail LIKE @MailOrTel OR A.Tel LIKE @MailOrTel)" : "")}
+{(!string.IsNullOrEmpty(model.ClubClass) ? " AND A.ClubClass = @ClubClass" : "")}
+{(!string.IsNullOrEmpty(model.LifeClass) ? " AND A.LifeClass = @LifeClass" : "")}
+{(!string.IsNullOrEmpty(model.SchoolYear) ? " AND A.SchoolYear = @SchoolYear" : "")}
 ";
+
+            #endregion
 
             (DbExecuteInfo info, IEnumerable<ClubMangResultModel> entitys) dbResult = DbaExecuteQuery<ClubMangResultModel>(CommandText, parameters, true, DBAccessException);
 
@@ -278,6 +344,12 @@ AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 
             if (!string.IsNullOrEmpty(vm.EditModel.ActImgPath))
                 CommendText = CommendText.Replace("%ActImgPath%", "ActImgPath = @ActImgPath,");
+
+            if (vm.EditModel.IsDeleteLogo)
+                CommendText = CommendText.Replace("%LogoPath%", "LogoPath = '',");
+
+            if (vm.EditModel.isDeleteActImg)
+                CommendText = CommendText.Replace("%ActImgPath%", "ActImgPath = '',");
 
             CommendText = CommendText.Replace("%Password%", "");
             CommendText = CommendText.Replace("%LogoPath%", "");

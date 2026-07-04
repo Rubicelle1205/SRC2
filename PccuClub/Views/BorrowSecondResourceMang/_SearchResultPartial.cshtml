@@ -45,14 +45,15 @@
                         <td class="text-center text-sm">@item.ShelvesStatusText</td>
                         <td class="text-center text-sm">@item.BorrowStatusText</td>
                         <td class="text-center text-sm">@item.Memo</td>
-                        <td class="text-center text-sm">
-                            @using (Html.BeginForm("Edit", "BorrowSecondResourceMang", FormMethod.Post, new { style = "float:left" }))
-                            {
-                                <button type="submit" value="@item.ID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
-                            }
+                        <td class="text-center text-sm p-1">
+                            <div class="d-flex justify-content-center align-items-center gap-1">
+                                @using (Html.BeginForm("Edit", "BorrowSecondResourceMang", FormMethod.Post, new { }))
+                                {
+                                    <button type="submit" value="@item.ID" name="submitBtn" class="mx-1 btn btn-sm btn-outline-primary">查看</button>
+                                }
 
-                            <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel(@item.ID);">刪除</a>
-
+                                <a href="#" class="mx-1 btn btn-sm btn-outline-danger" onclick="ChkDel(@item.ID);">刪除</a>
+                            </div>
                         </td>
                     </tr>
                 }

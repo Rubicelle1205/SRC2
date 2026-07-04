@@ -1,91 +1,111 @@
 ﻿@model WebPccuClub.Models.AwardMangViewModel
-
+@{
+    List<ColumnDataModel> LstColumnDataModel = ViewBag.ActiveColumns;
+}
 
     <!-- /.card-header -->
     <div class="card-body table-responsive p-0">
         <table class="table table-bordered table-hover text-nowrap">
             <thead>
-                <tr class="text-center">
-                <th width="20%">社團代號
-                    <br />
-                    <span class="text-sm text-secondary">學年度</span>
-                </th>
-                <th width="20%">社團名稱</th>
-                <th width="20%">
-                    主辦單位
-                    <br />
-                    <span class="text-sm text-secondary">活動名稱</span>
-                </th>
-                <th width="20%">
-                    獲獎類別
-                    <br />
-                    <span class="text-sm text-secondary">獎項名稱</span>
-                </th>
-                <th width="20%">校內/校外</th>
-                <th width="20%">獲獎日期</th>
-                <th width="20%">審核狀態</th>
-                <th width="20%">建立時間</th>
-                    <th width="20%">功能</th>
-                </tr>
+            <tr class="text-center">
+                @foreach (var col in LstColumnDataModel)
+                {
+                    if (col.ColumnName != "AwdID")
+                    {
+                        <th style="min-width:120px;">@col.ColumnName</th>
+                    }
+
+                }
+                <th width="10%">功能</th>
+            </tr>
             </thead>
             <tbody>
-                @if (Model.ResultModel.Count > 0)
-                { 
-                    foreach (var item in Model.ResultModel)
-                    {
+            @if (Model.ResultModel.Count > 0)
+            {
+                foreach (var item in Model.ResultModel)
+                {
                     <tr>
-                        <td class="text-center text-sm">@item.ClubID
-                        <br/>
-                            <span class="text-muted">
-                                @item.SchoolYear
-                                </span>
-                        </td>
-                        <td class="text-center text-sm">@item.ClubCName</td>
-                        <td class="text-center text-sm">
-                            @item.Organizer
-                            <br />
-                            <span class="text-muted">
-                                @item.AwdActName
-                            </span>
-                        </td>
-                        <td class="text-center text-sm">
-                            @item.AwdType
-                            <br />
-                            <span class="text-muted">
-                                @item.AwdName
-                            </span>
-                        </td>
-                        <td class="text-center text-sm">@item.AwardInOrOutText</td>
-                        <td class="text-center text-sm">@item.AwdDate.Value.ToString("yyyy/MM/dd")</td>
-                        <td class="text-center text-sm">
-                            @if (item.ActVerify == "01")
-                            {
-                                <span class="text-secondary">@item.ActVerifyText</span>
-                            }
-                            else if (item.ActVerify == "02")
-                            {
-                                <span class="text-success">@item.ActVerifyText</span>
-                            }
-                            else if (item.ActVerify == "03")
-                            {
-                                <span class="text-danger">@item.ActVerifyText</span>
-                            }
-                            else if (item.ActVerify == "04")
-                            {
-                                <span class="text-primary">@item.ActVerifyText</span>
-                            }
-                        </td>
-                        @if (item.Created.HasValue)
+                        @foreach (var col in LstColumnDataModel)
                         {
-                            <td class="text-center text-sm">
-                                @item.Created.Value.ToString("yyyy/MM/dd  HH:mm:ss")
-                            </td>
+                            if (col.ColumnName != "AwdID")
+                            {
+                                <td class="text-center text-sm">
+                                    @{
+                                        if (col.ColumnValue == "ActVerifyText")
+                                        {
+                                            switch (item.ActVerify)
+                                            {
+                                                case "01":
+                                                    <span class="text-primary">@item.ActVerifyText</span>
+                                                    break;
+                                                case "02":
+                                                    <span class="text-success">@item.ActVerifyText</span>
+                                                    break;
+                                                case "03":
+                                                    <span class="text-secondary">@item.ActVerifyText</span>
+                                                    break;
+                                                case "04":
+                                                    <span class="text-info">@item.ActVerifyText</span>
+                                                    break;
+                                                case "05":
+                                                    <span class="text-dark">@item.ActVerifyText</span>
+                                                    break;
+                                                case "06":
+                                                    <span class="text-warning">@item.ActVerifyText</span>
+                                                    break;
+                                                case "07":
+                                                    <span class="text-danger">@item.ActVerifyText</span>
+                                                    break;
+                                                default:
+                                                    <span>@item.ActVerifyText</span>
+                                                    break;
+                                            }
+                                        }
+                                        else if (col.ColumnValue == "Attachment")
+                                        {
+                                            if (!string.IsNullOrWhiteSpace(item.Attachment) && item.Attachment.Length >= 2)
+                                            {
+                                                string absoluteUrl = "";
+                                                string subPath = item.Attachment.Substring(2);
+
+                                                var request = ViewContext.HttpContext.Request;
+                                                string baseUrl = $"{request.Scheme}://{request.Host}{request.PathBase}";
+
+                                                absoluteUrl = $"{baseUrl}{subPath}";
+
+                                                @absoluteUrl
+                                            }
+                                        }
+                                        else if (col.ColumnValue == "AwdDate")
+                                        {
+                                            var propValue = item.GetType().GetProperty(col.ColumnValue)?.GetValue(item, null);
+
+                                            if (propValue is DateTime dateValue)
+                                            {
+                                                @dateValue.ToString("yyyy/MM/dd")
+                                            }
+                                            else
+                                            {
+                                                @propValue?.ToString()
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var propValue = item.GetType().GetProperty(col.ColumnValue)?.GetValue(item, null);
+
+                                            if (propValue is DateTime dateValue)
+                                            {
+                                                @dateValue.ToString("yyyy/MM/dd HH:mm")
+                                            }
+                                            else
+                                            {
+                                                @propValue?.ToString()
+                                            }
+                                        }
+                                    }
+                                </td>
+                            }
                         }
-                        else
-                        {
-                            <td class="text-center text-sm"></td>
-                        }
-                        
                         <td class="text-center text-sm">
                             @using (Html.BeginForm("Edit", "AwardMang", FormMethod.Post, new { style = "display: inline-flex; vertical-align: bottom;" }))
                             {
@@ -96,12 +116,12 @@
                             <br><span class="text-sm text-secondary"> </span>
                         </td>
                     </tr>
-                    }
                 }
-                else
-                {
-                    <td colspan="10">查無資料</td>
-                }
+            }
+            else
+            {
+            <td colspan="@(LstColumnDataModel.Count + 1)">查無資料</td>
+            }
             </tbody>
         </table>
     </div>

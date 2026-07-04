@@ -42,6 +42,7 @@ namespace WebPccuClub.Controllers
 
             AwardMangViewModel vm = new AwardMangViewModel();
             vm.ConditionModel = new AwardMangConditionModel();
+            vm.ConditionModel.LstColumnDataModel = dbAccess.GetDefaultColumnData().ToList();
             return View(vm);
         }
 
@@ -49,7 +50,7 @@ namespace WebPccuClub.Controllers
         public IActionResult Create()
         {
             ViewBag.ddlAllClub = dbAccess.GetAllClub();
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify();
             ViewBag.ddlAwardInOrOut = dbAccess.GetAwardInOrOut();
 
@@ -64,7 +65,7 @@ namespace WebPccuClub.Controllers
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
-            ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
+            //ViewBag.ddlSchoolYear = dbAccess.GetSchoolYear();
             ViewBag.ddlAllActVerify = dbAccess.GetAllActVerify();
             ViewBag.ddlAwardInOrOut = dbAccess.GetAwardInOrOut();
 
@@ -84,6 +85,37 @@ namespace WebPccuClub.Controllers
         [LogAttribute(LogActionChineseName.查詢)]
         public IActionResult GetSearchResult(AwardMangViewModel vm)
         {
+            var allLegalColumns = dbAccess.GetDefaultColumnData().ToList();
+            vm.ConditionModel.LstColumnDataModel = allLegalColumns;
+
+            if (!string.IsNullOrEmpty(vm.ConditionModel.SelectedColumns))
+            {
+                var rawSelected = vm.ConditionModel.SelectedColumns.Split(',');
+
+                // 只保留「確實存在於資料庫定義中」的欄位名稱 (白名單比對)
+                var activeColumns = allLegalColumns.Where(x => rawSelected.Contains(x.ColumnValue)).ToList();
+
+                // 3. 【產生安全字串】用於 SQL 查詢
+                // 加上 [] 可以防止欄位名稱與 SQL 關鍵字衝突
+                var safeFieldsForSql = string.Join(", ", activeColumns.Select(x => $"[{x.ColumnValue}]"));
+
+                var orderedColumns = rawSelected.Select(val => allLegalColumns
+                    .FirstOrDefault(x => x.ColumnValue == val))
+                    .Where(x => x != null)
+                    .ToList();
+
+                // 將過濾後的合法清單傳給 View 渲染標頭
+                ViewBag.ActiveColumns = orderedColumns;
+
+                // 將安全字串存入 ConditionModel，供 dbAccess 內部組 SQL 使用
+                vm.ConditionModel.SafeSqlColumns = safeFieldsForSql;
+            }
+            else
+            {
+                // 如果完全沒選，可以給予預設必選欄位
+                ViewBag.ActiveColumns = allLegalColumns.Where(x => x.IsDefault).ToList();
+            }
+
             vm.ResultModel = dbAccess.GetSearchResult(vm.ConditionModel).ToList();
 
             #region 分頁
@@ -227,19 +259,34 @@ namespace WebPccuClub.Controllers
                         {
                             IRow row = sheet.GetRow(i);
 
-                            if (row != null)
-                            {
-                                AwdDetailModel excel = new AwdDetailModel
-                                {
-                                    Department = row.GetCell(0)?.StringCellValue.TrimStartAndEnd(),
-                                    Name = row.GetCell(1)?.StringCellValue.TrimStartAndEnd(),
-                                    SNO = row.GetCell(2)?.StringCellValue.TrimStartAndEnd()
-                                };
+                            // 1. 基本 Null 檢查
+                            if (row == null) continue;
 
-                                LstAwdDetail.Add(excel);
+                            // 2. 核心防呆：檢查這組儲存格抓出來是否全是空字串
+                            string dept = row.GetCell(0)?.StringCellValue.TrimStartAndEnd();
+                            string name = row.GetCell(1)?.StringCellValue.TrimStartAndEnd();
+                            string sno = row.GetCell(2)?.StringCellValue.TrimStartAndEnd();
+
+                            // 如果三個欄位經過 Trim 後全部都是空的，代表這是一列垃圾資料，直接跳過 (continue)
+                            if (string.IsNullOrWhiteSpace(dept) &&
+                                string.IsNullOrWhiteSpace(name) &&
+                                string.IsNullOrWhiteSpace(sno))
+                            {
+                                continue;
                             }
+
+                            // 3. 確保不是空列後，才放進 List
+                            AwdDetailModel excel = new AwdDetailModel
+                            {
+                                Department = dept,
+                                Name = name,
+                                SNO = sno
+                            };
+
+                            LstAwdDetail.Add(excel);
                         }
                     }
+
                     dbResult = dbAccess.EditDetailData(vm, LstAwdDetail, LoginUser);
 
                     if (!dbResult.isSuccess)
@@ -372,6 +419,20 @@ namespace WebPccuClub.Controllers
 
             return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FileName);
 
+        }
+
+        public IActionResult GetAwardDetails(string awdID)
+        {
+            // TODO: 請根據你的資料庫架構與實作邏輯調整
+            // 這裡示範透過 awdID 查詢資料庫中的獲獎名冊明細
+            var details = dbAccess.GetDetailData(awdID) // 範例方法
+                .Select(x => new {
+                    Department = x.Department, // 系級
+                    Name = x.Name,             // 姓名
+                    SNO = x.SNO                // 學號
+                }).ToList();
+
+            return Json(new { errorCode = 0, data = details, errorMsg = "" });
         }
     }
 }

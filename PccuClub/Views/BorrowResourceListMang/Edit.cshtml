@@ -1,0 +1,107 @@
+﻿@model WebPccuClub.Models.BorrowResourceListMangViewModel
+
+@{
+    <link rel="stylesheet" href="@string.Format("/assets/css/custom.css?v={0}", DateTime.Now.Ticks)">
+}
+@{
+    Layout = "_BackendLayout";
+	ViewBag.Title = "資源借用系統";
+}
+<div class="col-xxl-8">
+    @if (Model.EditModel != null)
+    {
+        <div class="contentWrapper">
+            <h6 class="card-subtitle mb-2 text-muted">
+                <a id="Back" href="@Url.Action("Index")" class="btn btn-outline-primary">返回</a>
+            </h6>
+
+            <div class="infoWrapper mb-4">
+                <div class="infoItem">
+                    <div class="tag">資源類別</div>
+                    <div class="content">@Model.EditModel.MainResourceName</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">資源子類別</div>
+                    <div class="content">@Model.EditModel.SecondClassText</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">資源代號</div>
+                    <div class="content">@Model.EditModel.MainResourceID</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">名稱</div>
+                    <div class="content">@Model.EditModel.MainResourceName</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">簡易說明</div>
+                    <div class="content">@Model.EditModel.ShortDesc</div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">圖片</div>
+                    <div class="content">
+                        <div class="logo">
+                            @if (!string.IsNullOrEmpty(Model.EditModel.ResourceImg1))
+                            {
+                                <img src="../@Model.EditModel.ResourceImg1" alt="">
+                            }
+                            @if (!string.IsNullOrEmpty(Model.EditModel.ResourceImg2))
+                            {
+                                <img src="../@Model.EditModel.ResourceImg2" alt="">
+                            }
+                            @if (!string.IsNullOrEmpty(Model.EditModel.ResourceImg3))
+                            {
+                                <img src="../@Model.EditModel.ResourceImg3" alt="">
+                            }
+                            @if (!string.IsNullOrEmpty(Model.EditModel.ResourceImg4))
+                            {
+                                <img src="../@Model.EditModel.ResourceImg4" alt="">
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="infoItem">
+                    <div class="tag">借用規範</div>
+                    <div class="content">
+                        <article>
+                           @Model.EditModel.BorrowRule
+                        </article>
+                    </div>
+                </div>
+            </div>
+
+            <div class="font-weight-bold py-2"><i class="fas fa-tag"></i> 子資源清單</div>
+
+            <div class="infoWrapper mb-5">
+                <div class="scroll-hint hint"><i class="fas fa-info-circle"></i> 左右滑動查看完整表格</div>
+                <div class="scroll-box">
+                    <div class="memberlist item-9 mb-5">
+                        <div class="listHeader">
+                            <div class="listItem">
+                                <div class="item">子資源名稱</div>
+                                <div class="item item-sm">資產號碼</div>
+                                <div class="item">借用狀態</div>
+                                <div class="item">備註</div>
+                            </div>
+                        </div>
+                        <div class="listBody">
+                            @foreach(BorrowResourceListMangEditDetailModel item in Model.EditModel.LstDetail)
+                            {
+                                <div class="listItem">
+                                    <div class="item item-sm">@item.MainResourceName</div>
+                                    <div class="item">@item.SecondResourceName</div>
+                                    <div class="item"><span class="text-success">@item.BorrowStatusText</span></div>
+                                    <div class="item">@item.Memo</div>
+                                </div>
+                                
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+
+</script>

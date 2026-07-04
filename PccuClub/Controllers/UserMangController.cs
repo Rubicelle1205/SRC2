@@ -135,6 +135,40 @@ namespace WebPccuClub.Controllers
             return Json(vmRtn);
         }
 
+        [Log(LogActionChineseName.社團社長解除綁定)]
+        [ValidateInput(false)]
+        public async Task<IActionResult> UnBind(UserMangViewModel vm)
+        {
+            if (vm.EditModel == null)
+                RedirectToAction("Index");
+
+            try
+            {
+                dbAccess.DbaInitialTransaction();
+
+                var dbResult = dbAccess.UnBindUserClub(vm);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "修改失敗";
+                    return Json(vmRtn);
+                }
+
+                dbAccess.DbaCommit();
+            }
+            catch (Exception ex)
+            {
+                dbAccess.DbaRollBack();
+                vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                vmRtn.ErrorMsg = "修改失敗" + ex.Message;
+                return Json(vmRtn);
+            }
+
+            return Json(vmRtn);
+        }
+
         [Log(LogActionChineseName.刪除)]
         [ValidateInput(false)]
         public IActionResult Delete(string Ser)

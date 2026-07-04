@@ -39,15 +39,17 @@ namespace WebPccuClub.Controllers
         }
 
         [Log(LogActionChineseName.新增)]
-        public IActionResult Create()
+        public IActionResult Create(string submitBtn)
         {
             ViewBag.ddlMainClass = dbAccess.GetddlMainClass();
             ViewBag.ddlApplyUnitType = dbAccess.GetddlApplyUnitType();
             ViewBag.ddlBorrowActVerify = dbAccess.GetddlBorrowActVerify();
-            ViewBag.ddlSecondResurce = dbAccess.GetddlSecondResurce();
+            ViewBag.ddlSecondResurce = dbAccess.GetddlSecondResurce(submitBtn);
 
             FBorrowRecordViewModel vm = new FBorrowRecordViewModel();
             vm.CreateModel = new FBorrowRecordCreateModel();
+            vm.CreateModel.MainClassID = submitBtn;
+
             return View(vm);
         }
 
@@ -198,6 +200,28 @@ namespace WebPccuClub.Controllers
                 }
 
                 dbAccess.DbaCommit();
+
+                //確認該類別是否需要寄信
+                DataTable dt2 = new DataTable();
+                dt2 = dbAccess.CheckNeedSendMail(vm.CreateModel.MainClassID);
+
+                bool IsEnable = false;
+                IsEnable = bool.TryParse(dt2.QueryFieldByDT("IsEnable"), out IsEnable); //是否啟用寄信功能
+
+                if (IsEnable)
+                {
+                    //抓取寄信內容
+                    string BodyTemplate = dt2.QueryFieldByDT("BodyTemplate");
+                    string SubjectTemplate = dt2.QueryFieldByDT("SubjectTemplate");
+
+                    //發送給借用人的借用通知信
+                    MailUtil mail = new MailUtil();
+                    bool ok = mail.ExecuteSendMail(
+                        vm.CreateModel.ApplyEmail,
+                        SubjectTemplate, 
+                        BodyTemplate, 
+                        System.Net.Mail.MailPriority.High, null);
+                }
             }
             catch (Exception ex)
             {
@@ -261,6 +285,19 @@ namespace WebPccuClub.Controllers
             ViewBag.ddlSecondAmt = LstItem;
 
             return PartialView("_BorrowAmtPartial", vm);
+        }
+
+        [Log(LogActionChineseName.取得上架數量)]
+        [ValidateInput(false)]
+        public IActionResult InitBorrowResource(string MainClassID)
+        {
+            ViewBag.ddlSecondResurce = dbAccess.GetddlSecondResurce(MainClassID);
+
+            FBorrowRecordViewModel vm = new FBorrowRecordViewModel();
+            vm.CreateModel = new FBorrowRecordCreateModel();
+            vm.CreateModel.MainClassID = MainClassID;
+
+            return PartialView("_BorrowResurcePartial", vm);
         }
 
     }

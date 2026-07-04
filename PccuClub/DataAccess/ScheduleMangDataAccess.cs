@@ -33,9 +33,12 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@ActHoldType", model.ActHoldType);
             parameters.Add("@CScheName", model.CScheName);
             parameters.Add("@SchoolYear", model.SchoolYear);
-            parameters.Add("@FromDate", model.From_ReleaseDate.HasValue ? model.From_ReleaseDate.Value.ToString("yyyy-MM-dd 00:00:00") : null);
-            parameters.Add("@ToDate", model.To_ReleaseDate.HasValue ? model.To_ReleaseDate.Value.ToString("yyyy-MM-dd 23:59:59") : null);
 
+            string duringDateStr = model.DuringDate?.ToString("yyyy-MM-dd");
+            parameters.Add("@DuringDate", string.IsNullOrWhiteSpace(duringDateStr) ? null : duringDateStr);
+
+            parameters.Add("@FromDate", model?.From_ReleaseDate?.Date);
+            parameters.Add("@ToDatePlusOne", model?.To_ReleaseDate?.Date.AddDays(1));
          
             #endregion
 
@@ -45,11 +48,12 @@ namespace WebPccuClub.DataAccess
                           LEFT JOIN ActTypeMang B ON B.ActTypeID = A.ActTypeID
                           LEFT JOIN Code C ON C.Code = A.ActHoldType AND C.Type = 'ActHoldType'
                               WHERE 1 = 1
-{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.CScheDate BETWEEN @FromDate AND @ToDate" : " ")}
+{(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created >= @FromDate AND A.Created < @ToDatePlusOne" : "")}
 {(model.ClubId != null ? " AND A.ClubId LIKE '%' + @ClubId + '%'" : " ")}
 {(model.CScheName != null ? " AND A.CScheName LIKE '%' + @CScheName + '%'" : " ")}
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear) 
 AND (@ActTypeID IS NULL OR A.ActTypeID = @ActTypeID) 
+AND (@DuringDate IS NULL OR A.CScheDate = @DuringDate) 
 AND (@ActHoldType IS NULL OR A.ActHoldType = @ActHoldType) 
 ";
 
