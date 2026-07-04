@@ -113,12 +113,29 @@ namespace WebPccuClub.Controllers
 
 				vm.CheckModel = dbAccess.GetCheckData(LoginUser.LoginId, false);
 
+                if (null == vm.CheckModel)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "交接失敗，交接資料不完整";
+                    return Json(vmRtn);
+                }
+
+                if (string.IsNullOrEmpty(vm.CheckModel.SchoolYear) || string.IsNullOrEmpty(vm.CheckModel.HoID))
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "交接失敗，交接資料不完整";
+                    return Json(vmRtn);
+                }
+
 				if (vm.CheckModel != null)
 				{
 					string SchoolYear = vm.CheckModel.SchoolYear;
+                    string HoId = vm.CheckModel.HoID;
 
 					//先取得交接的學生學號
-					NewLeaderSNO = dbAccess.GetNewLeader(LoginUser.LoginId, SchoolYear);
+					NewLeaderSNO = dbAccess.GetNewLeader(LoginUser.LoginId, SchoolYear, HoId);
 
 					if (!string.IsNullOrEmpty(NewLeaderSNO))
 					{
