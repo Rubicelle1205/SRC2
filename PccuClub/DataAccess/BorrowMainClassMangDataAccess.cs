@@ -7,6 +7,8 @@ using System.Text.Encodings.Web;
 using WebPccuClub.Global;
 using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using static NPOI.HSSF.UserModel.HeaderFooter;
 
 namespace WebPccuClub.DataAccess
 {
@@ -78,6 +80,39 @@ AND (ID = @ID) ";
                 return dbResult.entitys.ToList().FirstOrDefault();
 
             return null;
+        }
+
+        /// <summary>
+        /// 取得編輯資料
+        /// </summary>
+        /// <param name="submitBtn"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public List<RequiredFields> GetRequiredFields(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@BorrowMainClassID", Ser);
+
+            #endregion
+
+            CommandText = @"SELECT RequiredFieldsId, Fields, Required
+FROM RequiredFields
+WHERE 1 = 1
+AND SystemCode = '04'
+AND (BorrowMainClassID = @BorrowMainClassID) ";
+
+            (DbExecuteInfo info, IEnumerable<RequiredFields> entitys) dbResult = DbaExecuteQuery<RequiredFields>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<RequiredFields>();
         }
 
         /// <summary> 新增資料 </summary>
@@ -167,6 +202,35 @@ AND (ID = @ID) ";
             return ExecuteResult;
         }
 
+        /// <summary> 修改資料 </summary>
+        public DbExecuteInfo UpdateRequiredFieldsData(BorrowMainClassMangViewModel vm, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+            string CommendText = string.Empty;
+
+            List<RequiredFields> dataList = vm.EditModel.LstRequiredFields;
+
+
+            #region 參數設定
+            #endregion 參數設定
+
+            CommendText = $@"UPDATE RequiredFields SET 
+Required = @Required, 
+Creator = '{LoginUser.LoginId}', 
+Created = GETDATE(), 
+LastModifier = '{LoginUser.LoginId}', 
+LastModified = GETDATE()
+WHERE 1 = 1
+AND SystemCode = '04'
+AND RequiredFieldsId = @RequiredFieldsId";
+
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+            return ExecuteResult;
+        }
+
         /// <summary>
         /// 刪除資料
         /// </summary>
@@ -186,6 +250,26 @@ AND (ID = @ID) ";
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
             return ExecuteResult;
+        }
+
+        public List<SelectListItem> GetddlEnable()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS Value, Text AS Text FROM Code WHERE Type = 'Enable'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
         }
     }
 }

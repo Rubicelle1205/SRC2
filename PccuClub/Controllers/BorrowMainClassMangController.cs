@@ -50,8 +50,11 @@ namespace WebPccuClub.Controllers
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
+            ViewBag.ddlEnable = dbAccess.GetddlEnable();
+
             //BorrowMainClassMangViewModel vm = new BorrowMainClassMangViewModel();
             vm.EditModel = dbAccess.GetEditData(submitBtn);
+            vm.EditModel.LstRequiredFields = dbAccess.GetRequiredFields(submitBtn);
             return View(vm);
         }
 
@@ -123,6 +126,11 @@ namespace WebPccuClub.Controllers
             {
                 dbAccess.DbaInitialTransaction();
 
+                if (!string.IsNullOrEmpty(vm.EditModel.RequiredFieldsJson))
+                {
+                    vm.EditModel.LstRequiredFields = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RequiredFields>>(vm.EditModel.RequiredFieldsJson);
+                }
+
                 if (Request.Form.Files.Count > 0)
                 {
                     for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
@@ -146,6 +154,19 @@ namespace WebPccuClub.Controllers
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "修改失敗";
                     return Json(vmRtn);
+                }
+
+                if (vm.EditModel.LstRequiredFields.Count > 0)
+                {
+                    dbResult = dbAccess.UpdateRequiredFieldsData(vm, LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "修改失敗";
+                        return Json(vmRtn);
+                    }
                 }
 
                 dbAccess.DbaCommit();

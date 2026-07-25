@@ -49,6 +49,7 @@ namespace WebPccuClub.Controllers
             FBorrowRecordViewModel vm = new FBorrowRecordViewModel();
             vm.CreateModel = new FBorrowRecordCreateModel();
             vm.CreateModel.MainClassID = submitBtn;
+            vm.CreateModel.LstRequiredFields = dbAccess.GetRequiredFields(submitBtn);
 
             return View(vm);
         }
