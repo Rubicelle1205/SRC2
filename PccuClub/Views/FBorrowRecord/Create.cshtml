@@ -3,6 +3,11 @@
 @{
     Layout = "_FrontBorrowLayout";
     ViewBag.Title = "我的借用紀錄";
+    bool BlnApplyUnitName = @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "申請單位" && x.Required == true).Any();
+    bool BlnApplyPurpose = @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "申請目的" && x.Required == true).Any();
+    bool BlnUseLocation = @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "使用地點" && x.Required == true).Any();
+    bool BlnActName = @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "活動名稱" && x.Required == true).Any();
+
 }
 
 <head>
@@ -33,7 +38,14 @@
                     </div>
                 </div>
                 <div class="infoItem">
-                    <div class="tag">申請單位<span class="req-star">*</span></div>
+                    @if (BlnApplyUnitName)
+                    {
+                        <div class="tag">申請單位<span class="req-star">*</span></div>
+                    }
+                    else
+                    {
+                        <div class="tag">申請單位</div>
+                    }
                     <div class="content">
                         @Html.TextBoxFor(m => m.CreateModel.ApplyUnitName, new { @class = "form-control", placeholder = "請輸入申請單位" })
                     </div>
@@ -63,19 +75,43 @@
                     </div>
                 </div>
                 <div class="infoItem">
-                    <div class="tag">申請目的<span class="req-star">*</span></div>
+                    @if (BlnApplyPurpose)
+                    {
+                        <div class="tag">申請目的<span class="req-star">*</span></div>
+                    }
+                    else
+                    {
+                        <div class="tag">申請目的</div>
+                    }
+
                     <div class="content">
                         @Html.TextBoxFor(m => m.CreateModel.ApplyPurpose, new { @class = "form-control", placeholder = "請輸入申請目的" })
                     </div>
                 </div>
                 <div class="infoItem">
-                    <div class="tag">活動名稱<span class="req-star">*</span></div>
+                    @if (BlnActName)
+                    {
+                        <div class="tag">活動名稱<span class="req-star">*</span></div>
+                    }
+                    else
+                    {
+                        <div class="tag">活動名稱</div>
+                    }
+
                     <div class="content">
                         @Html.TextBoxFor(m => m.CreateModel.ActName, new { @class = "form-control", placeholder = "請輸入活動名稱" })
                     </div>
                 </div>
                 <div class="infoItem">
-                    <div class="tag">使用地點<span class="req-star">*</span></div>
+                    @if (BlnUseLocation)
+                    {
+                        <div class="tag">使用地點<span class="req-star">*</span></div>
+                    }
+                    else
+                    {
+                        <div class="tag">使用地點</div>
+                    }
+
                     <div class="content">
                         @Html.TextBoxFor(m => m.CreateModel.UseLocation, new { @class = "form-control", placeholder = "請輸入使用地點" })
                     </div>
@@ -419,17 +455,28 @@
 
         // 欄位必填驗證
         if (ApplyUnitType == "") { $.alert("申請單位類型不可為空"); return; }
-        if (ApplyUnitName == "") { $.alert("申請單位不可為空"); return; }
+        
         if (ApplyMan == "") { $.alert("角色名稱不可為空"); return; }
-        if (ApplyPurpose == "") { $.alert("申請目的不可為空"); return; }
-        if (ActName == "") { $.alert("活動名稱不可為空"); return; }
-        if (UseLocation == "") { $.alert("使用地點不可為空"); return; }
         if (UseDesc == "") { $.alert("用途及特殊需求說明不可為空"); return; }
         if (UseSDate == "") { $.alert("實際使用起日不可為空"); return; }
         if (UseEDate == "") { $.alert("實際使用訖日不可為空"); return; }
         if (TakeSDate == "") { $.alert("計畫領取日期不可為空"); return; }
         if (TakeEDate == "") { $.alert("計畫歸還日期不可為空"); return; }
         if (strDeviceData == "") { $.alert("需選擇借用設備"); return; }
+
+        if (@BlnApplyUnitName.ToString().ToLower() === true) {
+            if (ApplyUnitName == "") { $.alert("申請單位不可為空"); return; }
+        }
+        if (@BlnApplyPurpose.ToString().ToLower() === true) {
+            if (ApplyPurpose == "") { $.alert("申請目的不可為空"); return; }
+        }
+        if (@BlnActName.ToString().ToLower() === true) {
+            if (ActName == "") { $.alert("活動名稱不可為空"); return; }
+        }
+        if (@BlnUseLocation.ToString().ToLower() === true) {
+            if (UseLocation == "") { $.alert("使用地點不可為空"); return; }
+        }
+
 
         // 日期格式驗證 (Moment.js)
         if (!moment(UseSDate, "YYYY-MM-DD", true).isValid()) { $.alert("實際使用起日格式不正確"); return; }
