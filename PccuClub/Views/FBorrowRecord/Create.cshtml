@@ -7,7 +7,7 @@
     bool BlnApplyPurpose = @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "申請目的" && x.Required == true).Any();
     bool BlnUseLocation = @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "使用地點" && x.Required == true).Any();
     bool BlnActName = @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "活動名稱" && x.Required == true).Any();
-
+    bool BlnUseDesc = @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "用途及特殊需求說明" && x.Required == true).Any();
 }
 
 <head>
@@ -37,19 +37,15 @@
                         @Html.DropDownListFor(m => m.CreateModel.ApplyUnitType, (List<SelectListItem>)ViewBag.ddlApplyUnitType, "請選擇申請單位類型", new { @class = "form-control" })
                     </div>
                 </div>
-                <div class="infoItem">
-                    @if (BlnApplyUnitName)
-                    {
+                @if (BlnApplyUnitName)
+                {
+                    <div class="infoItem">
                         <div class="tag">申請單位<span class="req-star">*</span></div>
-                    }
-                    else
-                    {
-                        <div class="tag">申請單位</div>
-                    }
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.CreateModel.ApplyUnitName, new { @class = "form-control", placeholder = "請輸入申請單位" })
+                        <div class="content">
+                            @Html.TextBoxFor(m => m.CreateModel.ApplyUnitName, new { @class = "form-control", placeholder = "請輸入申請單位" })
+                        </div>
                     </div>
-                </div>
+                }
                 <div class="infoItem">
                     <div class="tag">申請人<span class="req-star">*</span></div>
                     <div class="content">
@@ -74,54 +70,49 @@
                         @Html.TextBoxFor(m => m.CreateModel.ApplyTel, new { @class = "form-control", placeholder = "申請人電話/分機" })
                     </div>
                 </div>
-                <div class="infoItem">
-                    @if (BlnApplyPurpose)
-                    {
+
+                @if (BlnApplyPurpose)
+                {
+                    <div class="infoItem">
                         <div class="tag">申請目的<span class="req-star">*</span></div>
-                    }
-                    else
-                    {
-                        <div class="tag">申請目的</div>
-                    }
-
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.CreateModel.ApplyPurpose, new { @class = "form-control", placeholder = "請輸入申請目的" })
+                        <div class="content">
+                            @Html.TextBoxFor(m => m.CreateModel.ApplyPurpose, new { @class = "form-control", placeholder = "請輸入申請目的" })
+                        </div>
                     </div>
-                </div>
-                <div class="infoItem">
-                    @if (BlnActName)
-                    {
+                }
+
+                @if (BlnActName)
+                {
+                    <div class="infoItem">
                         <div class="tag">活動名稱<span class="req-star">*</span></div>
-                    }
-                    else
-                    {
-                        <div class="tag">活動名稱</div>
-                    }
 
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.CreateModel.ActName, new { @class = "form-control", placeholder = "請輸入活動名稱" })
+                        <div class="content">
+                            @Html.TextBoxFor(m => m.CreateModel.ActName, new { @class = "form-control", placeholder = "請輸入活動名稱" })
+                        </div>
                     </div>
-                </div>
-                <div class="infoItem">
-                    @if (BlnUseLocation)
-                    {
+                }
+
+                @if (BlnUseLocation)
+                {
+
+                    <div class="infoItem">
                         <div class="tag">使用地點<span class="req-star">*</span></div>
-                    }
-                    else
-                    {
-                        <div class="tag">使用地點</div>
-                    }
 
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.CreateModel.UseLocation, new { @class = "form-control", placeholder = "請輸入使用地點" })
+                        <div class="content">
+                            @Html.TextBoxFor(m => m.CreateModel.UseLocation, new { @class = "form-control", placeholder = "請輸入使用地點" })
+                        </div>
                     </div>
-                </div>
-                <div class="infoItem">
-                    <div class="tag">用途及特殊需求說明<span class="req-star">*</span></div>
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.CreateModel.UseDesc, new { @class = "form-control", placeholder = "請輸入用途及特殊需求說明" })
+                }
+
+                @if (BlnUseDesc)
+                {
+                    <div class="infoItem">
+                        <div class="tag">用途及特殊需求說明<span class="req-star">*</span></div>
+                        <div class="content">
+                            @Html.TextBoxFor(m => m.CreateModel.UseDesc, new { @class = "form-control", placeholder = "請輸入用途及特殊需求說明" })
+                        </div>
                     </div>
-                </div>
+                }
                 <div class="infoItem">
                     <div class="tag">實際使用日期<span class="req-star">*</span></div>
                     <div class="content">
@@ -153,12 +144,12 @@
                                 @{
                                     if (!string.IsNullOrEmpty(Model.CreateModel.MainClassID))
                                     {
-                                        @Html.DropDownListFor(m => m.CreateModel.MainClassID, (List<SelectListItem>)ViewBag.ddlMainClass, "請選擇資源類別", new { @class = "form-control", disabled = "disabled" })
+                                            @Html.DropDownListFor(m => m.CreateModel.MainClassID, (List<SelectListItem>)ViewBag.ddlMainClass, "請選擇資源類別", new { @class = "form-control", disabled = "disabled" })
 
                                     }
                                     else
                                     {
-                                        @Html.DropDownListFor(m => m.CreateModel.MainClassID, (List<SelectListItem>)ViewBag.ddlMainClass, "請選擇資源類別", new { @class = "form-control" })
+                                            @Html.DropDownListFor(m => m.CreateModel.MainClassID, (List<SelectListItem>)ViewBag.ddlMainClass, "請選擇資源類別", new { @class = "form-control" })
                                     }
                                 }
                             </div>
@@ -354,7 +345,7 @@
                     return;
                 }
             }
-            
+
             // 若項目已存在，提示是否更新數量
             if (addedItems[MainResourceID.val()]) {
                 if (confirm('此項目已存在。是否要更新數量？')) {
@@ -455,9 +446,8 @@
 
         // 欄位必填驗證
         if (ApplyUnitType == "") { $.alert("申請單位類型不可為空"); return; }
-        
+
         if (ApplyMan == "") { $.alert("角色名稱不可為空"); return; }
-        if (UseDesc == "") { $.alert("用途及特殊需求說明不可為空"); return; }
         if (UseSDate == "") { $.alert("實際使用起日不可為空"); return; }
         if (UseEDate == "") { $.alert("實際使用訖日不可為空"); return; }
         if (TakeSDate == "") { $.alert("計畫領取日期不可為空"); return; }
@@ -467,16 +457,41 @@
         if (@BlnApplyUnitName.ToString().ToLower() === true) {
             if (ApplyUnitName == "") { $.alert("申請單位不可為空"); return; }
         }
+        else { 
+            ApplyUnitName = ApplyUnitName ?? "";
+        }
+
         if (@BlnApplyPurpose.ToString().ToLower() === true) {
             if (ApplyPurpose == "") { $.alert("申請目的不可為空"); return; }
         }
+        else {
+            ApplyUnitName = ApplyUnitName ?? "";
+
+        }
+
         if (@BlnActName.ToString().ToLower() === true) {
             if (ActName == "") { $.alert("活動名稱不可為空"); return; }
         }
+        else { 
+            ActName = ActName ?? "";
+
+        }
+
         if (@BlnUseLocation.ToString().ToLower() === true) {
             if (UseLocation == "") { $.alert("使用地點不可為空"); return; }
         }
+        else { 
+            UseLocation = UseLocation ?? "";
 
+        }
+
+        if (@BlnUseDesc.ToString().ToLower() === true) {
+            if (UseDesc == "") { $.alert("用途及特殊需求說明不可為空"); return; }
+        }
+        else {
+            UseDesc = UseDesc ?? "";
+
+        }
 
         // 日期格式驗證 (Moment.js)
         if (!moment(UseSDate, "YYYY-MM-DD", true).isValid()) { $.alert("實際使用起日格式不正確"); return; }
