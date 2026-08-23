@@ -35,11 +35,13 @@ namespace WebPccuClub.DataAccess
 
             #endregion
 
-            CommandText = $@"SELECT A.ActID, B.ActDetailId, B.ActName, B.SchoolYear, A.ActVerify, C.Text AS ActVerifyText, B.Passport, A.Created, D.ActFinishId
+            CommandText = $@"SELECT A.ActID, B.ActDetailId, D.ActFinishId, E.ID AS HolisticPassportID, 
+                                    B.ActName, B.SchoolYear, A.ActVerify, C.Text AS ActVerifyText, B.Passport, A.Created
                                FROM ActMain A
                           LEFT JOIN ActDetail B ON B.ActID = A.ActID
                           LEFT JOIN Code C ON C.Code = A.ActVerify AND C.Type = 'ActVerify'
 						  LEFT JOIN ActFinish D ON D.ActID = A.ActID AND D.ActDetailId = B.ActDetailId
+						  LEFT JOIN HolisticPassportMang E ON E.ActID = A.ActID
                               WHERE 1 = 1
                                 AND A.ActVerify <> '07' 
                                 AND (@SchoolYear IS NULL OR B.SchoolYear = @SchoolYear)
@@ -1310,6 +1312,9 @@ WHERE ActID = @ActID
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
+            if (!string.IsNullOrEmpty(vm.ClubHolisticPassport.BuildID))
+                vm.ClubHolisticPassport.BuildID = "0";
+
             #region 參數設定
             parameters.Add("@SchoolYear", vm.ClubHolisticPassport.SchoolYear);
             parameters.Add("@ClubID", vm.ClubHolisticPassport.ClubID);
@@ -1369,6 +1374,7 @@ WHERE ActID = @ActID
                                                 Tag, 
                                                 PosterIconPath, 
                                                 Memo, 
+                                                ActVerify,
                                                 Creator, 
                                                 Created, 
                                                 LastModifier,
@@ -1401,6 +1407,7 @@ WHERE ActID = @ActID
                                                 @Tag, 
                                                 @PosterIconPath, 
                                                 @Memo, 
+                                                '01',
                                                 @LoginId, 
                                                 GETDATE(), 
                                                 @LoginId, 

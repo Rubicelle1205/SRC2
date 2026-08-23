@@ -103,7 +103,7 @@
                 <div class="infoItem">
                     <div class="tag">主講人介紹<span class="req-star">*</span></div>
                     <div class="content">
-                        @Html.TextAreaFor(m => m.ClubHolisticPassport.Presenter, new {@class="form-control", placeholder = "主講人介紹", rows = "5"})
+                        @Html.TextAreaFor(m => m.ClubHolisticPassport.PresenterIntro, new { @class = "form-control", placeholder = "主講人介紹", rows = "5" })
                     </div>
                 </div>
                 <div class="infoItem">
@@ -238,9 +238,10 @@
         var ActETime = $('#@Html.IdFor(m => m.ClubHolisticPassport.ActETime)').val();
 
         var RegistrationWay = $('#@Html.IdFor(m => m.ClubHolisticPassport.RegistrationWay)').val();
-        var PlaceSource = $('#@Html.IdFor(m => m.ClubHolisticPassport.PlaceSource)').val();
+        var PlaceSource = $("[id ^= 'PlaceSource_']:checked").val()
         var BuildID = $('#@Html.IdFor(m => m.ClubHolisticPassport.BuildID)').val();
-        var PlaceID = $('#@Html.IdFor(m => m.ClubHolisticPassport.PlaceID)').val();
+
+        // var PlaceID = $('#@Html.IdFor(m => m.ClubHolisticPassport.PlaceID)').val();
         var PlaceName = $('#@Html.IdFor(m => m.ClubHolisticPassport.PlaceName)').val();
         var Presenter = $('#@Html.IdFor(m => m.ClubHolisticPassport.Presenter)').val();
         var PresenterIntro = $('#@Html.IdFor(m => m.ClubHolisticPassport.PresenterIntro)').val();
@@ -253,6 +254,19 @@
         var Tag = $('#@Html.IdFor(m => m.ClubHolisticPassport.Tag)').val();
         var Memo = $('#@Html.IdFor(m => m.ClubHolisticPassport.Memo)').val();
 
+        var buildID = (BuildID !== undefined && BuildID !== '') ? BuildID : null;
+
+        var placeID;
+        var placetext;
+        if (PlaceSource == "01") {
+            placeID = $('#@Html.IdFor(m => m.ClubHolisticPassport.PlaceID) option:selected').val();
+            placetext = $('#@Html.IdFor(m => m.ClubHolisticPassport.PlaceID) option:selected').text();
+        } else {
+            placeID = $('#@Html.IdFor(m => m.ClubHolisticPassport.PlaceName)').val();
+            placetext = $('#@Html.IdFor(m => m.ClubHolisticPassport.PlaceName)').val();
+        }
+        if (placeID == "" || placeID == undefined) { $.alert("請輸入場地名稱"); return false; }
+
         if (ActName == "") { $.alert("活動名稱不可為空白"); return; }
         if (HolisticActName == "") { $.alert("全人端名稱不可為空白"); return; }
         if (ActDesc == "") { $.alert("活動說明不可為空白"); return; }
@@ -261,6 +275,8 @@
         if (ThridID == "") { $.alert("全人學習認證項目需選擇"); return; }
         if (ActSTime == "") { $.alert("活動開始時間不可為空白"); return; }
         if (ActETime == "") { $.alert("活動結束時間不可為空白"); return; }
+
+        if (ActSTime > ActETime) { $.alert("活動開始時間不可大於活動結束時間"); return false; }
 
         if (RegistrationWay == "") { $.alert("報名方式不可為空白"); return; }
         if (PlaceSource == "") { $.alert("活動地點需選擇"); return; }
@@ -288,9 +304,9 @@
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.ActETime)', ActETime);
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.RegistrationWay)', RegistrationWay);
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.PlaceSource)', PlaceSource);
-        data.append('@Html.NameFor(m => m.ClubHolisticPassport.BuildID)', BuildID);
-        data.append('@Html.NameFor(m => m.ClubHolisticPassport.PlaceID)', PlaceID);
-        data.append('@Html.NameFor(m => m.ClubHolisticPassport.PlaceName)', PlaceName);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.BuildID)', buildID);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.PlaceID)', placeID);
+        data.append('@Html.NameFor(m => m.ClubHolisticPassport.PlaceName)', placetext);
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.Presenter)', Presenter);
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.PresenterIntro)', PresenterIntro);
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.Host)', Host);
