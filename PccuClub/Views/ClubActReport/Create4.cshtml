@@ -3,7 +3,6 @@
 @{
     Layout = "_FrontLayout";
 	ViewBag.Title = "活動報備-Step4";
-	List<SelectListItem> LstPlaceSource = ViewBag.ddlPlaceSource;
 }
 
 <div class="col-xxl-8">
@@ -72,13 +71,12 @@
 						<div class="content">
 
                             <div class="target_list_outside">
-                                @foreach (var item in Model.CreateModel.LstOutSideFile)
-                                {
-                                    <div class="d-block mb-1 item">
-                                        <a href="../@item.FilePath" target="_blank">@item.FileName</a>
-                                    </div>
-                                }
-
+								@foreach (var item in Model.CreateModel.LstOutSideFile)
+								{
+									<div class="d-block mb-1 item">
+										<a href="../@item.FilePath" target="_blank">@item.FileName</a>
+									</div>
+								}
 								<div class="d-block mb-1 item">
 									<label class="btn btn-outline-primary mb-0">
 										<input id="OutSide0" name="OutSide0" type="file" class="filesupload" style="display:none;" accept=".doc,.docx,.odt,.pdf" />
@@ -99,7 +97,7 @@
 			</div>
 			<div class="row justify-content-center mb-5">
 				<div class="col-lg-3">
-					<a href="@Url.Action("Return3", "ClubActReport", new { id = Model.ReturnModel.ActID })" class="btn btn-primary btn-outline btn-modern w-100 mb-2"><i class="icon-arrow-left"></i> 上一步</a>
+					<a href="@Url.Action("Create3")" class="btn btn-primary btn-outline btn-modern w-100 mb-2"><i class="icon-arrow-left"></i> 上一步</a>
 				</div>
 				<div class="col-lg-3">
 					<button class="submit-btn btn btn-primary btn-modern w-100 mb-2" type="submit" onclick="return SaveData()">下一步 <i class="icon-arrow-right"></i></button>

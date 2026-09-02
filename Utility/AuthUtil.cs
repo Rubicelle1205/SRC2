@@ -57,6 +57,11 @@ namespace Utility
                     sResultData.bError = false;
                     sResultData.bResultIsValid = true;
                     break;
+                case "987654321 ":
+                    sResultData.JSONData = "{\"Account\":\"A9235755\",\"Role\":\"student\",\"Name\":\"許大名\",\"Department\":\"戲劇系4\"}";
+                    sResultData.bError = false;
+                    sResultData.bResultIsValid = true;
+                    break;
                 default:
                     Result = await SSOsoap.getComplexIdentityAsync(Guid, SSOaccessToken);
                     sResultData = Result.Body.getComplexIdentityResult;
