@@ -45,38 +45,6 @@
                                         </tr>
                                         <tr>
                                             <td class="">
-                                                <label for="">活動報備系統帳號：<span class="req-star">*</span></label>
-                                            </td>
-                                            <td class="">
-                                                @Html.TextBoxFor(m => m.Handover0205Model.ActSysAcc, new { @class="form-control", placeholder="請填寫活動報備系統帳號"})
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="">
-                                                <label for="">活動報備系統密碼：<span class="req-star">*</span></label>
-                                            </td>
-                                            <td class="">
-                                                @Html.TextBoxFor(m => m.Handover0205Model.ActSysPwd, new { @class="form-control", placeholder="請填寫活動報備系統密碼"})
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="">
-                                                <label for="">社團資訊網帳號：<span class="req-star">*</span></label>
-                                            </td>
-                                            <td class="">
-                                                @Html.TextBoxFor(m => m.Handover0205Model.ClubWebAcc, new { @class="form-control", placeholder="請填寫社團資訊網帳號"})
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="">
-                                                <label for="">社團資訊網密碼：<span class="req-star">*</span></label>
-                                            </td>
-                                            <td class="">
-                                                @Html.TextBoxFor(m => m.Handover0205Model.ClubWebPwd, new { @class="form-control", placeholder="請填寫社團資訊網密碼"})
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="">
                                                 <label for="">社團RPAGE後臺帳號：<span class="req-star">*</span></label>
                                             </td>
                                             <td class="">
@@ -89,38 +57,6 @@
                                             </td>
                                             <td class="">
                                                 @Html.TextBoxFor(m => m.Handover0205Model.RPagePwd, new { @class="form-control", placeholder="請填寫社團RPAGE後臺密碼"})
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="">
-                                                <label for="">全人學習護照帳號：<span class="req-star">*</span></label>
-                                            </td>
-                                            <td class="">
-                                                @Html.TextBoxFor(m => m.Handover0205Model.PassportAcc, new { @class="form-control", placeholder="請填寫全人學習護照帳號"})
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="">
-                                                <label for="">全人學習護照密碼：<span class="req-star">*</span></label>
-                                            </td>
-                                            <td class="">
-                                                @Html.TextBoxFor(m => m.Handover0205Model.PassportPwd, new { @class="form-control", placeholder="請填寫全人學習護照密碼"})
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="">
-                                                <label for="">雲端OneDrive帳號：<span class="req-star">*</span></label>
-                                            </td>
-                                            <td class="">
-                                                @Html.TextBoxFor(m => m.Handover0205Model.OneDriveAcc, new { @class="form-control", placeholder="請填寫雲端OneDrive帳號"})
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="">
-                                                <label for="">雲端OneDrive密碼：<span class="req-star">*</span></label>
-                                            </td>
-                                            <td class="">
-                                                @Html.TextBoxFor(m => m.Handover0205Model.OneDrivePwd, new { @class="form-control", placeholder="請填寫雲端OneDrive密碼"})
                                             </td>
                                         </tr>
                                         <tr>
@@ -201,16 +137,8 @@
         var SchoolYear = $('#@Html.IdFor(m => m.Handover0205Model.SchoolYear)').val();
         var ClubID = $('#@Html.IdFor(m => m.Handover0205Model.ClubID)').val();
         var ClubName = $('#@Html.IdFor(m => m.Handover0205Model.ClubName)').val();
-        var ActSysAcc = $('#@Html.IdFor(m => m.Handover0205Model.ActSysAcc)').val();
-        var ActSysPwd = $('#@Html.IdFor(m => m.Handover0205Model.ActSysPwd)').val();
-        var ClubWebAcc = $('#@Html.IdFor(m => m.Handover0205Model.ClubWebAcc)').val();
-        var ClubWebPwd = $('#@Html.IdFor(m => m.Handover0205Model.ClubWebPwd)').val();
         var RPageAcc = $('#@Html.IdFor(m => m.Handover0205Model.RPageAcc)').val();
         var RPagePwd = $('#@Html.IdFor(m => m.Handover0205Model.RPagePwd)').val();
-        var PassportAcc = $('#@Html.IdFor(m => m.Handover0205Model.PassportAcc)').val();
-        var PassportPwd = $('#@Html.IdFor(m => m.Handover0205Model.PassportPwd)').val();
-        var OneDriveAcc = $('#@Html.IdFor(m => m.Handover0205Model.OneDriveAcc)').val();
-        var OneDrivePwd = $('#@Html.IdFor(m => m.Handover0205Model.OneDrivePwd)').val();
         var HasSchoolProperty = $('#@Html.IdFor(m => m.Handover0205Model.HasSchoolProperty)').val();
 
 
@@ -259,16 +187,8 @@
 
         if (ClubID == "") { $.alert("社團代碼不可為空白"); return; }
         if (ClubName == "") { $.alert("社團名稱不可為空白"); return; }
-        if (ActSysAcc == "") { $.alert("活動報備系統帳號不可為空白"); return; }
-        if (ActSysPwd == "") { $.alert("活動報備系統密碼不可為空白"); return; }
-        if (ClubWebAcc == "") { $.alert("社團資訊網帳號不可為空白"); return; }
-        if (ClubWebPwd == "") { $.alert("社團資訊網密碼不可為空白"); return; }
         if (RPageAcc == "") { $.alert("社團RPAGE後臺帳號不可為空白"); return; }
         if (RPagePwd == "") { $.alert("社團RPAGE後臺密碼不可為空白"); return; }
-        if (PassportAcc == "") { $.alert("全人學習護照帳號不可為空白"); return; }
-        if (PassportPwd == "") { $.alert("全人學習護照密碼不可為空白"); return; }
-        if (OneDriveAcc == "") { $.alert("雲端OneDrive帳號不可為空白"); return; }
-        if (OneDrivePwd == "") { $.alert("雲端OneDrive密碼不可為空白"); return; }
         if (HasSchoolProperty == "") { $.alert("有無校產不可為空白"); return; }
 
 
@@ -279,16 +199,8 @@
         data.append('@Html.NameFor(m => m.Handover0205Model.SchoolYear)', SchoolYear);
         data.append('@Html.NameFor(m => m.Handover0205Model.ClubID)', ClubID);
         data.append('@Html.NameFor(m => m.Handover0205Model.ClubName)', ClubName);
-        data.append('@Html.NameFor(m => m.Handover0205Model.ActSysAcc)', ActSysAcc);
-        data.append('@Html.NameFor(m => m.Handover0205Model.ActSysPwd)', ActSysPwd);
-        data.append('@Html.NameFor(m => m.Handover0205Model.ClubWebAcc)', ClubWebAcc);
-        data.append('@Html.NameFor(m => m.Handover0205Model.ClubWebPwd)', ClubWebPwd);
         data.append('@Html.NameFor(m => m.Handover0205Model.RPageAcc)', RPageAcc);
         data.append('@Html.NameFor(m => m.Handover0205Model.RPagePwd)', RPagePwd);
-        data.append('@Html.NameFor(m => m.Handover0205Model.PassportAcc)', PassportAcc);
-        data.append('@Html.NameFor(m => m.Handover0205Model.PassportPwd)', PassportPwd);
-        data.append('@Html.NameFor(m => m.Handover0205Model.OneDriveAcc)', OneDriveAcc);
-        data.append('@Html.NameFor(m => m.Handover0205Model.OneDrivePwd)', OneDrivePwd);
         data.append('@Html.NameFor(m => m.Handover0205Model.HasSchoolProperty)', HasSchoolProperty);
 
 
