@@ -50,8 +50,7 @@
                                             </td>
                                             <td class="">
                                                 @Html.TextBoxFor(m => m.Handover0206Model.Sheet, new { @class="form-control", type="file", placeholder="收入支出結算表", accept=".docx,.doc,.odt,.pdf" })
-                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.docx、.doc、.odt、.pdf</div>
-                                                <div class="fs-90percent text-gray pt-1">(<a href="https://clubs.pccu.edu.tw/p/405-1279-40600,c13269.php?Lang=zh-tw" target="_blank" title="使用紀錄">範例下載</a>)，<span class="text-red">紙本請同時以附件檢附。</span></div>
+                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.pdf</div>
                                             </td>
                                         </tr>
                                         <tr>
@@ -60,8 +59,7 @@
                                             </td>
                                             <td class="">
                                                 @Html.TextBoxFor(m => m.Handover0206Model.InnerFile, new { @class="form-control", type="file", placeholder="請上傳存簿內頁檔案", accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z" })
-                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.pdf、.jpg、.jpeg、.png、.zip、.rar、.7z</div>
-                                                <div class="fs-90percent text-gray pt-1">請上傳清晰掃描<span class="text-red">圖檔</span>，<span class="text-red">紙本請同時以附件檢附。</span></div>
+                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.pdf</div>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -111,7 +109,7 @@
         if (typeof Sheet !== 'undefined') {
             var fileExtension = Sheet.name.split('.').pop().toLowerCase();
 
-            if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'odt' && fileExtension !== 'pdf') {
+            if (fileExtension !== 'pdf') {
                 $.alert("檔案類型不符合");
                 return;
             }
@@ -127,10 +125,7 @@
         if (typeof InnerFile !== 'undefined') {
             var fileExtension = InnerFile.name.split('.').pop().toLowerCase();
 
-            if (fileExtension !== 'pdf' && fileExtension !== 'jpg' &&
-                fileExtension !== 'jpeg' && fileExtension !== 'png' &&
-                fileExtension !== 'zip' && fileExtension !== 'rar' &&
-                fileExtension !== '7z') {
+            if (fileExtension !== 'pdf') {
                 $.alert("檔案類型不符合");
                 return;
             }

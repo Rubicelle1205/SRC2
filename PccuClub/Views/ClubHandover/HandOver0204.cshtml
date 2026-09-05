@@ -50,10 +50,10 @@
                             <tbody>
                                 <tr>
                                     <td style="width: 300px;">
-                                        @Html.DisplayFor(m => m.Handover0204Model.SchoolYear)學年度社團<strong>負責人</strong>
+                                        <u id="Filed1">@(Int32.Parse(DisplaySchoolYear) - 1)</u>學年度社團<strong>負責人</strong>
                                     </td>
                                     <td style="width: 300px;">
-                                        @(Int32.Parse(Model.Handover0204Model.SchoolYear) + 1)學年度社團<strong>負責人</strong>
+                                        <u id="Filed2">@(Int32.Parse(DisplaySchoolYear))</u>學年度社團<strong>負責人</strong>
                                     </td>
                                     <td style="width: 300px;">
                                         社團印鑑
@@ -191,13 +191,19 @@
         $('#@Html.IdFor(m => m.Handover0204Model.SchoolYear)').change(function () {
             var selectedText = $(this).find("option:selected").text();
             var selectedValue = $(this).val();
+            var preYear = parseInt(selectedValue, 10) - 1;
+            var thisYear = parseInt(selectedValue, 10);
             var nextYear = parseInt(selectedValue, 10) + 1;
 
             // 判斷是否選中了有效選項（排除 "請選擇"）
             if (selectedValue !== "") {
                 $('#DisplaySchoolYearLabel').text(nextYear);
+                $('#Filed1').text(preYear);
+                $('#Filed2').text(thisYear);
             } else {
                 $('#DisplaySchoolYearLabel').text(""); // 若選回請選擇，則清空
+                $('#Filed1').text(""); // 若選回請選擇，則清空
+                $('#Filed2').text(""); // 若選回請選擇，則清空
             }
         });
     });
