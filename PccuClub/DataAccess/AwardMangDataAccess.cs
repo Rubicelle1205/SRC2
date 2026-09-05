@@ -72,8 +72,11 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@AwdType", model?.AwdType);
             parameters.Add("@AwdName", model?.AwdName);
 
-            string duringDateStr = model.DuringDate?.ToString("yyyy-MM-dd");
-            parameters.Add("@DuringDate", string.IsNullOrWhiteSpace(duringDateStr) ? null : duringDateStr);
+            string From_DuringDate = model.From_DuringDate?.ToString("yyyy-MM-dd");
+            parameters.Add("@From_DuringDate", string.IsNullOrWhiteSpace(From_DuringDate) ? null : From_DuringDate);
+
+            string To_DuringDate = model.To_DuringDate?.ToString("yyyy-MM-dd");
+            parameters.Add("@To_DuringDate", string.IsNullOrWhiteSpace(To_DuringDate) ? null : To_DuringDate);
 
             parameters.Add("@FromDate", model?.From_ReleaseDate?.Date);
             parameters.Add("@ToDatePlusOne", model?.To_ReleaseDate?.Date.AddDays(1));
@@ -88,10 +91,11 @@ namespace WebPccuClub.DataAccess
                           LEFT JOIN Code D ON D.Code = A.AwardInOrOut AND D.Type = 'AwardInOrOut'
                               WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created >= @FromDate AND A.Created < @ToDatePlusOne" : "")}
+{(model.From_DuringDate.HasValue && model.To_DuringDate.HasValue ? " AND A.AwdDate >= @From_DuringDate AND A.AwdDate < @To_DuringDate" : "")}
+
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 AND (@ActVerify IS NULL OR A.ActVerify = @ActVerify)
 AND (@AwardInOrOut IS NULL OR A.AwardInOrOut = @AwardInOrOut)
-AND (@DuringDate IS NULL OR A.AwdDate = @DuringDate) 
 AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') 
 AND (@ClubCName IS NULL OR B.ClubCName LIKE '%' + @ClubCName + '%') 
 AND (@Organizer IS NULL OR A.Organizer LIKE '%' + @Organizer + '%') 
