@@ -73,8 +73,7 @@
                                             </td>
                                             <td class="">
                                                 @Html.TextBoxFor(m => m.Handover0205Model.UseRecord, new { @class="form-control", type="file", accept=".docx,.doc,.odt,.pdf"})
-                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.docx、.doc、.odt、.pdf</div>
-                                                <div class="fs-90percent text-gray pt-1">設備使用紀錄表(<a href="https://activity.pccu.edu.tw/p/405-1043-83742,c4611.php?Lang=zh-tw" target="_blank" title="使用紀錄">下載連結</a>)，<span class="text-red">紙本請同時以附件檢附。</span></div>
+                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.pdf</div>
                                             </td>
                                         </tr>
                                         <tr>
@@ -83,8 +82,7 @@
                                             </td>
                                             <td class="">
                                                 @Html.TextBoxFor(m => m.Handover0205Model.ClubProperty, new { @class="form-control", type="file", accept=".docx,.doc,.odt,.pdf"})
-                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.docx、.doc、.odt、.pdf</div>
-                                                <div class="fs-90percent text-gray pt-1">請使用"社產財產清冊格式"(<a href="https://clubs.pccu.edu.tw/p/405-1279-38573,c13269.php?Lang=zh-tw" target="_blank" title="財產清冊">下載連結</a>)，<span class="text-red">紙本請同時以附件檢附。</span></div>
+                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.pdf</div>
                                             </td>
                                         </tr>
                                         <tr>
@@ -93,8 +91,7 @@
                                             </td>
                                             <td class="">
                                                 @Html.TextBoxFor(m => m.Handover0205Model.SchoolProperty, new { @class="form-control", type="file", accept=".docx,.doc,.odt,.pdf"})
-                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.docx、.doc、.odt、.pdf</div>
-                                                <div class="fs-90percent text-gray pt-1">請使用"校產財產清冊格式"(<a href="https://clubs.pccu.edu.tw/p/405-1279-38573,c13269.php?Lang=zh-tw" target="_blank" title="財產清冊">下載連結</a>)，<span class="text-red">紙本請同時以附件檢附。</span></div>
+                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.pdf</div>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -147,7 +144,7 @@
         if (typeof UseRecord !== 'undefined') {
             var fileExtension = UseRecord.name.split('.').pop().toLowerCase();
 
-            if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'odt' && fileExtension !== 'pdf') {
+            if (fileExtension !== 'pdf') {
                 $.alert("檔案類型不符合");
                 return;
             }
@@ -160,7 +157,7 @@
         if (typeof SchoolProperty !== 'undefined') {
             var fileExtension = SchoolProperty.name.split('.').pop().toLowerCase();
 
-            if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'odt' && fileExtension !== 'pdf') {
+            if (fileExtension !== 'pdf') {
                 $.alert("檔案類型不符合");
                 return;
             }
@@ -173,7 +170,7 @@
         if (typeof ClubProperty !== 'undefined') {
             var fileExtension = ClubProperty.name.split('.').pop().toLowerCase();
 
-            if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'odt' && fileExtension !== 'pdf') {
+            if (fileExtension !== 'pdf') {
                 $.alert("檔案類型不符合");
                 return;
             }
