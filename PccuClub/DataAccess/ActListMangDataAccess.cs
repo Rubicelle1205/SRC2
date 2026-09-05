@@ -40,7 +40,8 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@LifeClass", model?.LifeClass);  
             parameters.Add("@PassPort", model?.PassPort);  
             parameters.Add("@SchoolYear", model?.SchoolYear);
-            parameters.Add("@DuringDate", model?.DuringDate?.Date);
+            parameters.Add("@From_DuringDate", model?.From_DuringDate?.Date);
+            parameters.Add("@To_DuringDate", model?.To_DuringDate?.Date);
             parameters.Add("@FromDate", model?.From_ReleaseDate?.Date);
             parameters.Add("@ToDatePlusOne", model?.To_ReleaseDate?.Date.AddDays(1));
 
@@ -59,13 +60,16 @@ LEFT JOIN ClubMang D ON D.ClubId = A.BrrowUnit
 LEFT JOIN Code G ON G.Code = A.PassPort AND G.Type = 'PassPort'
 OUTER APPLY (
     SELECT MIN(Date) AS SDate, MAX(Date) AS EDate 
-    FROM ActSection 
-    WHERE ActSection.ActID = A.ActID
-      AND (@DuringDate IS NULL OR @DuringDate <= Date)
+      FROM ActSection 
+     WHERE 1 = 1 
+       AND ActSection.ActID = A.ActID
+{(model.From_DuringDate.HasValue && model.To_DuringDate.HasValue ? " AND Date >= @From_DuringDate AND Date < @To_DuringDate" : "")}
+
 ) F
 WHERE 1 = 1
 
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created >= @FromDate AND A.Created < @ToDatePlusOne" : "")}
+AND (F.SDate is not null AND F.EDate is not null)
 
 AND (@ActId IS NULL OR A.ActId = @ActId)
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
@@ -75,8 +79,6 @@ AND (@LifeClass IS NULL OR D.LifeClass LIKE '%' + @LifeClass + '%')
 AND (@PassPort IS NULL OR A.PassPort LIKE '%' + @PassPort + '%')
 AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%') 
 AND (@ClubName IS NULL OR D.ClubCName LIKE '%' + @ClubName + '%')
-
-AND (@DuringDate IS NULL OR (@DuringDate BETWEEN F.SDate AND F.EDate))
 
 ORDER BY A.ActID DESC
 ";
