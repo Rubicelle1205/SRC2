@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DataAccess;
+using Microsoft.AspNetCore.Mvc;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -95,7 +96,19 @@ namespace WebPccuClub.Controllers
                     }
                 }
 
-                var dbResult = dbAccess.InsertData(vm, LoginUser);
+                long BorrowID = 0;
+
+                var dbResult = dbAccess.InsertData(vm, LoginUser, out BorrowID);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                dbResult = dbAccess.InsertRequiredFieldsData(vm, LoginUser, BorrowID);
 
                 if (!dbResult.isSuccess)
                 {
@@ -194,7 +207,18 @@ namespace WebPccuClub.Controllers
 
                 if (!dbResult.isSuccess)
                 {
+                    dbAccess.DbaRollBack();
                     vmRtn.ErrorCode =  (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "刪除失敗";
+                    return Json(vmRtn);
+                }
+
+                dbResult = dbAccess.DeleteRequiredFieldsData(Ser);
+
+                if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "刪除失敗";
                     return Json(vmRtn);
                 }

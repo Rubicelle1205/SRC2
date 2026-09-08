@@ -116,9 +116,9 @@ AND (BorrowMainClassID = @BorrowMainClassID) ";
         }
 
         /// <summary> 新增資料 </summary>
-        public DbExecuteInfo InsertData(BorrowMainClassMangViewModel vm, UserInfo LoginUser)
+        public DbExecuteInfo InsertData(BorrowMainClassMangViewModel vm, UserInfo LoginUser, out long BorrowID)
         {
-
+            DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
@@ -149,6 +149,7 @@ AND (BorrowMainClassID = @BorrowMainClassID) ";
                                                ,Created
                                                ,LastModifier
                                                ,LastModified)
+                                         OUTPUT INSERTED.Id
                                          VALUES
                                                (@Text
                                                ,@ActVerifyUnit
@@ -164,7 +165,67 @@ AND (BorrowMainClassID = @BorrowMainClassID) ";
                                                ,@LoginId
                                                ,GETDATE())";
 
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            BorrowID = long.Parse(ds.Tables[0].QueryFieldByDT("ID"));
+
+            return ExecuteResult;
+        }
+
+        /// <summary> 新增資料 </summary>
+        public DbExecuteInfo InsertRequiredFieldsData(BorrowMainClassMangViewModel vm, UserInfo LoginUser, long BorrowID)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            List<string> dataList = new List<string>();
+            dataList.Add("申請單位類型");
+            dataList.Add("申請單位");
+            dataList.Add("申請人");
+            dataList.Add("申請人職稱");
+            dataList.Add("申請人Email");
+            dataList.Add("申請人電話/分機");
+            dataList.Add("申請目的");
+            dataList.Add("活動名稱");
+            dataList.Add("使用地點");
+            dataList.Add("用途及特殊需求說明");
+            dataList.Add("實際使用日期");
+            dataList.Add("計畫領取日期");
+
+            List<RequiredFields> dataList2 = new List<RequiredFields>();
+
+            foreach (string item in dataList)
+            {
+                RequiredFields requiredFields = new RequiredFields();
+
+                requiredFields.Fields = item;
+                dataList2.Add(requiredFields);
+            }
+
+            #region 參數設定
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO RequiredFields
+                                               (BorrowMainClassID
+                                               ,Fields
+                                               ,Required
+                                               ,SystemCode
+                                               ,Creator
+                                               ,Created
+                                               ,LastModifier
+                                               ,LastModified)
+                                         VALUES
+                                               ('{BorrowID}'
+                                               ,@Fields
+                                               ,'1'
+                                               ,'04'
+                                               ,'supervisor'
+                                               ,GETDATE()
+                                               ,'supervisor'
+                                               ,GETDATE())";
+
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList2, false, DBAccessException, null);
 
             return ExecuteResult;
         }
@@ -252,6 +313,21 @@ AND RequiredFieldsId = @RequiredFieldsId";
             return ExecuteResult;
         }
 
+        public DbExecuteInfo DeleteRequiredFieldsData(string ser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ID", ser);
+            #endregion 參數設定
+
+            string CommendText = $@"DELETE FROM RequiredFields WHERE BorrowMainClassID = @ID ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
         public List<SelectListItem> GetddlEnable()
         {
             string CommandText = string.Empty;

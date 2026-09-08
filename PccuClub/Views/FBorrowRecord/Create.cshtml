@@ -3,11 +3,23 @@
 @{
     Layout = "_FrontBorrowLayout";
     ViewBag.Title = "我的借用紀錄";
-    bool BlnApplyUnitName = @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "申請單位" && x.Required == true).Any();
-    bool BlnApplyPurpose = @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "申請目的" && x.Required == true).Any();
-    bool BlnUseLocation = @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "使用地點" && x.Required == true).Any();
-    bool BlnActName = @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "活動名稱" && x.Required == true).Any();
-    bool BlnUseDesc = @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "用途及特殊需求說明" && x.Required == true).Any();
+
+    string MainClassID = @Model.CreateModel.MainClassID;
+
+    bool BlnApplyUnitType = !string.IsNullOrEmpty(MainClassID) ? @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "申請單位類型" && x.Required == true).Any() : true;
+    bool BlnApplyUnitName = !string.IsNullOrEmpty(MainClassID) ? @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "申請單位" && x.Required == true).Any() : true;
+    bool BlnApplyMan = !string.IsNullOrEmpty(MainClassID) ? @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "申請人" && x.Required == true).Any() : true;
+    bool BlnApplicantTitle = !string.IsNullOrEmpty(MainClassID) ? @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "申請人職稱" && x.Required == true).Any() : true;
+    bool BlnApplicantEmail = !string.IsNullOrEmpty(MainClassID) ? @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "申請人Email" && x.Required == true).Any() : true;
+    bool BlnApplyTel = !string.IsNullOrEmpty(MainClassID) ? @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "申請人電話/分機" && x.Required == true).Any() : true;
+    bool BlnApplyPurpose = !string.IsNullOrEmpty(MainClassID) ? @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "申請目的" && x.Required == true).Any() : true;
+    bool BlnActName = !string.IsNullOrEmpty(MainClassID) ? @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "活動名稱" && x.Required == true).Any() : true;
+    bool BlnUseLocation = !string.IsNullOrEmpty(MainClassID) ? @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "使用地點" && x.Required == true).Any() : true;
+    bool BlnUseDesc = !string.IsNullOrEmpty(MainClassID) ? @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "用途及特殊需求說明" && x.Required == true).Any() : true;
+    bool BlnUseSDate = !string.IsNullOrEmpty(MainClassID) ? @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "實際使用日期" && x.Required == true).Any() : true;
+    bool BlnPlanPickupDate = !string.IsNullOrEmpty(MainClassID) ? @Model.CreateModel.LstRequiredFields.Where(x => x.Fields == "計畫領取日期" && x.Required == true).Any() : true;
+
+    
 }
 
 <head>
@@ -31,13 +43,17 @@
         <p class="hint mb-3"><span class="req-star">*</span>為必填欄位</p>
         <form action="" class="form-box checkthisform" enctype="multipart/form-data" method="post">
             <div class="infoWrapper mb-4">
-                <div class="infoItem">
-                    <div class="tag">申請單位類型<span class="req-star">*</span></div>
-                    <div class="content">
-                        @Html.DropDownListFor(m => m.CreateModel.ApplyUnitType, (List<SelectListItem>)ViewBag.ddlApplyUnitType, "請選擇申請單位類型", new { @class = "form-control" })
+                @if (BlnApplyUnitType)
+                {
+                    <div class="infoItem">
+                        <div class="tag">申請單位類型<span class="req-star">*</span></div>
+                        <div class="content">
+                            @Html.DropDownListFor(m => m.CreateModel.ApplyUnitType, (List<SelectListItem>)ViewBag.ddlApplyUnitType, "請選擇申請單位類型", new { @class = "form-control" })
+                        </div>
                     </div>
-                </div>
-                @if (BlnApplyUnitName)
+                }
+
+                @if (@BlnApplyUnitName)
                 {
                     <div class="infoItem">
                         <div class="tag">申請單位<span class="req-star">*</span></div>
@@ -46,31 +62,42 @@
                         </div>
                     </div>
                 }
-                <div class="infoItem">
-                    <div class="tag">申請人<span class="req-star">*</span></div>
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.CreateModel.ApplyMan, new { @class = "form-control", placeholder = "請輸入申請人" })
+                @if (BlnApplyMan)
+                {
+                    <div class="infoItem">
+                        <div class="tag">申請人<span class="req-star">*</span></div>
+                        <div class="content">
+                            @Html.TextBoxFor(m => m.CreateModel.ApplyMan, new { @class = "form-control", placeholder = "請輸入申請人" })
+                        </div>
                     </div>
-                </div>
-                <div class="infoItem">
-                    <div class="tag">申請人職稱<span class="req-star">*</span></div>
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.CreateModel.ApplyTitle, new { @class = "form-control", placeholder = "請輸入申請人職稱" })
+                }
+                @if (BlnApplicantTitle)
+                {
+                    <div class="infoItem">
+                        <div class="tag">申請人職稱<span class="req-star">*</span></div>
+                        <div class="content">
+                            @Html.TextBoxFor(m => m.CreateModel.ApplyTitle, new { @class = "form-control", placeholder = "請輸入申請人職稱" })
+                        </div>
                     </div>
-                </div>
-                <div class="infoItem">
-                    <div class="tag">申請人Email<span class="req-star">*</span></div>
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.CreateModel.ApplyEmail, new { @class = "form-control", placeholder = "請輸入申請人Email" })
+                }
+                @if (BlnApplicantEmail)
+                {
+                    <div class="infoItem">
+                        <div class="tag">申請人Email<span class="req-star">*</span></div>
+                        <div class="content">
+                            @Html.TextBoxFor(m => m.CreateModel.ApplyEmail, new { @class = "form-control", placeholder = "請輸入申請人Email" })
+                        </div>
                     </div>
-                </div>
-                <div class="infoItem">
-                    <div class="tag">申請人電話/分機<span class="req-star">*</span></div>
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.CreateModel.ApplyTel, new { @class = "form-control", placeholder = "申請人電話/分機" })
+                }
+                @if (BlnApplyTel)
+                {
+                    <div class="infoItem">
+                        <div class="tag">申請人電話/分機<span class="req-star">*</span></div>
+                        <div class="content">
+                            @Html.TextBoxFor(m => m.CreateModel.ApplyTel, new { @class = "form-control", placeholder = "申請人電話/分機" })
+                        </div>
                     </div>
-                </div>
-
+                }
                 @if (BlnApplyPurpose)
                 {
                     <div class="infoItem">
@@ -113,28 +140,37 @@
                         </div>
                     </div>
                 }
-                <div class="infoItem">
-                    <div class="tag">實際使用日期<span class="req-star">*</span></div>
-                    <div class="content">
-                        <div class="input-group">
-                            @Html.TextBoxFor(m => m.CreateModel.UseSDate, new { @class = "form-control", @placeholder = "請輸入實際使用日期(起)", type = "date" })
-                            <span class="input-group-text">至</span>
-                            @Html.TextBoxFor(m => m.CreateModel.UseEDate, new { @class = "form-control", @placeholder = "請輸入實際使用日期(訖)", type = "date" })
+                @if (BlnUseSDate)
+                {
+                    <div class="infoItem">
+                        <div class="tag">實際使用日期<span class="req-star">*</span></div>
+                        <div class="content">
+                            <div class="input-group">
+                                @Html.TextBoxFor(m => m.CreateModel.UseSDate, new { @class = "form-control", @placeholder = "請輸入實際使用日期(起)", type = "date" })
+                                <span class="input-group-text">至</span>
+                                @Html.TextBoxFor(m => m.CreateModel.UseEDate, new { @class = "form-control", @placeholder = "請輸入實際使用日期(訖)", type = "date" })
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
+                
             </div>
             <div class="infoWrapper mb-4">
-                <div class="infoItem">
-                    <div class="tag">計畫領取日期<span class="req-star">*</span></div>
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.CreateModel.TakeSDate, new { @class = "form-control", @placeholder = "計畫領取日期", type = "date" })
+
+                @if (BlnPlanPickupDate)
+                {
+                    <div class="infoItem">
+                        <div class="tag">計畫領取日期<span class="req-star">*</span></div>
+                        <div class="content">
+                            @Html.TextBoxFor(m => m.CreateModel.TakeSDate, new { @class = "form-control", @placeholder = "計畫領取日期", type = "date" })
+                        </div>
+                        <div class="tag">計畫歸還日期<span class="req-star">*</span></div>
+                        <div class="content">
+                            @Html.TextBoxFor(m => m.CreateModel.TakeEDate, new { @class = "form-control", @placeholder = "計畫歸還日期", type = "date" })
+                        </div>
                     </div>
-                    <div class="tag">計畫歸還日期<span class="req-star">*</span></div>
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.CreateModel.TakeEDate, new { @class = "form-control", @placeholder = "計畫歸還日期", type = "date" })
-                    </div>
-                </div>
+                }
+                
                 <div class="infoItem">
                     <div class="tag">選擇借用資源<span class="req-star">*</span></div>
                     <div class="content">
@@ -445,76 +481,92 @@
         var strDeviceData = $('#@Html.IdFor(m => m.CreateModel.strDeviceData)').val();
 
         // 欄位必填驗證
-        if (ApplyUnitType == "") { $.alert("申請單位類型不可為空"); return; }
 
-        if (ApplyMan == "") { $.alert("角色名稱不可為空"); return; }
-        if (UseSDate == "") { $.alert("實際使用起日不可為空"); return; }
-        if (UseEDate == "") { $.alert("實際使用訖日不可為空"); return; }
-        if (TakeSDate == "") { $.alert("計畫領取日期不可為空"); return; }
-        if (TakeEDate == "") { $.alert("計畫歸還日期不可為空"); return; }
-        if (strDeviceData == "") { $.alert("需選擇借用設備"); return; }
+        if (@BlnApplyUnitType.ToString().ToLower() === true) {
+            if (ApplyUnitType == "") { $.alert("申請單位類型不可為空"); return; }
+        } else { ApplyUnitType = ApplyUnitType ?? ""; }
 
         if (@BlnApplyUnitName.ToString().ToLower() === true) {
             if (ApplyUnitName == "") { $.alert("申請單位不可為空"); return; }
-        }
-        else { 
-            ApplyUnitName = ApplyUnitName ?? "";
-        }
+        } else { ApplyUnitName = ApplyUnitName ?? ""; }
+
+        if (@BlnApplyMan.ToString().ToLower() === true) {
+            if (ApplyMan == "") { $.alert("申請人不可為空"); return; }
+        } else { ApplyMan = ApplyMan ?? ""; }
+
+        if (@BlnApplicantTitle.ToString().ToLower() === true) {
+            if (ApplyTitle == "") { $.alert("申請人職稱不可為空"); return; }
+        } else { ApplyTitle = ApplyTitle ?? ""; }
+
+        if (@BlnApplicantEmail.ToString().ToLower() === true) {
+            if (ApplyEmail == "") { $.alert("申請人Email不可為空"); return; }
+        } else { ApplyEmail = ApplyEmail ?? ""; }
+
+        if (@BlnApplyTel.ToString().ToLower() === true) {
+            if (ApplyTel == "") { $.alert("申請人電話/分機不可為空"); return; }
+        } else { ApplyTel = ApplyTel ?? ""; }
 
         if (@BlnApplyPurpose.ToString().ToLower() === true) {
             if (ApplyPurpose == "") { $.alert("申請目的不可為空"); return; }
-        }
-        else {
-            ApplyPurpose = ApplyPurpose ?? "";
-
-        }
+        } else { ApplyPurpose = ApplyPurpose ?? ""; }
 
         if (@BlnActName.ToString().ToLower() === true) {
             if (ActName == "") { $.alert("活動名稱不可為空"); return; }
-        }
-        else { 
-            ActName = ActName ?? "";
-
-        }
+        } else { ActName = ActName ?? ""; }
 
         if (@BlnUseLocation.ToString().ToLower() === true) {
             if (UseLocation == "") { $.alert("使用地點不可為空"); return; }
-        }
-        else { 
-            UseLocation = UseLocation ?? "";
-
-        }
+        } else { UseLocation = UseLocation ?? ""; }
 
         if (@BlnUseDesc.ToString().ToLower() === true) {
             if (UseDesc == "") { $.alert("用途及特殊需求說明不可為空"); return; }
-        }
-        else {
-            UseDesc = UseDesc ?? "";
+        } else { UseDesc = UseDesc ?? ""; }
 
+        if (@BlnUseSDate.ToString().ToLower() === true) {
+            if (UseSDate == "") { $.alert("實際使用日期[起]不可為空"); return; }
+            if (UseEDate == "") { $.alert("實際使用日期[迄]不可為空"); return; }
+
+            // 日期格式驗證 (Moment.js)
+            if (!moment(UseSDate, "YYYY-MM-DD", true).isValid()) { $.alert("實際使用起日格式不正確"); return; }
+            if (!moment(UseEDate, "YYYY-MM-DD", true).isValid()) { $.alert("實際使用訖日格式不正確"); return; }
+
+            // 日期前後順序邏輯驗證
+            if (UseSDate > UseEDate) {
+                $.alert("實際使用起日不可大於實際使用訖日");
+                return false;
+            }
+        } else { 
+            UseSDate = UseSDate ?? ""; 
+            UseEDate = UseEDate ?? "";
         }
 
-        // 日期格式驗證 (Moment.js)
-        if (!moment(UseSDate, "YYYY-MM-DD", true).isValid()) { $.alert("實際使用起日格式不正確"); return; }
-        if (!moment(UseEDate, "YYYY-MM-DD", true).isValid()) { $.alert("實際使用訖日格式不正確"); return; }
-        if (!moment(TakeSDate, "YYYY-MM-DD", true).isValid()) { $.alert("計畫領取日期格式不正確"); return; }
-        if (!moment(TakeEDate, "YYYY-MM-DD", true).isValid()) { $.alert("計畫歸還日期格式不正確"); return; }
+        if (@BlnPlanPickupDate.ToString().ToLower() === true) {
+            if (TakeSDate == "") { $.alert("計畫領取日期不可為空"); return; }
+            if (TakeEDate == "") { $.alert("計畫歸還日期不可為空"); return; }
 
-        // 日期前後順序邏輯驗證
-        if (UseSDate > UseEDate) {
-            $.alert("實際使用起日不可大於實際使用訖日");
-            return false;
+            // 日期格式驗證 (Moment.js)
+            if (!moment(TakeSDate, "YYYY-MM-DD", true).isValid()) { $.alert("計畫領取日期格式不正確"); return; }
+            if (!moment(TakeEDate, "YYYY-MM-DD", true).isValid()) { $.alert("計畫歸還日期格式不正確"); return; }
+
+
+            if (TakeSDate > TakeEDate) {
+                $.alert("計畫領取日期不可大於計畫歸還日期");
+                return false;
+            }
+        } else {
+            TakeSDate = TakeSDate ?? "";
+            TakeEDate = TakeEDate ?? "";
         }
-        if (TakeSDate > TakeEDate) {
-            $.alert("計畫領取日期不可大於計畫歸還日期");
-            return false;
-        }
-        if (TakeSDate > UseSDate) {
-            $.alert("計畫領取日期不可大於實際使用起日");
-            return false;
-        }
-        if (UseEDate > TakeEDate) {
-            $.alert("實際使用訖日不可大於計畫歸還日期");
-            return false;
+
+        if (@BlnUseSDate.ToString().ToLower() === true && @BlnPlanPickupDate.ToString().ToLower() === true) {
+            if (TakeSDate > UseSDate) {
+                $.alert("計畫領取日期不可大於實際使用起日");
+                return false;
+            }
+            if (UseEDate > TakeEDate) {
+                $.alert("實際使用訖日不可大於計畫歸還日期");
+                return false;
+            }
         }
 
         // 將驗證通過的欄位填入 FormData
