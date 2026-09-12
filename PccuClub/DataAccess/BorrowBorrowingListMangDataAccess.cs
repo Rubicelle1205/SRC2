@@ -51,31 +51,38 @@ namespace WebPccuClub.DataAccess
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@SDate", model.SDate);
-            parameters.Add("@EDate", DateTime.Parse(model.SDate).AddDays(6));
+            //parameters.Add("@SDate", model.SDate);
+            //parameters.Add("@EDate", DateTime.Parse(model.SDate).AddDays(6));
 
             #endregion
 
             CommandText = $@"
 WITH DateGenerator AS (
-    SELECT A.ID, A.BorrowMainID, A.MainClassID, B.ActName, A.MainResourceID, C.MainResourceName, B.TakeSDate, B.TakeEDate, B.ApplyUnitName,
-           CAST(B.TakeSDate AS DATE) AS BorrowDate
-    FROM BorrowDevice A
-    LEFT JOIN BorrowMain B ON B.BorrowMainID = A.BorrowMainID
-	LEFT JOIN BorrowMainResourceMang C ON C.MainResourceID = A.MainResourceID
-    WHERE B.TakeSDate IS NOT NULL 
+     SELECT A.ID, A.BorrowMainID, A.MainClassID, B.ActName, A.MainResourceID, A.BorrowSecondResourceID, 
+ C.MainResourceName, D.SecondResourceName, B.TakeSDate, B.TakeEDate, 
+   B.ApplyUnitName, CAST(B.TakeSDate AS DATE) AS BorrowDate, B.ActVerify, E.Text AS ActVerifyText
+FROM BorrowDevice A
+LEFT JOIN BorrowMain B ON B.BorrowMainID = A.BorrowMainID
+LEFT JOIN BorrowMainResourceMang C ON C.MainResourceID = A.MainResourceID
+LEFT JOIN BorrowSecondResourceMang D ON D.MainResourceID = C.MainResourceID AND D.SecondResourceNo = A.BorrowSecondResourceID
+LEFT JOIN Code E ON E.Code = B.ActVerify AND E.Type = 'BorrowActVerify'
+WHERE 1 = 1 
+AND A.BorrowSecondResourceID IS NOT NULL 
+AND B.TakeSDate IS NOT NULL 
+AND B.ActVerify = '02' 
     
     UNION ALL
     
-    SELECT ID, BorrowMainID, MainClassID, ActName, MainResourceID, MainResourceName, TakeSDate, TakeEDate, ApplyUnitName,
-           CAST(DATEADD(day, 1, BorrowDate) AS DATE)
+    SELECT ID, BorrowMainID, MainClassID, ActName, MainResourceID, BorrowSecondResourceID, MainResourceName, SecondResourceName, TakeSDate, TakeEDate, ApplyUnitName,
+           CAST(DATEADD(day, 1, BorrowDate) AS DATE), ActVerify, ActVerifyText
     FROM DateGenerator
     WHERE DATEADD(day, 1, BorrowDate) <= CAST(TakeEDate AS DATE)
 )
-SELECT ID, BorrowMainID, MainClassID, ActName, MainResourceID, MainResourceName, TakeSDate, TakeEDate, ApplyUnitName, BorrowDate AS Date
+SELECT ID, BorrowMainID, MainClassID, ActName, MainResourceID, BorrowSecondResourceID, MainResourceName, SecondResourceName, TakeSDate, TakeEDate, ApplyUnitName, 
+BorrowDate AS Date, ActVerify, ActVerifyText
 FROM DateGenerator
 ORDER BY ID, Date
-OPTION (MAXRECURSION 0);
+OPTION (MAXRECURSION 0);; 
 ";
 
             (DbExecuteInfo info, IEnumerable<BorrowUnitData> entitys) dbResult = DbaExecuteQuery<BorrowUnitData>(CommandText, parameters, true, DBAccessException);
