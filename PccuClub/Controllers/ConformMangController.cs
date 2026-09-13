@@ -32,7 +32,7 @@ namespace WebPccuClub.Controllers
             {
                 dbAccess.DbaInitialTransaction();
 
-                var dbResult = dbAccess.UpdateConsent(vm.EditModel, LoginUser.UserName);
+                var dbResult = dbAccess.UpdateConsent(vm.EditModel, LoginUser.LoginId);
 
                 if (!dbResult.isSuccess)
                 {

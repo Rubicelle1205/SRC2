@@ -10,9 +10,6 @@ namespace WebPccuClub.Models
 
     public class ConformMangEditModel
     {
-        [DisplayName("個人資料告知暨同意書")]
-        public string? PersonalConform { get; set; }
-
         [DisplayName("活動報備管理提醒內容")]
         public string? ActivityConform { get; set; }
 
