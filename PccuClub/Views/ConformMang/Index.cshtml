@@ -68,12 +68,11 @@
 
     function SaveEditData() {
         var data = new FormData()
-        var PersonalConform = $('#@Html.IdFor(m => m.EditModel.PersonalConform)').val();
-        var ActivityConform = $('#@Html.IdFor(m => m.EditModel.ActivityConform)').val();
-        var ClubInfoConform = $('#@Html.IdFor(m => m.EditModel.ClubInfoConform)').val();
-        var ActFinishConform = $('#@Html.IdFor(m => m.EditModel.ActFinishConform)').val();
 
-        data.append('@Html.NameFor(m => m.EditModel.PersonalConform)', PersonalConform);
+        var ActivityConform = $('#@Html.IdFor(m => m.EditModel.ActivityConform)').val() || '';
+        var ClubInfoConform = $('#@Html.IdFor(m => m.EditModel.ClubInfoConform)').val() || '';
+        var ActFinishConform = $('#@Html.IdFor(m => m.EditModel.ActFinishConform)').val() || '';
+
         data.append('@Html.NameFor(m => m.EditModel.ActivityConform)', ActivityConform);
         data.append('@Html.NameFor(m => m.EditModel.ClubInfoConform)', ClubInfoConform);
         data.append('@Html.NameFor(m => m.EditModel.ActFinishConform)', ActFinishConform);

@@ -152,48 +152,53 @@ FOR JSON PATH";
             Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] 自動歸還排程開始執行...");
 
             string sqlUpdate = @"
-                -- 宣告 Table 變數，精準記錄本次受影響的主表 ID
-                DECLARE @UpdatedMains TABLE (BorrowMainID INT);
+                -- 宣告 Table 變數，精準記錄本次受影響的資料與其新狀態
+                DECLARE @UpdatedMains TABLE (
+                    BorrowMainID INT,
+                    ReturnSecondResourceID NVARCHAR(32),
+                    NewStatus VARCHAR(2)
+                );
 
-                -- 1. 歸還上架
+                -- 統一處理：不論是上架(01)還是下架(02)的主資源設定，一次性判定並更新
                 UPDATE A
                 SET 
                     A.ReturnSecondResourceID = A.BorrowSecondResourceID,
                     A.ReturnRealAmt = A.BorrowRealAmt,
-                    A.BorrowStatus = '01'
-                OUTPUT inserted.BorrowMainID INTO @UpdatedMains
+                    -- 根據主資源的 AutoReturn 設定，決定 BorrowDevice 的新狀態
+                    A.BorrowStatus = CASE WHEN C.AutoReturn = '01' THEN '01' 
+                                          WHEN C.AutoReturn = '02' THEN '03' 
+                                          ELSE A.BorrowStatus END
+                OUTPUT 
+                    inserted.BorrowMainID, 
+                    inserted.ReturnSecondResourceID, 
+                    -- 記錄判定後的新狀態，以便後續更新 SecondResourceMang
+                    CASE WHEN C.AutoReturn = '01' THEN '01' 
+                         WHEN C.AutoReturn = '02' THEN '03' 
+                    END INTO @UpdatedMains
                 FROM BorrowDevice A
                 INNER JOIN BorrowMain B ON A.BorrowMainID = B.BorrowMainID 
                 INNER JOIN BorrowMainResourceMang C ON A.MainResourceID = C.MainResourceID
                 WHERE B.TakeEDate < GETDATE()
-                  AND C.AutoReturn = '01'
+                  AND C.AutoReturn IN ('01', '02') -- 只處理這兩種設定的資源
                   AND A.BorrowStatus = '02'
                   AND A.ReturnRealAmt IS NULL;
 
+                -- 改變資源狀態 (依據剛剛一次性判定的新狀態更新)
+                UPDATE S
+                SET S.BorrowStatus = U.NewStatus
+                FROM BorrowSecondResourceMang S
+                INNER JOIN @UpdatedMains U ON S.SecondResourceNo = U.ReturnSecondResourceID
+                WHERE U.ReturnSecondResourceID IS NOT NULL
+                  AND U.NewStatus IS NOT NULL;
 
-                -- 2. 歸還下架
-                UPDATE A
-                SET 
-                    A.ReturnSecondResourceID = A.BorrowSecondResourceID,
-                    A.ReturnRealAmt = A.BorrowRealAmt,
-                    A.BorrowStatus = '03'
-                OUTPUT inserted.BorrowMainID INTO @UpdatedMains
-                FROM BorrowDevice A
-                INNER JOIN BorrowMain B ON A.BorrowMainID = B.BorrowMainID 
-                INNER JOIN BorrowMainResourceMang C ON A.MainResourceID = C.MainResourceID
-                WHERE B.TakeEDate < GETDATE()
-                  AND C.AutoReturn = '02'
-                  AND A.BorrowStatus = '02'
-                  AND A.ReturnRealAmt IS NULL;
-
-                -- 3. 同步將受影響的主表狀態改為 '05'
+                -- 同步將受影響的主表狀態改為 '05'
                 UPDATE B
                 SET B.ActVerify = '05'
                 FROM BorrowMain B
                 WHERE B.BorrowMainID IN (SELECT DISTINCT BorrowMainID FROM @UpdatedMains);
-                
-                -- 回傳總更新筆數
-                SELECT @@ROWCOUNT;";
+
+                -- 回傳總更新筆數 (針對 BorrowDevice 的更新筆數)
+                SELECT COUNT(1) FROM @UpdatedMains;";
 
             RunSQL(sqlUpdate);
 

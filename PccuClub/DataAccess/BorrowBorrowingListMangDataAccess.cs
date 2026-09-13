@@ -69,7 +69,7 @@ LEFT JOIN Code E ON E.Code = B.ActVerify AND E.Type = 'BorrowActVerify'
 WHERE 1 = 1 
 AND A.BorrowSecondResourceID IS NOT NULL 
 AND B.TakeSDate IS NOT NULL 
-AND B.ActVerify = '02' 
+AND B.ActVerify IN ('02', '05')
     
     UNION ALL
     

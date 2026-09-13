@@ -37,16 +37,14 @@ namespace WebPccuClub.DataAccess
             DBAParameter parameters = new DBAParameter();
 
             #region 參數設定
-            parameters.Add("@PersonalConform", model.PersonalConform.ToString().TrimStartAndEnd());
-            parameters.Add("@ActivityConform", model.ActivityConform.ToString().TrimStartAndEnd());
-            parameters.Add("@ClubInfoConform", model.ClubInfoConform.ToString().TrimStartAndEnd());
-            parameters.Add("@ActFinishConform", model.ActFinishConform.ToString().TrimStartAndEnd());
+            parameters.Add("@ActivityConform", model.ActivityConform);
+            parameters.Add("@ClubInfoConform", model.ClubInfoConform);
+            parameters.Add("@ActFinishConform", model.ActFinishConform);
             parameters.Add("@LastModifier", userName);
             #endregion 參數設定
 
             string CommendText = $@"UPDATE ConformMang 
-                                       SET PersonalConform = @PersonalConform, 
-                                           ActivityConform = @ActivityConform, 
+                                       SET ActivityConform = @ActivityConform, 
                                            ClubInfoConform = @ClubInfoConform, 
                                            ActFinishConform = @ActFinishConform, 
                                            LastModified = GETDATE(), 
