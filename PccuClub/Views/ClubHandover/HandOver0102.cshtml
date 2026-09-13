@@ -149,8 +149,8 @@
                                                 <label for="">當日會議記錄上傳：<span class="req-star">*</span></label>
                                             </td>
                                             <td class="">
-                                                @Html.TextBoxFor(m => m.Handover0102Model.MeetingRecord, new { @class="form-control", type="file", placeholder="當日會議記錄上傳", accept=".docx,.doc,.odt,.pdf" })
-                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.docx、.doc、.odt、.pdf</div>
+                                                @Html.TextBoxFor(m => m.Handover0102Model.MeetingRecord, new { @class="form-control", type="file", placeholder="當日會議記錄上傳", accept=".pdf" })
+                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.pdf</div>
                                             </td>
                                         </tr>
                                         <tr>
@@ -158,8 +158,8 @@
                                                 <label for="">當日會議簽到表上傳：<span class="req-star">*</span></label>
                                             </td>
                                             <td class="">
-                                                @Html.TextBoxFor(m => m.Handover0102Model.MeetingSign, new { @class="form-control", type="file", placeholder="當日會議簽到表上傳", accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z" })
-                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.pdf、.jpg、.jpeg、.png、.zip、.rar、.7z</div>
+                                                @Html.TextBoxFor(m => m.Handover0102Model.MeetingSign, new { @class="form-control", type="file", placeholder="當日會議簽到表上傳", accept=".pdf" })
+                                                <div class="fs-90percent red-hint pt-2">僅接受以下格式：.pdf</div>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -269,7 +269,7 @@
         if (typeof MeetingRecord !== 'undefined') {
             var fileExtension = MeetingRecord.name.split('.').pop().toLowerCase();
 
-            if (fileExtension !== 'docx' && fileExtension !== 'doc' && fileExtension !== 'odt' && fileExtension !== 'pdf') {
+            if (fileExtension !== 'pdf') {
                 $.alert("檔案類型不符合");
                 return;
             }
@@ -286,10 +286,7 @@
         if (typeof MeetingSign !== 'undefined') {
             var fileExtension = MeetingSign.name.split('.').pop().toLowerCase();
 
-            if (fileExtension !== 'pdf' && fileExtension !== 'jpg' &&
-                fileExtension !== 'jpeg' && fileExtension !== 'png' &&
-                fileExtension !== 'zip' && fileExtension !== 'rar' &&
-                fileExtension !== '7z') {
+            if (fileExtension !== 'pdf') {
 
                 $.alert("檔案類型不符合");
                 return;

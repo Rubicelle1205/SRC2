@@ -143,7 +143,7 @@
                                     <td>
                                         <div class="d-block mb-1 item">
                                             <label class="btn btn-outline-primary mb-0">
-                                                    @Html.TextBoxFor(m => m.Handover0102Model.MeetingRecord, new { @style="display:none;", @class="filesupload", type="file", accept = ".docx,.doc,.odt,.pdf"})
+                                                    @Html.TextBoxFor(m => m.Handover0102Model.MeetingRecord, new { @style="display:none;", @class="filesupload", type="file", accept = ".pdf"})
                                                 <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
                                             </label>
                                             <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
@@ -166,7 +166,7 @@
                                     <td>
                                         <div class="d-block mb-1 item">
                                             <label class="btn btn-outline-primary mb-0">
-                                                    @Html.TextBoxFor(m => m.Handover0102Model.MeetingSign, new { @style="display:none;", @class="filesupload", type="file", accept = ".docx,.doc,.odt,.pdf"})
+                                                    @Html.TextBoxFor(m => m.Handover0102Model.MeetingSign, new { @style="display:none;", @class="filesupload", type="file", accept = ".pdf"})
                                                 <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
                                             </label>
                                             <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
@@ -236,7 +236,7 @@
         if (typeof MeetingRecord !== 'undefined') {
             var fileExtension = MeetingRecord.name.split('.').pop().toLowerCase();
             
-            if (fileExtension !== 'docx' && fileExtension !== 'doc' && fileExtension !== 'odt' && fileExtension !== 'pdf') {
+            if (fileExtension !== 'pdf') {
                 $.alert("檔案類型不符合");
                 return;
             }
@@ -253,7 +253,7 @@
         if (typeof MeetingSign !== 'undefined') {
             var fileExtension = MeetingSign.name.split('.').pop().toLowerCase();
             
-            if (fileExtension !== 'docx' && fileExtension !== 'doc' && fileExtension !== 'odt' && fileExtension !== 'pdf') {
+            if (fileExtension !== 'pdf') {
 
                 $.alert("檔案類型不符合");
                 return;
@@ -344,7 +344,7 @@
 
 
     
-    $(".fa-circle-question").tooltip({ title: "僅接受 .docx, .doc, .odt, .pdf" });
+    $(".fa-circle-question").tooltip({ title: "僅接受 .pdf" });
 
     $(document).on('change', ".filesupload", function (e) {
         var filename = e.target.files[0].name;
