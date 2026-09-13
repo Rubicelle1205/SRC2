@@ -15,7 +15,7 @@
                     <div class="text-center">
                         <h2 class="text-10">中國文化大學</h2>
                         <h4 class="text-6 font-weight-normal">
-                            <u id="DisplaySchoolYearLabel"> @(Int32.Parse(DisplaySchoolYear) + 1)</u>學年度改選交接資料表</h3>
+                            <u id="DisplaySchoolYearLabel"> @(Int32.Parse(DisplaySchoolYear))</u>學年度改選交接資料表</h3>
                             <div class="row justify-content-center py-5">
                                 <div class="col-8">
                                     <img src="assets/img/logo_circle.png" alt="">
@@ -197,7 +197,7 @@
 
             // 判斷是否選中了有效選項（排除 "請選擇"）
             if (selectedValue !== "") {
-                $('#DisplaySchoolYearLabel').text(nextYear);
+                $('#DisplaySchoolYearLabel').text(thisYear);
                 $('#Filed1').text(preYear);
                 $('#Filed2').text(thisYear);
             } else {
