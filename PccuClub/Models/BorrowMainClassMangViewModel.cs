@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Newtonsoft.Json;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace WebPccuClub.Models
@@ -116,6 +117,9 @@ namespace WebPccuClub.Models
 
     public class BorrowMainClassMangEditModel
     {
+        public string? RequiredFieldsJson { get; set; }
+
+        public List<RequiredFields> LstRequiredFields = new List<RequiredFields>();
         public int? ID { get; set; }
 
         /// <summary>分類名稱</summary>
@@ -163,4 +167,14 @@ namespace WebPccuClub.Models
         [DisplayName("更新時間")]
         public string? LastModified { get; set; }
     }
+
+    public class RequiredFields
+    {
+        public int? RequiredFieldsId { get; set; }
+
+        public string? Fields {  get; set; }
+
+        public bool Required { get; set; }
+    }
+
 }

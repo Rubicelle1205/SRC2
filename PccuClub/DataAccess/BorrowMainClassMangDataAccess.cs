@@ -7,6 +7,8 @@ using System.Text.Encodings.Web;
 using WebPccuClub.Global;
 using WebPccuClub.Global.Extension;
 using WebPccuClub.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using static NPOI.HSSF.UserModel.HeaderFooter;
 
 namespace WebPccuClub.DataAccess
 {
@@ -80,10 +82,43 @@ AND (ID = @ID) ";
             return null;
         }
 
-        /// <summary> 新增資料 </summary>
-        public DbExecuteInfo InsertData(BorrowMainClassMangViewModel vm, UserInfo LoginUser)
+        /// <summary>
+        /// 取得編輯資料
+        /// </summary>
+        /// <param name="submitBtn"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public List<RequiredFields> GetRequiredFields(string Ser)
         {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
 
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@BorrowMainClassID", Ser);
+
+            #endregion
+
+            CommandText = @"SELECT RequiredFieldsId, Fields, Required
+FROM RequiredFields
+WHERE 1 = 1
+AND SystemCode = '04'
+AND (BorrowMainClassID = @BorrowMainClassID) ";
+
+            (DbExecuteInfo info, IEnumerable<RequiredFields> entitys) dbResult = DbaExecuteQuery<RequiredFields>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<RequiredFields>();
+        }
+
+        /// <summary> 新增資料 </summary>
+        public DbExecuteInfo InsertData(BorrowMainClassMangViewModel vm, UserInfo LoginUser, out long BorrowID)
+        {
+            DataSet ds = new DataSet();
             DbExecuteInfo ExecuteResult = new DbExecuteInfo();
             DBAParameter parameters = new DBAParameter();
 
@@ -114,6 +149,7 @@ AND (ID = @ID) ";
                                                ,Created
                                                ,LastModifier
                                                ,LastModified)
+                                         OUTPUT INSERTED.Id
                                          VALUES
                                                (@Text
                                                ,@ActVerifyUnit
@@ -129,7 +165,67 @@ AND (ID = @ID) ";
                                                ,@LoginId
                                                ,GETDATE())";
 
-            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+            ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
+
+            BorrowID = long.Parse(ds.Tables[0].QueryFieldByDT("ID"));
+
+            return ExecuteResult;
+        }
+
+        /// <summary> 新增資料 </summary>
+        public DbExecuteInfo InsertRequiredFieldsData(BorrowMainClassMangViewModel vm, UserInfo LoginUser, long BorrowID)
+        {
+
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            List<string> dataList = new List<string>();
+            dataList.Add("申請單位類型");
+            dataList.Add("申請單位");
+            dataList.Add("申請人");
+            dataList.Add("申請人職稱");
+            dataList.Add("申請人Email");
+            dataList.Add("申請人電話/分機");
+            dataList.Add("申請目的");
+            dataList.Add("活動名稱");
+            dataList.Add("使用地點");
+            dataList.Add("用途及特殊需求說明");
+            dataList.Add("實際使用日期");
+            dataList.Add("計畫領取日期");
+
+            List<RequiredFields> dataList2 = new List<RequiredFields>();
+
+            foreach (string item in dataList)
+            {
+                RequiredFields requiredFields = new RequiredFields();
+
+                requiredFields.Fields = item;
+                dataList2.Add(requiredFields);
+            }
+
+            #region 參數設定
+            #endregion 參數設定
+
+            string CommendText = $@"INSERT INTO RequiredFields
+                                               (BorrowMainClassID
+                                               ,Fields
+                                               ,Required
+                                               ,SystemCode
+                                               ,Creator
+                                               ,Created
+                                               ,LastModifier
+                                               ,LastModified)
+                                         VALUES
+                                               ('{BorrowID}'
+                                               ,@Fields
+                                               ,'1'
+                                               ,'04'
+                                               ,'supervisor'
+                                               ,GETDATE()
+                                               ,'supervisor'
+                                               ,GETDATE())";
+
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList2, false, DBAccessException, null);
 
             return ExecuteResult;
         }
@@ -167,6 +263,35 @@ AND (ID = @ID) ";
             return ExecuteResult;
         }
 
+        /// <summary> 修改資料 </summary>
+        public DbExecuteInfo UpdateRequiredFieldsData(BorrowMainClassMangViewModel vm, UserInfo LoginUser)
+        {
+            DataSet ds = new DataSet();
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+            string CommendText = string.Empty;
+
+            List<RequiredFields> dataList = vm.EditModel.LstRequiredFields;
+
+
+            #region 參數設定
+            #endregion 參數設定
+
+            CommendText = $@"UPDATE RequiredFields SET 
+Required = @Required, 
+Creator = '{LoginUser.LoginId}', 
+Created = GETDATE(), 
+LastModifier = '{LoginUser.LoginId}', 
+LastModified = GETDATE()
+WHERE 1 = 1
+AND SystemCode = '04'
+AND RequiredFieldsId = @RequiredFieldsId";
+
+            ExecuteResult = DbaExecuteNonQueryWithBulk(CommendText, dataList, false, DBAccessException, null);
+
+            return ExecuteResult;
+        }
+
         /// <summary>
         /// 刪除資料
         /// </summary>
@@ -186,6 +311,41 @@ AND (ID = @ID) ";
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
 
             return ExecuteResult;
+        }
+
+        public DbExecuteInfo DeleteRequiredFieldsData(string ser)
+        {
+            DbExecuteInfo ExecuteResult = new DbExecuteInfo();
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ID", ser);
+            #endregion 參數設定
+
+            string CommendText = $@"DELETE FROM RequiredFields WHERE BorrowMainClassID = @ID ";
+
+            ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
+
+            return ExecuteResult;
+        }
+        public List<SelectListItem> GetddlEnable()
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            #endregion
+
+            CommandText = @"SELECT Code AS Value, Text AS Text FROM Code WHERE Type = 'Enable'";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
         }
     }
 }

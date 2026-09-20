@@ -30,9 +30,13 @@
                                     <span class="input-group-text">至</span>
                                     <input type="date" class="form-control" id="@Html.IdFor(m => m.ConditionModel.To_ReleaseDate)" name="@Html.NameFor(m => m.ConditionModel.To_ReleaseDate)">
                                 </div>
-                                <div class="col-md-3 col-sm-6 mt-2">
-                                    <input type="date" class="form-control" id="@Html.IdFor(m => m.ConditionModel.DuringDate)" name="@Html.NameFor(m => m.ConditionModel.DuringDate)">
+
+                                <div class="col-md-6 input-group mt-2">
+                                    <input type="date" class="form-control" id="@Html.IdFor(m => m.ConditionModel.From_DuringDate)" name="@Html.NameFor(m => m.ConditionModel.From_DuringDate)">
+                                    <span class="input-group-text">至</span>
+                                    <input type="date" class="form-control" id="@Html.IdFor(m => m.ConditionModel.To_DuringDate)" name="@Html.NameFor(m => m.ConditionModel.To_DuringDate)">
                                 </div>
+
                                 <div class="col-md-3 col-sm-6 mt-2">
                                     @Html.DropDownListFor(m => m.ConditionModel.SchoolYear,(List<SelectListItem>)ViewBag.ddlSchoolYear,"全部學年度", new {@class = "form-control"})
                                 </div>
@@ -98,6 +102,17 @@
             return false;
         }
 
+        var From_DuringDate = Date.parse($('#@(Html.IdFor(m => m.ConditionModel.From_DuringDate))').val());
+        var To_DuringDate = Date.parse($('#@(Html.IdFor(m => m.ConditionModel.To_DuringDate))').val());
+        if ((isNaN(From_DuringDate) && !isNaN(To_DuringDate)) || (!isNaN(From_DuringDate) && isNaN(To_DuringDate))) {
+            $.alert("參與時間區間未填");
+            return false;
+        }
+        if (From_DuringDate > To_DuringDate) {
+            $.alert("參與開始日期不可大於參與結束日期");
+            return false;
+        }
+
         SendAjax({
             url: '@Url.Action("GetSearchResult")',
             data: $("#SearchForm").serialize(),
@@ -131,7 +146,8 @@
     $('#@Html.IdFor(m => m.ConditionModel.ClubID)').tooltip({ title: "社團代號" });
     $('#@Html.IdFor(m => m.ConditionModel.ClubName)').tooltip({ title: "社團名稱" });
     $('#@Html.IdFor(m => m.ConditionModel.UserName)').tooltip({ title: "姓名" });
-    $('#@Html.IdFor(m => m.ConditionModel.DuringDate)').tooltip({ title: "參與期間" });
+    $('#@Html.IdFor(m => m.ConditionModel.From_DuringDate)').tooltip({ title: "參與期間[起]" });
+    $('#@Html.IdFor(m => m.ConditionModel.To_DuringDate)').tooltip({ title: "參與期間[迄]" });
     $('#@Html.IdFor(m => m.ConditionModel.Department)').tooltip({ title: "系級" });
 
 </script>

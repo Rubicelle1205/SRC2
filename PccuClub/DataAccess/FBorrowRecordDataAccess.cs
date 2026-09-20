@@ -77,6 +77,38 @@ AND (BorrowMainID = @ID) ";
             return null;
         }
 
+        /// <summary>
+        /// 取得編輯資料
+        /// </summary>
+        /// <param name="submitBtn"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public List<RequiredFields> GetRequiredFields(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+
+            parameters.Add("@BorrowMainClassID", Ser);
+
+            #endregion
+
+            CommandText = @"SELECT RequiredFieldsId, Fields, Required
+FROM RequiredFields
+WHERE 1 = 1
+AND SystemCode = '04'
+AND (BorrowMainClassID = @BorrowMainClassID) ";
+
+            (DbExecuteInfo info, IEnumerable<RequiredFields> entitys) dbResult = DbaExecuteQuery<RequiredFields>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<RequiredFields>();
+        }
 
         public List<FBorrowRecordFileModel> GetFileData(string submitBtn)
         {

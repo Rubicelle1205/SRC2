@@ -875,16 +875,8 @@ namespace WebPccuClub.DataAccess
 			parameters.Add("@SchoolYear", vm.Handover0205Model.SchoolYear);
 			parameters.Add("@ClubID", vm.Handover0205Model.ClubID);
 			parameters.Add("@ClubName", vm.Handover0205Model.ClubName);
-			parameters.Add("@ActSysAcc", vm.Handover0205Model.ActSysAcc);
-			parameters.Add("@ActSysPwd", vm.Handover0205Model.ActSysPwd);
-			parameters.Add("@ClubWebAcc", vm.Handover0205Model.ClubWebAcc);
-			parameters.Add("@ClubWebPwd", vm.Handover0205Model.ClubWebPwd);
 			parameters.Add("@RPageAcc", vm.Handover0205Model.RPageAcc);
 			parameters.Add("@RPagePwd", vm.Handover0205Model.RPagePwd);
-			parameters.Add("@PassportAcc", vm.Handover0205Model.PassportAcc);
-			parameters.Add("@PassportPwd", vm.Handover0205Model.PassportPwd);
-			parameters.Add("@OneDriveAcc", vm.Handover0205Model.OneDriveAcc);
-			parameters.Add("@OneDrivePwd", vm.Handover0205Model.OneDrivePwd);
 			parameters.Add("@HasSchoolProperty", vm.Handover0205Model.HasSchoolProperty);
 			parameters.Add("@UseRecord", vm.Handover0205Model.UseRecord);
 			parameters.Add("@ClubProperty", vm.Handover0205Model.ClubProperty);
@@ -901,16 +893,8 @@ namespace WebPccuClub.DataAccess
                                                 SChoolYear, 
                                                 ClubID, 
                                                 ClubName, 
-                                                ActSysAcc, 
-                                                ActSysPwd, 
-                                                ClubWebAcc, 
-                                                ClubWebPwd, 
                                                 RPageAcc, 
                                                 RPagePwd, 
-                                                PassportAcc, 
-                                                PassportPwd, 
-                                                OneDriveAcc, 
-                                                OneDrivePwd, 
                                                 HasSchoolProperty, 
                                                 UseRecord, 
                                                 ClubProperty, 
@@ -928,16 +912,8 @@ namespace WebPccuClub.DataAccess
                                                 @SChoolYear, 
                                                 @ClubID, 
                                                 @ClubName, 
-                                                @ActSysAcc, 
-                                                @ActSysPwd, 
-                                                @ClubWebAcc, 
-                                                @ClubWebPwd, 
                                                 @RPageAcc, 
                                                 @RPagePwd, 
-                                                @PassportAcc, 
-                                                @PassportPwd, 
-                                                @OneDriveAcc, 
-                                                @OneDrivePwd, 
                                                 @HasSchoolProperty, 
                                                 @UseRecord, 
                                                 @ClubProperty, 
@@ -967,16 +943,8 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@SchoolYear", vm.Handover0205Model.SchoolYear);
             parameters.Add("@ClubID", vm.Handover0205Model.ClubID);
             parameters.Add("@ClubName", vm.Handover0205Model.ClubName);
-            parameters.Add("@ActSysAcc", vm.Handover0205Model.ActSysAcc);
-            parameters.Add("@ActSysPwd", vm.Handover0205Model.ActSysPwd);
-            parameters.Add("@ClubWebAcc", vm.Handover0205Model.ClubWebAcc);
-            parameters.Add("@ClubWebPwd", vm.Handover0205Model.ClubWebPwd);
             parameters.Add("@RPageAcc", vm.Handover0205Model.RPageAcc);
             parameters.Add("@RPagePwd", vm.Handover0205Model.RPagePwd);
-            parameters.Add("@PassportAcc", vm.Handover0205Model.PassportAcc);
-            parameters.Add("@PassportPwd", vm.Handover0205Model.PassportPwd);
-            parameters.Add("@OneDriveAcc", vm.Handover0205Model.OneDriveAcc);
-            parameters.Add("@OneDrivePwd", vm.Handover0205Model.OneDrivePwd);
             parameters.Add("@HasSchoolProperty", vm.Handover0205Model.HasSchoolProperty);
             parameters.Add("@UseRecord", vm.Handover0205Model.UseRecord);
             parameters.Add("@ClubProperty", vm.Handover0205Model.ClubProperty);
@@ -992,16 +960,8 @@ namespace WebPccuClub.DataAccess
                                        SET SChoolYear=@SChoolYear, 
                                            ClubID=@ClubID, 
                                            ClubName=@ClubName, 
-                                           ActSysAcc=@ActSysAcc, 
-                                           ActSysPwd=@ActSysPwd, 
-                                           ClubWebAcc=@ClubWebAcc, 
-                                           ClubWebPwd=@ClubWebPwd, 
                                            RPageAcc=@RPageAcc, 
                                            RPagePwd=@RPagePwd, 
-                                           PassportAcc=@PassportAcc, 
-                                           PassportPwd=@PassportPwd, 
-                                           OneDriveAcc=@OneDriveAcc, 
-                                           OneDrivePwd=@OneDrivePwd, 
                                            HasSchoolProperty=@HasSchoolProperty, 
                                            UseRecord=@UseRecord, 
                                            ClubProperty=@ClubProperty, 
@@ -1031,9 +991,8 @@ namespace WebPccuClub.DataAccess
 			#region 參數設定
 			#endregion
 
-			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.SchoolYear, A.ClubID, A.ClubName, 
-                                    A.ActSysAcc, A.ActSysPwd, A.ClubWebAcc, A.ClubWebPwd, A.RPageAcc, A.RPagePwd, 
-                                    A.PassportAcc, A.PassportPwd, A.OneDriveAcc, A.OneDrivePwd, A.HasSchoolProperty, C.Text AS HasSchoolPropertyText, 
+			CommandText = $@"SELECT A.DocID, A.HoID, A.HoDetailID, A.SchoolYear, A.ClubID, A.ClubName, A.RPageAcc, A.RPagePwd, 
+                                    A.HasSchoolProperty, C.Text AS HasSchoolPropertyText, 
                                     A.UseRecordName, A.ClubPropertyName, A.SchoolPropertyName, A.UseRecord, A.ClubProperty, A.SchoolProperty, A.Created, A.LastModified
                                FROM HandOverDoc05 A
                           LEFT JOIN HandOVerMain B ON B.HoID = A.HoID

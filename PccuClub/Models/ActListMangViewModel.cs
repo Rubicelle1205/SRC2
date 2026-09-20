@@ -84,7 +84,10 @@ namespace WebPccuClub.Models
         public DateTime? To_ReleaseDate { get; set; }
 
         [DisplayName("行程期間")]
-        public DateTime? DuringDate { get; set; }
+        public DateTime? From_DuringDate { get; set; }
+
+        [DisplayName("行程期間")]
+        public DateTime? To_DuringDate { get; set; }
     }
 
     public class ActListMangResultModel

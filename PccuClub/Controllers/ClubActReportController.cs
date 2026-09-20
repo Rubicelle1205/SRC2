@@ -158,49 +158,68 @@ namespace WebPccuClub.Controllers
         [Log(LogActionChineseName.新增)]
         public async Task<IActionResult> Create4(ClubActReportViewModel vm)
         {
-            ClubActReportViewModel vm3 = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
-
-            if (Request.Form != null)
-            {
-                if (Request.Form.Files.Count > 0)
-                {
-                    for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
-                    {
-                        if (Request.Form.Files[i].Name.Contains("Proposal"))
-                        {
-                            var file = Request.Form.Files[i];
-
-                            string strFilePath = await upload.UploadFileAsync("ActProposal", file);
-
-                            ActListFilesModel model = new ActListFilesModel();
-                            model.FileName = file.FileName;
-                            model.FilePath = strFilePath;
-
-                            vm3.CreateModel.LstProposal.Add(model);
-                        }
-                    }
-                }
-            }
-			
-
-			HttpContext.Session.SetObject("MyModel", vm3);
-            
-            vm = vm3;
-			string[] arr = vm3.CreateModel.strRundown.Split("|");
-
-			foreach (string item in arr)
+			// 1. 從 Session 取出，若為 null 則退回上一頁或初始化
+			ClubActReportViewModel vm3 = HttpContext.Session.GetObject<ClubActReportViewModel>("MyModel");
+			if (vm3 == null)
 			{
-				string[] parts = item.Split(',');
+				// 建議重導向回 Step 1 或相關錯誤處理
+				return RedirectToAction("Create");
+			}
 
-				if (parts[0] == "03")
+			// 2. 確保 CreateModel 不為 null
+			if (vm3.CreateModel == null)
+			{
+				vm3.CreateModel = new ClubActReportCreateModel(); // 依你的實際 ViewModel 類型初始化
+			}
+
+			// 處理檔案上傳
+			if (Request.Form != null && Request.Form.Files.Count > 0)
+			{
+				// 確保 List 已初始化
+				if (vm3.CreateModel.LstProposal == null)
 				{
-					return View(vm);
+					vm3.CreateModel.LstProposal = new List<ActListFilesModel>();
+				}
+
+				for (int i = 0; i < Request.Form.Files.Count; i++)
+				{
+					if (Request.Form.Files[i].Name.Contains("Proposal"))
+					{
+						var file = Request.Form.Files[i];
+						string strFilePath = await upload.UploadFileAsync("ActProposal", file);
+
+						ActListFilesModel model = new ActListFilesModel
+						{
+							FileName = file.FileName,
+							FilePath = strFilePath
+						};
+
+						vm3.CreateModel.LstProposal.Add(model);
+					}
 				}
 			}
 
-			return RedirectToAction("ActCheck", vm3);
-			
-        }
+			// 更新 Session
+			HttpContext.Session.SetObject("MyModel", vm3);
+
+			// 3. 檢查 strRundown 是否為 null 再進行 Split
+			if (!string.IsNullOrEmpty(vm3.CreateModel.strRundown))
+			{
+				string[] arr = vm3.CreateModel.strRundown.Split('|');
+				foreach (string item in arr)
+				{
+					string[] parts = item.Split(',');
+					if (parts.Length > 0 && parts[0] == "03")
+					{
+						return View(vm3); // 傳入確認非 null 的 vm3
+					}
+				}
+			}
+
+			// 4. 重導向建議：將資料存入 Session 後再 Redirect，不直接傳遞物件
+			return RedirectToAction("ActCheck");
+
+		}
 
 		[Log(LogActionChineseName.新增)]
 		public async Task<IActionResult> ActCheck(ClubActReportViewModel vm)

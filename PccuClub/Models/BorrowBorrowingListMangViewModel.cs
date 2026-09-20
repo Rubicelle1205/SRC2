@@ -84,6 +84,10 @@ namespace WebPccuClub.Models
         [DisplayName("借用資源")]
         public string? MainResourceName { get; set; }
 
+        /// <summary>借用子資源</summary>
+        [DisplayName("借用子資源")]
+        public string? SecondResourceName { get; set; }
+
         /// <summary>借用單位</summary>
         [DisplayName("借用單位")]
         public string? ApplyUnitName { get; set; }

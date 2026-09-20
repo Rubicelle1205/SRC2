@@ -133,6 +133,8 @@ namespace WebPccuClub.Models
         {
             public List<FBorrowRecordFileModel> LstFile = new List<FBorrowRecordFileModel>();
             public List<FBorrowRecordDeviceModel> LstDevice = new List<FBorrowRecordDeviceModel>();
+            public List<RequiredFields> LstRequiredFields = new List<RequiredFields>();
+
             public string? strDeviceData { get; set; }
             public string? MainResourceID { get; set; }
 

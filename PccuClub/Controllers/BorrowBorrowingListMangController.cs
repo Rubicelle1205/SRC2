@@ -62,7 +62,7 @@ namespace WebPccuClub.Controllers
                     BorrowBorrowingUnitData p = new BorrowBorrowingUnitData();
                     p.MainResourceID = item.MainResourceID;
                     p.SecondResourceName = item.SecondResourceName;
-                    p.LstBorrowUnitData = LstItemActClubData.Where(x => x.MainResourceID == item.MainResourceID).ToList();
+                    p.LstBorrowUnitData = LstItemActClubData.Where(x => x.SecondResourceName == item.SecondResourceName).ToList();
 
                     result.LstPlaceData.Add(p);
                 }

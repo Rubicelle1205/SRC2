@@ -33,10 +33,12 @@ namespace WebPccuClub.DataAccess
             parameters.Add("@CadreName", model?.CadreName);
             parameters.Add("@UserName", model?.UserName);
             parameters.Add("@Department", model?.Department);
-            parameters.Add("@DuringDate", model?.DuringDate?.Date.ToString());
 
-            string duringDateStr = model.DuringDate?.ToString("yyyy-MM-dd");
-            parameters.Add("@DuringDate", string.IsNullOrWhiteSpace(duringDateStr) ? null : duringDateStr);
+            string From_DuringDate = model.From_DuringDate?.ToString("yyyy-MM-dd");
+            parameters.Add("@From_DuringDate", string.IsNullOrWhiteSpace(From_DuringDate) ? null : From_DuringDate);
+
+            string To_DuringDate = model.To_DuringDate?.ToString("yyyy-MM-dd");
+            parameters.Add("@To_DuringDate", string.IsNullOrWhiteSpace(To_DuringDate) ? null : To_DuringDate);
 
             parameters.Add("@FromDate", model?.From_ReleaseDate?.Date);
             parameters.Add("@ToDatePlusOne", model?.To_ReleaseDate?.Date.AddDays(1));
@@ -50,12 +52,14 @@ A.Sex, C.Text AS SexText, A.CellPhone, A.UserName, A.Department, A.SDuring, A.ED
 						  LEFT JOIN Code C ON C.Code = A.Sex AND Type = 'Sex'
                               WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND A.Created >= @FromDate AND A.Created < @ToDatePlusOne" : "")}
+
+{(model.From_DuringDate.HasValue && model.To_DuringDate.HasValue ? " AND A.EDuring >= @From_DuringDate AND A.SDuring < @To_DuringDate" : "")}
+
 AND (@SchoolYear IS NULL OR A.SchoolYear = @SchoolYear)
 AND (@ClubID IS NULL OR A.ClubID LIKE '%' + @ClubID + '%') 
 AND (@ClubName IS NULL OR B.ClubCName LIKE '%' + @ClubName + '%') 
 AND (@CadreName IS NULL OR A.CadreName LIKE '%' + @CadreName + '%') 
 AND (@UserName IS NULL OR A.UserName LIKE '%' + @UserName + '%') 
-AND (@DuringDate IS NULL OR @DuringDate BETWEEN A.SDuring AND A.EDuring)
 AND (@Department IS NULL OR A.Department LIKE '%' + @Department + '%') ";
 
 

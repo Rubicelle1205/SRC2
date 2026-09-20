@@ -651,8 +651,16 @@ select.form-control {
     background-color: #8181D7;
 }
 
-    .pagelist.pagelist-icon2 .listItem .icon.end-exist-icon:hover {
+.pagelist.pagelist-icon2 .listItem .icon.end-exist-icon:hover {
         background-color: #5959C3;
+    }
+
+.pagelist.pagelist-icon2 .listItem .icon.end-exist2-icon {
+    background-color: #159a77;
+}
+
+    .pagelist.pagelist-icon2 .listItem .icon.end-exist2-icon:hover {
+        background-color: #10785f;
     }
 
 .pagelist.pagelist-icon2 .listItem .icon:hover {

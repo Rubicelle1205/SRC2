@@ -57,6 +57,32 @@
                                         <td>@Html.TextAreaFor(m => m.EditModel.ReserveRule, new {@class = "form-control", placeholder = "請輸入庫存機制", rows = "5"})</td>
                                     </tr>
                                     <tr>
+                                        <th width="10%">必填欄位設定<span class="required"></span></th>
+                                        <td>
+                                            @for (int i = 0; i < Model.EditModel.LstRequiredFields.Count; i++)
+                                            {
+                                                <!-- 1. 必須有 required-field-row -->
+                                                <div class="d-flex align-items-center mb-2 required-field-row">
+
+                                                    <!-- 2. 必須有 field-name -->
+                                                    <input type="hidden" class="field-name" value="@Model.EditModel.LstRequiredFields[i].Fields" />
+                                                    <input type="hidden" class="field-id" value="@Model.EditModel.LstRequiredFields[i].RequiredFieldsId" />
+                                                    <div class="me-3" style="width: 20%;">@Model.EditModel.LstRequiredFields[i].Fields</div>
+
+                                                    <div class="flex-grow-1">
+                                                        <!-- 3. 必須有 field-required-val -->
+                                                        @Html.DropDownListFor(
+                                                                 m => Model.EditModel.LstRequiredFields[i].Required,
+                                                                 (List<SelectListItem>)ViewBag.ddlEnable,
+                                                                 "全部啟用狀態",
+                                                                 new { @class = "form-control field-required-val" }
+                                                                 )
+                                                    </div>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th width="10%">
                                             封面圖片<span class="required">*</span><br /><span class="text-xs text-danger font-weight-normal">可上傳.jpeg,.jpg,.png</span></span>
                                         </th>
@@ -158,6 +184,21 @@
         data.append('@Html.NameFor(m => m.EditModel.BorrowFee)', BorrowFee);
         data.append('@Html.NameFor(m => m.EditModel.ReserveRule)', ReserveRule);
         data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
+
+        var requiredFieldsList = [];
+        $('.required-field-row').each(function (index, element) {
+            var fieldId = $(this).find('.field-id').val();
+            var fieldName = $(this).find('.field-name').val();
+            var requiredVal = $(this).find('.field-required-val').val();
+
+            requiredFieldsList.push({
+                RequiredFieldsId: fieldId,
+                Fields: fieldName,
+                Required: requiredVal == "True"
+            });
+        });
+
+        data.append('EditModel.RequiredFieldsJson', JSON.stringify(requiredFieldsList));
 
         SendAjax({
             url: '@Url.Action("EditOldData")',

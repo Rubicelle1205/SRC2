@@ -66,12 +66,13 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')
                                     A.MainID, B.Text AS MainIDText, A.SecondID, C.Text AS SecondIDText, A.ThridID, D.Text AS ThridIDText,
                                     A.ActSTime, A.ActETime, A.RegistrationWay, A.PlaceSource, E.Text AS PlaceSourceText,
                                     A.BuildID, A.PlaceID, A.PlaceName, A.Presenter, A.PresenterIntro, A.Host, A.HostIntro, A.ClubCName, A.ContactMan, 
-                                    A.RegistrationMan, A.OpenObject, A.Tag, A.PosterIconPath, A.Memo, A.ActVerify, A.ActVerifyMemo, A.Creator, A.Created, A.LastModifier, A.LastModified
+                                    A.RegistrationMan, A.OpenObject, A.Tag, A.PosterIconPath, A.Memo, A.ActVerify, F.Text AS ActVerifyText, A.ActVerifyMemo, A.Creator, A.Created, A.LastModifier, A.LastModified
                                FROM HolisticPassportMang A
                           LEFT JOIN HolisticMainClassMang B ON B.ID = A.MainID
                           LEFT JOIN HolisticSecondClassMang C ON C.ID = A.SecondID
                           LEFT JOIN HolisticThirdClassMang D ON D.ID = A.ThridID
                           LEFT JOIN code E ON E.Code = A.PlaceSource AND E.Type = 'PlaceSource'
+						  LEFT JOIN Code F ON F.Code =  A.ActVerify AND F.Type = 'ActVerify'
 WHERE 1 = 1
 AND (A.ID = @ID) ";
 

@@ -112,9 +112,18 @@
                 {
                     if (item.Passport == "01")
                     {
-                        <a href="@Url.Action("CreateHolisticPassport", "ClubActReport", new { id = item.ActID })" class="icon full-icon">
-                            全人 <i class="fas fa-stamp"></i>
-                        </a>
+                        if (string.IsNullOrEmpty(item.HolisticPassportID))
+                        {
+                            <a href="@Url.Action("CreateHolisticPassport", "ClubActReport", new { id = item.ActID })" class="icon full-icon">
+                                全人 <i class="fas fa-stamp"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Detail", "ClubHolisticPassport", new { id = item.HolisticPassportID })" class="icon end-exist2-icon">
+                                全人查看 <i class="fas fa-chevron-right"></i>
+                            </a>
+                        }
 
                     }
 

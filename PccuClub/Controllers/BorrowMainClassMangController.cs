@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DataAccess;
+using Microsoft.AspNetCore.Mvc;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -50,8 +51,11 @@ namespace WebPccuClub.Controllers
             if (string.IsNullOrEmpty(submitBtn))
                 return RedirectToAction("Index");
 
+            ViewBag.ddlEnable = dbAccess.GetddlEnable();
+
             //BorrowMainClassMangViewModel vm = new BorrowMainClassMangViewModel();
             vm.EditModel = dbAccess.GetEditData(submitBtn);
+            vm.EditModel.LstRequiredFields = dbAccess.GetRequiredFields(submitBtn);
             return View(vm);
         }
 
@@ -92,7 +96,19 @@ namespace WebPccuClub.Controllers
                     }
                 }
 
-                var dbResult = dbAccess.InsertData(vm, LoginUser);
+                long BorrowID = 0;
+
+                var dbResult = dbAccess.InsertData(vm, LoginUser, out BorrowID);
+
+                if (!dbResult.isSuccess)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "新增失敗";
+                    return Json(vmRtn);
+                }
+
+                dbResult = dbAccess.InsertRequiredFieldsData(vm, LoginUser, BorrowID);
 
                 if (!dbResult.isSuccess)
                 {
@@ -123,6 +139,11 @@ namespace WebPccuClub.Controllers
             {
                 dbAccess.DbaInitialTransaction();
 
+                if (!string.IsNullOrEmpty(vm.EditModel.RequiredFieldsJson))
+                {
+                    vm.EditModel.LstRequiredFields = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RequiredFields>>(vm.EditModel.RequiredFieldsJson);
+                }
+
                 if (Request.Form.Files.Count > 0)
                 {
                     for (int i = 0; i <= Request.Form.Files.Count - 1; i++)
@@ -146,6 +167,19 @@ namespace WebPccuClub.Controllers
                     vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "修改失敗";
                     return Json(vmRtn);
+                }
+
+                if (vm.EditModel.LstRequiredFields.Count > 0)
+                {
+                    dbResult = dbAccess.UpdateRequiredFieldsData(vm, LoginUser);
+
+                    if (!dbResult.isSuccess)
+                    {
+                        dbAccess.DbaRollBack();
+                        vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
+                        vmRtn.ErrorMsg = "修改失敗";
+                        return Json(vmRtn);
+                    }
                 }
 
                 dbAccess.DbaCommit();
@@ -173,7 +207,18 @@ namespace WebPccuClub.Controllers
 
                 if (!dbResult.isSuccess)
                 {
+                    dbAccess.DbaRollBack();
                     vmRtn.ErrorCode =  (int)DBActionChineseName.失敗;
+                    vmRtn.ErrorMsg = "刪除失敗";
+                    return Json(vmRtn);
+                }
+
+                dbResult = dbAccess.DeleteRequiredFieldsData(Ser);
+
+                if (!dbResult.isSuccess && dbResult.ErrorCode != dbErrorCode._EC_NotAffect)
+                {
+                    dbAccess.DbaRollBack();
+                    vmRtn.ErrorCode = (int)DBActionChineseName.失敗;
                     vmRtn.ErrorMsg = "刪除失敗";
                     return Json(vmRtn);
                 }

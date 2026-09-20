@@ -109,6 +109,10 @@ namespace WebPccuClub.Models
         /// <summary>活動結案ID</summary>
         [DisplayName("活動結案ID")]
         public string? ActFinishId { get; set; }
+
+        /// <summary>全人ID</summary>
+        [DisplayName("全人ID")]
+        public string? HolisticPassportID { get; set; }
     }
 
     public class ClubActReportCreateModel
