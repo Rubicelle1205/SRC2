@@ -1559,8 +1559,8 @@ namespace WebPccuClub.DataAccess
                                             BookNo=@BookNo, 
                                             BookCover=@BookCover, 
                                             BookCoverName=@BookCoverName, 
-                                            LastModifier=@LastModifier, 
-                                            LastModified)=@LastModified), 
+                                            LastModifier=@LoginId, 
+                                            LastModified=GETDATE(), 
                                       WHERE HoID =@HoID AND HoDetailID=@HoDetailID";
 
             ExecuteResult = DbaExecuteQuery(CommendText, parameters, ds, true, DBAccessException);
