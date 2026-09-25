@@ -50,12 +50,14 @@
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.CreateModel.ClubEvaluationItemId)<span class="required">*</span></th>
                                         <td>
-                                            @Html.DropDownListFor(m => m.CreateModel.ClubEvaluationItemId, new List<SelectListItem>(), "請先選擇類別", new { @class = "form-control", @disabled = "disabled" })
+                                            @Html.DropDownListFor(m => m.CreateModel.ClubEvaluationItemId, new List<SelectListItem>(), "請先選擇評鑑類別", new { @class = "form-control", @disabled = "disabled" })
                                         </td>
                                     </tr>
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.CreateModel.Score)<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.CreateModel.Score, new { @class = "form-control", type = "number", placeholder = "請輸入分數" })</td>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.CreateModel.Score, new List<SelectListItem>(), "請先選擇評鑑項目", new { @class = "form-control", @disabled = "disabled" })
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th width="15%">@Html.LabelFor(m => m.CreateModel.Memo)</th>
@@ -95,7 +97,7 @@
             itemSelect.empty();
 
             if (classId === "") {
-                itemSelect.append($('<option>', { value: '', text: '請先選擇類別' }));
+                itemSelect.append($('<option>', { value: '', text: '請先選擇評鑑類別' }));
                 itemSelect.prop('disabled', true);
                 return;
             }
@@ -106,7 +108,7 @@
                 data: { classId: classId },
                 success: function (result) {
                     if (result && result.length > 0) {
-                        itemSelect.append($('<option>', { value: '', text: '請選擇項目' }));
+                        itemSelect.append($('<option>', { value: '', text: '請選擇評鑑項目' }));
                         $.each(result, function (index, item) {
                             itemSelect.append($('<option>', {
                                 value: item.value,
@@ -121,6 +123,44 @@
                 },
                 error: function () {
                     $.alert("取得項目資料失敗");
+                }
+            });
+        });
+
+        $('#@Html.IdFor(m => m.CreateModel.ClubEvaluationItemId)').change(function () {
+            var itemId = $(this).val();
+            var score = $('#@Html.IdFor(m => m.CreateModel.Score)');
+
+            // 清空目前的選項
+            score.empty();
+
+            if (itemId === "") {
+                score.append($('<option>', { value: '', text: '請先選擇評鑑項目' }));
+                score.prop('disabled', true);
+                return;
+            }
+
+            // 發送 Ajax 取得該類別下的所有項目
+            SendAjax({
+                url: '@Url.Action("GetScoreByItemId")', // 請確認後端有此 Action
+                data: { itemId: itemId },
+                success: function (result) {
+                    if (result && result.length > 0) {
+                        score.append($('<option>', { value: '', text: '請選擇評鑑分數' }));
+                        $.each(result, function (index, item) {
+                            score.append($('<option>', {
+                                value: item.value,
+                                text: item.text
+                            }));
+                        });
+                        score.prop('disabled', false); // 啟用下拉選單
+                    } else {
+                        score.append($('<option>', { value: '', text: '此類別下無項目' }));
+                        score.prop('disabled', true);
+                    }
+                },
+                error: function () {
+                    $.alert("取得分數資料失敗");
                 }
             });
         });
@@ -161,7 +201,6 @@
                         content: "新增成功",
                         buttons: {
                             確定: function () {
-                                Reset();
                             },
                         }
                     });

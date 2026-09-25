@@ -1,6 +1,7 @@
 ﻿using DataAccess;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Options;
 using NPOI.POIFS.Crypt;
 using PccuClub.WebAuth;
 using System.Data;
@@ -277,6 +278,51 @@ AND A.ClubID = @ClubID ";
             CommandText = @"SELECT A.ClubEvaluationItemId AS VALUE, A.ItemName AS Text 
 							  FROM ClubEvaluationItemMang A 
 WHERE A.ClassId = @ClassId
+";
+
+            (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
+
+            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
+                return dbResult.entitys.ToList();
+
+            return new List<SelectListItem>();
+        }
+
+        public List<SelectListItem> GetScore(string Ser)
+        {
+            string CommandText = string.Empty;
+            DataSet ds = new DataSet();
+
+            DBAParameter parameters = new DBAParameter();
+
+            #region 參數設定
+            parameters.Add("@ClubEvaluationItemId", Ser);
+            #endregion
+
+            CommandText = @"WITH ScoreRange AS (
+                            -- 1. 起點：從分數下限 (ScoreLower) 開始
+                            SELECT 
+                                ClubEvaluationItemId,
+                                ScoreLower AS CurrentScore,
+                                ScoreUpper
+                            FROM ClubEvaluationItemMang
+
+                            UNION ALL
+
+                            -- 2. 遞迴：每次加 1，直到達到分數上限 (ScoreUpper)
+                            SELECT 
+                                ClubEvaluationItemId,
+                                CurrentScore + 1,
+                                ScoreUpper
+                            FROM ScoreRange
+                            WHERE CurrentScore + 1 <= ScoreUpper
+                        )
+                        SELECT 
+                            TRIM(CAST(CurrentScore AS CHAR)) AS value, 
+                            CAST(CurrentScore AS CHAR) AS text
+                        FROM ScoreRange
+                        WHERE ClubEvaluationItemId = @ClubEvaluationItemId
+                        ORDER BY ClubEvaluationItemId ASC, CurrentScore ASC;
 ";
 
             (DbExecuteInfo info, IEnumerable<SelectListItem> entitys) dbResult = DbaExecuteQuery<SelectListItem>(CommandText, parameters, true, DBAccessException);
