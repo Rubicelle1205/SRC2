@@ -375,7 +375,11 @@ namespace WebPccuClub.Models
         /// <summary>社團基本分</summary>
         [DisplayName("社團基本分")]
 		public string? BasicScore { get; set; }
-	}
+
+        /// <summary>總分</summary>
+        [DisplayName("總分")]
+        public int HistoryTotal { get; set; }
+    }
 
 	public class ClubScoreHistory
 	{
@@ -383,16 +387,20 @@ namespace WebPccuClub.Models
 		[DisplayName("建立時間")]
 		public DateTime? Created { get; set; }
 
-		/// <summary>評鑑項目</summary>
-		[DisplayName("評鑑項目")]
+        /// <summary>ClubEvaluationItemId</summary>
+        [DisplayName("ClubEvaluationItemId")]
+        public string? ClubEvaluationItemId { get; set; }
+        
+        /// <summary>評鑑項目</summary>
+        [DisplayName("評鑑項目")]
 		public string? ItemName { get; set; }
 
 		/// <summary>分數</summary>
 		[DisplayName("分數")]
 		public int Score { get; set; }
 
-		/// <summary>備註</summary>
-		[DisplayName("備註")]
+        /// <summary>備註</summary>
+        [DisplayName("備註")]
 		public string Memo { get; set; }
 	}
 }

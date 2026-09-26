@@ -2,8 +2,7 @@
 
 @{
     int BasicScore = ViewBag.BaseScore == null? 0:int.Parse(ViewBag.BaseScore);
-    int totalAdjustment = Model.EditModel.HistoryModel.Sum(item => item.Score);
-    BasicScore = BasicScore + totalAdjustment;
+    BasicScore = BasicScore + Model.EditModel.HistoryTotal;
     Layout = "_BackendLayout";
 
     <style>

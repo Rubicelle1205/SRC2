@@ -70,6 +70,14 @@ namespace WebPccuClub.Models
         [DisplayName("類別名稱")]
         public string? ClassName { get; set; }
 
+        /// <summary>分數上限</summary>
+        [DisplayName("分數上限")]
+        public string? ScoreUpper { get; set; }
+
+        /// <summary>分數下限</summary>
+        [DisplayName("分數下限")]
+        public string? ScoreLower { get; set; }
+
         /// <summary>備註</summary>
         [DisplayName("備註")]
         public string? Memo { get; set; }
@@ -88,6 +96,14 @@ namespace WebPccuClub.Models
 		[DisplayName("類別名稱")]
         public string? ClassName { get; set; }
 
+        /// <summary>分數上限</summary>
+        [DisplayName("分數上限")]
+        public string? ScoreUpper { get; set; }
+
+        /// <summary>分數下限</summary>
+        [DisplayName("分數下限")]
+        public string? ScoreLower { get; set; }
+
         /// <summary>備註</summary>
         [DisplayName("備註")]
         public string? Memo { get; set; }
@@ -104,6 +120,14 @@ namespace WebPccuClub.Models
 		/// <summary>類別名稱</summary>
 		[DisplayName("類別名稱")]
         public string? ClassName { get; set; }
+
+        /// <summary>分數上限</summary>
+        [DisplayName("分數上限")]
+        public string? ScoreUpper { get; set; }
+
+        /// <summary>分數下限</summary>
+        [DisplayName("分數下限")]
+        public string? ScoreLower { get; set; }
 
         /// <summary>備註</summary>
         [DisplayName("備註")]
@@ -127,6 +151,14 @@ namespace WebPccuClub.Models
         /// <summary>類別名稱</summary>
         [DisplayName("類別名稱")]
         public string? ClassName { get; set; }
+
+        /// <summary>分數上限</summary>
+        [DisplayName("分數上限")]
+        public string? ScoreUpper { get; set; }
+
+        /// <summary>分數下限</summary>
+        [DisplayName("分數下限")]
+        public string? ScoreLower { get; set; }
 
         /// <summary>備註</summary>
         [DisplayName("備註")]

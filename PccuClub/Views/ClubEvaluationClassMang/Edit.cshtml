@@ -52,6 +52,14 @@
                                         <td>@Html.TextBoxFor(m => m.EditModel.ClassName, new { @class = "form-control" })</td>
                                     </tr>
                                     <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ScoreUpper)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ScoreUpper, new { @class = "form-control", Type = "number", placeholder = "請輸入分數上限" })</td>
+                                    </tr>
+                                    <tr>
+                                        <th width="15%">@Html.LabelFor(m => m.EditModel.ScoreLower)<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.ScoreLower, new { @class = "form-control", Type = "number", placeholder = "請輸入分數下限" })</td>
+                                    </tr>
+                                    <tr>
                                         <th width="15%">@Html.LabelFor(m => m.EditModel.Memo)</th>
                                         <td>@Html.TextAreaFor(m => m.EditModel.Memo, new { @class = "form-control", row = "6" })</td>
                                     </tr>
@@ -87,14 +95,20 @@
         var ID = $('#@Html.IdFor(m => m.EditModel.ClubEvaluationClassId)').val();
         var SchoolYear = $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val();
         var ClassName = $('#@Html.IdFor(m => m.EditModel.ClassName)').val();
+        var ScoreUpper = $('#@Html.IdFor(m => m.EditModel.ScoreUpper)').val();
+        var ScoreLower = $('#@Html.IdFor(m => m.EditModel.ScoreLower)').val();
         var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
 
         if (SchoolYear == "") { $.alert("學年度不可為空白"); return; }
         if (ClassName == "") { $.alert("名稱不可為空白"); return; }
+        if (ScoreUpper == "") { $.alert("分數上限不可為空白"); return; }
+        if (ScoreLower == "") { $.alert("分數下限不可為空白"); return; }
 
         data.append('@Html.NameFor(m => m.EditModel.ClubEvaluationClassId)', ID);
         data.append('@Html.NameFor(m => m.EditModel.SchoolYear)', SchoolYear);
         data.append('@Html.NameFor(m => m.EditModel.ClassName)', ClassName);
+        data.append('@Html.NameFor(m => m.EditModel.ScoreUpper)', ScoreUpper);
+        data.append('@Html.NameFor(m => m.EditModel.ScoreLower)', ScoreLower);
         data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);
 
         SendAjax({
@@ -122,6 +136,8 @@
     function Reset() {
         $('#@Html.IdFor(m => m.EditModel.SchoolYear)').val("");
         $('#@Html.IdFor(m => m.EditModel.ClassName)').val("");
+        $('#@Html.IdFor(m => m.EditModel.ScoreUpper)').val("");
+        $('#@Html.IdFor(m => m.EditModel.ScoreLower)').val("");
         $('#@Html.IdFor(m => m.EditModel.Memo)').val("");
     }
 </script>

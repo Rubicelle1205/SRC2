@@ -216,7 +216,9 @@ namespace WebPccuClub.Controllers
                         // 讀取並清除欄位前後空白
                         string schoolYear = row.GetCell(0)?.StringCellValue.TrimStartAndEnd();
                         string ClassName = row.GetCell(1)?.StringCellValue.TrimStartAndEnd();
-                        string Memo = row.GetCell(2)?.StringCellValue.TrimStartAndEnd();
+                        string ScoreUpper = row.GetCell(2)?.StringCellValue.TrimStartAndEnd();
+                        string ScoreLower = row.GetCell(3)?.StringCellValue.TrimStartAndEnd();
+                        string Memo = row.GetCell(4)?.StringCellValue.TrimStartAndEnd();
 
 
                         // 封裝 Model
@@ -224,6 +226,8 @@ namespace WebPccuClub.Controllers
                         {
                             SchoolYear = schoolYear,
                             ClassName = ClassName,
+                            ScoreUpper = ScoreUpper,
+                            ScoreLower = ScoreLower,
                             Memo = Memo
                         });
                     }
@@ -277,7 +281,7 @@ namespace WebPccuClub.Controllers
 
                 ISheet sheet = ExcelUtil.GenNewSheet(workbook, "Sheet1", LstWidth);
 
-                string[] allowedFields = new string[] { "SchoolYear", "ClassName", "Memo", "Created" };
+                string[] allowedFields = new string[] { "SchoolYear", "ClassName", "ScoreUpper", "ScoreLower", "Memo", "Created" };
 
                 var properties = typeof(ClubEvaluationClassMangResultModel).GetProperties()
                         .Where(p => allowedFields.Contains(p.Name))
@@ -307,8 +311,10 @@ namespace WebPccuClub.Controllers
 
                     dataRow.CreateCell(0).SetCellValue(vm.ResultModel[i].SchoolYear);
                     dataRow.CreateCell(1).SetCellValue(vm.ResultModel[i].ClassName);
-                    dataRow.CreateCell(2).SetCellValue(vm.ResultModel[i].Memo);
-                    dataRow.CreateCell(3).SetCellValue(vm.ResultModel[i].Created?.ToString("yyyy/MM/dd HH:mm:ss"));
+                    dataRow.CreateCell(2).SetCellValue(vm.ResultModel[i].ScoreUpper);
+                    dataRow.CreateCell(3).SetCellValue(vm.ResultModel[i].ScoreLower);
+                    dataRow.CreateCell(4).SetCellValue(vm.ResultModel[i].Memo);
+                    dataRow.CreateCell(5).SetCellValue(vm.ResultModel[i].Created?.ToString("yyyy/MM/dd HH:mm:ss"));
 
                     foreach (var cell in dataRow.Cells)
                         cell.CellStyle = contentStyle;

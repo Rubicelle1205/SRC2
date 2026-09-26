@@ -144,6 +144,11 @@ namespace WebPccuClub.Models
     public class ClubEvaluationMangEditModel
     {
         public List<ClubEvaluationHistory> HistoryModel = new List<ClubEvaluationHistory>();
+
+        /// <summary>總分</summary>
+        [DisplayName("總分")]
+        public int HistoryTotal { get; set; }
+
         public int? ClubEvaluationId { get; set; }
 
 		/// <summary>學年度</summary>
@@ -184,6 +189,10 @@ namespace WebPccuClub.Models
         /// <summary>建立時間</summary>
         [DisplayName("建立時間")]
         public DateTime? Created { get; set; }
+
+        /// <summary>評鑑項目</summary>
+        [DisplayName("評鑑項目")]
+        public string? ClubEvaluationItemId { get; set; }
 
         /// <summary>評鑑項目</summary>
         [DisplayName("評鑑項目")]

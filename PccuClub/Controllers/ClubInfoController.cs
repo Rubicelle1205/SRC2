@@ -490,9 +490,73 @@ namespace WebPccuClub.Controllers
 		public IActionResult GetClubScoreSearchResult(ClubInfoViewModel vm)
 		{
 			vm.ClubScoreDetailModel = dbAccess.GetClubScoreSearchResult(vm.ClubScoreConditionModel);
-            
+
             if (vm.ClubScoreDetailModel != null)
-                vm.ClubScoreDetailModel.Histroy = dbAccess.GetClubScoreHistroy(vm.ClubScoreConditionModel, LoginUser).ToList();
+            {
+                DataTable dt = dbAccess.GetClubScoreHistroy(vm.ClubScoreConditionModel, LoginUser);
+
+                List<ClubScoreHistory> LstHistory = new List<ClubScoreHistory>();
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    // Step 1: 將 DataTable 資料安全轉寫入 LstHistory
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        string itemID = dr["ClubEvaluationItemId"]?.ToString();
+
+                        if (!string.IsNullOrEmpty(itemID))
+                        {
+                            // 安全解析分數（防止 DBNull 導致程式崩潰）
+                            int score = dr.Field<int?>("Score") ?? 0;
+                            DateTime created = dr.Field<DateTime?>("Created") ?? DateTime.MinValue;
+
+                            ClubScoreHistory clubScoreHistory = new ClubScoreHistory
+                            {
+                                ClubEvaluationItemId = itemID,
+                                Created = created,
+                                ItemName = dr["ItemName"]?.ToString() ?? string.Empty,
+                                Score = score,
+                                Memo = dr["Memo"]?.ToString() ?? string.Empty
+                            };
+
+                            LstHistory.Add(clubScoreHistory);
+                        }
+                    }
+
+                    // Step 2: 依 ItemID 分組，加總分數並套用上下限
+                    int totalHistoryScore = 0;
+
+                    // 將 DataTable 按 ClubEvaluationItemId 分組，方便取得每個 ItemID 對應的 Upper / Lower 上下限
+                    var itemGroups = dt.AsEnumerable()
+                                       .Where(r => r["ClubEvaluationItemId"] != DBNull.Value && !string.IsNullOrEmpty(r["ClubEvaluationItemId"].ToString()))
+                                       .GroupBy(r => r["ClubEvaluationItemId"].ToString());
+
+                    foreach (var group in itemGroups)
+                    {
+                        // 取得該 ItemID 的第一筆資料中的上下限設定
+                        DataRow firstRow = group.First();
+                        int scoreUpper = firstRow.Field<int?>("ScoreUpper") ?? int.MaxValue;
+                        int scoreLower = firstRow.Field<int?>("ScoreLower") ?? int.MinValue;
+
+                        // 計算該 ItemID 所有分數的加總
+                        int itemSumScore = group.Sum(r => r.Field<int?>("Score") ?? 0);
+
+                        // 限制加總後的數值在 [ScoreLower, ScoreUpper] 之間
+                        // (在 .NET Core / .NET 5+ 可直接用 Math.Clamp(itemSumScore, scoreLower, scoreUpper))
+                        if (itemSumScore > scoreUpper) itemSumScore = scoreUpper;
+                        if (itemSumScore < scoreLower) itemSumScore = scoreLower;
+
+                        // 累加至總分
+                        totalHistoryScore += itemSumScore;
+                    }
+
+                    // 將最終加總結果賦值給 EditModel
+                    vm.ClubScoreDetailModel.HistoryTotal = totalHistoryScore;
+                }
+
+                vm.ClubScoreDetailModel.Histroy = LstHistory;
+
+            }
 
             return PartialView("_SearchClubScoreResultPartial", vm);
 		}

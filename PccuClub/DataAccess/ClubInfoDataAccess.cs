@@ -450,7 +450,7 @@ namespace WebPccuClub.DataAccess
             return null;
         }
 
-        public List<ClubScoreHistory> GetClubScoreHistroy(ClubScoreConditionModel vm, UserInfo LoginUser)
+        public DataTable GetClubScoreHistroy(ClubScoreConditionModel vm, UserInfo LoginUser)
         {
             string CommandText = string.Empty;
             DataSet ds = new DataSet();
@@ -463,21 +463,23 @@ namespace WebPccuClub.DataAccess
 
             #endregion
 
-            CommandText = $@"SELECT A.Score, A.Memo, C.ItemName, A.Created
-                               FROM ClubEvaluationMang A
-                          LEFT JOIN ClubMang B ON B.ClubID = A.ClubID 
-                          LEFT JOIN ClubEvaluationItemMang C ON C.ClubEvaluationItemId = A.ClubEvaluationItemId 
-                          LEFT JOIN ClubEvaluationClassMang D ON D.ClubEvaluationClassId = A.ClubEvaluationClassId 
-                              WHERE 1 = 1
+            CommandText = $@"SELECT C.ClubEvaluationItemId, C.ItemName, A.Memo, D.ScoreUpper, D.ScoreLower, A.Score, A.Created
+FROM ClubEvaluationMang A
+LEFT JOIN ClubMang B ON B.ClubID = A.ClubID 
+LEFT JOIN ClubEvaluationItemMang C ON C.ClubEvaluationItemId = A.ClubEvaluationItemId 
+LEFT JOIN ClubEvaluationClassMang D ON D.ClubEvaluationClassId = A.ClubEvaluationClassId 
+WHERE 1 = 1
 AND A.SchoolYear = @SchoolYear 
-AND A.ClubID = @ClubID ";
+AND A.ClubID = @ClubID 
+Order By C.ClubEvaluationItemId ASC ";
 
-            (DbExecuteInfo info, IEnumerable<ClubScoreHistory> entitys) dbResult = DbaExecuteQuery<ClubScoreHistory>(CommandText, parameters, true, DBAccessException);
+            (DbExecuteInfo info, IEnumerable<ClubEvaluationHistory> entitys) dbResult = DbaExecuteQuery<ClubEvaluationHistory>(CommandText, parameters, true, DBAccessException);
 
-            if (dbResult.info.isSuccess && dbResult.entitys.Count() > 0)
-                return dbResult.entitys.ToList();
+            DbaExecuteQuery(CommandText, parameters, ds, true, DBAccessException);
 
-            return new List<ClubScoreHistory>();
+            DataTable dt = ds.Tables[0];
+
+            return dt;
         }
 
         public string GetBaseScore(ClubEvaluationMangViewModel vm)

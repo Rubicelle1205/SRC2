@@ -33,7 +33,7 @@ namespace WebPccuClub.DataAccess
      
             #endregion
 
-            CommandText = $@"SELECT ClubEvaluationClassId, SchoolYear, ClassName, Memo, Creator, Created, LastModifier, LastModified
+            CommandText = $@"SELECT ClubEvaluationClassId, SchoolYear, ClassName, ScoreUpper, ScoreLower, Memo, Creator, Created, LastModifier, LastModified
                                FROM ClubEvaluationClassMang
                               WHERE 1 = 1
 {(model.From_ReleaseDate.HasValue && model.To_ReleaseDate.HasValue ? " AND Created BETWEEN @FromDate AND @ToDate" : " ")}
@@ -64,7 +64,7 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
 
             #endregion
 
-            CommandText = $@"SELECT ClubEvaluationClassId, SchoolYear, ClassName, Memo, Creator, Created, LastModifier, LastModified
+            CommandText = $@"SELECT ClubEvaluationClassId, SchoolYear, ClassName, ScoreUpper, ScoreLower, Memo, Creator, Created, LastModifier, LastModified
                                FROM ClubEvaluationClassMang
                               WHERE 1 = 1
                                 AND (ClubEvaluationClassId = @ID) ";
@@ -88,6 +88,8 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
 			#region 參數設定
 			parameters.Add("@SchoolYear", vm.CreateModel.SchoolYear);
 			parameters.Add("@ClassName", vm.CreateModel.ClassName);
+            parameters.Add("@ScoreUpper", vm.CreateModel.ScoreUpper);
+            parameters.Add("@ScoreLower", vm.CreateModel.ScoreLower);
             parameters.Add("@Memo", vm.CreateModel.Memo);
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
@@ -95,6 +97,8 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
             string CommendText = $@"INSERT INTO ClubEvaluationClassMang
                                                (SchoolYear
                                                ,ClassName
+                                               ,ScoreUpper
+                                               ,ScoreLower
                                                ,Memo
                                                ,Creator
                                                ,Created
@@ -103,6 +107,8 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
                                          VALUES
                                                (@SchoolYear
                                                ,@ClassName
+                                               ,@ScoreUpper
+                                               ,@ScoreLower
                                                ,@Memo
                                                ,@LoginId
                                                ,GETDATE()
@@ -124,12 +130,16 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
             parameters.Add("@ClubEvaluationClassId", vm.EditModel.ClubEvaluationClassId);
 			parameters.Add("@SchoolYear", vm.EditModel.SchoolYear);
 			parameters.Add("@ClassName", vm.EditModel.ClassName);
-			parameters.Add("@Memo", vm.EditModel.Memo);
+            parameters.Add("@ScoreUpper", vm.EditModel.ScoreUpper);
+            parameters.Add("@ScoreLower", vm.EditModel.ScoreLower);
+            parameters.Add("@Memo", vm.EditModel.Memo);
             parameters.Add("@LoginId", LoginUser.LoginId);
             #endregion 參數設定
 
             string CommendText = $@"UPDATE ClubEvaluationClassMang 
-                                       SET SchoolYear = @SchoolYear, ClassName = @ClassName, Memo = @Memo, LastModifier = @LoginId, LastModified = GETDATE()
+                                       SET SchoolYear = @SchoolYear, ClassName = @ClassName, 
+                                           ScoreUpper = @ScoreUpper,  ScoreLower = @ScoreLower, 
+                                           Memo = @Memo, LastModifier = @LoginId, LastModified = GETDATE()
                                      WHERE ClubEvaluationClassId = @ClubEvaluationClassId";
 
             ExecuteResult = DbaExecuteNonQuery(CommendText, parameters, false, DBAccessException);
@@ -172,6 +182,8 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
             string CommendText = $@"INSERT INTO ClubEvaluationClassMang
                                                (SchoolYear
                                                ,ClassName
+                                               ,ScoreUpper
+                                               ,ScoreLower
                                                ,Memo
                                                ,Creator
                                                ,Created
@@ -180,6 +192,8 @@ AND (@Memo IS NULL OR Memo LIKE '%' + @Memo + '%') ";
                                          VALUES
                                                (@SchoolYear
                                                ,@ClassName
+                                               ,@ScoreUpper
+                                               ,@ScoreLower
                                                ,@Memo
                                                ,'{loginUser.LoginId}'
                                                ,GETDATE()

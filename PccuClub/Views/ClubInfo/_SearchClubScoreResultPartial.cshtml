@@ -2,13 +2,11 @@
 
 @{
     int BasicScore = 0;
-    int totalAdjustment = 0;
+
     if (Model.ClubScoreDetailModel != null)
     {
-        BasicScore = int.Parse(Model.ClubScoreDetailModel.BasicScore);
-        totalAdjustment = Model.ClubScoreDetailModel.Histroy.Sum(item => item.Score);
-        BasicScore = BasicScore + totalAdjustment;
-    
+        BasicScore = Model.ClubScoreDetailModel.BasicScore == null ? 0 : int.Parse(Model.ClubScoreDetailModel.BasicScore);
+        BasicScore = BasicScore + Model.ClubScoreDetailModel.HistoryTotal;
     }
 
     <style>
