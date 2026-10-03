@@ -106,7 +106,8 @@ AND (@ClubEvaluationClassId IS NULL OR D.ClubEvaluationClassId LIKE '%' + @ClubE
 
             #endregion
 
-            CommandText = $@"SELECT C.ClubEvaluationItemId, C.ItemName, A.Memo, D.ScoreUpper, D.ScoreLower, A.Score, A.Created
+            CommandText = $@"SELECT D.ClubEvaluationClassId, D.ClassName, C.ClubEvaluationItemId, C.ItemName, A.Score, C.ScoreUpper, C.ScoreLower,
+                                    A.Memo, D.ScoreUpper AS ClassScoreUpper, D.ScoreLower AS ClassScoreLower, A.Score, A.Created
 FROM ClubEvaluationMang A
 LEFT JOIN ClubMang B ON B.ClubID = A.ClubID 
 LEFT JOIN ClubEvaluationItemMang C ON C.ClubEvaluationItemId = A.ClubEvaluationItemId 

@@ -190,9 +190,17 @@ namespace WebPccuClub.Models
         [DisplayName("建立時間")]
         public DateTime? Created { get; set; }
 
-        /// <summary>評鑑項目</summary>
-        [DisplayName("評鑑項目")]
+        /// <summary>ClubEvaluationClassId</summary>
+        [DisplayName("ClubEvaluationClassId")]
+        public string? ClubEvaluationClassId { get; set; }
+
+        /// <summary>ClubEvaluationItemId</summary>
+        [DisplayName("ClubEvaluationItemId")]
         public string? ClubEvaluationItemId { get; set; }
+
+        /// <summary>評鑑類別</summary>
+        [DisplayName("評鑑類別")]
+        public string? ClassName { get; set; }
 
         /// <summary>評鑑項目</summary>
         [DisplayName("評鑑項目")]

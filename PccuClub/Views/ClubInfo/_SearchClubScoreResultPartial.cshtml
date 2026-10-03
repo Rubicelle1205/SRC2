@@ -35,10 +35,11 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th style="width:15%; text-align: center;">建立日期</th>
-                    <th style="width:40%; text-align: center;">加減分項目</th>
+                    <th style="width:10%; text-align: center;">建立日期</th>
+                    <th style="width:32%; text-align: center;">評鑑類別</th>
+                    <th style="width:33%; text-align: center;">加減分項目</th>
                     <th style="width:10%; text-align: center;">加減分</th>
-                    <th style="width:35%; text-align: center;">備註</th>
+                    <th style="width:15%; text-align: center;">備註</th>
                 </tr>
             </thead>
             <tbody id="score-log">
@@ -49,6 +50,7 @@
                     {
                         <tr>
                             <td style="text-align: center;">@item.Created.Value.ToString("yyyy/MM/dd")</td>
+                            <td>@item.ClassName</td>
                             <td>@item.ItemName</td>
                             <td style="text-align: center;">@item.Score</td>
                             <td>@item.Memo</td>

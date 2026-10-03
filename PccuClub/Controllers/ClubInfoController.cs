@@ -514,6 +514,7 @@ namespace WebPccuClub.Controllers
                             {
                                 ClubEvaluationItemId = itemID,
                                 Created = created,
+                                ClassName = dr["ClassName"]?.ToString() ?? string.Empty,
                                 ItemName = dr["ItemName"]?.ToString() ?? string.Empty,
                                 Score = score,
                                 Memo = dr["Memo"]?.ToString() ?? string.Empty
@@ -528,15 +529,15 @@ namespace WebPccuClub.Controllers
 
                     // 將 DataTable 按 ClubEvaluationItemId 分組，方便取得每個 ItemID 對應的 Upper / Lower 上下限
                     var itemGroups = dt.AsEnumerable()
-                                       .Where(r => r["ClubEvaluationItemId"] != DBNull.Value && !string.IsNullOrEmpty(r["ClubEvaluationItemId"].ToString()))
-                                       .GroupBy(r => r["ClubEvaluationItemId"].ToString());
+                                       .Where(r => r["ClubEvaluationClassId"] != DBNull.Value && !string.IsNullOrEmpty(r["ClubEvaluationClassId"].ToString()))
+                                       .GroupBy(r => r["ClubEvaluationClassId"].ToString());
 
                     foreach (var group in itemGroups)
                     {
                         // 取得該 ItemID 的第一筆資料中的上下限設定
                         DataRow firstRow = group.First();
-                        int scoreUpper = firstRow.Field<int?>("ScoreUpper") ?? int.MaxValue;
-                        int scoreLower = firstRow.Field<int?>("ScoreLower") ?? int.MinValue;
+                        int scoreUpper = firstRow.Field<int?>("ClassScoreUpper") ?? int.MaxValue;
+                        int scoreLower = firstRow.Field<int?>("ClassScoreLower") ?? int.MinValue;
 
                         // 計算該 ItemID 所有分數的加總
                         int itemSumScore = group.Sum(r => r.Field<int?>("Score") ?? 0);
