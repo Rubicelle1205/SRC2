@@ -82,6 +82,7 @@ namespace WebPccuClub.Controllers
                         {
                             ClubEvaluationItemId = itemID,
                             Created = created,
+                            ClassName = dr["ClassName"]?.ToString() ?? string.Empty,
                             ItemName = dr["ItemName"]?.ToString() ?? string.Empty,
                             Score = score,
                             Memo = dr["Memo"]?.ToString() ?? string.Empty
