@@ -46,7 +46,7 @@ namespace WebPccuClub.DataAccess
     A.MainID, C.Text AS MainText, A.SecondID, D.Text AS SecondText, A.ThridID, E.Text AS ThridText, 
     A.ActSTime, A.ActETime, A.RegistrationWay, 
     A.Presenter, A.PresenterIntro, A.Host, A.HostIntro, A.ClubCName, A.ContactMan, 
-    A.RegistrationMan, A.OpenObject, A.Tag, A.PosterIconPath, A.Memo, 
+    A.OpenObject, A.Tag, A.PosterIconPath, A.Memo, 
     A.ActVerify, B.Text AS ActVerifyText, A.ActVerifyMemo, A.Created
 
 FROM HolisticPassportMang A
@@ -147,7 +147,6 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')
 ('PresenterIntro', '主講人介紹', 0),
 ('ClubCName', '主辦單位', 0),
 ('ContactMan', '聯絡人', 0),
-('RegistrationMan', '負責補登者', 0),
 ('OpenObject', '開放對象', 0),
 ('Tag', '關鍵字標籤', 0),
 ('PosterIconPath', '海報縮圖', 0),
@@ -187,7 +186,7 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')
 
             CommandText = $@"SELECT ID, SchoolYear, ClubID, ActID, ActName, HolisticActName, ActDesc, MainID, SecondID, ThridID, ActSTime, ActETime, RegistrationWay, 
                                     PlaceSource, BuildID, PlaceID, PlaceName, Presenter, PresenterIntro, Host, HostIntro, 
-                                    ClubCName, ContactMan, RegistrationMan, OpenObject, Tag, PosterIconPath, Memo, ActVerify, ActVerifyMemo, 
+                                    ClubCName, ContactMan, OpenObject, Tag, PosterIconPath, Memo, ActVerify, ActVerifyMemo, 
                                     Creator, Created, LastModifier, LastModified
                                FROM HolisticPassportMang
 WHERE 1 = 1
@@ -230,7 +229,6 @@ AND (ID = @ID) ";
             parameters.Add("@PresenterIntro", vm.CreateModel.PresenterIntro);
             parameters.Add("@ClubCName", vm.CreateModel.ClubCName);
             parameters.Add("@ContactMan", vm.CreateModel.ContactMan);
-            parameters.Add("@RegistrationMan", vm.CreateModel.RegistrationMan);
             parameters.Add("@OpenObject", vm.CreateModel.OpenObject);
             parameters.Add("@Tag", vm.CreateModel.Tag);
             parameters.Add("@PosterIconPath", vm.CreateModel.PosterIconPath);
@@ -261,7 +259,6 @@ AND (ID = @ID) ";
                                                 PresenterIntro, 
                                                 ClubCName, 
                                                 ContactMan, 
-                                                RegistrationMan, 
                                                 OpenObject, 
                                                 Tag, 
                                                 PosterIconPath, 
@@ -293,7 +290,6 @@ AND (ID = @ID) ";
                                                 @PresenterIntro, 
                                                 @ClubCName, 
                                                 @ContactMan, 
-                                                @RegistrationMan, 
                                                 @OpenObject, 
                                                 @Tag, 
                                                 @PosterIconPath, 
@@ -338,7 +334,6 @@ AND (ID = @ID) ";
             parameters.Add("@PresenterIntro", vm.EditModel.PresenterIntro);
             parameters.Add("@ClubCName", vm.EditModel.ClubCName);
             parameters.Add("@ContactMan", vm.EditModel.ContactMan);
-            parameters.Add("@RegistrationMan", vm.EditModel.RegistrationMan);
             parameters.Add("@OpenObject", vm.EditModel.OpenObject);
             parameters.Add("@Tag", vm.EditModel.Tag);
             parameters.Add("@PosterIconPath", vm.EditModel.PosterIconPath);
@@ -369,7 +364,6 @@ AND (ID = @ID) ";
                                             PresenterIntro = @PresenterIntro, 
                                             ClubCName = @ClubCName, 
                                             ContactMan = @ContactMan, 
-                                            RegistrationMan = @RegistrationMan, 
                                             OpenObject = @OpenObject, 
                                             Tag = @Tag, 
                                             %PosterIconPath%

@@ -188,10 +188,6 @@ namespace WebPccuClub.Models
         [DisplayName("聯絡人")]
         public string? ContactMan { get; set; }
 
-        /// <summary>負責補登者</summary>
-        [DisplayName("負責補登者")]
-        public string? RegistrationMan { get; set; }
-
         /// <summary>開放對象</summary>
         [DisplayName("開放對象")]
         public string? OpenObject { get; set; }
@@ -315,10 +311,6 @@ namespace WebPccuClub.Models
         [DisplayName("聯絡人")]
         public string? ContactMan { get; set; }
 
-        /// <summary>負責補登者</summary>
-        [DisplayName("負責補登者")]
-        public string? RegistrationMan { get; set; }
-
         /// <summary>開放對象</summary>
         [DisplayName("開放對象")]
         public string? OpenObject { get; set; }
@@ -435,10 +427,6 @@ namespace WebPccuClub.Models
         /// <summary>聯絡人</summary>
         [DisplayName("聯絡人")]
         public string? ContactMan { get; set; }
-
-        /// <summary>負責補登者</summary>
-        [DisplayName("負責補登者")]
-        public string? RegistrationMan { get; set; }
 
         /// <summary>開放對象</summary>
         [DisplayName("開放對象")]

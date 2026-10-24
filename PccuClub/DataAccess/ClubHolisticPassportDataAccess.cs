@@ -66,7 +66,7 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')
                                     A.MainID, B.Text AS MainIDText, A.SecondID, C.Text AS SecondIDText, A.ThridID, D.Text AS ThridIDText,
                                     A.ActSTime, A.ActETime, A.RegistrationWay, A.PlaceSource, E.Text AS PlaceSourceText,
                                     A.BuildID, A.PlaceID, A.PlaceName, A.Presenter, A.PresenterIntro, A.Host, A.HostIntro, A.ClubCName, A.ContactMan, 
-                                    A.RegistrationMan, A.OpenObject, A.Tag, A.PosterIconPath, A.Memo, A.ActVerify, F.Text AS ActVerifyText, A.ActVerifyMemo, A.Creator, A.Created, A.LastModifier, A.LastModified
+                                    A.OpenObject, A.Tag, A.PosterIconPath, A.Memo, A.ActVerify, F.Text AS ActVerifyText, A.ActVerifyMemo, A.Creator, A.Created, A.LastModifier, A.LastModified
                                FROM HolisticPassportMang A
                           LEFT JOIN HolisticMainClassMang B ON B.ID = A.MainID
                           LEFT JOIN HolisticSecondClassMang C ON C.ID = A.SecondID
@@ -105,7 +105,7 @@ AND (A.ID = @ID) ";
 
             CommandText = $@"SELECT ID, SchoolYear, ClubID, ActID, ActName, HolisticActName, ActDesc, MainID, SecondID, ThridID, ActSTime, ActETime, 
                                     RegistrationWay, PlaceSource, BuildID, PlaceID, PlaceName, Presenter, PresenterIntro, Host, HostIntro, ClubCName, ContactMan, 
-                                    RegistrationMan, OpenObject, Tag, PosterIconPath, Memo, ActVerify, ActVerifyMemo, Creator, Created, LastModifier, LastModified
+                                    OpenObject, Tag, PosterIconPath, Memo, ActVerify, ActVerifyMemo, Creator, Created, LastModifier, LastModified
                                FROM HolisticPassportMang
 WHERE 1 = 1
 AND (ID = @ID) ";
@@ -146,7 +146,6 @@ AND (ID = @ID) ";
             parameters.Add("@PresenterIntro", vm.EditModel.PresenterIntro);
             parameters.Add("@ClubCName", vm.EditModel.ClubCName);
             parameters.Add("@ContactMan", vm.EditModel.ContactMan);
-            parameters.Add("@RegistrationMan", vm.EditModel.RegistrationMan);
             parameters.Add("@OpenObject", vm.EditModel.OpenObject);
             parameters.Add("@Tag", vm.EditModel.Tag);
             parameters.Add("@PosterIconPath", vm.EditModel.PosterIconPath);
@@ -177,7 +176,6 @@ AND (ID = @ID) ";
                                             PresenterIntro = @PresenterIntro, 
                                             ClubCName = @ClubCName, 
                                             ContactMan = @ContactMan, 
-                                            RegistrationMan = @RegistrationMan, 
                                             OpenObject = @OpenObject, 
                                             Tag = @Tag, 
                                             PosterIconPath = @PosterIconPath, 

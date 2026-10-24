@@ -120,12 +120,6 @@
                     </div>
                 </div>
                 <div class="infoItem">
-                    <div class="tag">負責補登者<span class="req-star">*</span></div>
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.ClubHolisticPassport.RegistrationMan, new {@class="form-control", placeholder = "負責補登者"})
-                    </div>
-                </div>
-                <div class="infoItem">
                     <div class="tag">開放對象<span class="req-star">*</span></div>
                     <div class="content">
                         @Html.TextBoxFor(m => m.ClubHolisticPassport.OpenObject, new {@class="form-control", placeholder = "開放對象"})
@@ -236,7 +230,6 @@
         var PresenterIntro = $('#@Html.IdFor(m => m.ClubHolisticPassport.PresenterIntro)').val();
         var ClubCName = $('#@Html.IdFor(m => m.ClubHolisticPassport.ClubCName)').val();
         var ContactMan = $('#@Html.IdFor(m => m.ClubHolisticPassport.ContactMan)').val();
-        var RegistrationMan = $('#@Html.IdFor(m => m.ClubHolisticPassport.RegistrationMan)').val();
         var OpenObject = $('#@Html.IdFor(m => m.ClubHolisticPassport.OpenObject)').val();
         var Tag = $('#@Html.IdFor(m => m.ClubHolisticPassport.Tag)').val();
         var Memo = $('#@Html.IdFor(m => m.ClubHolisticPassport.Memo)').val();
@@ -271,7 +264,6 @@
         if (PresenterIntro == "") { $.alert("主講人介紹不可為空白"); return; }
         if (ClubCName == "") { $.alert("主辦單位不可為空白"); return; }
         if (ContactMan == "") { $.alert("聯絡人不可為空白"); return; }
-        if (RegistrationMan == "") { $.alert("負責補登者不可為空白"); return; }
         if (OpenObject == "") { $.alert("開放對象不可為空白"); return; }
         if (Tag == "") { $.alert("關鍵字標籤不可為空白"); return; }
 
@@ -296,7 +288,6 @@
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.PresenterIntro)', PresenterIntro);
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.ClubCName)', ClubCName);
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.ContactMan)', ContactMan);
-        data.append('@Html.NameFor(m => m.ClubHolisticPassport.RegistrationMan)', RegistrationMan);
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.OpenObject)', OpenObject);
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.Tag)', Tag);
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.Memo)', Memo);

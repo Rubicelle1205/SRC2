@@ -129,10 +129,6 @@
                                         <td>@Html.TextBoxFor(m => m.EditModel.ContactMan, new { @class = "form-control", @placeholder = "請輸入聯絡人" })</td>
                                     </tr>
                                     <tr>
-                                        <th width="10%">負責補登者<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.RegistrationMan, new { @class = "form-control", @placeholder = "請輸入負責補登者" })</td>
-                                    </tr>
-                                    <tr>
                                         <th width="10%">開放對象<span class="required">*</span></th>
                                         <td>@Html.TextBoxFor(m => m.EditModel.OpenObject, new { @class = "form-control", @placeholder = "請輸入開放對象" })</td>
                                     </tr>
@@ -291,7 +287,6 @@
 
         var ClubCName = $('#@Html.IdFor(m => m.EditModel.ClubCName)').val();
         var ContactMan = $('#@Html.IdFor(m => m.EditModel.ContactMan)').val();
-        var RegistrationMan = $('#@Html.IdFor(m => m.EditModel.RegistrationMan)').val();
         var OpenObject = $('#@Html.IdFor(m => m.EditModel.OpenObject)').val();
         var Tag = $('#@Html.IdFor(m => m.EditModel.Tag)').val();
         var Memo = $('#@Html.IdFor(m => m.EditModel.Memo)').val();
@@ -340,7 +335,6 @@
         if (PresenterIntro == "") { $.alert("主講人介紹不可為空白"); return; }
         if (ClubCName == "") { $.alert("主辦單位不可為空白"); return; }
         if (ContactMan == "") { $.alert("聯絡人不可為空白"); return; }
-        if (RegistrationMan == "") { $.alert("負責補登者不可為空白"); return; }
         if (OpenObject == "") { $.alert("開放對象不可為空白"); return; }
         if (Tag == "") { $.alert("關鍵字標籤不可為空白"); return; }
         if (ActVerify == "") { $.alert("審核狀態不可為空白"); return; }
@@ -367,7 +361,6 @@
         data.append('@Html.NameFor(m => m.EditModel.PresenterIntro)', PresenterIntro);
         data.append('@Html.NameFor(m => m.EditModel.ClubCName)', ClubCName);
         data.append('@Html.NameFor(m => m.EditModel.ContactMan)', ContactMan);
-        data.append('@Html.NameFor(m => m.EditModel.RegistrationMan)', RegistrationMan);
         data.append('@Html.NameFor(m => m.EditModel.OpenObject)', OpenObject);
         data.append('@Html.NameFor(m => m.EditModel.Tag)', Tag);
         data.append('@Html.NameFor(m => m.EditModel.Memo)', Memo);

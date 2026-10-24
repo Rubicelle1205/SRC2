@@ -1336,7 +1336,6 @@ WHERE ActID = @ActID
             parameters.Add("@PresenterIntro", vm.ClubHolisticPassport.PresenterIntro);
             parameters.Add("@ClubCName", vm.ClubHolisticPassport.ClubCName);
             parameters.Add("@ContactMan", vm.ClubHolisticPassport.ContactMan);
-            parameters.Add("@RegistrationMan", vm.ClubHolisticPassport.RegistrationMan);
             parameters.Add("@OpenObject", vm.ClubHolisticPassport.OpenObject);
             parameters.Add("@Tag", vm.ClubHolisticPassport.Tag);
             parameters.Add("@PosterIconPath", vm.ClubHolisticPassport.PosterIconPath);
@@ -1365,7 +1364,6 @@ WHERE ActID = @ActID
                                                 PresenterIntro, 
                                                 ClubCName, 
                                                 ContactMan, 
-                                                RegistrationMan, 
                                                 OpenObject, 
                                                 Tag, 
                                                 PosterIconPath, 
@@ -1396,7 +1394,6 @@ WHERE ActID = @ActID
                                                 @PresenterIntro, 
                                                 @ClubCName, 
                                                 @ContactMan, 
-                                                @RegistrationMan, 
                                                 @OpenObject, 
                                                 @Tag, 
                                                 @PosterIconPath, 
