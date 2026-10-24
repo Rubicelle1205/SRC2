@@ -1334,8 +1334,6 @@ WHERE ActID = @ActID
             parameters.Add("@PlaceName", vm.ClubHolisticPassport.PlaceName);
             parameters.Add("@Presenter", vm.ClubHolisticPassport.Presenter);
             parameters.Add("@PresenterIntro", vm.ClubHolisticPassport.PresenterIntro);
-            parameters.Add("@Host", vm.ClubHolisticPassport.Host);
-            parameters.Add("@HostIntro", vm.ClubHolisticPassport.HostIntro);
             parameters.Add("@ClubCName", vm.ClubHolisticPassport.ClubCName);
             parameters.Add("@ContactMan", vm.ClubHolisticPassport.ContactMan);
             parameters.Add("@RegistrationMan", vm.ClubHolisticPassport.RegistrationMan);
@@ -1365,8 +1363,6 @@ WHERE ActID = @ActID
                                                 PlaceName, 
                                                 Presenter, 
                                                 PresenterIntro, 
-                                                Host, 
-                                                HostIntro, 
                                                 ClubCName, 
                                                 ContactMan, 
                                                 RegistrationMan, 
@@ -1398,8 +1394,6 @@ WHERE ActID = @ActID
                                                 @PlaceName, 
                                                 @Presenter, 
                                                 @PresenterIntro, 
-                                                @Host, 
-                                                @HostIntro, 
                                                 @ClubCName, 
                                                 @ContactMan, 
                                                 @RegistrationMan, 

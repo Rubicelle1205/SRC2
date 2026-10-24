@@ -106,18 +106,7 @@
                         @Html.TextAreaFor(m => m.ClubHolisticPassport.PresenterIntro, new { @class = "form-control", placeholder = "主講人介紹", rows = "5" })
                     </div>
                 </div>
-                <div class="infoItem">
-                    <div class="tag">主持人<span class="req-star">*</span></div>
-                    <div class="content">
-                        @Html.TextBoxFor(m => m.ClubHolisticPassport.Host, new {@class="form-control", placeholder = "主持人"})
-                    </div>
-                </div>
-                <div class="infoItem">
-                    <div class="tag">主持人介紹<span class="req-star">*</span></div>
-                    <div class="content">
-                        @Html.TextAreaFor(m => m.ClubHolisticPassport.HostIntro, new {@class="form-control", placeholder = "主持人介紹", rows = "5"})
-                    </div>
-                </div>
+               
                 <div class="infoItem">
                     <div class="tag">主辦單位<span class="req-star">*</span></div>
                     <div class="content">
@@ -245,8 +234,6 @@
         var PlaceName = $('#@Html.IdFor(m => m.ClubHolisticPassport.PlaceName)').val();
         var Presenter = $('#@Html.IdFor(m => m.ClubHolisticPassport.Presenter)').val();
         var PresenterIntro = $('#@Html.IdFor(m => m.ClubHolisticPassport.PresenterIntro)').val();
-        var Host = $('#@Html.IdFor(m => m.ClubHolisticPassport.Host)').val();
-        var HostIntro = $('#@Html.IdFor(m => m.ClubHolisticPassport.HostIntro)').val();
         var ClubCName = $('#@Html.IdFor(m => m.ClubHolisticPassport.ClubCName)').val();
         var ContactMan = $('#@Html.IdFor(m => m.ClubHolisticPassport.ContactMan)').val();
         var RegistrationMan = $('#@Html.IdFor(m => m.ClubHolisticPassport.RegistrationMan)').val();
@@ -282,8 +269,6 @@
         if (PlaceSource == "") { $.alert("活動地點需選擇"); return; }
         if (Presenter == "") { $.alert("主講人不可為空白"); return; }
         if (PresenterIntro == "") { $.alert("主講人介紹不可為空白"); return; }
-        if (Host == "") { $.alert("主持人不可為空白"); return; }
-        if (HostIntro == "") { $.alert("主持人介紹不可為空白"); return; }
         if (ClubCName == "") { $.alert("主辦單位不可為空白"); return; }
         if (ContactMan == "") { $.alert("聯絡人不可為空白"); return; }
         if (RegistrationMan == "") { $.alert("負責補登者不可為空白"); return; }
@@ -309,8 +294,6 @@
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.PlaceName)', placetext);
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.Presenter)', Presenter);
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.PresenterIntro)', PresenterIntro);
-        data.append('@Html.NameFor(m => m.ClubHolisticPassport.Host)', Host);
-        data.append('@Html.NameFor(m => m.ClubHolisticPassport.HostIntro)', HostIntro);
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.ClubCName)', ClubCName);
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.ContactMan)', ContactMan);
         data.append('@Html.NameFor(m => m.ClubHolisticPassport.RegistrationMan)', RegistrationMan);

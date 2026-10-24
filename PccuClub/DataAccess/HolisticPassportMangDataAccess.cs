@@ -145,8 +145,6 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')
 ('PlaceName', '活動地點', 1),
 ('Presenter', '主講人', 0),
 ('PresenterIntro', '主講人介紹', 0),
-('Host', '主持人', 0),
-('HostIntro', '主持人介紹', 0),
 ('ClubCName', '主辦單位', 0),
 ('ContactMan', '聯絡人', 0),
 ('RegistrationMan', '負責補登者', 0),
@@ -230,8 +228,6 @@ AND (ID = @ID) ";
             parameters.Add("@PlaceName", vm.CreateModel.PlaceName);
             parameters.Add("@Presenter", vm.CreateModel.Presenter);
             parameters.Add("@PresenterIntro", vm.CreateModel.PresenterIntro);
-            parameters.Add("@Host", vm.CreateModel.Host);
-            parameters.Add("@HostIntro", vm.CreateModel.HostIntro);
             parameters.Add("@ClubCName", vm.CreateModel.ClubCName);
             parameters.Add("@ContactMan", vm.CreateModel.ContactMan);
             parameters.Add("@RegistrationMan", vm.CreateModel.RegistrationMan);
@@ -263,8 +259,6 @@ AND (ID = @ID) ";
                                                 PlaceName, 
                                                 Presenter, 
                                                 PresenterIntro, 
-                                                Host, 
-                                                HostIntro, 
                                                 ClubCName, 
                                                 ContactMan, 
                                                 RegistrationMan, 
@@ -297,8 +291,6 @@ AND (ID = @ID) ";
                                                 @PlaceName, 
                                                 @Presenter, 
                                                 @PresenterIntro, 
-                                                @Host, 
-                                                @HostIntro, 
                                                 @ClubCName, 
                                                 @ContactMan, 
                                                 @RegistrationMan, 
@@ -344,8 +336,6 @@ AND (ID = @ID) ";
             parameters.Add("@PlaceName", vm.EditModel.PlaceName);
             parameters.Add("@Presenter", vm.EditModel.Presenter);
             parameters.Add("@PresenterIntro", vm.EditModel.PresenterIntro);
-            parameters.Add("@Host", vm.EditModel.Host);
-            parameters.Add("@HostIntro", vm.EditModel.HostIntro);
             parameters.Add("@ClubCName", vm.EditModel.ClubCName);
             parameters.Add("@ContactMan", vm.EditModel.ContactMan);
             parameters.Add("@RegistrationMan", vm.EditModel.RegistrationMan);
@@ -377,8 +367,6 @@ AND (ID = @ID) ";
                                             PlaceName = @PlaceName, 
                                             Presenter = @Presenter, 
                                             PresenterIntro = @PresenterIntro, 
-                                            Host = @Host, 
-                                            HostIntro = @HostIntro, 
                                             ClubCName = @ClubCName, 
                                             ContactMan = @ContactMan, 
                                             RegistrationMan = @RegistrationMan, 

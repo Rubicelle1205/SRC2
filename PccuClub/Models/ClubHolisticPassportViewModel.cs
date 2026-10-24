@@ -157,13 +157,13 @@ namespace WebPccuClub.Models
         [DisplayName("主講人介紹")]
         public string? PresenterIntro { get; set; }
 
-        /// <summary>主持人</summary>
-        [DisplayName("主持人")]
-        public string? Host { get; set; }
+        ///// <summary>主持人</summary>
+        //[DisplayName("主持人")]
+        //public string? Host { get; set; }
 
-        /// <summary>主持人介紹</summary>
-        [DisplayName("主持人介紹")]
-        public string? HostIntro { get; set; }
+        ///// <summary>主持人介紹</summary>
+        //[DisplayName("主持人介紹")]
+        //public string? HostIntro { get; set; }
 
         /// <summary>主辦單位名稱</summary>
         [DisplayName("主辦單位名稱")]
@@ -294,13 +294,13 @@ namespace WebPccuClub.Models
         [DisplayName("主講人介紹")]
         public string? PresenterIntro { get; set; }
 
-        /// <summary>主持人</summary>
-        [DisplayName("主持人")]
-        public string? Host { get; set; }
+        ///// <summary>主持人</summary>
+        //[DisplayName("主持人")]
+        //public string? Host { get; set; }
 
-        /// <summary>主持人介紹</summary>
-        [DisplayName("主持人介紹")]
-        public string? HostIntro { get; set; }
+        ///// <summary>主持人介紹</summary>
+        //[DisplayName("主持人介紹")]
+        //public string? HostIntro { get; set; }
 
         /// <summary>主辦單位名稱</summary>
         [DisplayName("主辦單位名稱")]

@@ -144,8 +144,6 @@ AND (ID = @ID) ";
             parameters.Add("@PlaceName", vm.EditModel.PlaceName);
             parameters.Add("@Presenter", vm.EditModel.Presenter);
             parameters.Add("@PresenterIntro", vm.EditModel.PresenterIntro);
-            parameters.Add("@Host", vm.EditModel.Host);
-            parameters.Add("@HostIntro", vm.EditModel.HostIntro);
             parameters.Add("@ClubCName", vm.EditModel.ClubCName);
             parameters.Add("@ContactMan", vm.EditModel.ContactMan);
             parameters.Add("@RegistrationMan", vm.EditModel.RegistrationMan);
@@ -177,8 +175,6 @@ AND (ID = @ID) ";
                                             PlaceName = @PlaceName, 
                                             Presenter = @Presenter, 
                                             PresenterIntro = @PresenterIntro, 
-                                            Host = @Host, 
-                                            HostIntro = @HostIntro, 
                                             ClubCName = @ClubCName, 
                                             ContactMan = @ContactMan, 
                                             RegistrationMan = @RegistrationMan, 

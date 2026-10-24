@@ -121,14 +121,6 @@
                                         <td>@Html.TextAreaFor(m => m.EditModel.PresenterIntro, new { @class = "form-control", @placeholder = "請輸入主講人介紹", rows = "4" })</td>
                                     </tr>
                                     <tr>
-                                        <th width="10%">主持人<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.Host, new { @class = "form-control", @placeholder = "請輸入主持人" })</td>
-                                    </tr>
-                                    <tr>
-                                        <th width="10%">主持人介紹<span class="required">*</span></th>
-                                        <td>@Html.TextAreaFor(m => m.EditModel.HostIntro, new { @class = "form-control", @placeholder = "請輸入主持人介紹", rows = "4" })</td>
-                                    </tr>
-                                    <tr>
                                         <th width="10%">主辦單位<span class="required">*</span></th>
                                         <td>@Html.TextBoxFor(m => m.EditModel.ClubCName, new { @class = "form-control", @placeholder = "請輸入主辦單位" })</td>
                                     </tr>
@@ -296,8 +288,6 @@
 
         var Presenter = $('#@Html.IdFor(m => m.EditModel.Presenter)').val();
         var PresenterIntro = $('#@Html.IdFor(m => m.EditModel.PresenterIntro)').val();
-        var Host = $('#@Html.IdFor(m => m.EditModel.Host)').val();
-        var HostIntro = $('#@Html.IdFor(m => m.EditModel.HostIntro)').val();
 
         var ClubCName = $('#@Html.IdFor(m => m.EditModel.ClubCName)').val();
         var ContactMan = $('#@Html.IdFor(m => m.EditModel.ContactMan)').val();
@@ -348,8 +338,6 @@
 
         if (Presenter == "") { $.alert("主講人不可為空白"); return; }
         if (PresenterIntro == "") { $.alert("主講人介紹不可為空白"); return; }
-        if (Host == "") { $.alert("主持人不可為空白"); return; }
-        if (HostIntro == "") { $.alert("主持人介紹不可為空白"); return; }
         if (ClubCName == "") { $.alert("主辦單位不可為空白"); return; }
         if (ContactMan == "") { $.alert("聯絡人不可為空白"); return; }
         if (RegistrationMan == "") { $.alert("負責補登者不可為空白"); return; }
@@ -377,8 +365,6 @@
         data.append('@Html.NameFor(m => m.EditModel.PlaceName)', placetext);
         data.append('@Html.NameFor(m => m.EditModel.Presenter)', Presenter);
         data.append('@Html.NameFor(m => m.EditModel.PresenterIntro)', PresenterIntro);
-        data.append('@Html.NameFor(m => m.EditModel.Host)', Host);
-        data.append('@Html.NameFor(m => m.EditModel.HostIntro)', HostIntro);
         data.append('@Html.NameFor(m => m.EditModel.ClubCName)', ClubCName);
         data.append('@Html.NameFor(m => m.EditModel.ContactMan)', ContactMan);
         data.append('@Html.NameFor(m => m.EditModel.RegistrationMan)', RegistrationMan);
