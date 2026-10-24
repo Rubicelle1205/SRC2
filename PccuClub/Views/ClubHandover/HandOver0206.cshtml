@@ -49,7 +49,7 @@
                                                 <label for="">收入支出結算表：<span class="req-star">*</span></label>
                                             </td>
                                             <td class="">
-                                                @Html.TextBoxFor(m => m.Handover0206Model.Sheet, new { @class="form-control", type="file", placeholder="收入支出結算表", accept=".docx,.doc,.odt,.pdf" })
+                                                @Html.TextBoxFor(m => m.Handover0206Model.Sheet, new { @class="form-control", type="file", placeholder="收入支出結算表", accept=".pdf" })
                                                 <div class="fs-90percent red-hint pt-2">僅接受以下格式：.pdf</div>
                                             </td>
                                         </tr>
@@ -58,7 +58,7 @@
                                                 <label for="">存簿內頁檔案：<span class="req-star">*</span></label>
                                             </td>
                                             <td class="">
-                                                @Html.TextBoxFor(m => m.Handover0206Model.InnerFile, new { @class="form-control", type="file", placeholder="請上傳存簿內頁檔案", accept=".pdf,.jpg,.jpeg,.png,.zip,.rar,.7z" })
+                                                @Html.TextBoxFor(m => m.Handover0206Model.InnerFile, new { @class="form-control", type="file", placeholder="請上傳存簿內頁檔案", accept=".pdf" })
                                                 <div class="fs-90percent red-hint pt-2">僅接受以下格式：.pdf</div>
                                             </td>
                                         </tr>
