@@ -133,7 +133,7 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')
 ('ClubID', '社團代號', 1),
 ('ClubName', '社團名稱', 1),
 ('ActID', '活動報備編號', 1),
-('HolisticActName', '全人端名稱', 0),
+('HolisticActName', '系會社團全名', 0),
 ('ActName', '活動名稱', 1),
 ('ActDesc', '活動說明', 0),
 ('MainText', '全人學習認證群組', 0),

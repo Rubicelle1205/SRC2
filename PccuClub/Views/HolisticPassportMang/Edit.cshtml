@@ -52,8 +52,8 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th width="10%">全人端名稱<span class="required">*</span></th>
-                                        <td>@Html.TextBoxFor(m => m.EditModel.HolisticActName, new { @class = "form-control", @placeholder = "請輸入全人端名稱" })</td>
+                                        <th width="10%">系會社團全名<span class="required">*</span></th>
+                                        <td>@Html.TextBoxFor(m => m.EditModel.HolisticActName, new { @class = "form-control", @placeholder = "請輸入系會社團全名" })</td>
                                     </tr>
                                     <tr>
                                         <th width="10%">活動名稱<span class="required">*</span></th>
@@ -326,7 +326,7 @@
         if (SchoolYear == "") { $.alert("學年度不可為空白"); return; }
         if (ClubID == "") { $.alert("社團代號不可為空白"); return; }
         if (ActID == "") { $.alert("活動報備編號不可為空白"); return; }
-        if (HolisticActName == "") { $.alert("全人端名稱不可為空白"); return; }
+        if (HolisticActName == "") { $.alert("系會社團全名不可為空白"); return; }
         if (ActName == "") { $.alert("活動名稱不可為空白"); return; }
         if (ActDesc == "") { $.alert("活動說明不可為空白"); return; }
         if (MainID == "") { $.alert("全人學習認證群組不可為空白"); return; }

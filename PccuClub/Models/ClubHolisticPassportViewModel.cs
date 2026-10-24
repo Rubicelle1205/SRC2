@@ -101,8 +101,8 @@ namespace WebPccuClub.Models
         [DisplayName("活動名稱")]
         public string? ActName { get; set; }
 
-        /// <summary>全人端名稱</summary>
-        [DisplayName("全人端名稱")]
+        /// <summary>系會社團全名</summary>
+        [DisplayName("系會社團全名")]
         public string? HolisticActName { get; set; }
 
         /// <summary>活動說明</summary>
@@ -222,8 +222,8 @@ namespace WebPccuClub.Models
         [DisplayName("活動名稱")]
         public string? ActName { get; set; }
 
-        /// <summary>全人端名稱</summary>
-        [DisplayName("全人端名稱")]
+        /// <summary>系會社團全名</summary>
+        [DisplayName("系會社團全名")]
         public string? HolisticActName { get; set; }
 
         /// <summary>活動說明</summary>

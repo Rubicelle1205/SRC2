@@ -25,9 +25,9 @@
         <form action="" class="form-box checkthisform" enctype="multipart/form-data" method="post">
             <div class="infoWrapper mb-4">
                 <div class="infoItem">
-                    <div class="tag">全人端名稱<span class="req-star">*</span></div>
+                    <div class="tag">系會社團全名<span class="req-star">*</span></div>
                     <div class="content">
-                        @Html.TextBoxFor(m => m.ClubHolisticPassport.HolisticActName, new {@class="form-control", placeholder = "全人端名稱"})
+                        @Html.TextBoxFor(m => m.ClubHolisticPassport.HolisticActName, new { @class = "form-control", placeholder = "系會社團全名" })
                     </div>
                 </div>
                 <div class="infoItem">
@@ -268,7 +268,7 @@
         if (placeID == "" || placeID == undefined) { $.alert("請輸入場地名稱"); return false; }
 
         if (ActName == "") { $.alert("活動名稱不可為空白"); return; }
-        if (HolisticActName == "") { $.alert("全人端名稱不可為空白"); return; }
+        if (HolisticActName == "") { $.alert("系會社團全名不可為空白"); return; }
         if (ActDesc == "") { $.alert("活動說明不可為空白"); return; }
         if (MainID == "") { $.alert("全人學習認證群組需選擇"); return; }
         if (SecondID == "") { $.alert("全人學習認證類別需選擇"); return; }
