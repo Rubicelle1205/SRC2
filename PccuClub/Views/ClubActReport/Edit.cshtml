@@ -152,7 +152,6 @@
                             <div class="tag">全人學習護照</div>
                             <div class="content">
                                 @Model.EditModel.PassPortText
-                                <div class="hint">若該活動欲認列於全人學習護照<a href="http://pass.pccu.edu.tw/" target="_blank">需另外至全人網站填報</a></div>
                             </div>
                         </div>
                     </div>
@@ -380,7 +379,6 @@
                             <div class="tag">全人學習護照<span class="required">*</span></div>
                             <div class="content">
                                 @Html.DropDownListFor(m => m.EditModel.PassPort ,(List<SelectListItem>)ViewBag.ddlPassport,"請選擇", new {@class = "form-control"})
-                                <div class="hint">若該活動欲認列於全人學習護照<a href="http://pass.pccu.edu.tw/" target="_blank">需另外至全人網站填報</a></div>
                             </div>
                         </div>
                     </div>
