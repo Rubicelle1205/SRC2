@@ -131,14 +131,15 @@
                                         <th width="15%">
                                             @Html.LabelFor(m => m.CreateModel.PosterIconPath)
                                             <br />
-                                            <span class="text-xs text-danger font-weight-normal">可上傳.jpeg,.jpg,.png</span>
+                                            <span class="text-xs text-danger font-weight-normal">可上傳.doc,.docx,.odt,.pdf</span>
                                         </th>
-                                        <td style="display:flex;">
+                                        <td>
                                             <div class="d-block mb-1 item">
-                                                <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
-                                                    @Html.TextBoxFor(m => m.CreateModel.PosterIconPath, new { @style = "display:none;", @class = "filesupload", type = "file", accept = ".jpeg,.jpg,.png" })
+                                                <label class="btn btn-outline-primary mb-0">
+                                                    @Html.TextBoxFor(m => m.CreateModel.PosterIconPath, new { @style = "display:none;", @class = "filesupload", type = "file", accept = ".doc,.docx,.odt,.pdf" })
+                                                    <i class="fa-solid fa-cloud-arrow-up"></i> 上傳檔案
                                                 </label>
-                                                <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+                                                <span class="text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -263,7 +264,7 @@
         if (typeof PosterIconPath !== 'undefined') {
             var fileExtension = PosterIconPath.name.split('.').pop().toLowerCase();
 
-            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+            if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'odt' && fileExtension !== 'pdf') {
                 $.alert("檔案類型不符合");
                 return;
             }

@@ -138,9 +138,9 @@
                 <div class="infoItem">
                     <div class="tag">企劃書上傳<span class="req-star"></span></div>
                     <div class="content">
-                        @Html.TextBoxFor(m => m.ClubHolisticPassport.PosterIconPath, new { @class = "form-control w-auto", title = "企劃書上傳", type = "file", accept = ".jpg,.jpeg,.png" })
+                        @Html.TextBoxFor(m => m.ClubHolisticPassport.PosterIconPath, new { @class = "form-control w-auto", title = "企劃書上傳", type = "file", accept = ".doc,.docx,.odt,.pdf" })
                         
-                        <div class="fs-90percent red-hint pt-2">僅接受以下格式：jpg, jpeg, png</div>
+                        <div class="fs-90percent red-hint pt-2">僅接受以下格式：.doc,.docx,.odt,.pdf</div>
                         <p class="hint mb-0 py-1"><i class="fas fa-info-circle"></i> 最大10MB</p>
                     </div>
                 </div>
@@ -199,7 +199,7 @@
         if (typeof PosterIconPath !== 'undefined') {
             var fileExtension = PosterIconPath.name.split('.').pop().toLowerCase();
 
-            if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+            if (fileExtension !== 'doc' && fileExtension !== 'docx' && fileExtension !== 'odt' && fileExtension !== 'pdf') {
                 $.alert("檔案類型不符合");
                 return;
             }

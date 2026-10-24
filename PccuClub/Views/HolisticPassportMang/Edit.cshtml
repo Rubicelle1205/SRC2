@@ -141,21 +141,15 @@
                                         <th width="15%">
                                             @Html.LabelFor(m => m.EditModel.PosterIconPath)
                                             <br />
-                                            <span class="text-xs text-danger font-weight-normal">可上傳.jpeg,.jpg,.png</span>
+                                            <span class="text-xs text-danger font-weight-normal">可上傳.doc,.docx,.odt,.pdf</span>
                                         </th>
-                                        <td style="display:flex;">
-                                            <div class="d-block mb-1 item">
-                                                <label class="upload_cover img-thumbnail" name="file1_prev" style="margin-right: 2rem; background-image: url(./../uploads/others/nophoto.png);">
-                                                    @Html.TextBoxFor(m => m.EditModel.PosterIconPath, new { @style = "display:none;", @class = "filesupload", type = "file", accept = ".jpeg,.jpg,.png" })
-                                                </label>
-                                                <span class="filename text-sm mx-2 text-muted" id="filename">尚未選擇檔案...</span>
+
+                                        <td>
+                                            <div>
+                                                <a class="text-sm text-muted" href="@Model.EditModel.PosterIconPath" target="_blank">
+                                                    <i class="fa-regular fa-file mr-2"></i>下載檔案
+                                                </a>
                                             </div>
-                                            @if (PosterIconPath != null)
-                                            {
-                                                <label class="upload_cover img-thumbnail" name="file1_prev">
-                                                    <img src="@Model.EditModel.PosterIconPath" style="width:100%;" />
-                                                </label>
-                                            }
                                         </td>
                                     </tr>
 
