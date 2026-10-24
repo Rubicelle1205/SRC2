@@ -690,8 +690,8 @@ namespace WebPccuClub.Models
         [DisplayName("關鍵字標籤")]
         public string? Tag { get; set; }
 
-        /// <summary>海報縮圖</summary>
-        [DisplayName("海報縮圖")]
+        /// <summary>企劃書上傳</summary>
+        [DisplayName("企劃書上傳")]
         public string? PosterIconPath { get; set; }
 
         /// <summary>備註</summary>

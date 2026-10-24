@@ -149,7 +149,7 @@ AND (@ActName IS NULL OR A.ActName LIKE '%' + @ActName + '%')
 ('ContactMan', '聯絡人', 0),
 ('OpenObject', '開放對象', 0),
 ('Tag', '關鍵字標籤', 0),
-('PosterIconPath', '海報縮圖', 0),
+('PosterIconPath', '企劃書上傳', 0),
 ('Memo', '備註', 0),
 ('ActVerifyText', '審核狀態', 1),
 ('ActVerifyMemo', '審核備註', 0),
